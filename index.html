@@ -118,7 +118,7 @@
         </div>
     </div>
 
-    <button class="btn-calc" onclick="calculateResults()">حساب النتائج ورسم المرتسم الجيولوجي المطور</button>
+    <button class="btn-calc" onclick="calculateResults()">حساب النتائج ورسم المرتسم الجيولوجي</button>
 
     <div id="resultsSection" class="section">
         <div class="section-title" style="border-bottom-color: #27ae60; color: #27ae60;">النتائج النهائية للتقرير الجيولوجي</div>
@@ -146,7 +146,7 @@
         
         <div id="percentageNote" class="percentage-note"></div>
         
-        <canvas id="geoCanvas" width="850" height="500"></canvas>
+        <canvas id="geoCanvas" width="850" height="550"></canvas>
     </div>
 
     <div class="footer">
@@ -223,7 +223,8 @@
 
         const margin = 70;
         const drawW = canvas.width - (margin * 2);
-        const drawH = canvas.height - (margin * 2) - 40; 
+        // ترك مساحة أكبر في الأسفل لمقياس الرسم
+        const drawH = canvas.height - (margin * 2) - 60; 
 
         // حساب الأبعاد الكلية (بافتراض أن المستثمر أخذ العرض بالكامل)
         let totalW = fieldWidth > 0 ? fieldWidth : 100; // محور Y (العرض)
@@ -249,7 +250,6 @@
             let xPos = margin + (i / totalL) * drawW;
             ctx.beginPath(); ctx.moveTo(xPos, margin + drawH); ctx.lineTo(xPos, margin + drawH + 10); ctx.stroke();
             
-            // خطوط الشبكة
             ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1;
             ctx.beginPath(); ctx.moveTo(xPos, margin); ctx.lineTo(xPos, margin + drawH); ctx.stroke(); ctx.restore();
             
@@ -264,7 +264,6 @@
             let yPos = margin + drawH - (i / totalW) * drawH;
             ctx.beginPath(); ctx.moveTo(margin - 10, yPos); ctx.lineTo(margin, yPos); ctx.stroke();
             
-            // خطوط الشبكة
             ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1;
             ctx.beginPath(); ctx.moveTo(margin, yPos); ctx.lineTo(margin + drawW, yPos); ctx.stroke(); ctx.restore();
             
@@ -283,7 +282,6 @@
             ctx.lineWidth = 2;
             ctx.strokeRect(margin, margin, invPixelW, drawH);
 
-            // نص المساحة المستثمرة (أسود للتباين مع الأزرق الفاتح)
             ctx.fillStyle = '#000';
             ctx.textAlign = 'center';
             ctx.font = 'bold 18px Arial';
@@ -301,7 +299,6 @@
             ctx.lineWidth = 2;
             ctx.strokeRect(margin + invPixelW, margin, remPixelW, drawH);
 
-            // نص المساحة المتبقية (أبيض للتباين مع الأزرق الداكن)
             ctx.fillStyle = '#fff';
             ctx.textAlign = 'center';
             ctx.font = 'bold 18px Arial';
@@ -311,7 +308,7 @@
             }
         }
 
-        // 3. وضع الأحرف (A, B, C, D) على زوايا المقلع الكلي
+        // 3. وضع الأحرف (A, B, C, D) على زوايا المقلع الكلي فقط
         ctx.fillStyle = '#000';
         ctx.font = 'bold 22px "Times New Roman", serif';
         ctx.textAlign = 'center';
@@ -336,6 +333,37 @@
         ctx.font = 'bold 20px Arial';
         ctx.textAlign = 'right';
         ctx.fillText('• المرتسم الخاص بالمساحات المستثمرة والمتبقية (Scale Plan)', canvas.width - 20, 30);
+
+        // 5. إضافة مقياس الرسم (Scale Bar) في الأسفل
+        let scaleUnit = 10;
+        if (totalL > 50) scaleUnit = 20;
+        if (totalL > 100) scaleUnit = 50;
+        if (totalL > 250) scaleUnit = 100;
+
+        const scaleBarPixels = (scaleUnit / totalL) * drawW;
+        const scaleBarY = canvas.height - 30; // موضع المقياس في أسفل الكانفاس
+
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(margin, scaleBarY - 5);
+        ctx.lineTo(margin, scaleBarY + 5);
+        ctx.moveTo(margin, scaleBarY);
+        ctx.lineTo(margin + scaleBarPixels, scaleBarY);
+        ctx.moveTo(margin + scaleBarPixels, scaleBarY - 5);
+        ctx.lineTo(margin + scaleBarPixels, scaleBarY + 5);
+        ctx.stroke();
+
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText('0 م', margin, scaleBarY + 10);
+        ctx.fillText(`${scaleUnit} م`, margin + scaleBarPixels, scaleBarY + 10);
+        
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('مقياس رسم تخطيطي', margin + scaleBarPixels + 20, scaleBarY);
     }
 </script>
 
