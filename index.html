@@ -2,131 +2,127 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>نظام راسانة - الرقابة المساحية للمقالع</title>
+    <title>نظام المسح الميداني الجيولوجي للمقالع</title>
     <style>
-        :root { --main: #2c3e50; --accent: #d35400; --warn: #c0392b; --success: #27ae60; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f7f6; margin: 0; padding: 15px; text-align: right; }
-        .app-container { background: white; max-width: 850px; margin: auto; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 10px solid var(--main); overflow: hidden; }
-        header { background: var(--main); color: white; padding: 20px; text-align: center; }
-        .content { padding: 20px; }
-        .section { background: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        h3 { color: var(--main); border-bottom: 2px solid #eee; padding-bottom: 8px; margin-top: 0; }
+        :root { --primary: #2c3e50; --danger: #c0392b; --success: #27ae60; --info: #2980b9; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f3f5; margin: 0; padding: 20px; text-align: right; }
+        .main-card { background: white; max-width: 900px; margin: auto; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border-top: 12px solid var(--primary); overflow: hidden; }
+        header { background: var(--primary); color: white; padding: 25px; text-align: center; }
+        header h1 { margin: 0; font-size: 1.6rem; }
+        header p { margin: 10px 0 0; font-weight: bold; opacity: 0.9; }
+        .content { padding: 25px; }
         
-        .flex-row { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 10px; }
-        .input-group { flex: 1; min-width: 200px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .section { background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 10px; margin-bottom: 25px; }
+        h3 { color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; }
         
-        .gps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .gps-box { background: #f9f9f9; padding: 10px; border-radius: 8px; border-right: 5px solid var(--main); }
-        button { width: 100%; padding: 10px; margin: 5px 0; cursor: pointer; border: none; border-radius: 5px; color: white; font-weight: bold; }
-        .btn-blue { background: var(--main); }
-        .btn-orange { background: var(--accent); }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        label { display: block; font-weight: bold; margin: 10px 0 5px; font-size: 0.9rem; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
         
-        #depthWarning { color: var(--warn); font-weight: bold; display: none; padding: 10px; background: #fee; border: 1px solid var(--warn); margin-top: 10px; border-radius: 5px; }
+        .gps-zone { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
+        .btn-gps { width: 100%; padding: 10px; margin: 5px 0; cursor: pointer; border: none; border-radius: 5px; color: white; font-weight: bold; transition: 0.3s; }
+        .btn-total { background: var(--info); }
+        .btn-inv { background: var(--danger); }
         
-        .report-table { width: 100%; border-collapse: collapse; margin-top: 20px; display: none; }
-        .report-table th, .report-table td { border: 1px solid #ddd; padding: 12px; text-align: center; }
-        .report-table th { background: #eee; }
-        .highlight { background: #e8f5e9; font-weight: bold; color: var(--success); }
+        .calc-area { background: #fffbe6; border: 2px dashed #f1c40f; padding: 20px; border-radius: 10px; margin-top: 20px; }
         
-        footer { background: #eee; text-align: center; padding: 15px; font-size: 0.9rem; font-weight: bold; color: #555; margin-top: 20px; }
+        #finalReport { background: #fff; border: 2px solid var(--success); padding: 20px; border-radius: 10px; margin-top: 25px; display: none; }
+        .result-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 1.1rem; }
+        .result-item b { color: var(--danger); }
+
+        canvas { background: #fff; border: 2px solid var(--primary); width: 100%; height: auto; border-radius: 10px; margin-top: 20px; }
+        .legend { display: flex; justify-content: center; gap: 20px; margin-top: 10px; font-weight: bold; }
+        
+        footer { text-align: center; padding: 20px; background: #eee; font-weight: bold; color: #444; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
+<div class="main-card">
     <header>
-        <h1>نظام المطابقة الميدانية والكميات المستثمرة</h1>
+        <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
         <p>بإشراف الجيولوجي علي شندل الجنابي</p>
     </header>
 
     <div class="content">
         <div class="section">
-            <h3>أولاً: بيانات العقد (محافظة بغداد)</h3>
-            <div class="flex-row">
-                <div class="input-group">
-                    <label>المساحة المتعاقد عليها:</label>
-                    <input type="number" id="contractArea" placeholder="أدخل القيمة">
+            <h3>1. بيانات العقد الرسمية</h3>
+            <div class="grid-3">
+                <div>
+                    <label>المساحة الكلية (بالعقد):</label>
+                    <input type="number" id="conArea" placeholder="أدخل القيمة">
                 </div>
-                <div class="input-group">
-                    <label>وحدة القياس:</label>
-                    <select id="areaUnit">
-                        <option value="2500">دونم (2500 م²)</option>
-                        <option value="1">متر مربع (م²)</option>
+                <div>
+                    <label>الوحدة:</label>
+                    <select id="conUnit">
+                        <option value="2500">دونم</option>
+                        <option value="1">متر مربع</option>
                     </select>
                 </div>
-            </div>
-            <div class="flex-row">
-                <div class="input-group">
-                    <label>الكمية المتعاقد عليها (م³):</label>
-                    <input type="number" id="contractVol" placeholder="الكمية الكلية بالعقد">
-                </div>
-                <div class="input-group">
-                    <label>العمق المتعاقد عليه (م):</label>
-                    <input type="number" id="contractDepth" placeholder="العمق الرسمي">
+                <div>
+                    <label>الكمية الكلية المقررة (م³):</label>
+                    <input type="number" id="conVol" placeholder="مثلاً: 10000">
                 </div>
             </div>
         </div>
 
         <div class="section">
-            <h3>ثانياً: القياس الميداني الرقمي</h3>
-            <div class="gps-grid">
-                <div class="gps-box">
-                    <label>أركان الموقع الكلية (4 نقاط):</label>
-                    <button class="btn-blue" onclick="capture(0,'T')">التقاط الركن A</button>
-                    <button class="btn-blue" onclick="capture(1,'T')">التقاط الركن B</button>
-                    <button class="btn-blue" onclick="capture(2,'T')">التقاط الركن C</button>
-                    <button class="btn-blue" onclick="capture(3,'T')">التقاط الركن D</button>
+            <h3>2. التوثيق الميداني الرقمي (GPS للمرتسم)</h3>
+            <div class="gps-zone">
+                <div style="background:#eef7ff; padding:10px; border-radius:8px;">
+                    <label>أركان المقلع الكلية:</label>
+                    <button class="btn-gps btn-total" onclick="cap(0,'T')">الركن A</button>
+                    <button class="btn-gps btn-total" onclick="cap(1,'T')">الركن B</button>
+                    <button class="btn-gps btn-total" onclick="cap(2,'T')">الركن C</button>
+                    <button class="btn-gps btn-total" onclick="cap(3,'T')">الركن D</button>
                 </div>
-                <div class="gps-box" style="border-right-color: var(--accent);">
-                    <label>أركان المنطقة المستثمرة (4 نقاط):</label>
-                    <button class="btn-orange" onclick="capture(0,'I')">نقطة استثمار 1</button>
-                    <button class="btn-orange" onclick="capture(1,'I')">نقطة استثمار 2</button>
-                    <button class="btn-orange" onclick="capture(2,'I')">نقطة استثمار 3</button>
-                    <button class="btn-orange" onclick="capture(3,'I')">نقطة استثمار 4</button>
+                <div style="background:#fff0f0; padding:10px; border-radius:8px;">
+                    <label>أركان المنطقة المستثمرة:</label>
+                    <button class="btn-gps btn-inv" onclick="cap(0,'I')">نقطة 1</button>
+                    <button class="btn-gps btn-inv" onclick="cap(1,'I')">نقطة 2</button>
+                    <button class="btn-gps btn-inv" onclick="cap(2,'I')">نقطة 3</button>
+                    <button class="btn-gps btn-inv" onclick="cap(3,'I')">نقطة 4</button>
                 </div>
-            </div>
-            
-            <label style="margin-top:15px;">العمق المستثمر لغاية اليوم (قياس الفيتا اليدوي):</label>
-            <input type="number" id="currentDepth" oninput="validateDepth(this.value)" placeholder="أدخل العمق الحالي بالمتر">
-            <div id="depthWarning">
-                ⚠️ تحذير قانوني: لقد تجاوزت العمق المسموح به (10 م). هذا مخالف لتعليمات هيئة المسح الجيولوجي ومحافظة بغداد بسبب خطر المياه الجوفية.
             </div>
         </div>
 
-        <button style="background:var(--success); font-size:1.2rem; padding:15px;" onclick="runFinalReport()">إصدار تقرير المطابقة والكميات</button>
+        <div class="calc-area">
+            <h3>3. القياس الميداني بالفيتا (أساس الحسابات)</h3>
+            <div class="grid-3">
+                <div>
+                    <label>طول المنطقة المستثمرة (م):</label>
+                    <input type="number" id="invL" placeholder="بالفيتا">
+                </div>
+                <div>
+                    <label>عرض المنطقة المستثمرة (م):</label>
+                    <input type="number" id="invW" placeholder="بالفيتا">
+                </div>
+                <div>
+                    <label>العمق المستثمر حالياً (م):</label>
+                    <input type="number" id="invD" oninput="valD(this.value)" placeholder="بالفيتا">
+                </div>
+            </div>
+            <div id="warnD" style="color:var(--danger); font-weight:bold; display:none; margin-top:10px;">
+                ⚠️ تنبيه: تجاوز عمق 10م مخالف للتعليمات الرسمية لوجود المياه الجوفية.
+            </div>
+        </div>
 
-        <table class="report-table" id="report">
-            <thead>
-                <tr>
-                    <th>البيان</th>
-                    <th>حسب العقد (رسمي)</th>
-                    <th>حسب الـ GPS (ميداني)</th>
-                    <th>الحالة / المتبقي</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>المساحة الكلية</td>
-                    <td id="td_areaContract">--</td>
-                    <td id="td_areaGPS">--</td>
-                    <td id="td_areaStatus">--</td>
-                </tr>
-                <tr>
-                    <td>المساحة المستثمرة</td>
-                    <td>--</td>
-                    <td id="td_areaInv">--</td>
-                    <td id="td_areaRem">--</td>
-                </tr>
-                <tr class="highlight">
-                    <td>الكميات (م³)</td>
-                    <td id="td_volContract">--</td>
-                    <td id="td_volInv">--</td>
-                    <td id="td_volRem">--</td>
-                </tr>
-            </tbody>
-        </table>
+        <button style="background:var(--success); font-size:1.3rem; padding:15px; margin-top:20px; color:white; border:none; border-radius:8px; cursor:pointer; width:100%;" onclick="process()">إصدار التقرير النهائي ورسم المرتسم</button>
+
+        <div id="finalReport">
+            <h3 style="text-align:center;">نتائج المسح الميداني والكميات</h3>
+            <div class="result-item"><span>المساحة المستخرجة (المستثمرة):</span> <b id="resAreaInv">0</b> م²</div>
+            <div class="result-item"><span>الكمية المستخرجة لغاية اليوم:</span> <b id="resVolInv">0</b> م³</div>
+            <hr>
+            <div class="result-item"><span>المساحة المتبقية من العقد:</span> <b id="resAreaRem">0</b> م²</div>
+            <div class="result-item"><span>الاحتياطي المتبقي (الكمية):</span> <b id="resVolRem">0</b> م³</div>
+        </div>
+
+        <canvas id="sketch" width="800" height="500"></canvas>
+        <div class="legend">
+            <span style="color:var(--info)">■ حدود المقلع الكلية</span>
+            <span style="color:var(--danger)">■ المنطقة المستثمرة (الحفر)</span>
+        </div>
     </div>
 
     <footer>
@@ -137,58 +133,88 @@
 <script>
     let ptsT = []; let ptsI = [];
 
-    function validateDepth(val) {
-        document.getElementById('depthWarning').style.display = (val > 10) ? 'block' : 'none';
-    }
+    function valD(v) { document.getElementById('warnD').style.display = (v > 10) ? 'block' : 'none'; }
 
-    function capture(idx, type) {
+    function cap(idx, type) {
         navigator.geolocation.getCurrentPosition(pos => {
             const x = pos.coords.longitude * 111320 * Math.cos(pos.coords.latitude * Math.PI / 180);
             const y = pos.coords.latitude * 111111;
-            if(type==='T') ptsT[idx] = {x, y}; else ptsI[idx] = {x, y};
-            alert("تم التقاط الإحداثيات بنجاح");
+            if(type==='T') ptsT[idx]={x, y}; else ptsI[idx]={x, y};
+            alert("تم تثبيت الركن رقم " + (idx+1));
         }, null, {enableHighAccuracy: true});
     }
 
-    function calcPolygonArea(p) {
-        let a = 0;
-        for (let i = 0; i < 4; i++) {
-            let j = (i + 1) % 4;
-            a += p[i].x * p[j].y; a -= p[j].x * p[i].y;
-        }
-        return Math.abs(a) / 2;
+    function process() {
+        const unit = parseFloat(document.getElementById('conUnit').value);
+        const areaCon = (parseFloat(document.getElementById('conArea').value) || 0) * unit;
+        const volCon = parseFloat(document.getElementById('conVol').value) || 0;
+        
+        // حسابات الفيتا اليدوية
+        const L = parseFloat(document.getElementById('invL').value) || 0;
+        const W = parseFloat(document.getElementById('invW').value) || 0;
+        const D = parseFloat(document.getElementById('invD').value) || 0;
+
+        const areaInv = L * W;
+        const volInv = areaInv * D;
+        
+        const areaRem = areaCon - areaInv;
+        const volRem = volCon - volInv;
+
+        document.getElementById('finalReport').style.display = 'block';
+        document.getElementById('resAreaInv').innerText = areaInv.toFixed(2);
+        document.getElementById('resVolInv').innerText = volInv.toFixed(2);
+        document.getElementById('resAreaRem').innerText = areaRem.toFixed(2);
+        document.getElementById('resVolRem').innerText = volRem.toFixed(2);
+
+        drawSketch(ptsT, ptsI, L, W);
     }
 
-    function runFinalReport() {
-        const unit = parseFloat(document.getElementById('areaUnit').value);
-        const areaContract = (parseFloat(document.getElementById('contractArea').value) || 0) * unit;
-        const volContract = parseFloat(document.getElementById('contractVol').value) || 0;
-        const depthCur = parseFloat(document.getElementById('currentDepth').value) || 0;
+    function drawSketch(t, i, L, W) {
+        const canvas = document.getElementById('sketch');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0,0,800,500);
 
-        if(ptsT.length < 4 || ptsI.length < 4) return alert("يرجى التقاط كافة نقاط الـ GPS للموقع الكلي والمستثمر");
+        if(t.length < 4) return;
 
-        const areaGPS_Total = calcPolygonArea(ptsT);
-        const areaGPS_Inv = calcPolygonArea(ptsI);
-        
-        // حساب الكميات المستخرجة (المساحة المستثمرة من GPS × العمق من الفيتا)
-        const volInv = areaGPS_Inv * depthCur;
-        const volRem = volContract - volInv;
-        const areaRem = areaGPS_Total - areaGPS_Inv;
+        const allX = t.map(p=>p.x); const allY = t.map(p=>p.y);
+        const minX = Math.min(...allX); const minY = Math.min(...allY);
+        const scale = 400 / Math.max(Math.max(...allX)-minX, Math.max(...allY)-minY);
 
-        document.getElementById('report').style.display = 'table';
+        // رسم المقلع الكلي
+        ctx.beginPath();
+        ctx.strokeStyle = "#2980b9"; ctx.lineWidth = 4;
+        t.forEach((p, idx) => {
+            const x = 150 + (p.x - minX) * scale;
+            const y = 400 - (p.y - minY) * scale;
+            if(idx===0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.closePath(); ctx.stroke();
+        ctx.fillStyle = "rgba(41, 128, 185, 0.1)"; ctx.fill();
+
+        // رسم المنطقة المستثمرة (باللون الأحمر)
+        if(i.length === 4) {
+            ctx.beginPath();
+            ctx.strokeStyle = "#c0392b"; ctx.lineWidth = 3;
+            i.forEach((p, idx) => {
+                const x = 150 + (p.x - minX) * scale;
+                const y = 400 - (p.y - minY) * scale;
+                if(idx===0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            });
+            ctx.closePath(); ctx.stroke();
+            ctx.fillStyle = "rgba(192, 57, 43, 0.4)"; ctx.fill();
+            
+            // إضافة نص الأبعاد اليدوية (L & W) فوق المنطقة الحمراء
+            ctx.fillStyle = "#000";
+            ctx.font = "bold 14px Arial";
+            ctx.fillText(`الطول الميداني: ${L} م`, 20, 30);
+            ctx.fillText(`العرض الميداني: ${W} م`, 20, 50);
+        }
         
-        // تعبئة الجدول
-        document.getElementById('td_areaContract').innerText = areaContract.toFixed(2) + " م²";
-        document.getElementById('td_areaGPS').innerText = areaGPS_Total.toFixed(2) + " م²";
-        document.getElementById('td_areaStatus').innerText = (Math.abs(areaGPS_Total - areaContract) < 100) ? "مطابق" : "يوجد تجاوز";
-        
-        document.getElementById('td_areaInv').innerText = areaGPS_Inv.toFixed(2) + " م²";
-        document.getElementById('td_areaRem').innerText = "المتبقي: " + areaRem.toFixed(2) + " م²";
-        
-        document.getElementById('td_volContract').innerText = volContract.toFixed(2) + " م³";
-        document.getElementById('td_volInv').innerText = volInv.toFixed(2) + " م³";
-        document.getElementById('td_volRem').innerText = volRem.toFixed(2) + " م³";
+        ctx.fillStyle = "#2c3e50";
+        ctx.font = "bold 16px Arial";
+        ctx.fillText("المرتسم الجيولوجي العام للمقلع", 300, 30);
     }
 </script>
+
 </body>
 </html>
