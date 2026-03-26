@@ -9,39 +9,32 @@
         body { font-family: 'Arial', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: right; color: #333; line-height: 1.6; }
         .container { background: white; max-width: 800px; margin: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 6px solid var(--primary); padding: 30px; }
         
-        /* الترويسة */
         .header { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }
         .header h1 { color: var(--primary); font-size: 1.8rem; margin: 0 0 10px 0; }
         .header h2 { color: #555; font-size: 1.2rem; margin: 0; font-weight: normal; }
         
-        /* الأقسام */
         .section { margin-bottom: 35px; }
-        .section-title { color: var(--accent); border-bottom: 1px solid var(--accent); padding-bottom: 8px; font-size: 1.2rem; margin-bottom: 20px; }
+        .section-title { color: var(--accent); border-bottom: 1px solid var(--accent); padding-bottom: 8px; font-size: 1.2rem; margin-bottom: 20px; font-weight: bold; }
         
-        /* الحقول المتجاورة */
         .form-row { display: flex; gap: 20px; margin-bottom: 15px; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; }
         label { display: block; font-weight: bold; margin-bottom: 8px; color: var(--secondary); font-size: 0.95rem; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem; font-family: inherit; }
+        input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
         
-        /* قسم الإحداثيات */
         .gps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .gps-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+        .gps-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-size: 1rem; transition: 0.2s; font-weight: bold; }
         .gps-btn:hover { background: var(--primary); }
-        .coord-display { background: #f4f6f7; border: 1px solid #d5dbdb; padding: 10px; margin-top: 5px; border-radius: 4px; font-family: Tahoma, sans-serif; font-size: 0.9rem; direction: ltr; text-align: left; }
+        .coord-display { background: #eaf2f8; border: 1px solid #a9cce3; padding: 10px; margin-top: 5px; border-radius: 4px; font-family: monospace; font-size: 0.95rem; direction: ltr; text-align: left; font-weight: bold; color: #154360; }
         
-        /* زر الحساب */
         .btn-calc { background: var(--accent); color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 10px; }
         .btn-calc:hover { background: #2471a3; }
         
-        /* النتائج */
         #resultsSection { display: none; margin-top: 30px; border: 2px solid #2ecc71; padding: 25px; border-radius: 6px; background: #eaeded; }
         .result-item { display: flex; justify-content: space-between; border-bottom: 1px dashed #bdc3c7; padding: 12px 0; font-size: 1.1rem; }
         .result-item:last-child { border-bottom: none; }
         .result-value { font-weight: bold; color: #145a32; }
         
-        /* التذييل */
-        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #7f8c8d; font-size: 0.9rem; }
+        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #7f8c8d; font-size: 0.9rem; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -49,28 +42,19 @@
 <div class="container">
     <div class="header">
         <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
-        <h2>بإشراف الجيولوجي علي شندل فلاح</h2>
+        <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
     </div>
 
     <div class="section">
         <div class="section-title">بيانات العقد الرسمية</div>
         <div class="form-row">
             <div class="form-group">
-                <label>المساحة (المتعاقد عليها):</label>
-                <input type="number" id="contractArea" placeholder="مثلاً: 3 أو 7500">
+                <label>المساحة (المتعاقد عليها) بالدونم:</label>
+                <input type="number" id="contractArea" placeholder="مثلاً: 3 أو 7">
             </div>
-            <div class="form-group">
-                <label>الوحدة:</label>
-                <select id="areaUnit">
-                    <option value="2500">دونم</option>
-                    <option value="1">متر مربع (م²)</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-row">
             <div class="form-group">
                 <label>الكمية (المتعاقد عليها) بالمتر المكعب:</label>
-                <input type="number" id="contractVol" placeholder="مثلاً: 37,500 أو 75,000">
+                <input type="number" id="contractVol" placeholder="مثلاً: 37500 أو 75000">
             </div>
         </div>
     </div>
@@ -80,37 +64,37 @@
         <div class="gps-grid">
             <div class="form-group">
                 <button class="gps-btn" onclick="getCoordinates('point1')">التقاط إحداثيات الركن الأول</button>
-                <div id="point1" class="coord-display">خط الطول: --- | خط العرض: ---</div>
+                <div id="point1" class="coord-display">E: --- | N: ---</div>
             </div>
             <div class="form-group">
                 <button class="gps-btn" onclick="getCoordinates('point2')">التقاط إحداثيات الركن الثاني</button>
-                <div id="point2" class="coord-display">خط الطول: --- | خط العرض: ---</div>
+                <div id="point2" class="coord-display">E: --- | N: ---</div>
             </div>
             <div class="form-group">
                 <button class="gps-btn" onclick="getCoordinates('point3')">التقاط إحداثيات الركن الثالث</button>
-                <div id="point3" class="coord-display">خط الطول: --- | خط العرض: ---</div>
+                <div id="point3" class="coord-display">E: --- | N: ---</div>
             </div>
             <div class="form-group">
                 <button class="gps-btn" onclick="getCoordinates('point4')">التقاط إحداثيات الركن الرابع</button>
-                <div id="point4" class="coord-display">خط الطول: --- | خط العرض: ---</div>
+                <div id="point4" class="coord-display">E: --- | N: ---</div>
             </div>
         </div>
     </div>
 
     <div class="section">
-        <div class="section-title">القياسات الميدانية للمنطقة المستثمرة</div>
+        <div class="section-title">القياسات الميدانية للمنطقة المستثمرة (بالفيتا)</div>
         <div class="form-row">
             <div class="form-group">
                 <label>الطول (متر):</label>
-                <input type="number" id="fieldLength" placeholder="أدخل الطول">
+                <input type="number" id="fieldLength" placeholder="أدخل الطول المستثمر">
             </div>
             <div class="form-group">
                 <label>العرض (متر):</label>
-                <input type="number" id="fieldWidth" placeholder="أدخل العرض">
+                <input type="number" id="fieldWidth" placeholder="أدخل العرض المستثمر">
             </div>
             <div class="form-group">
                 <label>العمق (متر):</label>
-                <input type="number" id="fieldDepth" placeholder="أدخل العمق">
+                <input type="number" id="fieldDepth" placeholder="أدخل أقصى عمق للاستثمار">
             </div>
         </div>
     </div>
@@ -142,20 +126,57 @@
     </div>
 
     <div class="footer">
-        جميع الحقوق محفوظة لدى الجيولوجي علي شندل فلاح &copy; 2026
+        جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي &copy; 2026
     </div>
 </div>
 
 <script>
+    // خوارزمية التحويل من WGS84 إلى UTM
+    function latLonToUTM(lat, lon) {
+        const a = 6378137.0; // WGS84 semi-major axis
+        const eccSquared = 0.00669438; // WGS84 eccentricity squared
+        const k0 = 0.9996;
+        
+        let zoneNumber = Math.floor((lon + 180) / 6) + 1;
+        let lonOrigin = (zoneNumber - 1) * 6 - 180 + 3;
+        let lonOriginRad = lonOrigin * (Math.PI / 180.0);
+        let latRad = lat * (Math.PI / 180.0);
+        let lonRad = lon * (Math.PI / 180.0);
+        
+        let eccPrimeSquared = (eccSquared) / (1 - eccSquared);
+        let N = a / Math.sqrt(1 - eccSquared * Math.sin(latRad) * Math.sin(latRad));
+        let T = Math.tan(latRad) * Math.tan(latRad);
+        let C = eccPrimeSquared * Math.cos(latRad) * Math.cos(latRad);
+        let A = Math.cos(latRad) * (lonRad - lonOriginRad);
+        
+        let M = a * ((1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * Math.pow(eccSquared, 3) / 256) * latRad
+        - (3 * eccSquared / 8 + 3 * eccSquared * eccSquared / 32 + 45 * Math.pow(eccSquared, 3) / 1024) * Math.sin(2 * latRad)
+        + (15 * eccSquared * eccSquared / 256 + 45 * Math.pow(eccSquared, 3) / 1024) * Math.sin(4 * latRad)
+        - (35 * Math.pow(eccSquared, 3) / 3072) * Math.sin(6 * latRad));
+        
+        let UTMEasting = (k0 * N * (A + (1 - T + C) * Math.pow(A, 3) / 6
+        + (5 - 18 * T + T * T + 72 * C - 58 * eccPrimeSquared) * Math.pow(A, 5) / 120) + 500000.0);
+        
+        let UTMNorthing = (k0 * (M + N * Math.tan(latRad) * (Math.pow(A, 2) / 2 + (5 - T + 9 * C + 4 * C * C) * Math.pow(A, 4) / 24
+        + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) * Math.pow(A, 6) / 720)));
+        
+        return { easting: UTMEasting.toFixed(2), northing: UTMNorthing.toFixed(2), zone: zoneNumber };
+    }
+
     // دالة التقاط الإحداثيات
     function getCoordinates(elementId) {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
-                const lat = position.coords.latitude.toFixed(6);
-                const lon = position.coords.longitude.toFixed(6);
-                document.getElementById(elementId).innerHTML = `خط الطول (Lon): ${lon} | خط العرض (Lat): ${lat}`;
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                
+                // تحويل الإحداثيات إلى UTM
+                const utm = latLonToUTM(lat, lon);
+                
+                // عرض النتيجة بصيغة الـ UTM المعتمدة
+                document.getElementById(elementId).innerHTML = `E: ${utm.easting} | N: ${utm.northing} <br> <span style="font-size:0.8rem; color:#7f8c8d;">(Zone: ${utm.zone}N)</span>`;
             }, function(error) {
-                alert("يرجى تفعيل خدمة الموقع (GPS) في جهازك.");
+                alert("يرجى تفعيل خدمة الموقع (GPS) في جهازك بدقة عالية.");
             }, { enableHighAccuracy: true });
         } else {
             alert("المتصفح الخاص بك لا يدعم تحديد الموقع.");
@@ -164,10 +185,9 @@
 
     // دالة الحسابات الرياضية
     function calculateResults() {
-        // جلب بيانات العقد
-        const unitMultiplier = parseFloat(document.getElementById('areaUnit').value);
+        // جلب بيانات العقد وتحويل الدونم إلى متر مربع (1 دونم = 2500 م²)
         const contractAreaRaw = parseFloat(document.getElementById('contractArea').value) || 0;
-        const contractAreaSqM = contractAreaRaw * unitMultiplier;
+        const contractAreaSqM = contractAreaRaw * 2500; 
         const contractVol = parseFloat(document.getElementById('contractVol').value) || 0;
 
         // جلب القياسات الميدانية
