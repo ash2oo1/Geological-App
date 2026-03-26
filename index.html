@@ -53,8 +53,8 @@
         <div class="section-title">بيانات العقد الرسمية</div>
         <div class="form-row">
             <div class="form-group">
-                <label>المساحة (المتعاقد عليها) بالدونم:</label>
-                <input type="number" id="contractArea" placeholder="مثلاً: 3 أو 7">
+                <label>المساحة (المتعاقد عليها) بالمتر المربع:</label>
+                <input type="number" id="contractArea" placeholder="مثلاً: 3750 أو 7500">
             </div>
             <div class="form-group">
                 <label>الكمية (المتعاقد عليها) بالمتر المكعب:</label>
@@ -213,10 +213,10 @@
         // حساب المساحة الكلية من الـ GPS
         let totalGpsArea = calculateGpsArea();
         
-        // إذا لم يتم التقاط النقاط، نعتمد مساحة العقد كبديل افتراضي لتجنب توقف الحسابات
+        // تعديل: إذا لم يتم التقاط النقاط، نأخذ الرقم مباشرة بالمتر المربع دون ضربه في 2500
         if (totalGpsArea === 0) {
-            const contractAreaRaw = parseFloat(document.getElementById('contractArea').value) || 0;
-            totalGpsArea = contractAreaRaw * 2500;
+            const contractAreaSqM = parseFloat(document.getElementById('contractArea').value) || 0;
+            totalGpsArea = contractAreaSqM;
         }
 
         const length = parseFloat(document.getElementById('fieldLength').value) || 0;
@@ -259,14 +259,12 @@
         const drawW = canvas.width - (margin * 2);
         const drawH = canvas.height - (margin * 2);
 
-        // حساب المقياس (Scale) بناءً على الطول والعرض المستثمر لتقدير أبعاد المقلع الكلي
-        // بافتراض أن المساحة الكلية هي مستطيل أكبر يحتوي المستثمر
+        // حساب المقياس (Scale) بناءً على الطول والعرض المستثمر
         const totalEstimatedWidth = invWidth > 0 ? invWidth / (Math.sqrt(invPct / 100)) : 100;
         const totalEstimatedLength = invLength > 0 ? invLength / (Math.sqrt(invPct / 100)) : 100;
 
         const maxDim = Math.max(totalEstimatedWidth, totalEstimatedLength);
         
-        // تحديد فترات التدريج (Tick intervals) بناءً على الحجم الكلي
         let tickInterval = 10;
         if (maxDim > 200) tickInterval = 50;
         if (maxDim > 500) tickInterval = 100;
@@ -275,10 +273,8 @@
         ctx.beginPath();
         ctx.strokeStyle = '#333';
         ctx.lineWidth = 2;
-        // محور Y (الطول)
         ctx.moveTo(margin, margin);
         ctx.lineTo(margin, margin + drawH);
-        // محور X (العرض)
         ctx.lineTo(margin + drawW, margin + drawH);
         ctx.stroke();
 
@@ -303,7 +299,7 @@
         }
 
         // رسم منطقة المقلع الكلية
-        ctx.fillStyle = '#eaf2f8'; // أزرق فاتح جداً
+        ctx.fillStyle = '#eaf2f8'; 
         ctx.fillRect(margin, margin, drawW, drawH);
         ctx.strokeStyle = '#2980b9';
         ctx.lineWidth = 2;
@@ -314,16 +310,14 @@
             const scaledInvW = (invWidth / totalEstimatedWidth) * drawW;
             const scaledInvH = (invLength / totalEstimatedLength) * drawH;
             
-            // رسم المنطقة المستثمرة في الزاوية السفلية اليسرى كمثال
             const startX = margin;
             const startY = margin + drawH - scaledInvH;
 
-            ctx.fillStyle = 'rgba(192, 57, 43, 0.6)'; // أحمر شفاف
+            ctx.fillStyle = 'rgba(192, 57, 43, 0.6)'; 
             ctx.fillRect(startX, startY, scaledInvW, scaledInvH);
             ctx.strokeStyle = '#c0392b';
             ctx.strokeRect(startX, startY, scaledInvW, scaledInvH);
 
-            // نصوص المنطقة المستثمرة
             ctx.fillStyle = '#fff';
             ctx.textAlign = 'center';
             ctx.font = 'bold 14px Arial';
@@ -332,7 +326,6 @@
             }
         }
 
-        // المسميات الرئيسية للمحاور
         ctx.fillStyle = '#000';
         ctx.font = 'bold 16px Arial';
         ctx.textAlign = 'center';
@@ -344,7 +337,6 @@
         ctx.fillText('محور الطول (متر)', 0, 0);
         ctx.restore();
 
-        // العنوان
         ctx.font = 'bold 18px Arial';
         ctx.textAlign = 'right';
         ctx.fillText('المرتسم المساحي التوضيحي (Scale Plan)', canvas.width - 20, 30);
