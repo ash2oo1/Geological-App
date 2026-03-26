@@ -47,7 +47,7 @@
 <div class="container">
     <div class="header">
         <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
-        <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
+        <h2>بإشراف الجيولوجي علي شندل فلاح</h2>
     </div>
 
     <div class="section">
@@ -108,22 +108,12 @@
         <div class="section-title">تخصيص ألوان المرتسم المساحي</div>
         <div class="form-row">
             <div class="form-group">
-                <label>لون حدود المقلع (المتبقي):</label>
-                <input type="color" id="colorTotalBorder" value="#2980b9">
+                <label>لون المساحة المستثمرة:</label>
+                <input type="color" id="colorInvFill" value="#cceeff">
             </div>
             <div class="form-group">
-                <label>لون تعبئة المقلع (المتبقي):</label>
-                <input type="color" id="colorTotalFill" value="#eaf2f8">
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>لون حدود المستثمر:</label>
-                <input type="color" id="colorInvBorder" value="#c0392b">
-            </div>
-            <div class="form-group">
-                <label>لون تعبئة المستثمر (أحمر):</label>
-                <input type="color" id="colorInvFill" value="#c0392b">
+                <label>لون المساحة المتبقية:</label>
+                <input type="color" id="colorRemFill" value="#115577">
             </div>
         </div>
     </div>
@@ -156,11 +146,11 @@
         
         <div id="percentageNote" class="percentage-note"></div>
         
-        <canvas id="geoCanvas" width="800" height="700"></canvas>
+        <canvas id="geoCanvas" width="850" height="500"></canvas>
     </div>
 
     <div class="footer">
-        جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي &copy; 2026
+        جميع الحقوق محفوظة لدى الجيولوجي علي شندل فلاح &copy; 2026
     </div>
 </div>
 
@@ -199,7 +189,6 @@
         const width = parseFloat(document.getElementById('fieldWidth').value) || 0;
         const depth = parseFloat(document.getElementById('fieldDepth').value) || 0;
 
-        // الحسابات الصارمة
         const investedArea = length * width;
         const remainingArea = contractArea - investedArea;
         const extractedVol = investedArea * depth;
@@ -211,19 +200,9 @@
             remainingPercentage = 100 - investedPercentage;
         }
 
-        // جلب الألوان المختارة من الواجهة
-        const colorTBorder = document.getElementById('colorTotalBorder').value;
-        const colorTFill = document.getElementById('colorTotalFill').value;
-        const colorIBorder = document.getElementById('colorInvBorder').value;
-        const colorIFillHex = document.getElementById('colorInvFill').value;
-        
-        // تحويل اللون السداسي (Hex) إلى RGBA لإضافة شفافية للمستثمر
-        const r = parseInt(colorIFillHex.slice(1, 3), 16);
-        const g = parseInt(colorIFillHex.slice(3, 5), 16);
-        const b = parseInt(colorIFillHex.slice(5, 7), 16);
-        const colorIFill = `rgba(${r}, ${g}, ${b}, 0.7)`; // شفافية 70%
+        const colorInv = document.getElementById('colorInvFill').value;
+        const colorRem = document.getElementById('colorRemFill').value;
 
-        // عرض النتائج
         document.getElementById('resExtractedVol').innerText = extractedVol.toLocaleString('en-US');
         document.getElementById('resRemainingVol').innerText = remainingVol.toLocaleString('en-US');
         document.getElementById('resInvestedArea').innerText = investedArea.toLocaleString('en-US');
@@ -234,166 +213,129 @@
 
         document.getElementById('resultsSection').style.display = 'block';
 
-        // رسم المرتسم بالسكيل الجديد والمحاور المعكوسة
-        drawScaledChart(length, width, contractArea, investedPercentage, colorTBorder, colorTFill, colorIBorder, colorIFill);
+        drawSideBySideChart(width, contractArea, investedPercentage, remainingPercentage, colorInv, colorRem);
     }
 
-    function drawScaledChart(invLength, invWidth, totalArea, invPct, colTBorder, colTFill, colIBorder, colIFill) {
+    function drawSideBySideChart(fieldWidth, totalArea, invPct, remPct, colInv, colRem) {
         const canvas = document.getElementById('geoCanvas');
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const margin = 80;
-        // تقليل منطقة الرسم لإضافة سكيل بياني في الأسفل
+        const margin = 70;
         const drawW = canvas.width - (margin * 2);
-        const drawH = (canvas.height - (margin * 2)) - 80; 
+        const drawH = canvas.height - (margin * 2) - 40; 
 
-        // 1. عكس المحاور: الطول على X والعرض على Y لغرض تقدير المقياس
-        // بافتراض أن المساحة الكلية هي مستطيل متناسب يحتوي المساحة المستثمرة
-        let totalDimX = invLength > 0 ? invLength / Math.sqrt(invPct / 100) : 100; // الطول الكلي المقدر
-        let totalDimY = invWidth > 0 ? invWidth / Math.sqrt(invPct / 100) : 100;   // العرض الكلي المقدر
-        
-        // إذا لم يكن هناك استثمار بعد، نعتبر المقلع مربعاً
-        if (totalArea > 0 && invLength === 0) { totalDimX = Math.sqrt(totalArea); totalDimY = Math.sqrt(totalArea); }
+        // حساب الأبعاد الكلية (بافتراض أن المستثمر أخذ العرض بالكامل)
+        let totalW = fieldWidth > 0 ? fieldWidth : 100; // محور Y (العرض)
+        let totalL = totalArea / totalW; // محور X (الطول الكلي للمقلع)
+        if (totalArea === 0) totalL = 100;
 
-        const maxDim = Math.max(totalDimX, totalDimY);
-        
-        let tickInterval = 10;
-        if (maxDim > 100) tickInterval = 20;
-        if (maxDim > 250) tickInterval = 50;
-        if (maxDim > 500) tickInterval = 100;
-
-        // 2. رسم محاور القياس X و Y بالتدريجات بالأمتار
+        // رسم محاور القياس مع شبكة خفيفة
         ctx.beginPath();
         ctx.strokeStyle = '#333';
         ctx.lineWidth = 2;
-        // محور Y (العرض)
         ctx.moveTo(margin, margin);
         ctx.lineTo(margin, margin + drawH);
-        // محور X (الطول)
         ctx.lineTo(margin + drawW, margin + drawH);
         ctx.stroke();
 
         ctx.fillStyle = '#000';
-        ctx.font = '12px Arial';
+        ctx.font = '14px Arial';
         ctx.textAlign = 'center';
 
-        // تدريجات محور X الأفقي (الطول) - [عكس المحاور كما طلبت]
-        for (let i = 0; i <= totalDimX; i += tickInterval) {
-            let xPos = margin + (i / totalDimX) * drawW;
+        // تدريجات الطول (X)
+        let tickIntX = totalL > 100 ? 50 : 10;
+        for (let i = 0; i <= totalL; i += tickIntX) {
+            let xPos = margin + (i / totalL) * drawW;
             ctx.beginPath(); ctx.moveTo(xPos, margin + drawH); ctx.lineTo(xPos, margin + drawH + 10); ctx.stroke();
+            
+            // خطوط الشبكة
+            ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(xPos, margin); ctx.lineTo(xPos, margin + drawH); ctx.stroke(); ctx.restore();
+            
             ctx.fillText(i.toFixed(0), xPos, margin + drawH + 25);
         }
 
-        // تدريجات محور Y العمودي (العرض) - [عكس المحاور كما طلبت]
+        // تدريجات العرض (Y)
         ctx.textAlign = 'right';
         ctx.textBaseline = 'middle';
-        for (let i = 0; i <= totalDimY; i += tickInterval) {
-            let yPos = margin + drawH - (i / totalDimY) * drawH;
-            ctx.beginPath(); ctx.moveTo(margin, yPos); ctx.lineTo(margin - 10, yPos); ctx.stroke();
+        let tickIntY = totalW > 100 ? 50 : 10;
+        for (let i = 0; i <= totalW; i += tickIntY) {
+            let yPos = margin + drawH - (i / totalW) * drawH;
+            ctx.beginPath(); ctx.moveTo(margin - 10, yPos); ctx.lineTo(margin, yPos); ctx.stroke();
+            
+            // خطوط الشبكة
+            ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(margin, yPos); ctx.lineTo(margin + drawW, yPos); ctx.stroke(); ctx.restore();
+            
             ctx.fillText(i.toFixed(0), margin - 15, yPos);
         }
 
-        // 3. رسم منطقة المقلع الكلية (المساحة المتبقية) بالألوان المختارة
-        ctx.fillStyle = colTFill; 
-        ctx.fillRect(margin, margin, drawW, drawH);
-        ctx.strokeStyle = colTBorder;
-        ctx.lineWidth = 2;
-        ctx.strokeRect(margin, margin, drawW, drawH);
+        // حساب عرض المستطيلات بالبكسل بناءً على النسبة
+        let invPixelW = drawW * (invPct / 100);
+        let remPixelW = drawW * (remPct / 100);
 
-        // 4. رسم المنطقة المستثمرة (الأحمر) بالأطوال الميدانية الحقيقية والأحرف A B C D
-        if (invLength > 0 && invWidth > 0) {
-            // الحجم المرسوم بناءً على سكيل الطول والعرض المعكوس
-            const scaledInvW = (invLength / totalDimX) * drawW; // الطول الميداني على محور X
-            const scaledInvH = (invWidth / totalDimY) * drawH;   // العرض الميداني على محور Y
-            
-            // رسمها من نقطة الأصل (أسفل اليسار - 0,0 الميداني)
-            const startX = margin;
-            const startY = margin + drawH - scaledInvH;
+        // 1. رسم المساحة المستثمرة (في الجهة اليسرى)
+        if (invPct > 0) {
+            ctx.fillStyle = colInv; 
+            ctx.fillRect(margin, margin, invPixelW, drawH);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(margin, margin, invPixelW, drawH);
 
-            // تعبئة وحدود المستثمر بالألوان المختارة
-            ctx.fillStyle = colIFill; 
-            ctx.fillRect(startX, startY, scaledInvW, scaledInvH);
-            ctx.strokeStyle = colIBorder;
-            ctx.strokeRect(startX, startY, scaledInvW, scaledInvH);
-
-            // نصوص المنطقة المستثمرة (مثلاً 70%)
-            ctx.fillStyle = '#fff';
+            // نص المساحة المستثمرة (أسود للتباين مع الأزرق الفاتح)
+            ctx.fillStyle = '#000';
             ctx.textAlign = 'center';
-            ctx.font = 'bold 16px Arial';
-            if (scaledInvW > 80 && scaledInvH > 50) {
-                ctx.fillText(`مستثمر ${invPct.toFixed(0)}%`, startX + scaledInvW/2, startY + scaledInvH/2);
+            ctx.font = 'bold 18px Arial';
+            if (invPixelW > 100) {
+                ctx.fillText(`المساحة المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 15);
+                ctx.fillText(`(${invPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 15);
             }
-
-            // --- إضافة الأحرف الإنجليزية الكبيرة في الأركان (A, B, C, D) ---
-            ctx.fillStyle = '#000'; // أو استخدام لون حدود المستثمر؟ سأستخدم الأسود للوضوح
-            ctx.font = 'bold 18px Tahoma, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-
-            // الركن A (أعلى اليسار - بالنسبة للمضلع الأحمر)
-            ctx.fillText('A', startX + 15, startY + 15);
-            // الركن B (أعلى اليمين - بالنسبة للمضلع الأحمر)
-            ctx.fillText('B', startX + scaledInvW - 15, startY + 15);
-            // الركن C (أسفل اليمين - بالنسبة للمضلع الأحمر)
-            ctx.fillText('C', startX + scaledInvW - 15, startY + scaledInvH - 15);
-            // الركن D (أسفل اليسار - بالنسبة للمضلع الأحمر، وهو نقطة الأصل 0,0)
-            ctx.fillText('D', startX + 15, startY + scaledInvH - 15);
         }
 
-        // 5. مسميات المحاور والسكيل البياني
+        // 2. رسم المساحة المتبقية (في الجهة اليمنى)
+        if (remPct > 0) {
+            ctx.fillStyle = colRem; 
+            ctx.fillRect(margin + invPixelW, margin, remPixelW, drawH);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(margin + invPixelW, margin, remPixelW, drawH);
+
+            // نص المساحة المتبقية (أبيض للتباين مع الأزرق الداكن)
+            ctx.fillStyle = '#fff';
+            ctx.textAlign = 'center';
+            ctx.font = 'bold 18px Arial';
+            if (remPixelW > 100) {
+                ctx.fillText(`المساحة المتبقية`, margin + invPixelW + remPixelW/2, margin + drawH/2 - 15);
+                ctx.fillText(`(${remPct.toFixed(0)}%)`, margin + invPixelW + remPixelW/2, margin + drawH/2 + 15);
+            }
+        }
+
+        // 3. وضع الأحرف (A, B, C, D) على زوايا المقلع الكلي
         ctx.fillStyle = '#000';
-        ctx.font = 'bold 16px Arial';
+        ctx.font = 'bold 22px "Times New Roman", serif';
         ctx.textAlign = 'center';
-        // مسمى محور X (عكس المحاور)
-        ctx.fillText('محور الطول الميداني - L (متر)', margin + drawW/2, margin + drawH + 55);
+        ctx.textBaseline = 'middle';
+        ctx.fillText('A', margin - 20, margin - 15); // أعلى اليسار
+        ctx.fillText('B', margin + drawW + 20, margin - 15); // أعلى اليمين
+        ctx.fillText('C', margin + drawW + 20, margin + drawH + 20); // أسفل اليمين
+        ctx.fillText('D', margin - 20, margin + drawH + 20); // أسفل اليسار
+
+        // 4. مسميات المحاور والعنوان
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 18px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('الطول (m)', margin + drawW/2, margin + drawH + 55);
         
         ctx.save();
-        ctx.translate(margin - 55, margin + drawH/2);
+        ctx.translate(margin - 50, margin + drawH/2);
         ctx.rotate(-Math.PI/2);
-        // مسمى محور Y (عكس المحاور)
-        ctx.fillText('محور العرض الميداني - W (متر)', 0, 0);
+        ctx.fillText('العرض (m)', 0, 0);
         ctx.restore();
 
-        // العنوان
-        ctx.font = 'bold 18px Arial';
+        ctx.font = 'bold 20px Arial';
         ctx.textAlign = 'right';
-        ctx.fillText('المرتسم المساحي التوضيحي المطور (Scale Plan)', canvas.width - 20, 30);
-
-        // --- إضافة مقياس رسم بياني أسفل المرتسم (Graphical Scale Bar) ---
-        let scaleUnit = 10;
-        if (maxDim > 50) scaleUnit = 20;
-        if (maxDim > 100) scaleUnit = 50;
-        if (maxDim > 250) scaleUnit = 100;
-
-        // حساب عرض شريط المقياس على الخريطة بالأمتار
-        const scaleBarPixels = (scaleUnit / totalDimX) * drawW; // سكيل الطول على محور X
-        const scaleBarY = canvas.height - 40; // الموضع في الأسفل
-
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        // علامة الـ 0
-        ctx.moveTo(margin, scaleBarY - 5);
-        ctx.lineTo(margin, scaleBarY + 5);
-        // الخط الأفقي
-        ctx.moveTo(margin, scaleBarY);
-        ctx.lineTo(margin + scaleBarPixels, scaleBarY);
-        // علامة وحدة المقياس (مثلاً 50م)
-        ctx.moveTo(margin + scaleBarPixels, scaleBarY - 5);
-        ctx.lineTo(margin + scaleBarPixels, scaleBarY + 5);
-        ctx.stroke();
-
-        // نصوص مقياس الرسم
-        ctx.fillStyle = '#000';
-        ctx.font = 'bold 14px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-        ctx.fillText('0 م', margin, scaleBarY + 10);
-        ctx.fillText(`${scaleUnit} م`, margin + scaleBarPixels, scaleBarY + 10);
-        
-        ctx.textAlign = 'left';
-        ctx.fillText('مقياس رسم تخطيطي', margin + scaleBarPixels + 20, scaleBarY - 5);
+        ctx.fillText('• المرتسم الخاص بالمساحات المستثمرة والمتبقية (Scale Plan)', canvas.width - 20, 30);
     }
 </script>
 
