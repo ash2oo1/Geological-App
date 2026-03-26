@@ -64,7 +64,7 @@
     </div>
 
     <div class="section">
-        <div class="section-title">إحداثيات المقلع (نظام UTM)</div>
+        <div class="section-title">إحداثيات المقلع (نظام UTM) لحساب المساحة الكلية</div>
         <div class="gps-grid">
             <div class="form-group">
                 <button class="gps-btn" onclick="getCoordinates('point1', 'p1')">التقاط إحداثيات الركن الأول (A)</button>
@@ -86,19 +86,19 @@
     </div>
 
     <div class="section">
-        <div class="section-title">القياسات الميدانية للمنطقة المستثمرة (بالفيتا)</div>
+        <div class="section-title">القياسات الميدانية للمنطقة المستثمرة</div>
         <div class="form-row">
             <div class="form-group">
-                <label>الطول (متر):</label>
-                <input type="number" id="fieldLength" placeholder="أدخل الطول المستثمر">
+                <label>الطول الميداني (متر):</label>
+                <input type="number" id="fieldLength" placeholder="أدخل الطول">
             </div>
             <div class="form-group">
-                <label>العرض (متر):</label>
-                <input type="number" id="fieldWidth" placeholder="أدخل العرض المستثمر">
+                <label>العرض الميداني (متر):</label>
+                <input type="number" id="fieldWidth" placeholder="أدخل العرض">
             </div>
             <div class="form-group">
-                <label>العمق (متر):</label>
-                <input type="number" id="fieldDepth" placeholder="أدخل أقصى عمق للاستثمار">
+                <label>أقصى عمق للاستثمار (متر):</label>
+                <input type="number" id="fieldDepth" placeholder="أدخل العمق">
             </div>
         </div>
     </div>
@@ -108,12 +108,8 @@
     <div id="resultsSection" class="section">
         <div class="section-title" style="border-bottom-color: #27ae60; color: #27ae60;">النتائج النهائية للتقرير</div>
         <div class="result-item">
-            <span>الكميات المستخرجة لغاية يوم الزيارة (م³):</span>
-            <span class="result-value" id="resExtractedVol">0</span>
-        </div>
-        <div class="result-item">
-            <span>الكميات المتبقية (م³):</span>
-            <span class="result-value" id="resRemainingVol">0</span>
+            <span>المساحة الكلية المحسوبة من الـ GPS (م²):</span>
+            <span class="result-value" id="resGpsArea">0</span>
         </div>
         <div class="result-item">
             <span>المساحة المستثمرة (م²):</span>
@@ -124,13 +120,21 @@
             <span class="result-value" id="resRemainingArea">0</span>
         </div>
         <div class="result-item">
+            <span>الكميات المستخرجة لغاية يوم الزيارة (م³):</span>
+            <span class="result-value" id="resExtractedVol">0</span>
+        </div>
+        <div class="result-item">
+            <span>الكميات المتبقية من العقد (م³):</span>
+            <span class="result-value" id="resRemainingVol">0</span>
+        </div>
+        <div class="result-item">
             <span>أقصى عمق للاستثمار (م):</span>
             <span class="result-value" id="resMaxDepth">0</span>
         </div>
         
         <div id="percentageNote" class="percentage-note"></div>
         
-        <canvas id="geoCanvas" width="800" height="450"></canvas>
+        <canvas id="geoCanvas" width="800" height="600"></canvas>
     </div>
 
     <div class="footer">
@@ -139,10 +143,9 @@
 </div>
 
 <script>
-    // تخزين الإحداثيات لرسمها على المرتسم
     let utmPoints = { p1: null, p2: null, p3: null, p4: null };
 
-    // خوارزمية التحويل من WGS84 إلى UTM
+    // التحويل من WGS84 إلى UTM
     function latLonToUTM(lat, lon) {
         const a = 6378137.0; 
         const eccSquared = 0.00669438; 
@@ -171,7 +174,7 @@
         let UTMNorthing = (k0 * (M + N * Math.tan(latRad) * (Math.pow(A, 2) / 2 + (5 - T + 9 * C + 4 * C * C) * Math.pow(A, 4) / 24
         + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) * Math.pow(A, 6) / 720)));
         
-        return { easting: UTMEasting.toFixed(2), northing: UTMNorthing.toFixed(2), zone: zoneNumber };
+        return { easting: parseFloat(UTMEasting.toFixed(2)), northing: parseFloat(UTMNorthing.toFixed(2)), zone: zoneNumber };
     }
 
     function getCoordinates(elementId, pointKey) {
@@ -191,136 +194,160 @@
         }
     }
 
+    // حساب مساحة المضلع من الإحداثيات (Shoelace Formula)
+    function calculateGpsArea() {
+        if (!utmPoints.p1 || !utmPoints.p2 || !utmPoints.p3 || !utmPoints.p4) return 0;
+        let pts = [utmPoints.p1, utmPoints.p2, utmPoints.p3, utmPoints.p4];
+        let area = 0;
+        for (let i = 0; i < 4; i++) {
+            let j = (i + 1) % 4;
+            area += pts[i].easting * pts[j].northing;
+            area -= pts[j].easting * pts[i].northing;
+        }
+        return Math.abs(area) / 2;
+    }
+
     function calculateResults() {
-        const contractAreaRaw = parseFloat(document.getElementById('contractArea').value) || 0;
-        const contractAreaSqM = contractAreaRaw * 2500; 
         const contractVol = parseFloat(document.getElementById('contractVol').value) || 0;
+        
+        // حساب المساحة الكلية من الـ GPS
+        let totalGpsArea = calculateGpsArea();
+        
+        // إذا لم يتم التقاط النقاط، نعتمد مساحة العقد كبديل افتراضي لتجنب توقف الحسابات
+        if (totalGpsArea === 0) {
+            const contractAreaRaw = parseFloat(document.getElementById('contractArea').value) || 0;
+            totalGpsArea = contractAreaRaw * 2500;
+        }
 
         const length = parseFloat(document.getElementById('fieldLength').value) || 0;
         const width = parseFloat(document.getElementById('fieldWidth').value) || 0;
         const depth = parseFloat(document.getElementById('fieldDepth').value) || 0;
 
         const investedArea = length * width;
-        const remainingArea = contractAreaSqM - investedArea;
+        const remainingArea = totalGpsArea - investedArea;
         const extractedVol = investedArea * depth;
         const remainingVol = contractVol - extractedVol;
         
         let remainingPercentage = 0;
-        if(contractAreaSqM > 0) {
-            remainingPercentage = (remainingArea * 100) / contractAreaSqM;
+        let investedPercentage = 0;
+        if(totalGpsArea > 0) {
+            investedPercentage = (investedArea * 100) / totalGpsArea;
+            remainingPercentage = 100 - investedPercentage;
         }
-        let investedPercentage = 100 - remainingPercentage;
 
-        document.getElementById('resExtractedVol').innerText = extractedVol.toLocaleString('en-US');
-        document.getElementById('resRemainingVol').innerText = remainingVol.toLocaleString('en-US');
-        document.getElementById('resInvestedArea').innerText = investedArea.toLocaleString('en-US');
-        document.getElementById('resRemainingArea').innerText = remainingArea.toLocaleString('en-US');
+        document.getElementById('resGpsArea').innerText = totalGpsArea.toLocaleString('en-US', {maximumFractionDigits: 2});
+        document.getElementById('resExtractedVol').innerText = extractedVol.toLocaleString('en-US', {maximumFractionDigits: 2});
+        document.getElementById('resRemainingVol').innerText = remainingVol.toLocaleString('en-US', {maximumFractionDigits: 2});
+        document.getElementById('resInvestedArea').innerText = investedArea.toLocaleString('en-US', {maximumFractionDigits: 2});
+        document.getElementById('resRemainingArea').innerText = remainingArea.toLocaleString('en-US', {maximumFractionDigits: 2});
         document.getElementById('resMaxDepth').innerText = depth.toLocaleString('en-US');
 
-        // جملة النسبة المئوية حسب النقابة
-        document.getElementById('percentageNote').innerText = `من خلال ما موجود من المعلومات أعلاه يمكن حساب النسبة المئوية للمساحة المتبقية وحسب المعادلة التالية (المساحة المتبقية مضروبة في 100 ومقسومة على المساحة المتعاقد عليها فتكون النسبة المئوية ${remainingPercentage.toFixed(0)}%) .`;
+        // الجملة الرسمية للنسبة المئوية
+        document.getElementById('percentageNote').innerText = `المساحة المستثمرة تعادل (${investedPercentage.toFixed(1)}%) والمتبقية تعادل (${remainingPercentage.toFixed(1)}%) من إجمالي المساحة.`;
 
         document.getElementById('resultsSection').style.display = 'block';
 
-        drawChart(investedPercentage, remainingPercentage);
+        drawScaledChart(length, width, investedPercentage, remainingPercentage);
     }
 
-    function drawChart(invPct, remPct) {
+    function drawScaledChart(invLength, invWidth, invPct, remPct) {
         const canvas = document.getElementById('geoCanvas');
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const margin = 70;
+        const margin = 80;
         const drawW = canvas.width - (margin * 2);
         const drawH = canvas.height - (margin * 2);
 
-        // رسم شبكة المربعات (Grid)
-        ctx.strokeStyle = '#e0e0e0';
-        ctx.lineWidth = 1;
-        for(let i=0; i<=drawW; i+=20) {
-            ctx.beginPath(); ctx.moveTo(margin+i, margin); ctx.lineTo(margin+i, margin+drawH); ctx.stroke();
-        }
-        for(let i=0; i<=drawH; i+=20) {
-            ctx.beginPath(); ctx.moveTo(margin, margin+i); ctx.lineTo(margin+drawW, margin+i); ctx.stroke();
-        }
+        // حساب المقياس (Scale) بناءً على الطول والعرض المستثمر لتقدير أبعاد المقلع الكلي
+        // بافتراض أن المساحة الكلية هي مستطيل أكبر يحتوي المستثمر
+        const totalEstimatedWidth = invWidth > 0 ? invWidth / (Math.sqrt(invPct / 100)) : 100;
+        const totalEstimatedLength = invLength > 0 ? invLength / (Math.sqrt(invPct / 100)) : 100;
 
-        const invW = drawW * (invPct / 100);
-        const remW = drawW * (remPct / 100);
-
-        // المساحة المستثمرة (أزرق فاتح)
-        ctx.fillStyle = '#bce8f1';
-        ctx.fillRect(margin, margin, invW, drawH);
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(margin, margin, invW, drawH);
-
-        // المساحة المتبقية (أزرق غامق)
-        ctx.fillStyle = '#115577';
-        ctx.fillRect(margin + invW, margin, remW, drawH);
-        ctx.strokeRect(margin + invW, margin, remW, drawH);
+        const maxDim = Math.max(totalEstimatedWidth, totalEstimatedLength);
         
+        // تحديد فترات التدريج (Tick intervals) بناءً على الحجم الكلي
+        let tickInterval = 10;
+        if (maxDim > 200) tickInterval = 50;
+        if (maxDim > 500) tickInterval = 100;
+
+        // رسم محاور القياس (X و Y)
+        ctx.beginPath();
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 2;
+        // محور Y (الطول)
+        ctx.moveTo(margin, margin);
+        ctx.lineTo(margin, margin + drawH);
+        // محور X (العرض)
+        ctx.lineTo(margin + drawW, margin + drawH);
+        ctx.stroke();
+
+        ctx.fillStyle = '#000';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
+
+        // تدريجات محور X (العرض)
+        for (let i = 0; i <= totalEstimatedWidth; i += tickInterval) {
+            let xPos = margin + (i / totalEstimatedWidth) * drawW;
+            ctx.beginPath(); ctx.moveTo(xPos, margin + drawH); ctx.lineTo(xPos, margin + drawH + 10); ctx.stroke();
+            ctx.fillText(i.toFixed(0), xPos, margin + drawH + 25);
+        }
+
+        // تدريجات محور Y (الطول)
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        for (let i = 0; i <= totalEstimatedLength; i += tickInterval) {
+            let yPos = margin + drawH - (i / totalEstimatedLength) * drawH;
+            ctx.beginPath(); ctx.moveTo(margin, yPos); ctx.lineTo(margin - 10, yPos); ctx.stroke();
+            ctx.fillText(i.toFixed(0), margin - 15, yPos);
+        }
+
+        // رسم منطقة المقلع الكلية
+        ctx.fillStyle = '#eaf2f8'; // أزرق فاتح جداً
+        ctx.fillRect(margin, margin, drawW, drawH);
+        ctx.strokeStyle = '#2980b9';
+        ctx.lineWidth = 2;
         ctx.strokeRect(margin, margin, drawW, drawH);
 
-        // النصوص داخل المربعات
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.font = 'bold 16px Arial';
-        
-        if (invW > 60) {
-            ctx.fillStyle = '#000';
-            ctx.fillText('المساحة المستثمرة', margin + invW/2, margin + drawH/2 - 15);
-            ctx.fillText(`(${invPct.toFixed(0)}%)`, margin + invW/2, margin + drawH/2 + 10);
-        }
-        if (remW > 60) {
+        // رسم المنطقة المستثمرة بناءً على النسب
+        if (invPct > 0) {
+            const scaledInvW = (invWidth / totalEstimatedWidth) * drawW;
+            const scaledInvH = (invLength / totalEstimatedLength) * drawH;
+            
+            // رسم المنطقة المستثمرة في الزاوية السفلية اليسرى كمثال
+            const startX = margin;
+            const startY = margin + drawH - scaledInvH;
+
+            ctx.fillStyle = 'rgba(192, 57, 43, 0.6)'; // أحمر شفاف
+            ctx.fillRect(startX, startY, scaledInvW, scaledInvH);
+            ctx.strokeStyle = '#c0392b';
+            ctx.strokeRect(startX, startY, scaledInvW, scaledInvH);
+
+            // نصوص المنطقة المستثمرة
             ctx.fillStyle = '#fff';
-            ctx.fillText('المساحة المتبقية', margin + invW + remW/2, margin + drawH/2 - 15);
-            ctx.fillText(`(${remPct.toFixed(0)}%)`, margin + invW + remW/2, margin + drawH/2 + 10);
+            ctx.textAlign = 'center';
+            ctx.font = 'bold 14px Arial';
+            if (scaledInvW > 50 && scaledInvH > 30) {
+                ctx.fillText(`مستثمر ${invPct.toFixed(1)}%`, startX + scaledInvW/2, startY + scaledInvH/2);
+            }
         }
 
-        // المحاور
+        // المسميات الرئيسية للمحاور
         ctx.fillStyle = '#000';
-        ctx.font = 'bold 20px Arial';
-        ctx.fillText('الطول (m)', margin + drawW/2, margin + drawH + 45);
+        ctx.font = 'bold 16px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('محور العرض (متر)', margin + drawW/2, margin + drawH + 50);
+        
         ctx.save();
-        ctx.translate(margin - 45, margin + drawH/2);
+        ctx.translate(margin - 50, margin + drawH/2);
         ctx.rotate(-Math.PI/2);
-        ctx.fillText('العرض (m)', 0, 0);
+        ctx.fillText('محور الطول (متر)', 0, 0);
         ctx.restore();
 
         // العنوان
         ctx.font = 'bold 18px Arial';
         ctx.textAlign = 'right';
-        ctx.fillText('• المرتسم الخاص بالمساحات المستثمرة والمتبقية', canvas.width - 20, 30);
-
-        // الزوايا والإحداثيات (UTM)
-        ctx.font = 'bold 20px Arial';
-        ctx.fillStyle = '#000';
-        
-        // A
-        ctx.textAlign = 'right';
-        ctx.fillText('A', margin - 10, margin - 15);
-        if(utmPoints.p1) drawUTM(ctx, utmPoints.p1, margin - 10, margin - 35, 'right');
-
-        // B
-        ctx.textAlign = 'left';
-        ctx.fillText('B', margin + drawW + 10, margin - 15);
-        if(utmPoints.p2) drawUTM(ctx, utmPoints.p2, margin + drawW + 10, margin - 35, 'left');
-
-        // C
-        ctx.fillText('C', margin + drawW + 10, margin + drawH + 20);
-        if(utmPoints.p3) drawUTM(ctx, utmPoints.p3, margin + drawW + 10, margin + drawH + 40, 'left');
-
-        // D
-        ctx.textAlign = 'right';
-        ctx.fillText('D', margin - 10, margin + drawH + 20);
-        if(utmPoints.p4) drawUTM(ctx, utmPoints.p4, margin - 10, margin + drawH + 40, 'right');
-    }
-
-    function drawUTM(ctx, coord, x, y, align) {
-        ctx.font = 'bold 12px Arial';
-        ctx.fillStyle = '#c0392b';
-        ctx.textAlign = align;
-        ctx.fillText(`E: ${coord.easting} | N: ${coord.northing}`, x, y);
+        ctx.fillText('المرتسم المساحي التوضيحي (Scale Plan)', canvas.width - 20, 30);
     }
 </script>
 
