@@ -8,16 +8,16 @@
         :root { --primary: #1c2833; --secondary: #273746; --accent: #2980b9; --bg: #f8f9fa; }
         body { font-family: 'Arial', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: right; color: #333; line-height: 1.6; }
         
-        /* شاشة القفل عند انتهاء الصلاحية */
+        /* شاشة القفل عند انتهاء الـ 10 دقائق */
         #lockScreen {
-            display: none; /* مخفية افتراضياً */
+            display: none; 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: white; z-index: 9999; flex-direction: column;
             justify-content: center; align-items: center; text-align: center; padding: 20px;
         }
         #lockScreen h1 { color: #e74c3c; font-size: 2.5rem; margin-bottom: 10px; }
-        #lockScreen p { font-size: 1.2rem; margin-bottom: 30px; color: #ecf0f1; max-width: 600px; }
+        #lockScreen p { font-size: 1.2rem; margin-bottom: 30px; color: #ecf0f1; max-width: 600px; line-height: 1.8; }
 
         #mainContent { display: block; }
 
@@ -74,10 +74,10 @@
 <body>
 
 <div id="lockScreen">
-    <h1>⚠️ انتهت صلاحية النسخة</h1>
-    <p>عزيزي الجيولوجي، لقد انتهت فترة الصلاحية المخصصة لاستخدام هذا النظام. يرجى التواصل مع الجيولوجي علي شندل الجنابي لتجديد الاشتراك أو الحصول على نسخة فعالة جديدة.</p>
+    <h1>⚠️ انتهت الفترة التجريبية</h1>
+    <p>عزيزي الجيولوجي، لقد انتهت فترة الـ 10 دقائق المخصصة لتجربة النظام.<br>للحصول على نسختك الكاملة وغير المحدودة والتي تعمل بدون إنترنت لإنجاز تقاريرك الميدانية بدقة 100%، يرجى التواصل معنا.</p>
     <a href="https://wa.me/9647814993629" class="social-btn btn-wa" style="font-size: 1.2rem; padding: 15px 30px;">
-        💬 تجديد الاشتراك عبر الواتساب
+        💬 شراء النسخة الكاملة عبر الواتساب
     </a>
 </div>
 
@@ -204,23 +204,33 @@
 
 <script>
     // ==========================================
-    // إعدادات وقت انتهاء الصلاحية (نظام القفل)
+    // نظام القفل الموقوت (بالدقائق) للتجربة المجانية
     // ==========================================
-    // صيغة التاريخ: السنة-الشهر-اليوم T الساعة:الدقيقة:الثانية
-    // مثال: "2026-03-27T23:59:59" (ينتهي يوم 27 مارس 2026 الساعة 11:59 ليلاً)
-    const EXPIRATION_DATE = "2026-03-28T23:59:59"; 
+    const EXPIRE_MINUTES = 1; // عدد الدقائق المسموح بها قبل الإغلاق
 
-    // التحقق من الصلاحية فور فتح الصفحة
     window.onload = function() {
         checkExpiration();
+        // يفحص الوقت كل ثانية لكي يقفل النظام فوراً حتى والجيولوجي يعمل عليه
+        setInterval(checkExpiration, 1000); 
     };
 
     function checkExpiration() {
-        const now = new Date();
-        const expiration = new Date(EXPIRATION_DATE);
-        
-        if (now > expiration) {
-            // إخفاء النظام بالكامل وإظهار شاشة القفل
+        // يجلب وقت أول مرة تم فيها فتح الرابط من ذاكرة المتصفح
+        let startTime = localStorage.getItem('geo_app_start_time');
+        const now = new Date().getTime();
+
+        if (!startTime) {
+            // إذا كانت هذه أول مرة يفتح فيها الرابط، احفظ الوقت الحالي
+            startTime = now;
+            localStorage.setItem('geo_app_start_time', startTime);
+        }
+
+        // حساب الوقت المنقضي
+        const elapsed = now - parseInt(startTime);
+        const timeLimit = EXPIRE_MINUTES * 60 * 1000; // تحويل الدقائق إلى ملي ثانية
+
+        if (elapsed > timeLimit) {
+            // إخفاء النظام وإظهار شاشة القفل
             document.getElementById('mainContent').style.display = 'none';
             document.getElementById('lockScreen').style.display = 'flex';
         }
