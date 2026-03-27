@@ -19,7 +19,8 @@
         #lockScreen h1 { color: #e74c3c; font-size: 2.5rem; margin-bottom: 10px; }
         #lockScreen p { font-size: 1.2rem; margin-bottom: 30px; color: #ecf0f1; max-width: 600px; line-height: 1.8; }
 
-        #mainContent { display: block; }
+        /* تم إخفاء المحتوى الرئيسي افتراضياً لمنع ثغرة الرفريش */
+        #mainContent { display: none; }
 
         .container { background: white; max-width: 900px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
         
@@ -204,35 +205,49 @@
 
 <script>
     // ==========================================
-    // نظام القفل الموقوت (بالدقائق) للتجربة المجانية
+    // نظام القفل المنيع ضد الرفريش
     // ==========================================
-    const EXPIRE_MINUTES = 10; // عدد الدقائق المسموح بها قبل الإغلاق
+    const EXPIRE_MINUTES = 10; 
 
     window.onload = function() {
         checkExpiration();
-        // يفحص الوقت كل ثانية لكي يقفل النظام فوراً حتى والجيولوجي يعمل عليه
         setInterval(checkExpiration, 1000); 
     };
 
+    function showLockScreen() {
+        document.getElementById('mainContent').style.display = 'none';
+        document.getElementById('lockScreen').style.display = 'flex';
+    }
+
     function checkExpiration() {
-        // يجلب وقت أول مرة تم فيها فتح الرابط من ذاكرة المتصفح
+        // 1. فحص ما إذا كان النظام قد انتهت صلاحيته مسبقاً (الختم الدائم)
+        if (localStorage.getItem('geo_app_is_expired') === 'true') {
+            showLockScreen();
+            return; 
+        }
+
+        // 2. إدارة وقت البداية
         let startTime = localStorage.getItem('geo_app_start_time');
         const now = new Date().getTime();
 
         if (!startTime) {
-            // إذا كانت هذه أول مرة يفتح فيها الرابط، احفظ الوقت الحالي
             startTime = now;
             localStorage.setItem('geo_app_start_time', startTime);
         }
 
-        // حساب الوقت المنقضي
+        // 3. حساب الوقت المنقضي
         const elapsed = now - parseInt(startTime);
-        const timeLimit = EXPIRE_MINUTES * 60 * 1000; // تحويل الدقائق إلى ملي ثانية
+        const timeLimit = EXPIRE_MINUTES * 60 * 1000; 
 
         if (elapsed > timeLimit) {
-            // إخفاء النظام وإظهار شاشة القفل
-            document.getElementById('mainContent').style.display = 'none';
-            document.getElementById('lockScreen').style.display = 'flex';
+            // وضع الختم الدائم بالإغلاق
+            localStorage.setItem('geo_app_is_expired', 'true');
+            showLockScreen();
+        } else {
+            // إذا لم ينتهِ الوقت، قم بإظهار المحتوى
+            if(document.getElementById('mainContent').style.display !== 'block') {
+                document.getElementById('mainContent').style.display = 'block';
+            }
         }
     }
     // ==========================================
