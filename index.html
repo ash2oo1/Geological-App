@@ -8,17 +8,36 @@
         :root { --primary: #1c2833; --secondary: #273746; --accent: #2980b9; --bg: #f8f9fa; }
         body { font-family: 'Arial', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: right; color: #333; line-height: 1.6; }
         
+        /* واجهة القفل الرئيسية (كلمة المرور) */
         #lockScreen {
-            display: none; 
+            display: flex; /* معروضة دائماً في البداية */
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: white; z-index: 9999; flex-direction: column;
             justify-content: center; align-items: center; text-align: center; padding: 20px;
         }
-        #lockScreen h1 { color: #e74c3c; font-size: 2.5rem; margin-bottom: 10px; }
-        #lockScreen p { font-size: 1.2rem; margin-bottom: 30px; color: #ecf0f1; max-width: 600px; line-height: 1.8; }
+        #lockScreen h1 { color: #f1c40f; font-size: 2.5rem; margin-bottom: 10px; }
+        #lockScreen p { font-size: 1.2rem; margin-bottom: 25px; color: #ecf0f1; max-width: 600px; }
+        
+        /* تصميم حقل كلمة المرور */
+        .password-box {
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+            background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255,255,255,0.2);
+        }
+        .password-box input {
+            padding: 12px; font-size: 1.2rem; border-radius: 6px; border: none; 
+            text-align: center; width: 250px; outline: none;
+        }
+        .btn-unlock {
+            background: #27ae60; color: white; padding: 12px 30px; font-size: 1.2rem; 
+            border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .btn-unlock:hover { background: #219150; transform: translateY(-2px); }
+        #errorMsg { color: #ff6b6b; display: none; margin-top: 10px; font-weight: bold; }
 
-        #mainContent { display: none; } /* مخفي حتى يتأكد من الوقت */
+        /* المحتوى الرئيسي مخفي حتى يتم كتابة كلمة المرور */
+        #mainContent { display: none; }
 
         .container { background: white; max-width: 900px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
         
@@ -27,7 +46,7 @@
             color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #f1c40f; 
         }
         .header h1 { font-size: 2rem; margin: 0 0 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
-        .header h2 { color: #f1c40f; font-size: 1.3rem; margin: 0; font-weight: normal; cursor: pointer; } /* مؤشر اليد للزر السري */
+        .header h2 { color: #f1c40f; font-size: 1.3rem; margin: 0; font-weight: normal; cursor: pointer; user-select: none; }
         
         .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; }
         .social-btn {
@@ -73,17 +92,20 @@
 <body>
 
 <div id="lockScreen">
-    <h1>⚠️ انتهت الفترة التجريبية</h1>
-    <p>عزيزي الجيولوجي، لقد انتهت فترة الـ 10 دقائق المخصصة لتجربة النظام.<br>للحصول على نسختك الكاملة وغير المحدودة والتي تعمل بدون إنترنت لإنجاز تقاريرك الميدانية بدقة 100%، يرجى التواصل معنا.</p>
-    <a href="https://wa.me/9647814993629" class="social-btn btn-wa" style="font-size: 1.2rem; padding: 15px 30px;">
-        💬 شراء النسخة الكاملة عبر الواتساب
-    </a>
+    <h1>🔒 النظام مقفل</h1>
+    <p>هذا النظام محمي بكلمة مرور. يرجى إدخال رمز الدخول السري للوصول إلى واجهة المسح الميداني.</p>
+    
+    <div class="password-box">
+        <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور هنا...">
+        <button onclick="unlockSystem()" class="btn-unlock">فتح النظام</button>
+        <div id="errorMsg">❌ كلمة المرور خاطئة، حاول مجدداً.</div>
+    </div>
 </div>
 
 <div id="mainContent" class="container">
     <div class="header">
         <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
-        <h2 ondblclick="adminResetTimer()" title="انقر مرتين هنا لتصفير العداد السري">بإشراف الجيولوجي علي شندل الجنابي</h2>
+        <h2 ondblclick="lockSystem()" title="انقر مرتين هنا لإغلاق النظام">بإشراف الجيولوجي علي شندل الجنابي</h2>
         
         <div class="social-links">
             <a href="https://wa.me/9647814993629" class="social-btn btn-wa" target="_blank">
@@ -203,54 +225,43 @@
 
 <script>
     // ==========================================
-    // نظام القفل والوقت التجريبي
+    // نظام كلمة المرور والقفل اليدوي
     // ==========================================
-    const EXPIRE_MINUTES = 10; 
+    
+    // يمكنك تغيير كلمة المرور هذه إلى أي كلمة تريدها قبل إرسال الملف
+    const MASTER_PASSWORD = "ali123"; 
 
-    // دالة المدير السري (لتصفير العداد لك كصاحب النظام)
-    function adminResetTimer() {
-        localStorage.removeItem('geo_app_is_expired');
-        localStorage.removeItem('geo_app_start_time');
-        alert('تم تصفير العداد للجيولوجي علي! سيبدأ الموقع الآن كأنه يفتح لأول مرة.');
+    // دالة فتح النظام
+    function unlockSystem() {
+        const passInput = document.getElementById('adminPassword').value;
+        if (passInput === MASTER_PASSWORD) {
+            // إذا كانت كلمة المرور صحيحة، أخفِ شاشة القفل واعرض النظام
+            document.getElementById('lockScreen').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('errorMsg').style.display = 'none';
+            document.getElementById('adminPassword').value = ''; // تفريغ الحقل
+        } else {
+            // إذا كانت خاطئة، اعرض رسالة الخطأ
+            document.getElementById('errorMsg').style.display = 'block';
+        }
+    }
+
+    // دالة إغلاق النظام (الزر السري)
+    function lockSystem() {
+        // إخفاء النظام بالكامل والعودة لشاشة القفل
+        document.getElementById('mainContent').style.display = 'none';
+        document.getElementById('lockScreen').style.display = 'flex';
+        // تصفير وتحديث الصفحة لمسح أي أرقام وحسابات كانت موجودة (حماية للبيانات)
         location.reload();
     }
 
-    window.onload = function() {
-        checkExpiration();
-        setInterval(checkExpiration, 1000); 
-    };
-
-    function showLockScreen() {
-        document.getElementById('mainContent').style.display = 'none';
-        document.getElementById('lockScreen').style.display = 'flex';
-    }
-
-    function checkExpiration() {
-        if (localStorage.getItem('geo_app_is_expired') === 'true') {
-            showLockScreen();
-            return; 
+    // تفعيل ضغطة زر (Enter) لتسجيل الدخول مباشرة
+    document.getElementById("adminPassword").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            unlockSystem();
         }
-
-        let startTime = localStorage.getItem('geo_app_start_time');
-        const now = new Date().getTime();
-
-        if (!startTime) {
-            startTime = now;
-            localStorage.setItem('geo_app_start_time', startTime);
-        }
-
-        const elapsed = now - parseInt(startTime);
-        const timeLimit = EXPIRE_MINUTES * 60 * 1000; 
-
-        if (elapsed > timeLimit) {
-            localStorage.setItem('geo_app_is_expired', 'true');
-            showLockScreen();
-        } else {
-            if(document.getElementById('mainContent').style.display !== 'block') {
-                document.getElementById('mainContent').style.display = 'block';
-            }
-        }
-    }
+    });
     // ==========================================
 
     function latLonToUTM(lat, lon) {
