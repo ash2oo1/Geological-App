@@ -7,20 +7,29 @@
     <style>
         :root { --primary: #1c2833; --secondary: #273746; --accent: #2980b9; --bg: #f8f9fa; }
         body { font-family: 'Arial', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: right; color: #333; line-height: 1.6; }
+        
+        /* شاشة القفل عند انتهاء الصلاحية */
+        #lockScreen {
+            display: none; /* مخفية افتراضياً */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white; z-index: 9999; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center; padding: 20px;
+        }
+        #lockScreen h1 { color: #e74c3c; font-size: 2.5rem; margin-bottom: 10px; }
+        #lockScreen p { font-size: 1.2rem; margin-bottom: 30px; color: #ecf0f1; max-width: 600px; }
+
+        #mainContent { display: block; }
+
         .container { background: white; max-width: 900px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
         
-        /* ترويسة مطورة بجمالية عالية */
         .header { 
             background: linear-gradient(135deg, #1c2833 0%, #2980b9 100%); 
-            color: white; 
-            padding: 35px 20px; 
-            text-align: center; 
-            border-bottom: 5px solid #f1c40f; /* لمسة ذهبية */
+            color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #f1c40f; 
         }
         .header h1 { font-size: 2rem; margin: 0 0 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
         .header h2 { color: #f1c40f; font-size: 1.3rem; margin: 0; font-weight: normal; }
         
-        /* أزرار التواصل الاجتماعي */
         .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; }
         .social-btn {
             text-decoration: none; padding: 10px 20px; border-radius: 25px;
@@ -64,7 +73,15 @@
 </head>
 <body>
 
-<div class="container">
+<div id="lockScreen">
+    <h1>⚠️ انتهت صلاحية النسخة</h1>
+    <p>عزيزي الجيولوجي، لقد انتهت فترة الصلاحية المخصصة لاستخدام هذا النظام. يرجى التواصل مع الجيولوجي علي شندل الجنابي لتجديد الاشتراك أو الحصول على نسخة فعالة جديدة.</p>
+    <a href="https://wa.me/9647814993629" class="social-btn btn-wa" style="font-size: 1.2rem; padding: 15px 30px;">
+        💬 تجديد الاشتراك عبر الواتساب
+    </a>
+</div>
+
+<div id="mainContent" class="container">
     <div class="header">
         <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
         <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
@@ -186,6 +203,30 @@
 </div>
 
 <script>
+    // ==========================================
+    // إعدادات وقت انتهاء الصلاحية (نظام القفل)
+    // ==========================================
+    // صيغة التاريخ: السنة-الشهر-اليوم T الساعة:الدقيقة:الثانية
+    // مثال: "2026-03-27T23:59:59" (ينتهي يوم 27 مارس 2026 الساعة 11:59 ليلاً)
+    const EXPIRATION_DATE = "2026-03-28T23:59:59"; 
+
+    // التحقق من الصلاحية فور فتح الصفحة
+    window.onload = function() {
+        checkExpiration();
+    };
+
+    function checkExpiration() {
+        const now = new Date();
+        const expiration = new Date(EXPIRATION_DATE);
+        
+        if (now > expiration) {
+            // إخفاء النظام بالكامل وإظهار شاشة القفل
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('lockScreen').style.display = 'flex';
+        }
+    }
+    // ==========================================
+
     function latLonToUTM(lat, lon) {
         const a = 6378137.0; const eccSquared = 0.00669438; const k0 = 0.9996;
         let zoneNumber = Math.floor((lon + 180) / 6) + 1;
