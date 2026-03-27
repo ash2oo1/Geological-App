@@ -8,7 +8,6 @@
         :root { --primary: #1c2833; --secondary: #273746; --accent: #2980b9; --bg: #f8f9fa; }
         body { font-family: 'Arial', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: right; color: #333; line-height: 1.6; }
         
-        /* شاشة القفل عند انتهاء الـ 10 دقائق */
         #lockScreen {
             display: none; 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -19,8 +18,7 @@
         #lockScreen h1 { color: #e74c3c; font-size: 2.5rem; margin-bottom: 10px; }
         #lockScreen p { font-size: 1.2rem; margin-bottom: 30px; color: #ecf0f1; max-width: 600px; line-height: 1.8; }
 
-        /* تم إخفاء المحتوى الرئيسي افتراضياً لمنع ثغرة الرفريش */
-        #mainContent { display: none; }
+        #mainContent { display: none; } /* مخفي حتى يتأكد من الوقت */
 
         .container { background: white; max-width: 900px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
         
@@ -29,7 +27,7 @@
             color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #f1c40f; 
         }
         .header h1 { font-size: 2rem; margin: 0 0 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
-        .header h2 { color: #f1c40f; font-size: 1.3rem; margin: 0; font-weight: normal; }
+        .header h2 { color: #f1c40f; font-size: 1.3rem; margin: 0; font-weight: normal; cursor: pointer; } /* مؤشر اليد للزر السري */
         
         .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; }
         .social-btn {
@@ -85,7 +83,7 @@
 <div id="mainContent" class="container">
     <div class="header">
         <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
-        <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
+        <h2 ondblclick="adminResetTimer()" title="انقر مرتين هنا لتصفير العداد السري">بإشراف الجيولوجي علي شندل الجنابي</h2>
         
         <div class="social-links">
             <a href="https://wa.me/9647814993629" class="social-btn btn-wa" target="_blank">
@@ -205,9 +203,17 @@
 
 <script>
     // ==========================================
-    // نظام القفل المنيع ضد الرفريش
+    // نظام القفل والوقت التجريبي
     // ==========================================
     const EXPIRE_MINUTES = 10; 
+
+    // دالة المدير السري (لتصفير العداد لك كصاحب النظام)
+    function adminResetTimer() {
+        localStorage.removeItem('geo_app_is_expired');
+        localStorage.removeItem('geo_app_start_time');
+        alert('تم تصفير العداد للجيولوجي علي! سيبدأ الموقع الآن كأنه يفتح لأول مرة.');
+        location.reload();
+    }
 
     window.onload = function() {
         checkExpiration();
@@ -220,13 +226,11 @@
     }
 
     function checkExpiration() {
-        // 1. فحص ما إذا كان النظام قد انتهت صلاحيته مسبقاً (الختم الدائم)
         if (localStorage.getItem('geo_app_is_expired') === 'true') {
             showLockScreen();
             return; 
         }
 
-        // 2. إدارة وقت البداية
         let startTime = localStorage.getItem('geo_app_start_time');
         const now = new Date().getTime();
 
@@ -235,16 +239,13 @@
             localStorage.setItem('geo_app_start_time', startTime);
         }
 
-        // 3. حساب الوقت المنقضي
         const elapsed = now - parseInt(startTime);
         const timeLimit = EXPIRE_MINUTES * 60 * 1000; 
 
         if (elapsed > timeLimit) {
-            // وضع الختم الدائم بالإغلاق
             localStorage.setItem('geo_app_is_expired', 'true');
             showLockScreen();
         } else {
-            // إذا لم ينتهِ الوقت، قم بإظهار المحتوى
             if(document.getElementById('mainContent').style.display !== 'block') {
                 document.getElementById('mainContent').style.display = 'block';
             }
