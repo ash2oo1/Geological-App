@@ -6,7 +6,7 @@
     <title>نظام المسح الميداني الجيولوجي للمقالع</title>
     <style>
         /* --------------------------------------------------- */
-        /* إضافات شاشة الحماية (بدون المساس بتصميمك) */
+        /* شاشة الحماية */
         /* --------------------------------------------------- */
         #lockScreen {
             display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -29,25 +29,20 @@
         .btn-unlock:hover { background: #219150; }
         #errorMsg { display: none; color: #ff6b6b; margin-top: 10px; font-weight: bold; }
         
-        #mainContent { display: none; /* إخفاء المحتوى الأصلي حتى الدخول */ }
+        #mainContent { display: none; }
         /* --------------------------------------------------- */
 
         :root { --primary: #1c2833; --secondary: #273746; --accent: #2980b9; --bg: #f8f9fa; }
         body { font-family: 'Arial', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: right; color: #333; line-height: 1.6; }
         .container { background: white; max-width: 900px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
         
-        /* ترويسة مطورة بجمالية عالية */
         .header { 
             background: linear-gradient(135deg, #1c2833 0%, #2980b9 100%); 
-            color: white; 
-            padding: 35px 20px; 
-            text-align: center; 
-            border-bottom: 5px solid #f1c40f; /* لمسة ذهبية */
+            color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #f1c40f; 
         }
         .header h1 { font-size: 2rem; margin: 0 0 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
         .header h2 { color: #f1c40f; font-size: 1.3rem; margin: 0; font-weight: normal; }
         
-        /* أزرار التواصل الاجتماعي */
         .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; }
         .social-btn {
             text-decoration: none; padding: 10px 20px; border-radius: 25px;
@@ -69,6 +64,14 @@
         input:focus { border-color: var(--accent); outline: none; }
         input[type="color"] { padding: 0; height: 45px; cursor: pointer; border: 1px solid #ddd; }
         
+        /* زر التحويل الجديد */
+        .btn-convert {
+            background: #2980b9; color: white; border: none; padding: 0 20px;
+            border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem;
+            transition: background 0.3s; white-space: nowrap;
+        }
+        .btn-convert:hover { background: #1c2833; }
+
         .gps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .gps-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: 0.2s; font-weight: bold; }
         .gps-btn:hover { background: var(--primary); }
@@ -122,11 +125,18 @@
                 <div class="section-title">بيانات العقد الرسمية</div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>المساحة (المتعاقد عليها) بالمتر المربع:</label>
-                        <input type="number" id="contractArea" placeholder="مثلاً: 3750 أو 7500">
+                        <label>المساحة بالدونم:</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="areaInDunam" placeholder="مثلاً: 3 أو 1.5">
+                            <button type="button" class="btn-convert" onclick="convertDunam()">تحويل</button>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label>الكمية (المتعاقد عليها) بالمتر المكعب:</label>
+                        <label>المساحة المتعاقد عليها (m²):</label>
+                        <input type="number" id="contractArea" placeholder="الناتج (مثلاً 7500)">
+                    </div>
+                    <div class="form-group">
+                        <label>الكمية المتعاقد عليها (m³):</label>
                         <input type="number" id="contractVol" placeholder="مثلاً: 37500 أو 75000">
                     </div>
                 </div>
@@ -219,14 +229,23 @@
         </div>
 
         <div class="footer">
-            جميع الحقوق محفوظة لدى الجيولوجي علي شندل فلاح &copy; 2026
+            جميع الحقوق محفوظة لدى الجيولوجي علي شندل فلاح © 2026
         </div>
     </div>
 </div>
 
 <script>
     // -----------------------------------------------------------------
-    // نظام الأمان والرادار المضاف حديثاً (لا يؤثر على دوال موقعك الأصلية)
+    // دالة تحويل الدونم إلى متر مربع (دونم عراقي = 2500 م²)
+    // -----------------------------------------------------------------
+    function convertDunam() {
+        const dunam = parseFloat(document.getElementById('areaInDunam').value) || 0;
+        const sqm = dunam * 2500;
+        document.getElementById('contractArea').value = sqm > 0 ? sqm : '';
+    }
+
+    // -----------------------------------------------------------------
+    // نظام الأمان والرادار 
     // -----------------------------------------------------------------
     const MASTER_PASSWORD = "ali123";
     const TG_TOKEN = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU";
@@ -278,20 +297,16 @@
         }
     }
 
-    // تفعيل زر الـ Enter في لوحة المفاتيح
     document.addEventListener('DOMContentLoaded', (event) => {
         document.getElementById("adminPassword").addEventListener("keypress", function(event) {
             if (event.key === "Enter") { event.preventDefault(); handleLogin(); }
         });
     });
 
-    // دالة إغلاق الموقع
     function lockSystem() { location.reload(); }
-    // -----------------------------------------------------------------
-
 
     // -----------------------------------------------------------------
-    // أكوادك الجيولوجية الأصلية 100% (بدون أي مساس)
+    // أكوادك الجيولوجية الأصلية للحسابات والمرتسم المساحي
     // -----------------------------------------------------------------
     function latLonToUTM(lat, lon) {
         const a = 6378137.0; const eccSquared = 0.00669438; const k0 = 0.9996;
