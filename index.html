@@ -108,28 +108,63 @@
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
         /* --------------------------------------------------- */
-        /* تنسيقات الطباعة */
+        /* تنسيقات الطباعة (PDF) الاحترافية الملونة */
         /* --------------------------------------------------- */
         .print-only { display: none; }
         @media print {
             @page { margin: 0; size: A4 portrait; }
-            body { background: white; margin: 1.5cm; padding: 0; color: #000; }
+            
+            /* تفعيل الألوان في الطباعة إجبارياً */
+            * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; print-color-adjust: exact !important; }
+            
+            body { background: white; margin: 1cm; padding: 0; color: #333; font-family: 'Arial', sans-serif; }
             .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
             .header, .footer, .btn-calc, .btn-convert, .gps-btn, .social-links, .btn-print, #introScreen, #colorSection { display: none !important; }
             
             .print-only { display: block; }
-            .print-header { text-align: center; border-bottom: 4px double #1c2833; padding-bottom: 10px; margin-bottom: 30px; }
-            .print-header h1 { font-size: 22px; color: #000; margin: 0 0 5px 0; }
-            .print-header h2 { font-size: 16px; color: #555; margin: 0; }
-            .print-footer { margin-top: 40px; border-top: 2px solid #333; padding-top: 20px; text-align: center; font-size: 14px; page-break-inside: avoid; }
-            .promo-box { border: 1px dashed #777; padding: 10px; margin: 10px auto; width: 80%; border-radius: 8px; background: #fafafa; }
+            
+            /* ترويسة التقرير */
+            .print-header { 
+                text-align: center; border: 2px solid #2980b9; background-color: #f4f9fc;
+                padding: 20px; margin-bottom: 25px; border-radius: 8px;
+            }
+            .print-header h1 { font-size: 22px; color: #1c2833; margin: 0 0 8px 0; }
+            .print-header h2 { font-size: 16px; color: #e67e22; margin: 0; font-weight: bold; }
 
-            input[type="number"], input[type="text"] { border: none !important; border-bottom: 1px dashed #000 !important; background: transparent !important; padding: 0; color: #000; font-weight: bold; font-size: 1.1rem; border-radius: 0; text-align: center; }
-            .coord-display { border: none !important; background: transparent !important; padding: 0; font-size: 1rem; color: #000; margin-bottom: 5px; }
-            .section { margin-bottom: 25px; page-break-inside: avoid; }
-            .section-title { border-bottom: 2px solid #000; color: #000; }
-            #resultsSection { border: 2px solid #000; background: transparent; }
-            canvas { box-shadow: none; border: 1px solid #000; max-width: 100%; page-break-inside: avoid; }
+            /* تنسيق الأقسام كصناديق رسمية */
+            .section { 
+                margin-bottom: 20px; page-break-inside: avoid; 
+                border: 1px solid #bdc3c7; border-radius: 8px; padding: 15px;
+                background-color: #fafafa;
+            }
+            .section-title { 
+                border-bottom: 2px solid #2980b9; color: #2980b9 !important; 
+                margin-top: 0; padding-bottom: 8px; margin-bottom: 15px;
+            }
+
+            /* تنسيق المدخلات كبيانات وثيقة */
+            label { color: #555 !important; font-size: 0.9rem; }
+            input[type="number"], input[type="text"] { 
+                border: none !important; border-bottom: 1.5px dashed #2980b9 !important; 
+                background: transparent !important; padding: 2px 0; 
+                color: #16a085 !important; font-weight: bold; font-size: 1.1rem; border-radius: 0; text-align: center;
+            }
+            .coord-display { 
+                border: 1px solid #d5dbdb !important; background: #fff !important; 
+                padding: 8px; font-size: 0.95rem; color: #2c3e50 !important; margin-bottom: 8px; 
+            }
+            
+            #resultsSection { border: 2px solid #27ae60 !important; background: #f9fff9 !important; }
+            .result-value { color: #27ae60 !important; }
+            .percentage-note { background: #eafaf1 !important; border-right: 4px solid #27ae60 !important; color: #1e8449 !important; }
+
+            canvas { box-shadow: none; border: 2px solid #34495e !important; max-width: 100%; page-break-inside: avoid; border-radius: 4px; }
+            
+            /* التذييل الترويجي المطبوع */
+            .print-footer { margin-top: 30px; border-top: 2px solid #2980b9; padding-top: 15px; text-align: center; font-size: 14px; page-break-inside: avoid; }
+            .promo-box { border: 1px dashed #7f8c8d; padding: 10px; margin: 10px auto; width: 85%; border-radius: 8px; background: #f8f9fa; }
+            .promo-box h3 { color: #2980b9 !important; }
+            
             body { counter-reset: page; }
             .page-number::after { content: "صفحة " counter(page); }
         }
@@ -150,32 +185,27 @@
             </div>
 
             <ul class="instruction-list">
-                <li>📄 <strong>بيانات العقد:</strong> يجب أن يكون الجيولوجي حاصلاً على تقريره الجاهز من المحافظة (مثل محافظة بغداد) ليتسنى له إدخال المساحة والكمية المتعاقد عليها بدقة.</li>
+                <li>📄 <strong>بيانات العقد:</strong> يجب أن يكون الجيولوجي حاصلاً على تقريره الجاهز من المحافظة ليتسنى له إدخال المساحة والكمية المتعاقد عليها.</li>
                 <li>📍 <strong>معرفة الموقع:</strong> يجب أن يكون الجيولوجي عارفاً بموقع المقلع وطرق الوصول إليه قبل بدء العمل الميداني.</li>
-                <li>🚙 <strong>النقل الحقلي:</strong> ضرورة توفر سيارة حقلية ملائمة للتعامل مع التضاريس (صعدات ونزلات) للوصول إلى المناطق البعيدة عن المدن.</li>
+                <li>🚙 <strong>النقل الحقلي:</strong> ضرورة توفر سيارة حقلية ملائمة للتعامل مع التضاريس الوعرة والمتباينة الانحدار للوصول إلى المناطق البعيدة عن المدن.</li>
                 <li>⛏️ <strong>المعدات الجيولوجية:</strong> اصطحاب الأدوات الحقلية وأدوات الحماية والسلامة المهنية.</li>
                 <li>📏 <strong>القياس والتوثيق:</strong> جلب أدوات قياس لحساب أبعاد المنطقة المستثمرة، مع هاتف ذكي أو كاميرا لالتقاط الصور التوثيقية.</li>
             </ul>
 
-            <div class="yellow-notice">
-                📡 <b>ملاحظة تقنية هامة:</b><br>
-                يجب تفعيل (الموقع / GPS) في هاتفك ليتسنى للمنصة التقاط الإحداثيات الدقيقة وزيادة دقة اللوكيشن للتوثيق الميداني.
-            </div>
-
-            <button onclick="goToStep2()" class="btn-action">قراءة التعليمات والمتابعة ⬅️</button>
+            <button onclick="goToStep2()" class="btn-action">التالي</button>
         </div>
 
         <div id="step2">
-            <h1 style="color: #2ecc71;">🔒 تسجيل الدخول وبدء المسح</h1>
+            <h1 style="color: #2ecc71;">تسجيل الدخول</h1>
             
             <p style="color: #ddd; font-size: 1.05rem; margin-bottom: 25px; line-height: 1.6;">
-                قم بإدخال <b>اسم الجيولوجي الثلاثي</b>، و <b>رمز الدخول السري</b> الذي حصلت عليه من مؤسس المنصة الجيولوجي علي شندل الجنابي.
+                قم بإدخال <b>اسم الجيولوجي الثلاثي</b> و<b>رمز الدخول السري</b> الذي حصلت عليه من مؤسس المنصة الجيولوجي علي شندل الجنابي.
             </p>
             
             <input type="text" id="geoNameInput" placeholder="اسم الجيولوجي (الثلاثي) ..." required autocomplete="off">
             <input type="password" id="adminPassword" placeholder="أدخل رمز الدخول السري ...">
             
-            <button onclick="handleLogin()" class="btn-action" id="loginBtn">دخول للاسم الثلاثي وبدء المسح</button>
+            <button onclick="handleLogin()" class="btn-action" id="loginBtn">تسجيل الدخول</button>
             <div id="loginError" class="error-text">❌ يرجى التأكد من الاسم وكلمة المرور.</div>
         </div>
     </div>
@@ -308,7 +338,7 @@
 
         <div class="print-only print-footer">
             <div class="promo-box">
-                <h3 style="margin-top: 0; color: #333;">📱 صُنع هذا النظام لتسهيل العمل الجيولوجي</h3>
+                <h3 style="margin-top: 0;">📱 صُنع هذا النظام لتسهيل العمل الجيولوجي</h3>
                 <p>للتواصل والاستفسار أو لطلب أنظمة مشابهة:</p>
                 <p><strong>واتساب:</strong> 07814993629 | <strong>إنستغرام:</strong> @ash2oo1</p>
             </div>
@@ -391,7 +421,6 @@
         const nameInput = document.getElementById('geoNameInput').value.trim();
         const pwdInput = document.getElementById('adminPassword').value;
 
-        // التحقق من الاسم الثلاثي والرمز
         if (nameInput.split(' ').length < 2) {
             errorDiv.innerHTML = "❌ يرجى كتابة اسم الجيولوجي (الثلاثي) بشكل صحيح.";
             errorDiv.style.display = 'block';
