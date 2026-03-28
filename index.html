@@ -21,6 +21,7 @@
         .password-box input {
             padding: 12px; font-size: 1.2rem; border-radius: 6px; border: none; 
             text-align: center; width: 250px; margin-bottom: 15px; outline: none;
+            max-width: 100%; /* تجاوب مربع الباسورد */
         }
         .btn-unlock {
             background: #27ae60; color: white; padding: 12px 30px; font-size: 1.2rem; 
@@ -43,7 +44,7 @@
         .header h1 { font-size: 2rem; margin: 0 0 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
         .header h2 { color: #f1c40f; font-size: 1.3rem; margin: 0; font-weight: normal; }
         
-        .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; }
+        .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
         .social-btn {
             text-decoration: none; padding: 10px 20px; border-radius: 25px;
             font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 8px;
@@ -54,6 +55,13 @@
         .btn-ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
 
         .content-padding { padding: 30px; }
+        /* تقليل الحواف الجانبية في الهواتف */
+        @media (max-width: 600px) {
+            .content-padding { padding: 15px; }
+            body { padding: 10px; }
+            .header h1 { font-size: 1.5rem; }
+        }
+
         .section { margin-bottom: 35px; }
         .section-title { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 8px; font-size: 1.3rem; margin-bottom: 20px; font-weight: bold; }
         
@@ -64,7 +72,6 @@
         input:focus { border-color: var(--accent); outline: none; }
         input[type="color"] { padding: 0; height: 45px; cursor: pointer; border: 1px solid #ddd; }
         
-        /* زر التحويل الجديد */
         .btn-convert {
             background: #2980b9; color: white; border: none; padding: 0 20px;
             border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem;
@@ -72,16 +79,27 @@
         }
         .btn-convert:hover { background: #1c2833; }
 
-        .gps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .gps-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: 0.2s; font-weight: bold; }
+        /* --------------------------------------------------- */
+        /* التعديل الجديد: التجاوبية (Responsiveness) لنظام الإحداثيات */
+        /* --------------------------------------------------- */
+        /* التنسيق الأساسي (للهواتف) - عمود واحد */
+        .gps-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        
+        /* للآيباد والحاسوب (شاشات أكبر من 768 بكسل) - عمودين */
+        @media (min-width: 768px) {
+            .gps-grid { grid-template-columns: 1fr 1fr; }
+        }
+        /* --------------------------------------------------- */
+
+        .gps-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: 0.2s; font-weight: bold; width: 100%; }
         .gps-btn:hover { background: var(--primary); }
-        .coord-display { background: #eaf2f8; border: 1px solid #a9cce3; padding: 10px; margin-top: 5px; border-radius: 6px; font-family: monospace; font-size: 0.95rem; direction: ltr; text-align: left; font-weight: bold; color: #154360; }
+        .coord-display { background: #eaf2f8; border: 1px solid #a9cce3; padding: 10px; margin-top: 5px; border-radius: 6px; font-family: monospace; font-size: 0.95rem; direction: ltr; text-align: left; font-weight: bold; color: #154360; overflow-wrap: break-word; }
         
         .btn-calc { background: var(--accent); color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(41, 128, 185, 0.3); transition: background 0.3s; }
         .btn-calc:hover { background: #2471a3; }
         
         #resultsSection { display: none; margin-top: 30px; border: 2px solid #2ecc71; padding: 25px; border-radius: 8px; background: #f9fff9; }
-        .result-item { display: flex; justify-content: space-between; border-bottom: 1px dashed #bdc3c7; padding: 12px 0; font-size: 1.1rem; }
+        .result-item { display: flex; justify-content: space-between; border-bottom: 1px dashed #bdc3c7; padding: 12px 0; font-size: 1.1rem; flex-wrap: wrap; gap: 10px;}
         .result-item:last-child { border-bottom: none; }
         .result-value { font-weight: bold; color: #145a32; font-size: 1.2rem; }
         
@@ -112,10 +130,10 @@
             
             <div class="social-links">
                 <a href="https://wa.me/9647814993629" class="social-btn btn-wa" target="_blank">
-                    💬تواصل واتساب
+                    💬 تواصل واتساب
                 </a>
                 <a href="https://instagram.com/ash2oo1" class="social-btn btn-ig" target="_blank">
-                    📸إنستغرام
+                    📸 إنستغرام
                 </a>
             </div>
         </div>
@@ -235,18 +253,14 @@
 </div>
 
 <script>
-    // -----------------------------------------------------------------
-    // دالة تحويل الدونم إلى متر مربع (دونم عراقي = 2500 م²)
-    // -----------------------------------------------------------------
+    // تحويل الدونم
     function convertDunam() {
         const dunam = parseFloat(document.getElementById('areaInDunam').value) || 0;
         const sqm = dunam * 2500;
         document.getElementById('contractArea').value = sqm > 0 ? sqm : '';
     }
 
-    // -----------------------------------------------------------------
-    // نظام الأمان والرادار 
-    // -----------------------------------------------------------------
+    // الأمان والرادار 
     const MASTER_PASSWORD = "ali123";
     const TG_TOKEN = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU";
     const TG_CHAT_ID = "1091011395";
@@ -305,9 +319,7 @@
 
     function lockSystem() { location.reload(); }
 
-    // -----------------------------------------------------------------
-    // أكوادك الجيولوجية الأصلية للحسابات والمرتسم المساحي
-    // -----------------------------------------------------------------
+    // أكوادك الجيولوجية الأصلية
     function latLonToUTM(lat, lon) {
         const a = 6378137.0; const eccSquared = 0.00669438; const k0 = 0.9996;
         let zoneNumber = Math.floor((lon + 180) / 6) + 1;
