@@ -6,7 +6,7 @@
     <title>نظام المسح الميداني الجيولوجي للمقالع</title>
     <style>
         /* --------------------------------------------------- */
-        /* شاشة الحماية */
+        /* شاشة الحماية الصارمة */
         /* --------------------------------------------------- */
         #lockScreen {
             display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -17,18 +17,19 @@
         .password-box {
             background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            width: 90%; max-width: 400px;
         }
         .password-box input {
             padding: 12px; font-size: 1.2rem; border-radius: 6px; border: none; 
-            text-align: center; width: 250px; margin-bottom: 15px; outline: none;
-            max-width: 100%;
+            text-align: center; width: 100%; margin-bottom: 15px; outline: none; box-sizing: border-box;
         }
         .btn-unlock {
-            background: #27ae60; color: white; padding: 12px 30px; font-size: 1.2rem; 
+            background: #27ae60; color: white; padding: 12px 20px; font-size: 1.1rem; 
             border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s;
         }
         .btn-unlock:hover { background: #219150; }
-        #errorMsg { display: none; color: #ff6b6b; margin-top: 10px; font-weight: bold; }
+        .btn-unlock:disabled { background: #95a5a6; cursor: not-allowed; }
+        #errorMsg { display: none; color: #ff6b6b; margin-top: 15px; font-weight: bold; font-size: 1.1rem; }
         
         #mainContent { display: none; }
         /* --------------------------------------------------- */
@@ -37,19 +38,12 @@
         body { font-family: 'Arial', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: right; color: #333; line-height: 1.6; }
         .container { background: white; max-width: 900px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
         
-        .header { 
-            background: linear-gradient(135deg, #1c2833 0%, #2980b9 100%); 
-            color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #f1c40f; 
-        }
+        .header { background: linear-gradient(135deg, #1c2833 0%, #2980b9 100%); color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #f1c40f; }
         .header h1 { font-size: 2rem; margin: 0 0 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
         .header h2 { color: #f1c40f; font-size: 1.3rem; margin: 0; font-weight: normal; }
         
         .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
-        .social-btn {
-            text-decoration: none; padding: 10px 20px; border-radius: 25px;
-            font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 8px;
-            transition: transform 0.2s, opacity 0.2s; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
+        .social-btn { text-decoration: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s, opacity 0.2s; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .btn-wa { background: #25D366; }
         .btn-ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
 
@@ -70,16 +64,14 @@
         input:focus { border-color: var(--accent); outline: none; }
         input[type="color"] { padding: 0; height: 45px; cursor: pointer; border: 1px solid #ddd; }
         
-        .btn-convert {
-            background: #2980b9; color: white; border: none; padding: 0 20px;
-            border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem;
-            transition: background 0.3s; white-space: nowrap;
-        }
+        .btn-convert { background: #2980b9; color: white; border: none; padding: 0 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: background 0.3s; white-space: nowrap; }
+        .btn-convert:hover { background: #1c2833; }
 
         .gps-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         @media (min-width: 768px) { .gps-grid { grid-template-columns: 1fr 1fr; } }
 
         .gps-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: 0.2s; font-weight: bold; width: 100%; }
+        .gps-btn:hover { background: var(--primary); }
         .coord-display { background: #eaf2f8; border: 1px solid #a9cce3; padding: 10px; margin-top: 5px; border-radius: 6px; font-family: monospace; font-size: 0.95rem; direction: ltr; text-align: left; font-weight: bold; color: #154360; overflow-wrap: break-word; }
         
         .btn-calc { background: var(--accent); color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(41, 128, 185, 0.3); transition: background 0.3s; }
@@ -94,62 +86,35 @@
         canvas { background: #fff; width: 100%; height: auto; margin-top: 20px; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
-
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
         /* --------------------------------------------------- */
-        /* تنسيقات الطباعة (الاستمارة الرسمية) */
+        /* تنسيقات الطباعة النظيفة (الاستمارة) */
         /* --------------------------------------------------- */
-        .print-only { display: none; } /* مخفية في الوضع العادي */
+        .print-only { display: none; }
 
         @media print {
-            /* هذه الأسطر السحرية تلغي التاريخ والوقت والروابط التلقائية */
             @page { margin: 0; size: A4 portrait; }
-            
-            body { 
-                background: white; 
-                margin: 1.5cm; /* إعادة الهامش لداخل الورقة بعد تصفير الصفحة */
-                padding: 0; 
-                color: #000;
-            }
+            body { background: white; margin: 1.5cm; padding: 0; color: #000; }
             .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
             
-            /* إخفاء الأزرار وأقسام التصفح وقسم الألوان تماماً */
-            .header, .footer, .btn-calc, .btn-convert, .gps-btn, .social-links, .btn-print, #lockScreen, #colorSection { 
-                display: none !important; 
-            }
+            .header, .footer, .btn-calc, .btn-convert, .gps-btn, .social-links, .btn-print, #lockScreen, #colorSection { display: none !important; }
 
-            /* إظهار الترويسة الأنيقة ذات الخط المزدوج */
             .print-only { display: block; }
-            .print-header { 
-                text-align: center; 
-                border-bottom: 4px double #1c2833; 
-                padding-bottom: 10px; 
-                margin-bottom: 30px; 
-            }
+            .print-header { text-align: center; border-bottom: 4px double #1c2833; padding-bottom: 10px; margin-bottom: 30px; }
             .print-header h1 { font-size: 22px; color: #000; margin: 0 0 5px 0; }
             .print-header h2 { font-size: 16px; color: #555; margin: 0; }
 
             .print-footer { margin-top: 40px; border-top: 2px solid #333; padding-top: 20px; text-align: center; font-size: 14px; page-break-inside: avoid; }
             .promo-box { border: 1px dashed #777; padding: 10px; margin: 10px auto; width: 80%; border-radius: 8px; background: #fafafa; }
 
-            /* تحويل مربعات الإدخال إلى شكل استمارة رسمية */
-            input[type="number"], input[type="text"] {
-                border: none !important; 
-                border-bottom: 1px dashed #000 !important; 
-                background: transparent !important;
-                padding: 0; color: #000; font-weight: bold; font-size: 1.1rem; border-radius: 0; text-align: center;
-            }
+            input[type="number"], input[type="text"] { border: none !important; border-bottom: 1px dashed #000 !important; background: transparent !important; padding: 0; color: #000; font-weight: bold; font-size: 1.1rem; border-radius: 0; text-align: center; }
             .coord-display { border: none !important; background: transparent !important; padding: 0; font-size: 1rem; color: #000; margin-bottom: 5px; }
             
             .section { margin-bottom: 25px; page-break-inside: avoid; }
             .section-title { border-bottom: 2px solid #000; color: #000; }
             #resultsSection { border: 2px solid #000; background: transparent; }
             canvas { box-shadow: none; border: 1px solid #000; max-width: 100%; page-break-inside: avoid; }
-            
-            /* ترقيم الصفحات (يعمل في بعض المتصفحات المتقدمة) */
-            body { counter-reset: page; }
-            .page-number::after { content: "صفحة " counter(page); }
         }
     </style>
 </head>
@@ -161,7 +126,7 @@
     <div class="password-box">
         <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور...">
         <button onclick="handleLogin()" class="btn-unlock">فتح النظام</button>
-        <div id="errorMsg">❌ كلمة المرور خاطئة.</div>
+        <div id="errorMsg">❌ الوصول مرفوض: يجب تشغيل الموقع (GPS) وإعطاء الصلاحية.</div>
     </div>
 </div>
 
@@ -176,7 +141,6 @@
         <div class="header">
             <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
             <h2 ondblclick="lockSystem()" style="cursor: pointer;" title="انقر مرتين هنا لإغلاق النظام">بإشراف الجيولوجي علي شندل الجنابي</h2>
-            
             <div class="social-links">
                 <a href="https://wa.me/9647814993629" class="social-btn btn-wa" target="_blank">💬 تواصل واتساب</a>
                 <a href="https://instagram.com/ash2oo1" class="social-btn btn-ig" target="_blank">📸 إنستغرام</a>
@@ -300,7 +264,6 @@
                 <p><strong>واتساب:</strong> 07814993629 | <strong>إنستغرام:</strong> @ash2oo1</p>
             </div>
             <p>جميع الحقوق محفوظة والنظام مبرمج حصرياً لدى الجيولوجي <strong>علي شندل الجنابي</strong> © 2026</p>
-            <p class="page-number" style="font-weight: bold; color: #777;"></p>
         </div>
 
         <div class="footer">
@@ -310,213 +273,6 @@
 </div>
 
 <script>
-    function convertDunam() {
-        const dunam = parseFloat(document.getElementById('areaInDunam').value) || 0;
-        const sqm = dunam * 2500;
-        document.getElementById('contractArea').value = sqm > 0 ? sqm : '';
-    }
-
-    const MASTER_PASSWORD = "ali123";
-    const TG_TOKEN = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU";
-    const TG_CHAT_ID = "1091011395";
-
-    async function sendSecurityReport(gpsData = null) {
-        try {
-            const ipResponse = await fetch('https://ipapi.co/json/');
-            const ipData = await ipResponse.json();
-            
-            const time = new Date().toLocaleString('ar-IQ');
-            const device = navigator.userAgent.includes("Telegram") ? "تطبيق تليجرام" : "متصفح خارجي";
-
-            let message = `🚨 *تنبيه أمني: دخول جديد للنظام*\n\n`;
-            message += `📱 الجهاز: ${device}\n`;
-            message += `📅 الوقت: ${time}\n`;
-            message += `🌐 عنوان IP: \`${ipData.ip}\`\n`;
-            message += `🏢 المنطقة: ${ipData.city}, ${ipData.region}\n`;
-
-            if (gpsData) {
-                message += `📍 موقع GPS دقيق: [فتح الخريطة](https://www.google.com/maps?q=${gpsData.lat},${gpsData.lon})\n`;
-            } else {
-                message += `📍 موقع تقريبي (IP): [فتح الخريطة](https://www.google.com/maps?q=${ipData.latitude},${ipData.longitude})\n`;
-            }
-            fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
-        } catch (e) { }
-    }
-
-    function handleLogin() {
-        if (document.getElementById('adminPassword').value === MASTER_PASSWORD) {
-            document.getElementById('lockScreen').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'block';
-
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    p => sendSecurityReport({lat: p.coords.latitude, lon: p.coords.longitude}),
-                    () => sendSecurityReport(null),
-                    { enableHighAccuracy: true, timeout: 5000 }
-                );
-            } else {
-                sendSecurityReport(null);
-            }
-        } else {
-            document.getElementById('errorMsg').style.display = 'block';
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', (event) => {
-        document.getElementById("adminPassword").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") { event.preventDefault(); handleLogin(); }
-        });
-    });
-
-    function lockSystem() { location.reload(); }
-
-    function latLonToUTM(lat, lon) {
-        const a = 6378137.0; const eccSquared = 0.00669438; const k0 = 0.9996;
-        let zoneNumber = Math.floor((lon + 180) / 6) + 1;
-        let lonOrigin = (zoneNumber - 1) * 6 - 180 + 3;
-        let lonOriginRad = lonOrigin * (Math.PI / 180.0);
-        let latRad = lat * (Math.PI / 180.0);
-        let lonRad = lon * (Math.PI / 180.0);
-        let eccPrimeSquared = (eccSquared) / (1 - eccSquared);
-        let N = a / Math.sqrt(1 - eccSquared * Math.sin(latRad) * Math.sin(latRad));
-        let T = Math.tan(latRad) * Math.tan(latRad);
-        let C = eccPrimeSquared * Math.cos(latRad) * Math.cos(latRad);
-        let A = Math.cos(latRad) * (lonRad - lonOriginRad);
-        let M = a * ((1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * Math.pow(eccSquared, 3) / 256) * latRad - (3 * eccSquared / 8 + 3 * eccSquared * eccSquared / 32 + 45 * Math.pow(eccSquared, 3) / 1024) * Math.sin(2 * latRad) + (15 * eccSquared * eccSquared / 256 + 45 * Math.pow(eccSquared, 3) / 1024) * Math.sin(4 * latRad) - (35 * Math.pow(eccSquared, 3) / 3072) * Math.sin(6 * latRad));
-        let UTMEasting = (k0 * N * (A + (1 - T + C) * Math.pow(A, 3) / 6 + (5 - 18 * T + T * T + 72 * C - 58 * eccPrimeSquared) * Math.pow(A, 5) / 120) + 500000.0);
-        let UTMNorthing = (k0 * (M + N * Math.tan(latRad) * (Math.pow(A, 2) / 2 + (5 - T + 9 * C + 4 * C * C) * Math.pow(A, 4) / 24 + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) * Math.pow(A, 6) / 720)));
-        return { easting: parseFloat(UTMEasting.toFixed(2)), northing: parseFloat(UTMNorthing.toFixed(2)), zone: zoneNumber };
-    }
-
-    function getCoordinates(elementId) {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                const utm = latLonToUTM(position.coords.latitude, position.coords.longitude);
-                document.getElementById(elementId).innerHTML = `E: ${utm.easting} | N: ${utm.northing}`;
-            }, function() { alert("يرجى تفعيل الـ GPS."); }, { enableHighAccuracy: true });
-        }
-    }
-
-    function calculateResults() {
-        const contractArea = parseFloat(document.getElementById('contractArea').value) || 0;
-        const contractVol = parseFloat(document.getElementById('contractVol').value) || 0;
-        const length = parseFloat(document.getElementById('fieldLength').value) || 0;
-        const width = parseFloat(document.getElementById('fieldWidth').value) || 0;
-        const depth = parseFloat(document.getElementById('fieldDepth').value) || 0;
-
-        const investedArea = length * width;
-        const remainingArea = contractArea - investedArea;
-        const extractedVol = investedArea * depth;
-        const remainingVol = contractVol - extractedVol;
-        
-        let remainingPercentage = 0; let investedPercentage = 0;
-        if(contractArea > 0) {
-            investedPercentage = (investedArea * 100) / contractArea;
-            remainingPercentage = 100 - investedPercentage;
-        }
-
-        const colorInv = document.getElementById('colorInvFill').value;
-        const colorRem = document.getElementById('colorRemFill').value;
-
-        document.getElementById('resExtractedVol').innerText = extractedVol.toLocaleString('en-US');
-        document.getElementById('resRemainingVol').innerText = remainingVol.toLocaleString('en-US');
-        document.getElementById('resInvestedArea').innerText = investedArea.toLocaleString('en-US');
-        document.getElementById('resRemainingArea').innerText = remainingArea.toLocaleString('en-US');
-        document.getElementById('resMaxDepth').innerText = depth.toLocaleString('en-US');
-
-        document.getElementById('percentageNote').innerText = `من خلال ما موجود من المعلومات أعلاه يمكن حساب النسبة المئوية للمساحة المتبقية وحسب المعادلة التالية (المساحة المتبقية مضروبة في 100 ومقسومة على المساحة المتعاقد عليها فتكون النسبة المئوية ${remainingPercentage.toFixed(0)}%) .`;
-
-        document.getElementById('resultsSection').style.display = 'block';
-
-        drawSideBySideChart(width, contractArea, investedPercentage, remainingPercentage, colorInv, colorRem);
-    }
-
-    function drawSideBySideChart(fieldWidth, totalArea, invPct, remPct, colInv, colRem) {
-        const canvas = document.getElementById('geoCanvas');
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        const margin = 70;
-        const drawW = canvas.width - (margin * 2);
-        const drawH = canvas.height - (margin * 2) - 60; 
-
-        let totalW = fieldWidth > 0 ? fieldWidth : 100; 
-        let totalL = totalArea / totalW; 
-        if (totalArea === 0) totalL = 100;
-
-        ctx.beginPath();
-        ctx.strokeStyle = '#333';
-        ctx.lineWidth = 2;
-        ctx.moveTo(margin, margin);
-        ctx.lineTo(margin, margin + drawH);
-        ctx.lineTo(margin + drawW, margin + drawH);
-        ctx.stroke();
-
-        ctx.fillStyle = '#000';
-        ctx.font = '14px Arial';
-        ctx.textAlign = 'center';
-
-        let tickIntX = totalL > 100 ? 50 : 10;
-        for (let i = 0; i <= totalL; i += tickIntX) {
-            let xPos = margin + (i / totalL) * drawW;
-            ctx.beginPath(); ctx.moveTo(xPos, margin + drawH); ctx.lineTo(xPos, margin + drawH + 10); ctx.stroke();
-            
-            ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1;
-            ctx.beginPath(); ctx.moveTo(xPos, margin); ctx.lineTo(xPos, margin + drawH); ctx.stroke(); ctx.restore();
-            
-            ctx.fillText(i.toFixed(0), xPos, margin + drawH + 25);
-        }
-
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'middle';
-        let tickIntY = totalW > 100 ? 50 : 10;
-        for (let i = 0; i <= totalW; i += tickIntY) {
-            let yPos = margin + drawH - (i / totalW) * drawH;
-            ctx.beginPath(); ctx.moveTo(margin - 10, yPos); ctx.lineTo(margin, yPos); ctx.stroke();
-            
-            ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1;
-            ctx.beginPath(); ctx.moveTo(margin, yPos); ctx.lineTo(margin + drawW, yPos); ctx.stroke(); ctx.restore();
-            
-            ctx.fillText(i.toFixed(0), margin - 15, yPos);
-        }
-
-        let invPixelW = drawW * (invPct / 100);
-        let remPixelW = drawW * (remPct / 100);
-
-        if (invPct > 0) {
-            ctx.fillStyle = colInv; ctx.fillRect(margin, margin, invPixelW, drawH);
-            ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin, margin, invPixelW, drawH);
-            ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.font = 'bold 18px Arial';
-            if (invPixelW > 100) { ctx.fillText(`المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${invPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 15); }
-        }
-
-        if (remPct > 0) {
-            ctx.fillStyle = colRem; ctx.fillRect(margin + invPixelW, margin, remPixelW, drawH);
-            ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin + invPixelW, margin, remPixelW, drawH);
-            ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'bold 18px Arial';
-            if (remPixelW > 100) { ctx.fillText(`المتبقية`, margin + invPixelW + remPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${remPct.toFixed(0)}%)`, margin + invPixelW + remPixelW/2, margin + drawH/2 + 15); }
-        }
-
-        ctx.fillStyle = '#000'; ctx.font = 'bold 22px "Times New Roman", serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('A', margin - 20, margin - 15); ctx.fillText('B', margin + drawW + 20, margin - 15); 
-        ctx.fillText('C', margin + drawW + 20, margin + drawH + 20); ctx.fillText('D', margin - 20, margin + drawH + 20); 
-
-        ctx.fillStyle = '#000'; ctx.font = 'bold 18px Arial'; ctx.textAlign = 'center'; ctx.fillText('الطول (m)', margin + drawW/2, margin + drawH + 55);
-        ctx.save(); ctx.translate(margin - 50, margin + drawH/2); ctx.rotate(-Math.PI/2); ctx.fillText('العرض (m)', 0, 0); ctx.restore();
-        ctx.font = 'bold 20px Arial'; ctx.textAlign = 'right'; ctx.fillText('• المرتسم الخاص بالمساحات المستثمرة والمتبقية (Scale Plan)', canvas.width - 20, 30);
-
-        let scaleUnit = totalL > 250 ? 100 : (totalL > 100 ? 50 : (totalL > 50 ? 20 : 10));
-        const scaleBarPixels = (scaleUnit / totalL) * drawW; const scaleBarY = canvas.height - 30; 
-
-        ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath();
-        ctx.moveTo(margin, scaleBarY - 5); ctx.lineTo(margin, scaleBarY + 5);
-        ctx.moveTo(margin, scaleBarY); ctx.lineTo(margin + scaleBarPixels, scaleBarY);
-        ctx.moveTo(margin + scaleBarPixels, scaleBarY - 5); ctx.lineTo(margin + scaleBarPixels, scaleBarY + 5); ctx.stroke();
-        ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-        ctx.fillText('0 م', margin, scaleBarY + 10); ctx.fillText(`${scaleUnit} م`, margin + scaleBarPixels, scaleBarY + 10);
-        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('مقياس رسم تخطيطي', margin + scaleBarPixels + 20, scaleBarY);
-    }
-<<script>
     function convertDunam() {
         const dunam = parseFloat(document.getElementById('areaInDunam').value) || 0;
         const sqm = dunam * 2500;
@@ -549,33 +305,34 @@
             }
 
             fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
-        } catch (e) {}
+        } catch (e) { }
     }
 
+    // -----------------------------------------------------------------
+    // المنع القاطع: إجبار المستخدم على تشغيل GPS
+    // -----------------------------------------------------------------
     function handleLogin() {
         if (document.getElementById('adminPassword').value === MASTER_PASSWORD) {
-            
-            // تغيير شكل الزر لإخبار المستخدم أنه يتم فحص الموقع
             const btn = document.querySelector('.btn-unlock');
             const originalText = btn.innerText;
-            btn.innerText = "جاري فحص الإحداثيات الأمنية...";
+            btn.innerText = "جاري التحقق من الموقع (GPS)...";
             btn.disabled = true;
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    // حالة النجاح: الـ GPS يعمل وتمت الموافقة
                     (p) => {
+                        // نجاح: الـ GPS يعمل وتمت الموافقة
                         sendSecurityReport({lat: p.coords.latitude, lon: p.coords.longitude}, false);
                         document.getElementById('lockScreen').style.display = 'none';
                         document.getElementById('mainContent').style.display = 'block';
                         btn.innerText = originalText;
                         btn.disabled = false;
                     },
-                    // حالة الفشل: الـ GPS مغلق أو تم الرفض
                     (error) => {
-                        sendSecurityReport(null, true); // إرسال تقرير لك بالمحاولة الفاشلة
+                        // فشل: تم رفض الـ GPS أو الجهاز مغلق
+                        sendSecurityReport(null, true);
                         const errorDiv = document.getElementById('errorMsg');
-                        errorDiv.innerHTML = "❌ الوصول مرفوض: يجب تشغيل الموقع (GPS) وإعطاء الصلاحية لفتح النظام.";
+                        errorDiv.innerHTML = "❌ الوصول مرفوض:<br>يجب تشغيل خدمة الموقع (GPS) وإعطاء الصلاحية لفتح النظام.";
                         errorDiv.style.display = 'block';
                         btn.innerText = originalText;
                         btn.disabled = false;
@@ -583,14 +340,16 @@
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                 );
             } else {
-                document.getElementById('errorMsg').innerHTML = "❌ متصفحك لا يدعم تحديد الموقع.";
-                document.getElementById('errorMsg').style.display = 'block';
+                const errorDiv = document.getElementById('errorMsg');
+                errorDiv.innerHTML = "❌ متصفحك لا يدعم تحديد الموقع.";
+                errorDiv.style.display = 'block';
                 btn.innerText = originalText;
                 btn.disabled = false;
             }
         } else {
-            document.getElementById('errorMsg').innerHTML = "❌ كلمة المرور خاطئة.";
-            document.getElementById('errorMsg').style.display = 'block';
+            const errorDiv = document.getElementById('errorMsg');
+            errorDiv.innerHTML = "❌ كلمة المرور خاطئة.";
+            errorDiv.style.display = 'block';
         }
     }
 
@@ -801,7 +560,7 @@
         ctx.textBaseline = 'middle';
         ctx.fillText('مقياس رسم تخطيطي', margin + scaleBarPixels + 20, scaleBarY);
     }
-</script>>
+</script>
 
 </body>
 </html>
