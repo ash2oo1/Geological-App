@@ -7,39 +7,59 @@
     <style>
         :root { --primary: #1c2833; --secondary: #273746; --accent: #2980b9; --bg: #f8f9fa; }
         body { font-family: 'Arial', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: right; color: #333; line-height: 1.6; }
-        .container { background: white; max-width: 900px; margin: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 6px solid var(--primary); padding: 30px; }
+        .container { background: white; max-width: 900px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
         
-        .header { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }
-        .header h1 { color: var(--primary); font-size: 1.8rem; margin: 0 0 10px 0; }
-        .header h2 { color: #555; font-size: 1.2rem; margin: 0; font-weight: normal; }
+        /* ترويسة مطورة بجمالية عالية */
+        .header { 
+            background: linear-gradient(135deg, #1c2833 0%, #2980b9 100%); 
+            color: white; 
+            padding: 35px 20px; 
+            text-align: center; 
+            border-bottom: 5px solid #f1c40f; /* لمسة ذهبية */
+        }
+        .header h1 { font-size: 2rem; margin: 0 0 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
+        .header h2 { color: #f1c40f; font-size: 1.3rem; margin: 0; font-weight: normal; }
         
+        /* أزرار التواصل الاجتماعي */
+        .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; }
+        .social-btn {
+            text-decoration: none; padding: 10px 20px; border-radius: 25px;
+            font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 8px;
+            transition: transform 0.2s, opacity 0.2s; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .social-btn:hover { transform: translateY(-3px); opacity: 0.9; }
+        .btn-wa { background: #25D366; }
+        .btn-ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+
+        .content-padding { padding: 30px; }
         .section { margin-bottom: 35px; }
-        .section-title { color: var(--accent); border-bottom: 1px solid var(--accent); padding-bottom: 8px; font-size: 1.2rem; margin-bottom: 20px; font-weight: bold; }
+        .section-title { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 8px; font-size: 1.3rem; margin-bottom: 20px; font-weight: bold; }
         
         .form-row { display: flex; gap: 20px; margin-bottom: 15px; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; }
         label { display: block; font-weight: bold; margin-bottom: 8px; color: var(--secondary); font-size: 0.95rem; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem; font-family: inherit; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; font-family: inherit; transition: border 0.3s; }
+        input:focus { border-color: var(--accent); outline: none; }
         input[type="color"] { padding: 0; height: 45px; cursor: pointer; border: 1px solid #ddd; }
         
         .gps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .gps-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-size: 1rem; transition: 0.2s; font-weight: bold; }
+        .gps-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: 0.2s; font-weight: bold; }
         .gps-btn:hover { background: var(--primary); }
-        .coord-display { background: #eaf2f8; border: 1px solid #a9cce3; padding: 10px; margin-top: 5px; border-radius: 4px; font-family: monospace; font-size: 0.95rem; direction: ltr; text-align: left; font-weight: bold; color: #154360; }
+        .coord-display { background: #eaf2f8; border: 1px solid #a9cce3; padding: 10px; margin-top: 5px; border-radius: 6px; font-family: monospace; font-size: 0.95rem; direction: ltr; text-align: left; font-weight: bold; color: #154360; }
         
-        .btn-calc { background: var(--accent); color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+        .btn-calc { background: var(--accent); color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(41, 128, 185, 0.3); transition: background 0.3s; }
         .btn-calc:hover { background: #2471a3; }
         
-        #resultsSection { display: none; margin-top: 30px; border: 2px solid #2ecc71; padding: 25px; border-radius: 6px; background: #eaeded; }
+        #resultsSection { display: none; margin-top: 30px; border: 2px solid #2ecc71; padding: 25px; border-radius: 8px; background: #f9fff9; }
         .result-item { display: flex; justify-content: space-between; border-bottom: 1px dashed #bdc3c7; padding: 12px 0; font-size: 1.1rem; }
         .result-item:last-child { border-bottom: none; }
-        .result-value { font-weight: bold; color: #145a32; }
+        .result-value { font-weight: bold; color: #145a32; font-size: 1.2rem; }
         
-        .percentage-note { background: #d5f5e3; padding: 15px; border-radius: 4px; margin-top: 20px; font-weight: bold; font-size: 1rem; color: #196f3d; text-align: center; }
+        .percentage-note { background: #d5f5e3; padding: 15px; border-radius: 6px; margin-top: 20px; font-weight: bold; font-size: 1rem; color: #196f3d; text-align: center; border-right: 4px solid #27ae60; }
         
-        canvas { background: #fff; width: 100%; height: auto; margin-top: 20px; border: 1px solid #ddd; border-radius: 4px; }
+        canvas { background: #fff; width: 100%; height: auto; margin-top: 20px; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         
-        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #7f8c8d; font-size: 0.9rem; font-weight: bold; }
+        .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
     </style>
 </head>
 <body>
@@ -47,110 +67,121 @@
 <div class="container">
     <div class="header">
         <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
-        <h2>بإشراف الجيولوجي علي شندل فلاح</h2>
-    </div>
-
-    <div class="section">
-        <div class="section-title">بيانات العقد الرسمية</div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>المساحة (المتعاقد عليها) بالمتر المربع:</label>
-                <input type="number" id="contractArea" placeholder="مثلاً: 3750 أو 7500">
-            </div>
-            <div class="form-group">
-                <label>الكمية (المتعاقد عليها) بالمتر المكعب:</label>
-                <input type="number" id="contractVol" placeholder="مثلاً: 37500 أو 75000">
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
-        <div class="section-title">إحداثيات المقلع (نظام UTM) للتوثيق الميداني</div>
-        <div class="gps-grid">
-            <div class="form-group">
-                <button class="gps-btn" onclick="getCoordinates('point1')">التقاط إحداثيات الركن الأول (A)</button>
-                <div id="point1" class="coord-display">E: --- | N: ---</div>
-            </div>
-            <div class="form-group">
-                <button class="gps-btn" onclick="getCoordinates('point2')">التقاط إحداثيات الركن الثاني (B)</button>
-                <div id="point2" class="coord-display">E: --- | N: ---</div>
-            </div>
-            <div class="form-group">
-                <button class="gps-btn" onclick="getCoordinates('point3')">التقاط إحداثيات الركن الثالث (C)</button>
-                <div id="point3" class="coord-display">E: --- | N: ---</div>
-            </div>
-            <div class="form-group">
-                <button class="gps-btn" onclick="getCoordinates('point4')">التقاط إحداثيات الركن الرابع (D)</button>
-                <div id="point4" class="coord-display">E: --- | N: ---</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
-        <div class="section-title">القياسات الميدانية للمنطقة المستثمرة</div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>الطول الميداني (متر):</label>
-                <input type="number" id="fieldLength" placeholder="أدخل الطول">
-            </div>
-            <div class="form-group">
-                <label>العرض الميداني (متر):</label>
-                <input type="number" id="fieldWidth" placeholder="أدخل العرض">
-            </div>
-            <div class="form-group">
-                <label>أقصى عمق للاستثمار (متر):</label>
-                <input type="number" id="fieldDepth" placeholder="أدخل العمق">
-            </div>
-        </div>
-    </div>
-    
-    <div class="section">
-        <div class="section-title">تخصيص ألوان المرتسم المساحي</div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>لون المساحة المستثمرة:</label>
-                <input type="color" id="colorInvFill" value="#cceeff">
-            </div>
-            <div class="form-group">
-                <label>لون المساحة المتبقية:</label>
-                <input type="color" id="colorRemFill" value="#115577">
-            </div>
-        </div>
-    </div>
-
-    <button class="btn-calc" onclick="calculateResults()">حساب النتائج ورسم المرتسم الجيولوجي</button>
-
-    <div id="resultsSection" class="section">
-        <div class="section-title" style="border-bottom-color: #27ae60; color: #27ae60;">النتائج النهائية للتقرير الجيولوجي</div>
+        <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
         
-        <div class="result-item">
-            <span>الكميات المستخرجة لغاية يوم الزيارة (م³):</span>
-            <span class="result-value" id="resExtractedVol">0</span>
+        <div class="social-links">
+            <a href="https://wa.me/9647814993629" class="social-btn btn-wa" target="_blank">
+                💬 تواصل واتساب
+            </a>
+            <a href="https://instagram.com/ash2oo1" class="social-btn btn-ig" target="_blank">
+                📸 إنستغرام
+            </a>
         </div>
-        <div class="result-item">
-            <span>الكميات المتبقية (م³):</span>
-            <span class="result-value" id="resRemainingVol">0</span>
+    </div>
+
+    <div class="content-padding">
+        <div class="section">
+            <div class="section-title">بيانات العقد الرسمية</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>المساحة (المتعاقد عليها) بالمتر المربع:</label>
+                    <input type="number" id="contractArea" placeholder="مثلاً: 3750 أو 7500">
+                </div>
+                <div class="form-group">
+                    <label>الكمية (المتعاقد عليها) بالمتر المكعب:</label>
+                    <input type="number" id="contractVol" placeholder="مثلاً: 37500 أو 75000">
+                </div>
+            </div>
         </div>
-        <div class="result-item">
-            <span>المساحة المستثمرة (م²):</span>
-            <span class="result-value" id="resInvestedArea">0</span>
+
+        <div class="section">
+            <div class="section-title">إحداثيات المقلع (نظام UTM) للتوثيق الميداني</div>
+            <div class="gps-grid">
+                <div class="form-group">
+                    <button class="gps-btn" onclick="getCoordinates('point1')">التقاط إحداثيات الركن الأول (A)</button>
+                    <div id="point1" class="coord-display">E: --- | N: ---</div>
+                </div>
+                <div class="form-group">
+                    <button class="gps-btn" onclick="getCoordinates('point2')">التقاط إحداثيات الركن الثاني (B)</button>
+                    <div id="point2" class="coord-display">E: --- | N: ---</div>
+                </div>
+                <div class="form-group">
+                    <button class="gps-btn" onclick="getCoordinates('point3')">التقاط إحداثيات الركن الثالث (C)</button>
+                    <div id="point3" class="coord-display">E: --- | N: ---</div>
+                </div>
+                <div class="form-group">
+                    <button class="gps-btn" onclick="getCoordinates('point4')">التقاط إحداثيات الركن الرابع (D)</button>
+                    <div id="point4" class="coord-display">E: --- | N: ---</div>
+                </div>
+            </div>
         </div>
-        <div class="result-item">
-            <span>المساحة المتبقية (م²):</span>
-            <span class="result-value" id="resRemainingArea">0</span>
-        </div>
-        <div class="result-item">
-            <span>أقصى عمق للاستثمار (م):</span>
-            <span class="result-value" id="resMaxDepth">0</span>
+
+        <div class="section">
+            <div class="section-title">القياسات الميدانية للمنطقة المستثمرة</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>الطول الميداني (متر):</label>
+                    <input type="number" id="fieldLength" placeholder="أدخل الطول">
+                </div>
+                <div class="form-group">
+                    <label>العرض الميداني (متر):</label>
+                    <input type="number" id="fieldWidth" placeholder="أدخل العرض">
+                </div>
+                <div class="form-group">
+                    <label>أقصى عمق للاستثمار (متر):</label>
+                    <input type="number" id="fieldDepth" placeholder="أدخل العمق">
+                </div>
+            </div>
         </div>
         
-        <div id="percentageNote" class="percentage-note"></div>
-        
-        <canvas id="geoCanvas" width="850" height="550"></canvas>
+        <div class="section">
+            <div class="section-title">تخصيص ألوان المرتسم المساحي</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>لون المساحة المستثمرة:</label>
+                    <input type="color" id="colorInvFill" value="#cceeff">
+                </div>
+                <div class="form-group">
+                    <label>لون المساحة المتبقية:</label>
+                    <input type="color" id="colorRemFill" value="#115577">
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-calc" onclick="calculateResults()">حساب النتائج ورسم المرتسم الجيولوجي</button>
+
+        <div id="resultsSection" class="section">
+            <div class="section-title" style="border-bottom-color: #27ae60; color: #27ae60;">النتائج النهائية للتقرير الجيولوجي</div>
+            
+            <div class="result-item">
+                <span>الكميات المستخرجة لغاية يوم الزيارة (م³):</span>
+                <span class="result-value" id="resExtractedVol">0</span>
+            </div>
+            <div class="result-item">
+                <span>الكميات المتبقية (م³):</span>
+                <span class="result-value" id="resRemainingVol">0</span>
+            </div>
+            <div class="result-item">
+                <span>المساحة المستثمرة (م²):</span>
+                <span class="result-value" id="resInvestedArea">0</span>
+            </div>
+            <div class="result-item">
+                <span>المساحة المتبقية (م²):</span>
+                <span class="result-value" id="resRemainingArea">0</span>
+            </div>
+            <div class="result-item">
+                <span>أقصى عمق للاستثمار (م):</span>
+                <span class="result-value" id="resMaxDepth">0</span>
+            </div>
+            
+            <div id="percentageNote" class="percentage-note"></div>
+            
+            <canvas id="geoCanvas" width="850" height="550"></canvas>
+        </div>
     </div>
 
     <div class="footer">
-        جميع الحقوق محفوظة لدى الجيولوجي علي شندل فلاح &copy; 2026
+        جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي &copy; 2026
     </div>
 </div>
 
@@ -223,15 +254,12 @@
 
         const margin = 70;
         const drawW = canvas.width - (margin * 2);
-        // ترك مساحة أكبر في الأسفل لمقياس الرسم
         const drawH = canvas.height - (margin * 2) - 60; 
 
-        // حساب الأبعاد الكلية (بافتراض أن المستثمر أخذ العرض بالكامل)
-        let totalW = fieldWidth > 0 ? fieldWidth : 100; // محور Y (العرض)
-        let totalL = totalArea / totalW; // محور X (الطول الكلي للمقلع)
+        let totalW = fieldWidth > 0 ? fieldWidth : 100; 
+        let totalL = totalArea / totalW; 
         if (totalArea === 0) totalL = 100;
 
-        // رسم محاور القياس مع شبكة خفيفة
         ctx.beginPath();
         ctx.strokeStyle = '#333';
         ctx.lineWidth = 2;
@@ -244,7 +272,6 @@
         ctx.font = '14px Arial';
         ctx.textAlign = 'center';
 
-        // تدريجات الطول (X)
         let tickIntX = totalL > 100 ? 50 : 10;
         for (let i = 0; i <= totalL; i += tickIntX) {
             let xPos = margin + (i / totalL) * drawW;
@@ -256,7 +283,6 @@
             ctx.fillText(i.toFixed(0), xPos, margin + drawH + 25);
         }
 
-        // تدريجات العرض (Y)
         ctx.textAlign = 'right';
         ctx.textBaseline = 'middle';
         let tickIntY = totalW > 100 ? 50 : 10;
@@ -270,11 +296,9 @@
             ctx.fillText(i.toFixed(0), margin - 15, yPos);
         }
 
-        // حساب عرض المستطيلات بالبكسل بناءً على النسبة
         let invPixelW = drawW * (invPct / 100);
         let remPixelW = drawW * (remPct / 100);
 
-        // 1. رسم المساحة المستثمرة (في الجهة اليسرى)
         if (invPct > 0) {
             ctx.fillStyle = colInv; 
             ctx.fillRect(margin, margin, invPixelW, drawH);
@@ -291,7 +315,6 @@
             }
         }
 
-        // 2. رسم المساحة المتبقية (في الجهة اليمنى)
         if (remPct > 0) {
             ctx.fillStyle = colRem; 
             ctx.fillRect(margin + invPixelW, margin, remPixelW, drawH);
@@ -308,17 +331,15 @@
             }
         }
 
-        // 3. وضع الأحرف (A, B, C, D) على زوايا المقلع الكلي فقط
         ctx.fillStyle = '#000';
         ctx.font = 'bold 22px "Times New Roman", serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('A', margin - 20, margin - 15); // أعلى اليسار
-        ctx.fillText('B', margin + drawW + 20, margin - 15); // أعلى اليمين
-        ctx.fillText('C', margin + drawW + 20, margin + drawH + 20); // أسفل اليمين
-        ctx.fillText('D', margin - 20, margin + drawH + 20); // أسفل اليسار
+        ctx.fillText('A', margin - 20, margin - 15); 
+        ctx.fillText('B', margin + drawW + 20, margin - 15); 
+        ctx.fillText('C', margin + drawW + 20, margin + drawH + 20); 
+        ctx.fillText('D', margin - 20, margin + drawH + 20); 
 
-        // 4. مسميات المحاور والعنوان
         ctx.fillStyle = '#000';
         ctx.font = 'bold 18px Arial';
         ctx.textAlign = 'center';
@@ -334,14 +355,13 @@
         ctx.textAlign = 'right';
         ctx.fillText('• المرتسم الخاص بالمساحات المستثمرة والمتبقية (Scale Plan)', canvas.width - 20, 30);
 
-        // 5. إضافة مقياس الرسم (Scale Bar) في الأسفل
         let scaleUnit = 10;
         if (totalL > 50) scaleUnit = 20;
         if (totalL > 100) scaleUnit = 50;
         if (totalL > 250) scaleUnit = 100;
 
         const scaleBarPixels = (scaleUnit / totalL) * drawW;
-        const scaleBarY = canvas.height - 30; // موضع المقياس في أسفل الكانفاس
+        const scaleBarY = canvas.height - 30; 
 
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 2;
