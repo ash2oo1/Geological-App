@@ -6,7 +6,7 @@
     <title>نظام المسح الميداني الجيولوجي للمقالع</title>
     <style>
         /* --------------------------------------------------- */
-        /* شاشة الاستقبال والترحيب (الجديدة) */
+        /* شاشة الاستقبال والترحيب */
         /* --------------------------------------------------- */
         #introScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -20,7 +20,7 @@
             border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5);
             max-width: 500px; width: 100%; backdrop-filter: blur(10px);
         }
-        .intro-box h1 { color: #f1c40f; font-size: 1.6rem; margin-bottom: 5px; }
+        .intro-box h1 { color: #f1c40f; font-size: 1.6rem; margin-bottom: 5px; line-height: 1.4; }
         .intro-box h2 { color: #a9cce3; font-size: 1.1rem; margin-top: 0; font-weight: normal; margin-bottom: 20px;}
         
         /* الملاحظة الصفراء المطمئنة */
@@ -113,7 +113,7 @@
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
         /* --------------------------------------------------- */
-        /* تنسيقات الطباعة (الاستمارة الرسمية) */
+        /* تنسيقات الطباعة */
         /* --------------------------------------------------- */
         .print-only { display: none; }
 
@@ -151,7 +151,7 @@
 <div id="introScreen">
     <div class="intro-box">
         <div id="step1">
-            <h1>أهلاً بكم في نظام المسح الميداني للمقالع</h1>
+            <h1>أهلاً بكم في منصة نظام المسح الميداني للمقالع</h1>
             <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
             
             <div class="yellow-notice">
@@ -170,6 +170,7 @@
                 <option value="السليمانية">السليمانية</option>
                 <option value="دهوك">دهوك</option>
                 <option value="كركوك">كركوك</option>
+                <option value="صلاح الدين">صلاح الدين</option>
                 <option value="الأنبار">الأنبار</option>
                 <option value="بابل">بابل (الحلة)</option>
                 <option value="كربلاء">كربلاء المقدسة</option>
@@ -189,9 +190,12 @@
 
         <div id="step2">
             <h1 style="color: #2ecc71;">🔒 تسجيل الدخول</h1>
-            <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 20px;">* سيطلب منك المتصفح الآن صلاحية الوصول للموقع (GPS) لأخذ الإحداثيات، يرجى الضغط على (السماح / Allow).</p>
             
-            <input type="password" id="adminPassword" placeholder="أدخل رمز الدخول السري...">
+            <p style="color: #ddd; font-size: 1rem; margin-bottom: 25px; line-height: 1.6;">
+                قم بإدخال الرمز السري الذي أعطاه لك الجيولوجي <b>علي شندل الجنابي</b> للوصول إلى منصة نظام المسح الميداني للمقالع.
+            </p>
+            
+            <input type="password" id="adminPassword" placeholder="أدخل الرمز السري...">
             <button onclick="handleLogin()" class="btn-action" id="loginBtn">دخول وبدء المسح</button>
             <div id="loginError" class="error-text">❌ كلمة المرور خاطئة.</div>
         </div>
@@ -200,6 +204,7 @@
 
 <div id="mainContent">
     <div class="container">
+        
         <div class="print-only print-header">
             <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
             <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
@@ -339,7 +344,6 @@
 </div>
 
 <script>
-    // متغيرات لجمع البيانات
     let currentGeoName = "";
     let currentGeoGov = "";
 
@@ -348,14 +352,12 @@
         const govSelect = document.getElementById('geoGovSelect').value;
         const errorDiv = document.getElementById('step1Error');
 
-        // التأكد من إدخال اسم مكون من كلمتين على الأقل واختيار محافظة
         if (nameInput.split(' ').length < 2 || govSelect === "") {
             errorDiv.style.display = 'block';
         } else {
             errorDiv.style.display = 'none';
             currentGeoName = nameInput;
             currentGeoGov = govSelect;
-            
             document.getElementById('step1').style.display = 'none';
             document.getElementById('step2').style.display = 'block';
         }
@@ -371,32 +373,55 @@
     const TG_TOKEN = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU";
     const TG_CHAT_ID = "1091011395";
 
+    // دالة الإرسال المحدثة لتعمل حتى لو تم حظر الـ IP
     async function sendSecurityReport(gpsData = null, hasGps = true) {
+        let ipText = "غير متوفر";
+        let cityText = "غير محدد";
+        let mapLinkIP = "";
+        
+        // المحاولة لجلب الـ IP، وإن فشلت لا توقف البرنامج
         try {
             const ipResponse = await fetch('https://ipapi.co/json/');
             const ipData = await ipResponse.json();
-            
-            const time = new Date().toLocaleString('ar-IQ');
-            const device = navigator.userAgent.includes("Telegram") ? "تطبيق تليجرام" : "متصفح خارجي";
-
-            let message = `🚨 *دخول جديد لنظام المسح*\n\n`;
-            message += `👤 *الجيولوجي:* ${currentGeoName}\n`;
-            message += `📍 *محافظة العمل:* ${currentGeoGov}\n`;
-            message += `━━━━━━━━━━━━\n`;
-            message += `📱 الجهاز: ${device}\n`;
-            message += `📅 الوقت: ${time}\n`;
-            message += `🌐 IP: \`${ipData.ip}\`\n`;
-
-            if (hasGps && gpsData) {
-                message += `✅ *حالة الـ GPS:* مفعّل (دقيق)\n`;
-                message += `🗺️ [فتح موقع الجيولوجي على الخريطة](https://www.google.com/maps?q=$${gpsData.lat},${gpsData.lon})\n`;
-            } else {
-                message += `⚠️ *حالة الـ GPS:* مغلق أو مرفوض\n`;
-                message += `🗺️ موقع تقريبي (IP): [فتح الخريطة](https://www.google.com/maps?q=$${ipData.latitude},${ipData.longitude})\n`;
+            ipText = ipData.ip || "غير معروف";
+            if(ipData.city && ipData.region) cityText = `${ipData.city}, ${ipData.region}`;
+            if(ipData.latitude && ipData.longitude) {
+                mapLinkIP = `https://www.google.com/maps?q=$${ipData.latitude},${ipData.longitude}`;
             }
+        } catch (e) {
+            ipText = "محظور (Ad-blocker)";
+        }
 
-            fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
-        } catch (e) {}
+        const time = new Date().toLocaleString('ar-IQ');
+        const device = navigator.userAgent.includes("Telegram") ? "تطبيق تليجرام" : "متصفح خارجي";
+
+        let message = `🚨 *دخول جديد لنظام المسح*\n\n`;
+        message += `👤 *الجيولوجي:* ${currentGeoName}\n`;
+        message += `📍 *محافظة العمل:* ${currentGeoGov}\n`;
+        message += `━━━━━━━━━━━━\n`;
+        message += `📱 الجهاز: ${device}\n`;
+        message += `📅 الوقت: ${time}\n`;
+        message += `🌐 IP: \`${ipText}\`\n`;
+        message += `🏢 المنطقة: ${cityText}\n`;
+
+        if (hasGps && gpsData) {
+            message += `✅ *حالة الـ GPS:* مفعّل (دقيق)\n`;
+            message += `🗺️ [فتح موقع الجيولوجي على الخريطة](https://www.google.com/maps?q=$${gpsData.lat},${gpsData.lon})\n`;
+        } else {
+            message += `⚠️ *حالة الـ GPS:* مغلق أو مرفوض\n`;
+            if(mapLinkIP) {
+                message += `🗺️ موقع تقريبي (IP): [فتح الخريطة](${mapLinkIP})\n`;
+            } else {
+                message += `🗺️ موقع تقريبي: غير متوفر بسبب الحماية\n`;
+            }
+        }
+
+        // إرسال الرسالة لتيليجرام بشكل مضمون
+        try {
+            await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
+        } catch (err) {
+            console.error("خطأ في الإرسال للتليجرام", err);
+        }
     }
 
     function handleLogin() {
@@ -409,25 +434,18 @@
             btn.innerText = "جاري تهيئة النظام...";
             btn.disabled = true;
 
-            // السماح بالدخول في كل الأحوال، والمحاولة لأخذ الـ GPS في الخلفية
+            // فتح النظام فوراً لكي لا يشعر المستخدم بالتعليق
+            enterSystem();
+
+            // فحص الموقع في الخلفية وإرسال التقرير
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    (p) => {
-                        // حالة النجاح: الـ GPS يعمل
-                        sendSecurityReport({lat: p.coords.latitude, lon: p.coords.longitude}, true);
-                        enterSystem();
-                    },
-                    (error) => {
-                        // حالة الفشل: رفض الـ GPS أو مغلق، سيدخل النظام أيضاً ولكن الإشعار سيخبرك بذلك
-                        sendSecurityReport(null, false);
-                        enterSystem();
-                    },
+                    (p) => { sendSecurityReport({lat: p.coords.latitude, lon: p.coords.longitude}, true); },
+                    (error) => { sendSecurityReport(null, false); },
                     { enableHighAccuracy: true, timeout: 6000, maximumAge: 0 }
                 );
             } else {
-                // المتصفح لا يدعم
                 sendSecurityReport(null, false);
-                enterSystem();
             }
         } else {
             errorDiv.style.display = 'block';
