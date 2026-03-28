@@ -6,30 +6,45 @@
     <title>نظام المسح الميداني الجيولوجي للمقالع</title>
     <style>
         /* --------------------------------------------------- */
-        /* شاشة الحماية */
+        /* شاشة الاستقبال والترحيب (الجديدة) */
         /* --------------------------------------------------- */
-        #lockScreen {
-            display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        #introScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: white; z-index: 9999; flex-direction: column;
+            color: white; z-index: 9999; display: flex;
             justify-content: center; align-items: center; text-align: center; padding: 20px;
+            overflow-y: auto;
         }
-        .password-box {
-            background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        .intro-box {
+            background: rgba(255, 255, 255, 0.05); padding: 30px; border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            max-width: 500px; width: 100%; backdrop-filter: blur(10px);
         }
-        .password-box input {
-            padding: 12px; font-size: 1.2rem; border-radius: 6px; border: none; 
-            text-align: center; width: 250px; margin-bottom: 15px; outline: none;
-            max-width: 100%;
+        .intro-box h1 { color: #f1c40f; font-size: 1.6rem; margin-bottom: 5px; }
+        .intro-box h2 { color: #a9cce3; font-size: 1.1rem; margin-top: 0; font-weight: normal; margin-bottom: 20px;}
+        
+        /* الملاحظة الصفراء المطمئنة */
+        .yellow-notice {
+            background: rgba(241, 196, 15, 0.15); border-right: 4px solid #f1c40f;
+            padding: 15px; border-radius: 6px; text-align: right; margin-bottom: 25px;
+            font-size: 0.95rem; line-height: 1.6; color: #fdfefe;
         }
-        .btn-unlock {
-            background: #27ae60; color: white; padding: 12px 30px; font-size: 1.2rem; 
+        
+        .intro-box input, .intro-box select {
+            width: 100%; padding: 12px; font-size: 1.1rem; border-radius: 6px; border: none; 
+            margin-bottom: 15px; outline: none; box-sizing: border-box; font-family: inherit;
+        }
+        .intro-box select { cursor: pointer; background-color: #fff; color: #333; }
+        
+        .btn-action {
+            background: #27ae60; color: white; padding: 15px; font-size: 1.2rem; 
             border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s;
         }
-        .btn-unlock:hover { background: #219150; }
-        #errorMsg { display: none; margin-top: 10px; font-weight: bold; }
+        .btn-action:hover { background: #219150; }
         
+        .error-text { color: #ff6b6b; font-weight: bold; margin-top: 10px; display: none; font-size: 0.9rem; }
+        
+        #step2 { display: none; }
         #mainContent { display: none; }
         /* --------------------------------------------------- */
 
@@ -104,26 +119,12 @@
 
         @media print {
             @page { margin: 0; size: A4 portrait; }
-            
-            body { 
-                background: white; 
-                margin: 1.5cm; 
-                padding: 0; 
-                color: #000;
-            }
+            body { background: white; margin: 1.5cm; padding: 0; color: #000; }
             .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
+            .header, .footer, .btn-calc, .btn-convert, .gps-btn, .social-links, .btn-print, #introScreen, #colorSection { display: none !important; }
             
-            .header, .footer, .btn-calc, .btn-convert, .gps-btn, .social-links, .btn-print, #lockScreen, #colorSection { 
-                display: none !important; 
-            }
-
             .print-only { display: block; }
-            .print-header { 
-                text-align: center; 
-                border-bottom: 4px double #1c2833; 
-                padding-bottom: 10px; 
-                margin-bottom: 30px; 
-            }
+            .print-header { text-align: center; border-bottom: 4px double #1c2833; padding-bottom: 10px; margin-bottom: 30px; }
             .print-header h1 { font-size: 22px; color: #000; margin: 0 0 5px 0; }
             .print-header h2 { font-size: 16px; color: #555; margin: 0; }
 
@@ -131,9 +132,7 @@
             .promo-box { border: 1px dashed #777; padding: 10px; margin: 10px auto; width: 80%; border-radius: 8px; background: #fafafa; }
 
             input[type="number"], input[type="text"] {
-                border: none !important; 
-                border-bottom: 1px dashed #000 !important; 
-                background: transparent !important;
+                border: none !important; border-bottom: 1px dashed #000 !important; background: transparent !important;
                 padding: 0; color: #000; font-weight: bold; font-size: 1.1rem; border-radius: 0; text-align: center;
             }
             .coord-display { border: none !important; background: transparent !important; padding: 0; font-size: 1rem; color: #000; margin-bottom: 5px; }
@@ -142,7 +141,6 @@
             .section-title { border-bottom: 2px solid #000; color: #000; }
             #resultsSection { border: 2px solid #000; background: transparent; }
             canvas { box-shadow: none; border: 1px solid #000; max-width: 100%; page-break-inside: avoid; }
-            
             body { counter-reset: page; }
             .page-number::after { content: "صفحة " counter(page); }
         }
@@ -150,19 +148,58 @@
 </head>
 <body>
 
-<div id="lockScreen">
-    <h1 style="color: #f1c40f;">🔒 نظام المسح الميداني</h1>
-    <p>بإشراف الجيولوجي علي شندل الجنابي<br>يرجى إدخال رمز الدخول للوصول إلى النظام.</p>
-    <div class="password-box">
-        <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور...">
-        <button onclick="handleLogin()" class="btn-unlock">فتح النظام</button>
-        <div id="errorMsg"></div>
+<div id="introScreen">
+    <div class="intro-box">
+        <div id="step1">
+            <h1>أهلاً بكم في نظام المسح الميداني للمقالع</h1>
+            <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
+            
+            <div class="yellow-notice">
+                ⚠️ <b>تعليمات فنية هامة:</b><br>
+                لضمان التقاط إحداثيات المقلع (UTM) بدقة متناهية ولتوثيق التقرير الميداني بصورة صحيحة، <b>يرجى التأكد من تشغيل (الموقع / GPS)</b> في هاتفك، ويُفضل أن تكون في منطقة مكشوفة لسهولة اتصال الهاتف بالأقمار الصناعية.
+            </div>
+
+            <input type="text" id="geoNameInput" placeholder="اسم الجيولوجي (الثلاثي)" required autocomplete="off">
+            
+            <select id="geoGovSelect" required>
+                <option value="" disabled selected>اختر محافظة العمل (المقلع)...</option>
+                <option value="بغداد">بغداد</option>
+                <option value="البصرة">البصرة</option>
+                <option value="نينوى">نينوى (الموصل)</option>
+                <option value="أربيل">أربيل</option>
+                <option value="السليمانية">السليمانية</option>
+                <option value="دهوك">دهوك</option>
+                <option value="كركوك">كركوك</option>
+                <option value="الأنبار">الأنبار</option>
+                <option value="بابل">بابل (الحلة)</option>
+                <option value="كربلاء">كربلاء المقدسة</option>
+                <option value="النجف">النجف الأشرف</option>
+                <option value="ديالى">ديالى (بعقوبة)</option>
+                <option value="واسط">واسط (الكوت)</option>
+                <option value="الديوانية">الديوانية (القادسية)</option>
+                <option value="ميسان">ميسان (العمارة)</option>
+                <option value="ذي قار">ذي قار (الناصرية)</option>
+                <option value="المثنى">المثنى (السماوة)</option>
+                <option value="حلبجة">حلبجة</option>
+            </select>
+
+            <button onclick="goToStep2()" class="btn-action">متابعة ⬅️</button>
+            <div id="step1Error" class="error-text">❌ يرجى كتابة الاسم الثلاثي واختيار المحافظة.</div>
+        </div>
+
+        <div id="step2">
+            <h1 style="color: #2ecc71;">🔒 تسجيل الدخول</h1>
+            <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 20px;">* سيطلب منك المتصفح الآن صلاحية الوصول للموقع (GPS) لأخذ الإحداثيات، يرجى الضغط على (السماح / Allow).</p>
+            
+            <input type="password" id="adminPassword" placeholder="أدخل رمز الدخول السري...">
+            <button onclick="handleLogin()" class="btn-action" id="loginBtn">دخول وبدء المسح</button>
+            <div id="loginError" class="error-text">❌ كلمة المرور خاطئة.</div>
+        </div>
     </div>
 </div>
 
 <div id="mainContent">
     <div class="container">
-        
         <div class="print-only print-header">
             <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
             <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
@@ -171,7 +208,6 @@
         <div class="header">
             <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
             <h2 ondblclick="lockSystem()" style="cursor: pointer;" title="انقر مرتين هنا لإغلاق النظام">بإشراف الجيولوجي علي شندل الجنابي</h2>
-            
             <div class="social-links">
                 <a href="https://wa.me/9647814993629" class="social-btn btn-wa" target="_blank">💬 تواصل واتساب</a>
                 <a href="https://instagram.com/ash2oo1" class="social-btn btn-ig" target="_blank">📸 إنستغرام</a>
@@ -281,9 +317,7 @@
                 </div>
                 
                 <div id="percentageNote" class="percentage-note"></div>
-                
                 <canvas id="geoCanvas" width="850" height="550"></canvas>
-
                 <button class="btn-print" onclick="window.print()">📄 حفظ التقرير كملف PDF</button>
             </div>
         </div>
@@ -305,6 +339,28 @@
 </div>
 
 <script>
+    // متغيرات لجمع البيانات
+    let currentGeoName = "";
+    let currentGeoGov = "";
+
+    function goToStep2() {
+        const nameInput = document.getElementById('geoNameInput').value.trim();
+        const govSelect = document.getElementById('geoGovSelect').value;
+        const errorDiv = document.getElementById('step1Error');
+
+        // التأكد من إدخال اسم مكون من كلمتين على الأقل واختيار محافظة
+        if (nameInput.split(' ').length < 2 || govSelect === "") {
+            errorDiv.style.display = 'block';
+        } else {
+            errorDiv.style.display = 'none';
+            currentGeoName = nameInput;
+            currentGeoGov = govSelect;
+            
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+        }
+    }
+
     function convertDunam() {
         const dunam = parseFloat(document.getElementById('areaInDunam').value) || 0;
         const sqm = dunam * 2500;
@@ -315,7 +371,7 @@
     const TG_TOKEN = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU";
     const TG_CHAT_ID = "1091011395";
 
-    async function sendSecurityReport(gpsData = null, isAttempt = false) {
+    async function sendSecurityReport(gpsData = null, hasGps = true) {
         try {
             const ipResponse = await fetch('https://ipapi.co/json/');
             const ipData = await ipResponse.json();
@@ -323,19 +379,20 @@
             const time = new Date().toLocaleString('ar-IQ');
             const device = navigator.userAgent.includes("Telegram") ? "تطبيق تليجرام" : "متصفح خارجي";
 
-            let message = isAttempt ? `⚠️ *محاولة دخول فاشلة (GPS مغلق)*\n\n` : `🚨 *دخول ناجح للنظام*\n\n`;
+            let message = `🚨 *دخول جديد لنظام المسح*\n\n`;
+            message += `👤 *الجيولوجي:* ${currentGeoName}\n`;
+            message += `📍 *محافظة العمل:* ${currentGeoGov}\n`;
+            message += `━━━━━━━━━━━━\n`;
             message += `📱 الجهاز: ${device}\n`;
             message += `📅 الوقت: ${time}\n`;
-            message += `🌐 عنوان IP: \`${ipData.ip}\`\n`;
-            message += `🏢 المنطقة: ${ipData.city}, ${ipData.region}\n`;
+            message += `🌐 IP: \`${ipData.ip}\`\n`;
 
-            if (gpsData) {
-                // التصحيح للرابط المباشر
-                message += `📍 موقع GPS دقيق: [فتح الخريطة](https://www.google.com/maps?q=${gpsData.lat},${gpsData.lon})\n`;
+            if (hasGps && gpsData) {
+                message += `✅ *حالة الـ GPS:* مفعّل (دقيق)\n`;
+                message += `🗺️ [فتح موقع الجيولوجي على الخريطة](https://www.google.com/maps?q=$${gpsData.lat},${gpsData.lon})\n`;
             } else {
-                // التصحيح للرابط المباشر للـ IP
-                message += `📍 موقع تقريبي (IP): [فتح الخريطة](https://www.google.com/maps?q=${ipData.latitude},${ipData.longitude})\n`;
-                message += `⛔ *ملاحظة:* تم منعه من الدخول لأنه رفض تشغيل الـ GPS.`;
+                message += `⚠️ *حالة الـ GPS:* مغلق أو مرفوض\n`;
+                message += `🗺️ موقع تقريبي (IP): [فتح الخريطة](https://www.google.com/maps?q=$${ipData.latitude},${ipData.longitude})\n`;
             }
 
             fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
@@ -343,59 +400,51 @@
     }
 
     function handleLogin() {
+        const errorDiv = document.getElementById('loginError');
+        const btn = document.getElementById('loginBtn');
+
         if (document.getElementById('adminPassword').value === MASTER_PASSWORD) {
             
-            const btn = document.querySelector('.btn-unlock');
-            const originalText = btn.innerText;
-            btn.innerText = "جاري فحص الإحداثيات الأمنية...";
+            errorDiv.style.display = 'none';
+            btn.innerText = "جاري تهيئة النظام...";
             btn.disabled = true;
-            document.getElementById('errorMsg').style.display = 'none';
 
+            // السماح بالدخول في كل الأحوال، والمحاولة لأخذ الـ GPS في الخلفية
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (p) => {
-                        sendSecurityReport({lat: p.coords.latitude, lon: p.coords.longitude}, false);
-                        document.getElementById('lockScreen').style.display = 'none';
-                        document.getElementById('mainContent').style.display = 'block';
-                        btn.innerText = originalText;
-                        btn.disabled = false;
+                        // حالة النجاح: الـ GPS يعمل
+                        sendSecurityReport({lat: p.coords.latitude, lon: p.coords.longitude}, true);
+                        enterSystem();
                     },
                     (error) => {
-                        sendSecurityReport(null, true);
-                        const errorDiv = document.getElementById('errorMsg');
-                        
-                        // الرسالة التوجيهية الذكية مع زر إعادة المحاولة
-                        errorDiv.innerHTML = `
-                            <div style="background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; padding: 15px; border-radius: 8px; margin-top: 15px; text-align: right; color: #fff;">
-                                <strong style="color: #ffcccc; font-size: 1.1rem;">❌ الوصول معلق! نحتاج موقعك للمتابعة.</strong><br><br>
-                                <span style="font-size: 0.95rem; line-height: 1.5;">
-                                1. اسحب الشاشة للأسفل وقم بتشغيل <b>(الموقع / GPS)</b>.<br>
-                                2. إذا رفضت الصلاحية سابقاً، اضغط على <b>(القفل 🔒)</b> بجانب الرابط في الأعلى واختر "السماح بالموقع".
-                                </span><br>
-                                <button onclick="handleLogin()" style="margin-top: 15px; width: 100%; padding: 10px; background: #f1c40f; color: #333; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem;">🔄 لقد قمت بتشغيله، أعد الفحص</button>
-                            </div>
-                        `;
-                        errorDiv.style.display = 'block';
-                        btn.innerText = originalText;
-                        btn.disabled = false;
+                        // حالة الفشل: رفض الـ GPS أو مغلق، سيدخل النظام أيضاً ولكن الإشعار سيخبرك بذلك
+                        sendSecurityReport(null, false);
+                        enterSystem();
                     },
-                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                    { enableHighAccuracy: true, timeout: 6000, maximumAge: 0 }
                 );
             } else {
-                document.getElementById('errorMsg').innerHTML = "<span style='color: #ff6b6b;'>❌ متصفحك لا يدعم تحديد الموقع.</span>";
-                document.getElementById('errorMsg').style.display = 'block';
-                btn.innerText = originalText;
-                btn.disabled = false;
+                // المتصفح لا يدعم
+                sendSecurityReport(null, false);
+                enterSystem();
             }
         } else {
-            document.getElementById('errorMsg').innerHTML = "<span style='color: #ff6b6b;'>❌ كلمة المرور خاطئة.</span>";
-            document.getElementById('errorMsg').style.display = 'block';
+            errorDiv.style.display = 'block';
         }
+    }
+
+    function enterSystem() {
+        document.getElementById('introScreen').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
     }
 
     document.addEventListener('DOMContentLoaded', (event) => {
         document.getElementById("adminPassword").addEventListener("keypress", function(event) {
             if (event.key === "Enter") { event.preventDefault(); handleLogin(); }
+        });
+        document.getElementById("geoNameInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") { event.preventDefault(); goToStep2(); }
         });
     });
 
@@ -424,7 +473,7 @@
             navigator.geolocation.getCurrentPosition(function(position) {
                 const utm = latLonToUTM(position.coords.latitude, position.coords.longitude);
                 document.getElementById(elementId).innerHTML = `E: ${utm.easting} | N: ${utm.northing} <br> <span style="font-size:0.8rem; color:#7f8c8d;">(Zone: ${utm.zone}N)</span>`;
-            }, function() { alert("يرجى تفعيل خدمة الموقع (GPS) بدقة عالية."); }, { enableHighAccuracy: true });
+            }, function() { alert("يرجى تفعيل خدمة الموقع (GPS) بدقة عالية لأخذ الإحداثيات."); }, { enableHighAccuracy: true });
         } else { alert("المتصفح لا يدعم تحديد الموقع."); }
     }
 
@@ -475,130 +524,64 @@
         let totalL = totalArea / totalW; 
         if (totalArea === 0) totalL = 100;
 
-        ctx.beginPath();
-        ctx.strokeStyle = '#333';
-        ctx.lineWidth = 2;
-        ctx.moveTo(margin, margin);
-        ctx.lineTo(margin, margin + drawH);
-        ctx.lineTo(margin + drawW, margin + drawH);
-        ctx.stroke();
+        ctx.beginPath(); ctx.strokeStyle = '#333'; ctx.lineWidth = 2;
+        ctx.moveTo(margin, margin); ctx.lineTo(margin, margin + drawH); ctx.lineTo(margin + drawW, margin + drawH); ctx.stroke();
 
-        ctx.fillStyle = '#000';
-        ctx.font = '14px Arial';
-        ctx.textAlign = 'center';
+        ctx.fillStyle = '#000'; ctx.font = '14px Arial'; ctx.textAlign = 'center';
 
         let tickIntX = totalL > 100 ? 50 : 10;
         for (let i = 0; i <= totalL; i += tickIntX) {
             let xPos = margin + (i / totalL) * drawW;
             ctx.beginPath(); ctx.moveTo(xPos, margin + drawH); ctx.lineTo(xPos, margin + drawH + 10); ctx.stroke();
-            
-            ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1;
-            ctx.beginPath(); ctx.moveTo(xPos, margin); ctx.lineTo(xPos, margin + drawH); ctx.stroke(); ctx.restore();
-            
+            ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(xPos, margin); ctx.lineTo(xPos, margin + drawH); ctx.stroke(); ctx.restore();
             ctx.fillText(i.toFixed(0), xPos, margin + drawH + 25);
         }
 
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
         let tickIntY = totalW > 100 ? 50 : 10;
         for (let i = 0; i <= totalW; i += tickIntY) {
             let yPos = margin + drawH - (i / totalW) * drawH;
             ctx.beginPath(); ctx.moveTo(margin - 10, yPos); ctx.lineTo(margin, yPos); ctx.stroke();
-            
-            ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1;
-            ctx.beginPath(); ctx.moveTo(margin, yPos); ctx.lineTo(margin + drawW, yPos); ctx.stroke(); ctx.restore();
-            
+            ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(margin, yPos); ctx.lineTo(margin + drawW, yPos); ctx.stroke(); ctx.restore();
             ctx.fillText(i.toFixed(0), margin - 15, yPos);
         }
 
-        let invPixelW = drawW * (invPct / 100);
-        let remPixelW = drawW * (remPct / 100);
+        let invPixelW = drawW * (invPct / 100); let remPixelW = drawW * (remPct / 100);
 
         if (invPct > 0) {
-            ctx.fillStyle = colInv; 
-            ctx.fillRect(margin, margin, invPixelW, drawH);
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(margin, margin, invPixelW, drawH);
-
-            ctx.fillStyle = '#000';
-            ctx.textAlign = 'center';
-            ctx.font = 'bold 18px Arial';
-            if (invPixelW > 100) {
-                ctx.fillText(`المساحة المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 15);
-                ctx.fillText(`(${invPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 15);
-            }
+            ctx.fillStyle = colInv; ctx.fillRect(margin, margin, invPixelW, drawH);
+            ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin, margin, invPixelW, drawH);
+            ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.font = 'bold 18px Arial';
+            if (invPixelW > 100) { ctx.fillText(`المساحة المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${invPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 15); }
         }
 
         if (remPct > 0) {
-            ctx.fillStyle = colRem; 
-            ctx.fillRect(margin + invPixelW, margin, remPixelW, drawH);
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(margin + invPixelW, margin, remPixelW, drawH);
-
-            ctx.fillStyle = '#fff';
-            ctx.textAlign = 'center';
-            ctx.font = 'bold 18px Arial';
-            if (remPixelW > 100) {
-                ctx.fillText(`المساحة المتبقية`, margin + invPixelW + remPixelW/2, margin + drawH/2 - 15);
-                ctx.fillText(`(${remPct.toFixed(0)}%)`, margin + invPixelW + remPixelW/2, margin + drawH/2 + 15);
-            }
+            ctx.fillStyle = colRem; ctx.fillRect(margin + invPixelW, margin, remPixelW, drawH);
+            ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin + invPixelW, margin, remPixelW, drawH);
+            ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'bold 18px Arial';
+            if (remPixelW > 100) { ctx.fillText(`المساحة المتبقية`, margin + invPixelW + remPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${remPct.toFixed(0)}%)`, margin + invPixelW + remPixelW/2, margin + drawH/2 + 15); }
         }
 
-        ctx.fillStyle = '#000';
-        ctx.font = 'bold 22px "Times New Roman", serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('A', margin - 20, margin - 15); 
-        ctx.fillText('B', margin + drawW + 20, margin - 15); 
-        ctx.fillText('C', margin + drawW + 20, margin + drawH + 20); 
-        ctx.fillText('D', margin - 20, margin + drawH + 20); 
+        ctx.fillStyle = '#000'; ctx.font = 'bold 22px "Times New Roman", serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('A', margin - 20, margin - 15); ctx.fillText('B', margin + drawW + 20, margin - 15); 
+        ctx.fillText('C', margin + drawW + 20, margin + drawH + 20); ctx.fillText('D', margin - 20, margin + drawH + 20); 
 
-        ctx.fillStyle = '#000';
-        ctx.font = 'bold 18px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('الطول (m)', margin + drawW/2, margin + drawH + 55);
-        
-        ctx.save();
-        ctx.translate(margin - 50, margin + drawH/2);
-        ctx.rotate(-Math.PI/2);
-        ctx.fillText('العرض (m)', 0, 0);
-        ctx.restore();
+        ctx.fillStyle = '#000'; ctx.font = 'bold 18px Arial'; ctx.textAlign = 'center'; ctx.fillText('الطول (m)', margin + drawW/2, margin + drawH + 55);
+        ctx.save(); ctx.translate(margin - 50, margin + drawH/2); ctx.rotate(-Math.PI/2); ctx.fillText('العرض (m)', 0, 0); ctx.restore();
 
-        ctx.font = 'bold 20px Arial';
-        ctx.textAlign = 'right';
-        ctx.fillText('• المرتسم الخاص بالمساحات المستثمرة والمتبقية (Scale Plan)', canvas.width - 20, 30);
+        ctx.font = 'bold 20px Arial'; ctx.textAlign = 'right'; ctx.fillText('• المرتسم الخاص بالمساحات المستثمرة والمتبقية (Scale Plan)', canvas.width - 20, 30);
 
-        let scaleUnit = 10;
-        if (totalL > 50) scaleUnit = 20;
-        if (totalL > 100) scaleUnit = 50;
-        if (totalL > 250) scaleUnit = 100;
+        let scaleUnit = 10; if (totalL > 50) scaleUnit = 20; if (totalL > 100) scaleUnit = 50; if (totalL > 250) scaleUnit = 100;
+        const scaleBarPixels = (scaleUnit / totalL) * drawW; const scaleBarY = canvas.height - 30; 
 
-        const scaleBarPixels = (scaleUnit / totalL) * drawW;
-        const scaleBarY = canvas.height - 30; 
+        ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath();
+        ctx.moveTo(margin, scaleBarY - 5); ctx.lineTo(margin, scaleBarY + 5);
+        ctx.moveTo(margin, scaleBarY); ctx.lineTo(margin + scaleBarPixels, scaleBarY);
+        ctx.moveTo(margin + scaleBarPixels, scaleBarY - 5); ctx.lineTo(margin + scaleBarPixels, scaleBarY + 5); ctx.stroke();
 
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(margin, scaleBarY - 5);
-        ctx.lineTo(margin, scaleBarY + 5);
-        ctx.moveTo(margin, scaleBarY);
-        ctx.lineTo(margin + scaleBarPixels, scaleBarY);
-        ctx.moveTo(margin + scaleBarPixels, scaleBarY - 5);
-        ctx.lineTo(margin + scaleBarPixels, scaleBarY + 5);
-        ctx.stroke();
-
-        ctx.fillStyle = '#000';
-        ctx.font = 'bold 14px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-        ctx.fillText('0 م', margin, scaleBarY + 10);
-        ctx.fillText(`${scaleUnit} م`, margin + scaleBarPixels, scaleBarY + 10);
-        
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('مقياس رسم تخطيطي', margin + scaleBarPixels + 20, scaleBarY);
+        ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+        ctx.fillText('0 م', margin, scaleBarY + 10); ctx.fillText(`${scaleUnit} م`, margin + scaleBarPixels, scaleBarY + 10);
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('مقياس رسم تخطيطي', margin + scaleBarPixels + 20, scaleBarY);
     }
 </script>
 
