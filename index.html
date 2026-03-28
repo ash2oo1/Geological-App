@@ -21,7 +21,7 @@
         .password-box input {
             padding: 12px; font-size: 1.2rem; border-radius: 6px; border: none; 
             text-align: center; width: 250px; margin-bottom: 15px; outline: none;
-            max-width: 100%; /* تجاوب مربع الباسورد */
+            max-width: 100%;
         }
         .btn-unlock {
             background: #27ae60; color: white; padding: 12px 30px; font-size: 1.2rem; 
@@ -55,7 +55,6 @@
         .btn-ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
 
         .content-padding { padding: 30px; }
-        /* تقليل الحواف الجانبية في الهواتف */
         @media (max-width: 600px) {
             .content-padding { padding: 15px; }
             body { padding: 10px; }
@@ -79,17 +78,8 @@
         }
         .btn-convert:hover { background: #1c2833; }
 
-        /* --------------------------------------------------- */
-        /* التعديل الجديد: التجاوبية (Responsiveness) لنظام الإحداثيات */
-        /* --------------------------------------------------- */
-        /* التنسيق الأساسي (للهواتف) - عمود واحد */
         .gps-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        
-        /* للآيباد والحاسوب (شاشات أكبر من 768 بكسل) - عمودين */
-        @media (min-width: 768px) {
-            .gps-grid { grid-template-columns: 1fr 1fr; }
-        }
-        /* --------------------------------------------------- */
+        @media (min-width: 768px) { .gps-grid { grid-template-columns: 1fr 1fr; } }
 
         .gps-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: 0.2s; font-weight: bold; width: 100%; }
         .gps-btn:hover { background: var(--primary); }
@@ -108,13 +98,51 @@
         canvas { background: #fff; width: 100%; height: auto; margin-top: 20px; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
+
+        .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
+        .btn-print:hover { background: #c0392b; }
+
+        /* --------------------------------------------------- */
+        /* تنسيقات الطباعة (PDF) الاحترافية */
+        /* --------------------------------------------------- */
+        .print-only { display: none; } /* مخفية في الوضع العادي */
+
+        @media print {
+            body { background: white; padding: 0; margin: 0; color: #000; }
+            .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
+            
+            /* إخفاء الأزرار وأقسام التصفح */
+            .header, .footer, .btn-calc, .btn-convert, .gps-btn, .social-links, .btn-print, #lockScreen { display: none !important; }
+            input[type="color"] { display: none !important; }
+
+            /* إظهار الترويسة والتذييل الخاص بالطباعة */
+            .print-only { display: block; }
+            .print-header { text-align: center; border-bottom: 3px double #333; padding-bottom: 15px; margin-bottom: 20px; }
+            .print-header h1 { font-size: 22px; color: #000; margin: 0 0 5px 0; }
+            .print-header h2 { font-size: 16px; color: #555; margin: 0; }
+
+            .print-footer { margin-top: 40px; border-top: 2px solid #333; padding-top: 20px; text-align: center; font-size: 14px; page-break-inside: avoid; }
+            .promo-box { border: 1px dashed #777; padding: 10px; margin: 10px auto; width: 80%; border-radius: 8px; background: #fafafa; }
+
+            /* تحويل الحقول إلى نصوص للطباعة */
+            input[type="number"], input[type="text"] {
+                border: none; border-bottom: 1px dashed #000; background: transparent;
+                padding: 0; color: #000; font-weight: bold; font-size: 1.1rem; border-radius: 0; text-align: center;
+            }
+            .coord-display { border: none; background: transparent; padding: 0; font-size: 1rem; color: #000; margin-bottom: 5px; }
+            
+            /* ترتيب العناصر للورقة */
+            .section { margin-bottom: 20px; page-break-inside: avoid; }
+            #resultsSection { border: 2px solid #000; background: transparent; }
+            canvas { box-shadow: none; border: 1px solid #000; max-width: 100%; page-break-inside: avoid; }
+        }
     </style>
 </head>
 <body>
 
 <div id="lockScreen">
     <h1 style="color: #f1c40f;">🔒 نظام المسح الميداني</h1>
-    <p>بإشراف الجيولوجي علي شندل فلاح<br>يرجى إدخال رمز الدخول للوصول إلى النظام.</p>
+    <p>بإشراف الجيولوجي علي شندل الجنابي<br>يرجى إدخال رمز الدخول للوصول إلى النظام.</p>
     <div class="password-box">
         <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور...">
         <button onclick="handleLogin()" class="btn-unlock">فتح النظام</button>
@@ -124,17 +152,18 @@
 
 <div id="mainContent">
     <div class="container">
+        <div class="print-only print-header">
+            <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
+            <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
+        </div>
+
         <div class="header">
             <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
-            <h2 ondblclick="lockSystem()" style="cursor: pointer;" title="انقر مرتين هنا لإغلاق النظام">بإشراف الجيولوجي علي شندل فلاح</h2>
+            <h2 ondblclick="lockSystem()" style="cursor: pointer;" title="انقر مرتين هنا لإغلاق النظام">بإشراف الجيولوجي علي شندل الجنابي</h2>
             
             <div class="social-links">
-                <a href="https://wa.me/9647814993629" class="social-btn btn-wa" target="_blank">
-                    💬 تواصل واتساب
-                </a>
-                <a href="https://instagram.com/ash2oo1" class="social-btn btn-ig" target="_blank">
-                    📸 إنستغرام
-                </a>
+                <a href="https://wa.me/9647814993629" class="social-btn btn-wa" target="_blank">💬 تواصل واتساب</a>
+                <a href="https://instagram.com/ash2oo1" class="social-btn btn-ig" target="_blank">📸 إنستغرام</a>
             </div>
         </div>
 
@@ -243,24 +272,33 @@
                 <div id="percentageNote" class="percentage-note"></div>
                 
                 <canvas id="geoCanvas" width="850" height="550"></canvas>
+
+                <button class="btn-print" onclick="window.print()">📄 حفظ التقرير كملف PDF</button>
             </div>
         </div>
 
+        <div class="print-only print-footer">
+            <div class="promo-box">
+                <h3 style="margin-top: 0; color: #333;">📱 صُنع هذا النظام لتسهيل العمل الجيولوجي</h3>
+                <p>للتواصل والاستفسار أو لطلب أنظمة مشابهة:</p>
+                <p><strong>واتساب:</strong> 07814993629 | <strong>إنستغرام:</strong> @ash2oo1</p>
+            </div>
+            <p>جميع الحقوق محفوظة والنظام مبرمج حصرياً لدى الجيولوجي <strong>علي شندل الجنابي</strong> &copy; 2026</p>
+        </div>
+
         <div class="footer">
-            جميع الحقوق محفوظة لدى الجيولوجي علي شندل فلاح © 2026
+            جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026
         </div>
     </div>
 </div>
 
 <script>
-    // تحويل الدونم
     function convertDunam() {
         const dunam = parseFloat(document.getElementById('areaInDunam').value) || 0;
         const sqm = dunam * 2500;
         document.getElementById('contractArea').value = sqm > 0 ? sqm : '';
     }
 
-    // الأمان والرادار 
     const MASTER_PASSWORD = "ali123";
     const TG_TOKEN = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU";
     const TG_CHAT_ID = "1091011395";
@@ -319,7 +357,6 @@
 
     function lockSystem() { location.reload(); }
 
-    // أكوادك الجيولوجية الأصلية
     function latLonToUTM(lat, lon) {
         const a = 6378137.0; const eccSquared = 0.00669438; const k0 = 0.9996;
         let zoneNumber = Math.floor((lon + 180) / 6) + 1;
