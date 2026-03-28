@@ -28,7 +28,7 @@
             border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s;
         }
         .btn-unlock:hover { background: #219150; }
-        #errorMsg { display: none; color: #ff6b6b; margin-top: 10px; font-weight: bold; }
+        #errorMsg { display: none; margin-top: 10px; font-weight: bold; }
         
         #mainContent { display: none; }
         /* --------------------------------------------------- */
@@ -100,26 +100,23 @@
         /* --------------------------------------------------- */
         /* تنسيقات الطباعة (الاستمارة الرسمية) */
         /* --------------------------------------------------- */
-        .print-only { display: none; } /* مخفية في الوضع العادي */
+        .print-only { display: none; }
 
         @media print {
-            /* هذه الأسطر السحرية تلغي التاريخ والوقت والروابط التلقائية */
             @page { margin: 0; size: A4 portrait; }
             
             body { 
                 background: white; 
-                margin: 1.5cm; /* إعادة الهامش لداخل الورقة بعد تصفير الصفحة */
+                margin: 1.5cm; 
                 padding: 0; 
                 color: #000;
             }
             .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
             
-            /* إخفاء الأزرار وأقسام التصفح وقسم الألوان تماماً */
             .header, .footer, .btn-calc, .btn-convert, .gps-btn, .social-links, .btn-print, #lockScreen, #colorSection { 
                 display: none !important; 
             }
 
-            /* إظهار الترويسة الأنيقة ذات الخط المزدوج */
             .print-only { display: block; }
             .print-header { 
                 text-align: center; 
@@ -133,7 +130,6 @@
             .print-footer { margin-top: 40px; border-top: 2px solid #333; padding-top: 20px; text-align: center; font-size: 14px; page-break-inside: avoid; }
             .promo-box { border: 1px dashed #777; padding: 10px; margin: 10px auto; width: 80%; border-radius: 8px; background: #fafafa; }
 
-            /* تحويل مربعات الإدخال إلى شكل استمارة رسمية */
             input[type="number"], input[type="text"] {
                 border: none !important; 
                 border-bottom: 1px dashed #000 !important; 
@@ -147,7 +143,6 @@
             #resultsSection { border: 2px solid #000; background: transparent; }
             canvas { box-shadow: none; border: 1px solid #000; max-width: 100%; page-break-inside: avoid; }
             
-            /* ترقيم الصفحات (يعمل في بعض المتصفحات المتقدمة) */
             body { counter-reset: page; }
             .page-number::after { content: "صفحة " counter(page); }
         }
@@ -161,7 +156,7 @@
     <div class="password-box">
         <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور...">
         <button onclick="handleLogin()" class="btn-unlock">فتح النظام</button>
-        <div id="errorMsg">❌ كلمة المرور خاطئة.</div>
+        <div id="errorMsg"></div>
     </div>
 </div>
 
@@ -320,7 +315,6 @@
     const TG_TOKEN = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU";
     const TG_CHAT_ID = "1091011395";
 
-    // دالة الإشعار الأمني مع روابط الخرائط المصححة
     async function sendSecurityReport(gpsData = null, isAttempt = false) {
         try {
             const ipResponse = await fetch('https://ipapi.co/json/');
@@ -336,11 +330,11 @@
             message += `🏢 المنطقة: ${ipData.city}, ${ipData.region}\n`;
 
             if (gpsData) {
-                // تم تصحيح الرابط هنا
-                message += `📍 موقع GPS دقيق: [فتح الخريطة](https://maps.google.com/?q=${gpsData.lat},${gpsData.lon})\n`;
+                // التصحيح للرابط المباشر
+                message += `📍 موقع GPS دقيق: [فتح الخريطة](https://www.google.com/maps?q=${gpsData.lat},${gpsData.lon})\n`;
             } else {
-                // تم تصحيح الرابط هنا أيضاً
-                message += `📍 موقع تقريبي (IP): [فتح الخريطة](https://maps.google.com/?q=${ipData.latitude},${ipData.longitude})\n`;
+                // التصحيح للرابط المباشر للـ IP
+                message += `📍 موقع تقريبي (IP): [فتح الخريطة](https://www.google.com/maps?q=${ipData.latitude},${ipData.longitude})\n`;
                 message += `⛔ *ملاحظة:* تم منعه من الدخول لأنه رفض تشغيل الـ GPS.`;
             }
 
@@ -355,6 +349,7 @@
             const originalText = btn.innerText;
             btn.innerText = "جاري فحص الإحداثيات الأمنية...";
             btn.disabled = true;
+            document.getElementById('errorMsg').style.display = 'none';
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
@@ -368,7 +363,18 @@
                     (error) => {
                         sendSecurityReport(null, true);
                         const errorDiv = document.getElementById('errorMsg');
-                        errorDiv.innerHTML = "❌ الوصول مرفوض: يجب تشغيل الموقع (GPS) وإعطاء الصلاحية لفتح النظام.";
+                        
+                        // الرسالة التوجيهية الذكية مع زر إعادة المحاولة
+                        errorDiv.innerHTML = `
+                            <div style="background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; padding: 15px; border-radius: 8px; margin-top: 15px; text-align: right; color: #fff;">
+                                <strong style="color: #ffcccc; font-size: 1.1rem;">❌ الوصول معلق! نحتاج موقعك للمتابعة.</strong><br><br>
+                                <span style="font-size: 0.95rem; line-height: 1.5;">
+                                1. اسحب الشاشة للأسفل وقم بتشغيل <b>(الموقع / GPS)</b>.<br>
+                                2. إذا رفضت الصلاحية سابقاً، اضغط على <b>(القفل 🔒)</b> بجانب الرابط في الأعلى واختر "السماح بالموقع".
+                                </span><br>
+                                <button onclick="handleLogin()" style="margin-top: 15px; width: 100%; padding: 10px; background: #f1c40f; color: #333; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem;">🔄 لقد قمت بتشغيله، أعد الفحص</button>
+                            </div>
+                        `;
                         errorDiv.style.display = 'block';
                         btn.innerText = originalText;
                         btn.disabled = false;
@@ -376,13 +382,13 @@
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                 );
             } else {
-                document.getElementById('errorMsg').innerHTML = "❌ متصفحك لا يدعم تحديد الموقع.";
+                document.getElementById('errorMsg').innerHTML = "<span style='color: #ff6b6b;'>❌ متصفحك لا يدعم تحديد الموقع.</span>";
                 document.getElementById('errorMsg').style.display = 'block';
                 btn.innerText = originalText;
                 btn.disabled = false;
             }
         } else {
-            document.getElementById('errorMsg').innerHTML = "❌ كلمة المرور خاطئة.";
+            document.getElementById('errorMsg').innerHTML = "<span style='color: #ff6b6b;'>❌ كلمة المرور خاطئة.</span>";
             document.getElementById('errorMsg').style.display = 'block';
         }
     }
