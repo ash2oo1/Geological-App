@@ -114,68 +114,82 @@
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
         /* --------------------------------------------------- */
-        /* التنسيق الهندسي للطباعة (PDF) - صفحتين فقط */
+        /* التنسيق الهندسي للطباعة (PDF) - صفحتين فقط وبدون إضافات المتصفح */
         /* --------------------------------------------------- */
         .print-only { display: none; }
         
         @media print {
-            @page { margin: 1cm; size: A4 portrait; }
+            /* الغاء حواف المتصفح الافتراضية لمنع الرابط والنصوص الصغيرة */
+            @page { margin: 0; size: A4 portrait; }
             * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; print-color-adjust: exact !important; }
             
             body { background: white; margin: 0; padding: 0; color: #333; font-family: 'Arial', sans-serif; }
-            .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
+            .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; background: white; }
             
             /* إخفاء كل ما هو غير مخصص للطباعة */
             .screen-only, .header, .footer, .btn-calc, .btn-convert, .gps-btn, .social-links, .btn-print, #introScreen, #colorSection { display: none !important; }
             .print-only { display: block; }
             
-            /* تصميم الصفحة لملء مساحة A4 مع فوتر ثابت بالأسفل */
-            .print-page {
-                position: relative;
-                min-height: 27cm; /* ارتفاع تقريبي لورقة A4 مطبوعة */
-                page-break-after: always;
+            /* تصميم الصفحات لملء مساحة A4 بدقة */
+            .print-page-wrapper {
+                height: 29.6cm; /* ارتفاع ورقة A4 */
+                width: 100%;
                 box-sizing: border-box;
-                padding-bottom: 2cm; /* مساحة مخصصة للفوتر السفلي */
+                padding: 1.5cm 1.5cm 1cm 1.5cm; /* حواف داخلية آمنة */
+                page-break-after: always;
+                position: relative;
+                background: white;
             }
+            /* الصفحة الأخيرة لا تحتاج فاصل بعدها */
+            .print-page-wrapper:last-child { page-break-after: auto; }
             
-            /* الفوتر السفلي الذي سيحتوي التاريخ ورقم الصفحة */
+            /* الفوتر السفلي (رقم الصفحة فقط) */
             .print-bottom {
                 position: absolute;
-                bottom: 0;
+                bottom: 1cm;
                 left: 0;
                 width: 100%;
+                text-align: center;
+                font-weight: bold;
+                font-size: 16px;
+                color: #333;
             }
 
-            /* إجبار حقول الإدخال على الاصطفاف الجانبي دائماً */
-            .form-row { display: flex !important; flex-wrap: nowrap !important; gap: 15px !important; justify-content: space-between !important; margin-bottom: 10px !important; }
+            /* إجبار الحقول على الترتيب الجانبي */
+            .form-row { display: flex !important; flex-wrap: nowrap !important; gap: 15px !important; justify-content: space-between !important; margin-bottom: 15px !important; }
             .form-group { flex: 1 !important; min-width: 0 !important; }
 
-            /* الترويسة المكررة */
+            /* الترويسة المكررة مع التاريخ أعلى اليسار */
             .print-header { 
                 text-align: center; border: 2px solid #2980b9; background-color: #f4f9fc;
-                padding: 15px; margin-bottom: 20px; border-radius: 8px;
+                padding: 15px; margin-bottom: 25px; border-radius: 8px; position: relative;
             }
             .print-header h1 { font-size: 20px; color: #1c2833; margin: 0 0 5px 0; }
             .print-header h2 { font-size: 15px; color: #e67e22; margin: 0; font-weight: bold; }
+            /* التاريخ أعلى اليسار داخل المستطيل الأزرق */
+            .date-top-left {
+                position: absolute; top: 10px; left: 15px; font-size: 12px; color: #555; font-weight: bold;
+            }
 
             /* الأقسام الداخلية */
-            .section { margin-bottom: 15px; border: 1px solid #bdc3c7; border-radius: 8px; padding: 12px; background-color: #fafafa; }
-            .section-title { border-bottom: 2px solid #2980b9; color: #2980b9 !important; margin-top: 0; padding-bottom: 5px; margin-bottom: 10px; font-size: 1.1rem; }
+            .section { margin-bottom: 20px; border: 1px solid #bdc3c7; border-radius: 8px; padding: 15px; background-color: #fafafa; }
+            .section-title { border-bottom: 2px solid #2980b9; color: #2980b9 !important; margin-top: 0; padding-bottom: 5px; margin-bottom: 15px; font-size: 1.1rem; }
 
-            label { color: #555 !important; font-size: 0.85rem; }
+            label { color: #555 !important; font-size: 0.9rem; }
             input[type="number"], input[type="text"] { 
                 border: none !important; border-bottom: 1.5px dashed #2980b9 !important; 
                 background: transparent !important; padding: 2px 0; 
                 color: #16a085 !important; font-weight: bold; font-size: 1rem; border-radius: 0; text-align: center; width: 100%;
             }
-            .coord-display { border: 1px solid #d5dbdb !important; background: #fff !important; padding: 6px; font-size: 0.85rem; color: #2c3e50 !important; margin-bottom: 5px; }
+            .coord-display { border: 1px solid #d5dbdb !important; background: #fff !important; padding: 8px; font-size: 0.9rem; color: #2c3e50 !important; margin-bottom: 5px; }
             
-            #resultsSection { border: 2px solid #27ae60 !important; background: #f9fff9 !important; }
+            #resultsSection { border: 2px solid #27ae60 !important; background: #f9fff9 !important; padding: 15px; }
             .result-item { padding: 8px 0; font-size: 1rem; border-bottom: 1px dashed #bdc3c7; }
             .result-value { color: #27ae60 !important; font-size: 1.1rem; }
-            .percentage-note { background: #eafaf1 !important; border-right: 4px solid #27ae60 !important; color: #1e8449 !important; padding: 10px; font-size: 0.9rem; }
+            .percentage-note { background: #eafaf1 !important; border-right: 4px solid #27ae60 !important; color: #1e8449 !important; padding: 10px; font-size: 0.95rem; margin-top: 15px; }
 
-            canvas { box-shadow: none; border: 2px solid #34495e !important; max-width: 100%; border-radius: 4px; margin-top: 5px; }
+            /* تحجيم الكانفاس لضمان عدم انتقاله لصفحة ثالثة */
+            canvas { box-shadow: none; border: 2px solid #34495e !important; max-width: 100%; max-height: 420px; border-radius: 4px; margin-top: 15px; object-fit: contain; }
             
             .content-padding { padding: 0 !important; }
         }
@@ -219,7 +233,7 @@
         <div id="step2">
             
             <p style="color: #ddd; font-size: 1.05rem; margin-bottom: 25px; line-height: 1.8;">
-                قم بإدخال المعلومات التالية بحذر وبصورة صحيحة جداً:<br>
+                قم بإدخال المعلومات التالية بحذر وبصورة صحيحة جداً:<br><br>
                 <b>أولاً:</b> اسم الجيولوجي الثلاثي.<br>
                 <b>ثانياً:</b> رمز الدخول السري (الذي حصلت عليه من الجيولوجي علي شندل الجنابي مؤسس المنصة).
             </p>
@@ -245,9 +259,10 @@
             </div>
         </div>
 
-        <div class="print-page">
+        <div class="print-page-wrapper">
             
             <div class="print-only print-header">
+                <span class="date-top-left printDateHeader"></span>
                 <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
                 <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
             </div>
@@ -317,16 +332,12 @@
 
             </div>
             
-            <div class="print-only print-bottom">
-                <div style="text-align: right; font-weight: bold; font-size: 1rem; color: #1c2833; margin-bottom: 10px;">
-                    📅 تاريخ ووقت زيارة المقلع: <span id="printDateVisit" style="color: #2980b9;"></span>
-                </div>
-                <div style="text-align: center; font-weight: bold; font-size: 16px;">1</div>
-            </div>
+            <div class="print-only print-bottom">1</div>
 
-        </div> <div class="print-page">
+        </div> <div class="print-page-wrapper">
             
             <div class="print-only print-header">
+                <span class="date-top-left printDateHeader"></span>
                 <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
                 <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
             </div>
@@ -380,9 +391,7 @@
                 </div>
             </div>
 
-            <div class="print-only print-bottom">
-                <div style="text-align: center; font-weight: bold; font-size: 16px;">2</div>
-            </div>
+            <div class="print-only print-bottom">2</div>
 
         </div> <div class="footer screen-only">
             جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026
@@ -636,11 +645,15 @@
         ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('مقياس رسم تخطيطي', margin + scaleBarPixels + 20, scaleBarY);
     }
 
-    // دالة الطباعة وتجهيز التاريخ
+    // دالة الطباعة التي تضع التاريخ أعلى يسار الصفحات فقط
     function prepareAndPrint() {
         const now = new Date();
-        const dateString = now.toLocaleDateString('ar-IQ') + '  |  الساعة: ' + now.toLocaleTimeString('ar-IQ', {hour: '2-digit', minute:'2-digit'});
-        document.getElementById('printDateVisit').innerText = dateString;
+        const dateString = now.toLocaleDateString('en-GB') + ' - ' + now.toLocaleTimeString('en-GB', {hour: '2-digit', minute:'2-digit'});
+        
+        // وضع التاريخ في المكان المخصص أعلى اليسار
+        const headers = document.querySelectorAll('.printDateHeader');
+        headers.forEach(h => h.innerText = dateString);
+        
         window.print();
     }
 </script>
