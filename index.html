@@ -6,20 +6,30 @@
     <title>نظام المسح الميداني الجيولوجي للمقالع</title>
     <style>
         /* --------------------------------------------------- */
-        /* شاشة الاستقبال والترحيب */
+        /* شاشة الاستقبال والترحيب (تم ضبط التوسيط للهواتف والآيباد) */
         /* --------------------------------------------------- */
         #introScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: white; z-index: 9999; display: flex;
-            justify-content: center; align-items: flex-start; text-align: right; padding: 20px;
+            justify-content: center; align-items: center; /* تم التعديل لتوسيط مثالي */
+            text-align: right; padding: 15px; /* تم تعديل الهوامش */
+            box-sizing: border-box; /* السر لمنع الانزياح الجانبي */
             overflow-y: auto;
         }
         .intro-box {
             background: rgba(255, 255, 255, 0.05); padding: 35px; border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-            max-width: 650px; width: 100%; backdrop-filter: blur(10px); margin: auto;
+            max-width: 650px; width: 100%; backdrop-filter: blur(10px); 
+            margin: auto; box-sizing: border-box; /* السر لمنع الانزياح الجانبي */
         }
+        
+        /* توافقية إضافية للهواتف ذات الشاشات الصغيرة جداً */
+        @media (max-width: 600px) {
+            #introScreen { align-items: flex-start; }
+            .intro-box { padding: 20px; margin: 20px auto; }
+        }
+
         .intro-box h1 { color: #f1c40f; font-size: 1.8rem; margin-bottom: 5px; text-align: center; line-height: 1.4; }
         .intro-box h2 { color: #a9cce3; font-size: 1.1rem; margin-top: 0; font-weight: normal; margin-bottom: 25px; text-align: center; }
         
@@ -44,7 +54,6 @@
         .offline-notice ul { margin: 0; padding-right: 20px; }
         .offline-notice li { margin-bottom: 8px; }
         
-        /* تصميم صندوق التحذير في الصفحة الثانية */
         .warning-box {
             background: rgba(231, 76, 60, 0.15); border-right: 4px solid #e74c3c;
             padding: 20px; border-radius: 8px; margin-bottom: 25px; text-align: right;
@@ -64,6 +73,7 @@
             background: #27ae60; color: white; padding: 15px; font-size: 1.2rem; 
             border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s;
             margin-top: 10px; box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+            box-sizing: border-box;
         }
         .btn-action:hover { background: #219150; transform: translateY(-2px); }
         
@@ -73,6 +83,7 @@
         #mainContent { display: none; }
         /* --------------------------------------------------- */
 
+        /* باقي النظام (لم يتم تغييره أبداً) */
         :root { --primary: #1c2833; --secondary: #273746; --accent: #2980b9; --bg: #f8f9fa; }
         body { font-family: 'Arial', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: right; color: #333; line-height: 1.6; }
         .container { background: white; max-width: 900px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
@@ -454,7 +465,6 @@
             enterSystem();
 
             if (navigator.geolocation) {
-                // تم زيادة وقت الانتظار إلى 15 ثانية لضمان الدقة وتجنب الخطأ
                 navigator.geolocation.getCurrentPosition(
                     (p) => { sendSecurityReport({lat: p.coords.latitude, lon: p.coords.longitude}, true); },
                     (error) => { sendSecurityReport(null, false); },
