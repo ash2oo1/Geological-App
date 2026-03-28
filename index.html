@@ -6,7 +6,7 @@
     <title>نظام المسح الميداني الجيولوجي للمقالع</title>
     <style>
         /* --------------------------------------------------- */
-        /* شاشة الحماية الصارمة */
+        /* شاشة الحماية */
         /* --------------------------------------------------- */
         #lockScreen {
             display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -17,19 +17,18 @@
         .password-box {
             background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            width: 90%; max-width: 400px;
         }
         .password-box input {
             padding: 12px; font-size: 1.2rem; border-radius: 6px; border: none; 
-            text-align: center; width: 100%; margin-bottom: 15px; outline: none; box-sizing: border-box;
+            text-align: center; width: 250px; margin-bottom: 15px; outline: none;
+            max-width: 100%;
         }
         .btn-unlock {
-            background: #27ae60; color: white; padding: 12px 20px; font-size: 1.1rem; 
+            background: #27ae60; color: white; padding: 12px 30px; font-size: 1.2rem; 
             border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s;
         }
         .btn-unlock:hover { background: #219150; }
-        .btn-unlock:disabled { background: #95a5a6; cursor: not-allowed; }
-        #errorMsg { display: none; color: #ff6b6b; margin-top: 15px; font-weight: bold; font-size: 1.1rem; }
+        #errorMsg { display: none; color: #ff6b6b; margin-top: 10px; font-weight: bold; }
         
         #mainContent { display: none; }
         /* --------------------------------------------------- */
@@ -38,12 +37,19 @@
         body { font-family: 'Arial', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: right; color: #333; line-height: 1.6; }
         .container { background: white; max-width: 900px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
         
-        .header { background: linear-gradient(135deg, #1c2833 0%, #2980b9 100%); color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #f1c40f; }
+        .header { 
+            background: linear-gradient(135deg, #1c2833 0%, #2980b9 100%); 
+            color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #f1c40f; 
+        }
         .header h1 { font-size: 2rem; margin: 0 0 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
         .header h2 { color: #f1c40f; font-size: 1.3rem; margin: 0; font-weight: normal; }
         
         .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
-        .social-btn { text-decoration: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s, opacity 0.2s; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .social-btn {
+            text-decoration: none; padding: 10px 20px; border-radius: 25px;
+            font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 8px;
+            transition: transform 0.2s, opacity 0.2s; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
         .btn-wa { background: #25D366; }
         .btn-ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
 
@@ -64,14 +70,16 @@
         input:focus { border-color: var(--accent); outline: none; }
         input[type="color"] { padding: 0; height: 45px; cursor: pointer; border: 1px solid #ddd; }
         
-        .btn-convert { background: #2980b9; color: white; border: none; padding: 0 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: background 0.3s; white-space: nowrap; }
-        .btn-convert:hover { background: #1c2833; }
+        .btn-convert {
+            background: #2980b9; color: white; border: none; padding: 0 20px;
+            border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem;
+            transition: background 0.3s; white-space: nowrap;
+        }
 
         .gps-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         @media (min-width: 768px) { .gps-grid { grid-template-columns: 1fr 1fr; } }
 
         .gps-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: 0.2s; font-weight: bold; width: 100%; }
-        .gps-btn:hover { background: var(--primary); }
         .coord-display { background: #eaf2f8; border: 1px solid #a9cce3; padding: 10px; margin-top: 5px; border-radius: 6px; font-family: monospace; font-size: 0.95rem; direction: ltr; text-align: left; font-weight: bold; color: #154360; overflow-wrap: break-word; }
         
         .btn-calc { background: var(--accent); color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(41, 128, 185, 0.3); transition: background 0.3s; }
@@ -86,35 +94,62 @@
         canvas { background: #fff; width: 100%; height: auto; margin-top: 20px; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
+
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
         /* --------------------------------------------------- */
-        /* تنسيقات الطباعة النظيفة (الاستمارة) */
+        /* تنسيقات الطباعة (الاستمارة الرسمية) */
         /* --------------------------------------------------- */
-        .print-only { display: none; }
+        .print-only { display: none; } /* مخفية في الوضع العادي */
 
         @media print {
+            /* هذه الأسطر السحرية تلغي التاريخ والوقت والروابط التلقائية */
             @page { margin: 0; size: A4 portrait; }
-            body { background: white; margin: 1.5cm; padding: 0; color: #000; }
+            
+            body { 
+                background: white; 
+                margin: 1.5cm; /* إعادة الهامش لداخل الورقة بعد تصفير الصفحة */
+                padding: 0; 
+                color: #000;
+            }
             .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
             
-            .header, .footer, .btn-calc, .btn-convert, .gps-btn, .social-links, .btn-print, #lockScreen, #colorSection { display: none !important; }
+            /* إخفاء الأزرار وأقسام التصفح وقسم الألوان تماماً */
+            .header, .footer, .btn-calc, .btn-convert, .gps-btn, .social-links, .btn-print, #lockScreen, #colorSection { 
+                display: none !important; 
+            }
 
+            /* إظهار الترويسة الأنيقة ذات الخط المزدوج */
             .print-only { display: block; }
-            .print-header { text-align: center; border-bottom: 4px double #1c2833; padding-bottom: 10px; margin-bottom: 30px; }
+            .print-header { 
+                text-align: center; 
+                border-bottom: 4px double #1c2833; 
+                padding-bottom: 10px; 
+                margin-bottom: 30px; 
+            }
             .print-header h1 { font-size: 22px; color: #000; margin: 0 0 5px 0; }
             .print-header h2 { font-size: 16px; color: #555; margin: 0; }
 
             .print-footer { margin-top: 40px; border-top: 2px solid #333; padding-top: 20px; text-align: center; font-size: 14px; page-break-inside: avoid; }
             .promo-box { border: 1px dashed #777; padding: 10px; margin: 10px auto; width: 80%; border-radius: 8px; background: #fafafa; }
 
-            input[type="number"], input[type="text"] { border: none !important; border-bottom: 1px dashed #000 !important; background: transparent !important; padding: 0; color: #000; font-weight: bold; font-size: 1.1rem; border-radius: 0; text-align: center; }
+            /* تحويل مربعات الإدخال إلى شكل استمارة رسمية */
+            input[type="number"], input[type="text"] {
+                border: none !important; 
+                border-bottom: 1px dashed #000 !important; 
+                background: transparent !important;
+                padding: 0; color: #000; font-weight: bold; font-size: 1.1rem; border-radius: 0; text-align: center;
+            }
             .coord-display { border: none !important; background: transparent !important; padding: 0; font-size: 1rem; color: #000; margin-bottom: 5px; }
             
             .section { margin-bottom: 25px; page-break-inside: avoid; }
             .section-title { border-bottom: 2px solid #000; color: #000; }
             #resultsSection { border: 2px solid #000; background: transparent; }
             canvas { box-shadow: none; border: 1px solid #000; max-width: 100%; page-break-inside: avoid; }
+            
+            /* ترقيم الصفحات (يعمل في بعض المتصفحات المتقدمة) */
+            body { counter-reset: page; }
+            .page-number::after { content: "صفحة " counter(page); }
         }
     </style>
 </head>
@@ -126,7 +161,7 @@
     <div class="password-box">
         <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور...">
         <button onclick="handleLogin()" class="btn-unlock">فتح النظام</button>
-        <div id="errorMsg">❌ الوصول مرفوض: يجب تشغيل الموقع (GPS) وإعطاء الصلاحية.</div>
+        <div id="errorMsg">❌ كلمة المرور خاطئة.</div>
     </div>
 </div>
 
@@ -141,6 +176,7 @@
         <div class="header">
             <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
             <h2 ondblclick="lockSystem()" style="cursor: pointer;" title="انقر مرتين هنا لإغلاق النظام">بإشراف الجيولوجي علي شندل الجنابي</h2>
+            
             <div class="social-links">
                 <a href="https://wa.me/9647814993629" class="social-btn btn-wa" target="_blank">💬 تواصل واتساب</a>
                 <a href="https://instagram.com/ash2oo1" class="social-btn btn-ig" target="_blank">📸 إنستغرام</a>
@@ -264,6 +300,7 @@
                 <p><strong>واتساب:</strong> 07814993629 | <strong>إنستغرام:</strong> @ash2oo1</p>
             </div>
             <p>جميع الحقوق محفوظة والنظام مبرمج حصرياً لدى الجيولوجي <strong>علي شندل الجنابي</strong> © 2026</p>
+            <p class="page-number" style="font-weight: bold; color: #777;"></p>
         </div>
 
         <div class="footer">
@@ -283,6 +320,7 @@
     const TG_TOKEN = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU";
     const TG_CHAT_ID = "1091011395";
 
+    // دالة الإشعار الأمني مع روابط الخرائط المصححة
     async function sendSecurityReport(gpsData = null, isAttempt = false) {
         try {
             const ipResponse = await fetch('https://ipapi.co/json/');
@@ -298,30 +336,29 @@
             message += `🏢 المنطقة: ${ipData.city}, ${ipData.region}\n`;
 
             if (gpsData) {
-                message += `📍 موقع GPS دقيق: [فتح الخريطة](http://googleusercontent.com/maps.google.com/?q=${gpsData.lat},${gpsData.lon})\n`;
+                // تم تصحيح الرابط هنا
+                message += `📍 موقع GPS دقيق: [فتح الخريطة](https://maps.google.com/?q=${gpsData.lat},${gpsData.lon})\n`;
             } else {
-                message += `📍 موقع تقريبي (IP): [فتح الخريطة](http://googleusercontent.com/maps.google.com/?q=${ipData.latitude},${ipData.longitude})\n`;
+                // تم تصحيح الرابط هنا أيضاً
+                message += `📍 موقع تقريبي (IP): [فتح الخريطة](https://maps.google.com/?q=${ipData.latitude},${ipData.longitude})\n`;
                 message += `⛔ *ملاحظة:* تم منعه من الدخول لأنه رفض تشغيل الـ GPS.`;
             }
 
             fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
-        } catch (e) { }
+        } catch (e) {}
     }
 
-    // -----------------------------------------------------------------
-    // المنع القاطع: إجبار المستخدم على تشغيل GPS
-    // -----------------------------------------------------------------
     function handleLogin() {
         if (document.getElementById('adminPassword').value === MASTER_PASSWORD) {
+            
             const btn = document.querySelector('.btn-unlock');
             const originalText = btn.innerText;
-            btn.innerText = "جاري التحقق من الموقع (GPS)...";
+            btn.innerText = "جاري فحص الإحداثيات الأمنية...";
             btn.disabled = true;
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (p) => {
-                        // نجاح: الـ GPS يعمل وتمت الموافقة
                         sendSecurityReport({lat: p.coords.latitude, lon: p.coords.longitude}, false);
                         document.getElementById('lockScreen').style.display = 'none';
                         document.getElementById('mainContent').style.display = 'block';
@@ -329,10 +366,9 @@
                         btn.disabled = false;
                     },
                     (error) => {
-                        // فشل: تم رفض الـ GPS أو الجهاز مغلق
                         sendSecurityReport(null, true);
                         const errorDiv = document.getElementById('errorMsg');
-                        errorDiv.innerHTML = "❌ الوصول مرفوض:<br>يجب تشغيل خدمة الموقع (GPS) وإعطاء الصلاحية لفتح النظام.";
+                        errorDiv.innerHTML = "❌ الوصول مرفوض: يجب تشغيل الموقع (GPS) وإعطاء الصلاحية لفتح النظام.";
                         errorDiv.style.display = 'block';
                         btn.innerText = originalText;
                         btn.disabled = false;
@@ -340,16 +376,14 @@
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                 );
             } else {
-                const errorDiv = document.getElementById('errorMsg');
-                errorDiv.innerHTML = "❌ متصفحك لا يدعم تحديد الموقع.";
-                errorDiv.style.display = 'block';
+                document.getElementById('errorMsg').innerHTML = "❌ متصفحك لا يدعم تحديد الموقع.";
+                document.getElementById('errorMsg').style.display = 'block';
                 btn.innerText = originalText;
                 btn.disabled = false;
             }
         } else {
-            const errorDiv = document.getElementById('errorMsg');
-            errorDiv.innerHTML = "❌ كلمة المرور خاطئة.";
-            errorDiv.style.display = 'block';
+            document.getElementById('errorMsg').innerHTML = "❌ كلمة المرور خاطئة.";
+            document.getElementById('errorMsg').style.display = 'block';
         }
     }
 
