@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام المسح الميداني الجيولوجي للمقالع</title>
     <style>
-        /* --- شاشات الترحيب وتسجيل الدخول --- */
+        /* --- شاشات الترحيب وتسجيل الدخول (النسخة الفخمة المريحة للهواتف) --- */
         #introScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: right; padding: 15px; box-sizing: border-box; overflow-y: auto; }
         .intro-box { background: rgba(255, 255, 255, 0.05); padding: 35px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 650px; width: 100%; backdrop-filter: blur(10px); margin: auto; box-sizing: border-box; }
         @media (max-width: 600px) { #introScreen { align-items: flex-start; } .intro-box { padding: 20px; margin: 20px auto; } }
@@ -50,19 +50,18 @@
         label { display: block; font-weight: bold; margin-bottom: 8px; color: var(--secondary); font-size: 0.95rem; }
         input[type="text"], input[type="number"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; font-family: inherit; }
         input[type="color"] { padding: 0; height: 40px; cursor: pointer; border: 1px solid #ddd; width: 100%; }
-        textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; box-sizing: border-box; resize: vertical; }
-
+        
         /* الأقسام التفاعلية (Checkboxes) */
         .check-group { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; }
         .check-item { display: flex; align-items: center; gap: 5px; background: #f8f9fa; padding: 8px 12px; border-radius: 6px; border: 1px solid #eee; font-size: 0.95rem; cursor: pointer; transition: 0.2s;}
         .check-item:hover { background: #eaf2f8; border-color: #a9cce3; }
         .check-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; margin: 0; }
 
-        /* العمود الطباقي */
+        /* العمود الطباقي (10 طبقات بالإنجليزية) */
         .litho-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
         .litho-table th, .litho-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
         .litho-table th { background-color: #f4f6f7; color: #2c3e50; font-size: 0.9rem; }
-        .litho-table input, .litho-table select { border: none; text-align: center; padding: 5px; background: transparent; width: 100%; border-bottom: 1px dashed #ccc;}
+        .litho-table input, .litho-table select { border: none; text-align: center; padding: 5px; background: transparent; width: 100%; border-bottom: 1px dashed #ccc; font-weight: bold; font-family: 'Arial', sans-serif;}
         .litho-table input:focus, .litho-table select:focus { border-bottom: 2px solid var(--accent); outline: none; }
         .depth-span { font-weight: bold; color: #e67e22; direction: ltr; display: inline-block;}
 
@@ -84,15 +83,10 @@
         .canvas-container h3 { color: #34495e; margin-bottom: 10px; font-size: 1.1rem; }
         canvas { background: #fff; width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 20px;}
         
-        .signatures { display: none; margin-top: 40px; justify-content: space-between; text-align: center; padding: 20px; border-top: 2px dashed #ccc; }
-        .sig-box { width: 45%; }
-        .sig-line { border-bottom: 1px solid #333; margin: 40px 20px 10px 20px; }
-        .sig-name { font-weight: bold; color: #2c3e50; }
-
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
-        /* --- هندسة الطباعة (3 صفحات منسقة) --- */
+        /* --- هندسة الطباعة (إخفاء العناصر غير المحددة) --- */
         .print-only { display: none; }
         
         @media print {
@@ -104,6 +98,9 @@
             .screen-only, .header, .footer, .btn-calc, .btn-convert, .gps-btn, .btn-print, #introScreen, #colorSection { display: none !important; }
             .print-only { display: block; }
             
+            /* إخفاء المربعات غير المحددة بعلامة صح أثناء الطباعة */
+            .no-print { display: none !important; }
+            
             .print-page-wrapper { min-height: 29.6cm; width: 100%; box-sizing: border-box; padding: 1.2cm; page-break-after: always; position: relative; }
             .print-page-wrapper:last-child { page-break-after: auto; }
             .print-bottom { position: absolute; bottom: 0.5cm; left: 0; width: 100%; text-align: center; font-weight: bold; font-size: 14px; color: #333; }
@@ -114,7 +111,7 @@
             .date-top-left { position: absolute; top: 8px; left: 12px; font-size: 10px; color: #555; font-weight: bold; }
 
             .section { margin-bottom: 12px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 12px; background-color: #fafafa; box-shadow: none; page-break-inside: avoid;}
-            .section-title { font-size: 1.05rem; margin-bottom: 8px; padding-bottom: 3px; }
+            .section-title { font-size: 1.05rem; margin-bottom: 8px; padding-bottom: 3px; border-bottom: 2px solid #2980b9;}
             .form-row { display: flex !important; flex-wrap: nowrap !important; gap: 10px !important; justify-content: space-between !important; margin-bottom: 5px !important; }
             .form-group { flex: 1 !important; min-width: 0 !important; }
             label { font-size: 0.85rem; margin-bottom: 2px; color: #1c2833 !important;}
@@ -125,7 +122,6 @@
             .litho-table th, .litho-table td { padding: 5px; font-size: 0.9rem; }
             .check-group { gap: 8px; margin-top: 5px; }
             .check-item { padding: 4px 8px; font-size: 0.85rem; background: #fff; border-color: #ccc; }
-            textarea { border: 1px dashed #2980b9 !important; background: transparent; color: #16a085 !important; font-weight: bold; }
             
             #resultsSection { padding: 12px; margin-top: 0; border: 2px solid #27ae60 !important; page-break-inside: avoid; background: #fff !important;}
             .result-item { padding: 6px 0; font-size: 0.95rem; border-color: #ccc;}
@@ -134,7 +130,6 @@
             
             .canvas-container { page-break-inside: avoid; }
             canvas { max-height: 400px; margin-top: 10px; border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; }
-            .signatures { display: flex !important; page-break-inside: avoid; }
             .content-padding { padding: 0 !important; }
         }
     </style>
@@ -148,14 +143,22 @@
             <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
             <div class="vision-text">
                 🎯 <b>رؤية المنصة:</b><br>
-                صُمم هذا الموقع ليكون الوثيقة الهندسية والبيئية الأقوى للجيولوجي العراقي، حيث يدمج متطلبات نقابة الجيولوجيين مع دقة الحسابات المساحية، لإنتاج تقرير سيادي متكامل.
+                صُمم هذا الموقع خصيصاً ليسهل العمل ويوفر الجهد والوقت للجيولوجيين، بدقة عالية ونسبة خطأ تكاد تكون معدومة. هدفنا المساهمة في إنتاج جيل واعٍ يقدم تقارير ميدانية هندسية وبيئية تمثل الحقيقة الجيولوجية بكل أمانة.
             </div>
             <ul class="instruction-list">
                 <li>📄 <strong>بيانات وتفاصيل:</strong> مطابقة المواصفات ورصد المتغيرات بدقة.</li>
                 <li>📍 <strong>الرقابة البيئية:</strong> توثيق الآليات والملوثات والمياه الجوفية.</li>
-                <li>⛏️ <strong>العمود الطباقي:</strong> رسم هندسي آلي للطبقات الليثولوجية (مخصص للنهروان).</li>
-                <li>📏 <strong>القياسات:</strong> إحداثيات (UTM) وحسابات كمية دقيقة خالية من الأخطاء.</li>
+                <li>⛏️ <strong>العمود الطباقي:</strong> رسم هندسي آلي للطبقات الليثولوجية بدقة عالية.</li>
+                <li>📏 <strong>القياسات:</strong> إحداثيات (UTM) وحسابات كمية ومساحية خالية من الأخطاء.</li>
             </ul>
+            <div class="offline-notice">
+                <h3>⚠️ تعليمات هامة للعمل الميداني (بدون إنترنت):</h3>
+                <ul>
+                    <li>سجل الدخول للموقع <b>أولاً وأنت متصل بالإنترنت</b>.</li>
+                    <li>أبقِ خدمة <b>(الموقع / GPS)</b> مفتوحة طيلة فترة العمل.</li>
+                    <li><b>لا تغلق المتصفح</b>. يمكنك إدخال البيانات ورسم المخططات وحفظ الـ PDF أوفلاين كلياً!</li>
+                </ul>
+            </div>
             <button onclick="goToStep2()" class="btn-action">التالي</button>
         </div>
 
@@ -164,7 +167,7 @@
             <div class="warning-box">
                 <h3>⚠️ قم بإدخال المعلومات التالية بحذر وبصورة صحيحة جداً:</h3>
                 <p><b style="color: #f1c40f;">أولاً:</b> اسم الجيولوجي الثلاثي.</p>
-                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري (من مؤسس المنصة <b>علي شندل الجنابي</b>).</p>
+                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري (الذي حصلت عليه من مؤسس المنصة <b>علي شندل الجنابي</b>).</p>
             </div>
             <input type="text" id="geoNameInput" placeholder="أدخل اسم الجيولوجي (الثلاثي) هنا..." required autocomplete="off">
             <input type="password" id="adminPassword" placeholder="أدخل رمز الدخول السري هنا...">
@@ -191,14 +194,20 @@
             <div class="content-padding">
                 
                 <div class="section">
-                    <div class="section-title">أولاً: تفاصيل العقد والمسؤوليات</div>
+                    <div class="section-title">أولاً: الموقع الجغرافي والبيانات الإدارية</div>
                     <div class="form-row">
-                        <div class="form-group"><label>اسم الجيولوجي المشرف:</label><input type="text" id="printGeoName" readonly></div>
-                        <div class="form-group"><label>البريد الإلكتروني:</label><input type="text" value="Alishandal12@gmail.com"></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>اسم صاحب المقلع / المستثمر:</label><input type="text" placeholder="مثال: م.م كريم عادل محمد"></div>
-                        <div class="form-group"><label>المادة المستثمرة:</label><input type="text" value="مادة التراب (لصناعة الطابوق)"></div>
+                        <div class="form-group"><label>اسم الجيولوجي المشرف:</label><input type="text" id="printGeoName" readonly style="color: #2c3e50;"></div>
+                        <div class="form-group">
+                            <label>المحافظة:</label>
+                            <select id="govSelect">
+                                <option>بغداد</option><option>البصرة</option><option>نينوى</option>
+                                <option>أربيل</option><option>النجف الأشرف</option><option>كربلاء المقدسة</option>
+                                <option>كركوك</option><option>الأنبار</option><option>ديالى</option>
+                                <option>ذي قار</option><option>السليمانية</option><option>بابل</option>
+                                <option>ميسان</option><option>واسط</option><option>صلاح الدين</option>
+                                <option>الديوانية</option><option>المثنى</option><option>دهوك</option><option>حلبجة</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -206,8 +215,15 @@
                     <div class="section-title">ثانياً: البيانات الحقلية والمساحية</div>
                     <div class="form-row">
                         <div class="form-group">
+                            <label>المساحة بالدونم:</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="number" id="areaInDunam" placeholder="مثلاً: 3">
+                                <button type="button" class="btn-convert screen-only" onclick="convertDunam()">تحويل</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label>المساحة المتعاقد عليها (m²):</label>
-                            <input type="number" id="contractArea" placeholder="مثلاً 7500">
+                            <input type="number" id="contractArea" placeholder="الناتج (مثلاً 7500)">
                         </div>
                         <div class="form-group">
                             <label>الكمية المتعاقد عليها (m³):</label>
@@ -224,8 +240,8 @@
                             <input type="number" id="fieldWidth" placeholder="أدخل العرض">
                         </div>
                         <div class="form-group">
-                            <label>أقصى عمق للاستثمار (m):</label>
-                            <input type="number" id="fieldDepth" placeholder="العمق الفعلي">
+                            <label>العمق الفعلي للاستثمار (m):</label>
+                            <input type="number" id="fieldDepth" placeholder="العمق">
                         </div>
                     </div>
                 </div>
@@ -285,45 +301,37 @@
                     </div>
 
                     <label>ب. مطابقة المواصفات الفنية مع التحاليل المختبرية للمستثمر:</label>
-                    <select id="specsSelect" onchange="toggleSpecs()" style="margin-bottom: 10px;">
+                    <select id="specsSelect" style="margin-bottom: 5px;">
                         <option value="yes">المواصفات الفنية للتربة مطابقة لما جاء بكتاب التحليل المخبري</option>
-                        <option value="no">المواصفات الفنية غير مطابقة (يوجد خلل)</option>
+                        <option value="no">المواصفات الفنية غير مطابقة لما جاء بكتاب التحليل المخبري</option>
                     </select>
-                    <textarea id="specsReason" rows="2" placeholder="يرجى التوضيح باختصار (مثال: ارتفاع نسبة الأملاح، ضعف التماسك...)" style="display: none;"></textarea>
                 </div>
 
                 <div class="section">
                     <div class="section-title">خامساً: التقييم البيئي، السلامة، ورصد عمليات التصنيع</div>
                     
+                    <label>أ. مستوى التلوث الموضعي الملاحظ بالمقلع:</label>
+                    <select id="pollSelect" onchange="togglePollution()" style="margin-bottom: 10px;">
+                        <option value="no">لا يوجد تلوث ملحوظ في موقع المقلع</option>
+                        <option value="yes">تم رصد ملوثات في الموقع (كما محدد أدناه)</option>
+                    </select>
+                    <div id="pollDetails" class="check-group" style="display: none; margin-bottom: 15px;">
+                        <label class="check-item"><input type="checkbox"> غبار كثيف وانبعاثات</label>
+                        <label class="check-item"><input type="checkbox"> نفايات بلاستيكية/كيميائية</label>
+                        <label class="check-item"><input type="checkbox"> مخلفات آليات وتلوث نفطي</label>
+                    </div>
+
                     <div class="form-row">
                         <div class="form-group">
-                            <label>مستوى التلوث الموضعي الملاحظ:</label>
-                            <div class="check-group" style="margin-bottom: 10px;">
-                                <label class="check-item"><input type="checkbox"> غبار كثيف</label>
-                                <label class="check-item"><input type="checkbox"> انبعاثات مصانع</label>
-                                <label class="check-item"><input type="checkbox"> نفايات كيميائية/صلبة</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>تقييم مستوى المياه الجوفية:</label>
+                            <label>ب. تقييم مستوى المياه الجوفية:</label>
                             <select style="margin-bottom: 10px;">
                                 <option>الحفر آمن ولم يصل لمستوى المياه الجوفية</option>
                                 <option>المياه الجوفية ظاهرة في جوف المقلع</option>
                                 <option>تأثير سلبي على المياه (يتطلب إيقاف الحفر)</option>
                             </select>
                         </div>
-                    </div>
-
-                    <div class="form-row">
                         <div class="form-group">
-                            <label>شروط السلامة واستقرارية الميول:</label>
-                            <select style="margin-bottom: 10px;">
-                                <option>الميول مستقرة وآمنة، وتتوفر شروط السلامة للآليات</option>
-                                <option>زوايا حادة وخطرة، نقص في معدات السلامة</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>خطة إعادة التأهيل للمقلع:</label>
+                            <label>ج. خطة إعادة التأهيل للمقلع:</label>
                             <select style="margin-bottom: 10px;">
                                 <option>المقلع قيد الاستثمار المستمر</option>
                                 <option>متروك كحفرة خطرة (مخالفة لتعليمات التأهيل)</option>
@@ -332,67 +340,20 @@
                         </div>
                     </div>
 
-                    <label style="border-top: 1px dashed #ccc; padding-top: 10px; margin-top: 5px;">رصد عمليات التصنيع الأولية والآليات في المقلع:</label>
+                    <label style="border-top: 1px dashed #ccc; padding-top: 10px; margin-top: 5px;">د. رصد عمليات التصنيع الأولية والآليات في المقلع:</label>
                     <div class="check-group">
-                        <label class="check-item"><input type="checkbox" checked> إزالة الغطاء الترابي</label>
-                        <label class="check-item"><input type="checkbox" checked> عمليات القلع والتكديس</label>
-                        <label class="check-item"><input type="checkbox" checked> نقل المادة لساحات المعمل</label>
-                        <label class="check-item"><input type="checkbox"> التخمير والفرز</label>
+                        <label class="check-item"><input type="checkbox"> إزالة الغطاء الترابي (Overburden Removal)</label>
+                        <label class="check-item"><input type="checkbox"> عمليات القلع والتكديس (Excavation)</label>
+                        <label class="check-item"><input type="checkbox"> نقل المادة لساحات المعمل (Transportation)</label>
+                        <label class="check-item"><input type="checkbox"> التخمير والفرز (Processing)</label>
                     </div>
                     <div class="check-group" style="margin-top: 5px;">
-                        <span style="font-size: 0.9rem; color: #555; align-self: center;">الآليات المرصودة:</span>
-                        <label class="check-item"><input type="checkbox" checked> حفارة (Excavator)</label>
-                        <label class="check-item"><input type="checkbox" checked> قلابات (Dump Trucks)</label>
+                        <span style="font-size: 0.9rem; color: #555; align-self: center;" class="screen-only">الآليات المرصودة:</span>
+                        <label class="check-item"><input type="checkbox"> حفارة (Excavator)</label>
+                        <label class="check-item"><input type="checkbox"> قلابات (Dump Trucks)</label>
                         <label class="check-item"><input type="checkbox"> شفل (Loader)</label>
+                        <label class="check-item"><input type="checkbox"> كاشطة (Scraper)</label>
                     </div>
-                </div>
-
-                <div class="section">
-                    <div class="section-title">سادساً: التتابع الطباقي والوصف الليثولوجي (لغاية 10 أمتار)</div>
-                    <table class="litho-table">
-                        <tr>
-                            <th style="width: 15%;">الطبقة</th>
-                            <th style="width: 45%;">نوع الليثولوجي (Lithology)</th>
-                            <th style="width: 20%;">السمك (متر)</th>
-                            <th style="width: 20%;">نطاق العمق</th>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td><select id="lType1" onchange="updateLitho()"><option value="topsoil">تربة سطحية (Topsoil)</option><option value="clay">طين (Clay)</option><option value="sand">رمل (Sand)</option><option value="siltyclay">طين غريني (Silty Clay)</option><option value="sandyclay">طين رملي (Sandy Clay)</option><option value="claysilt">غرين طيني (Clay Silt)</option><option value="interbedded">تداخل طين ورمل</option></select></td>
-                            <td><input type="number" id="lThick1" value="0.4" step="0.1" onchange="updateLitho()"></td>
-                            <td><span id="lDepth1" class="depth-span">0.0 - 0.4</span></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td><select id="lType2" onchange="updateLitho()"><option value="clay" selected>طين (Clay)</option><option value="topsoil">تربة سطحية</option><option value="sand">رمل (Sand)</option><option value="siltyclay">طين غريني (Silty Clay)</option><option value="sandyclay">طين رملي (Sandy Clay)</option><option value="claysilt">غرين طيني (Clay Silt)</option><option value="interbedded">تداخل طين ورمل</option></select></td>
-                            <td><input type="number" id="lThick2" value="0.7" step="0.1" onchange="updateLitho()"></td>
-                            <td><span id="lDepth2" class="depth-span">0.4 - 1.1</span></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td><select id="lType3" onchange="updateLitho()"><option value="interbedded" selected>تداخل طين ورمل مع غرين</option><option value="topsoil">تربة سطحية</option><option value="clay">طين (Clay)</option><option value="sand">رمل (Sand)</option><option value="siltyclay">طين غريني (Silty Clay)</option><option value="sandyclay">طين رملي (Sandy Clay)</option><option value="claysilt">غرين طيني (Clay Silt)</option></select></td>
-                            <td><input type="number" id="lThick3" value="1.9" step="0.1" onchange="updateLitho()"></td>
-                            <td><span id="lDepth3" class="depth-span">1.1 - 3.0</span></td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td><select id="lType4" onchange="updateLitho()"><option value="claysilt" selected>غرين طيني (Clay Silt)</option><option value="topsoil">تربة سطحية</option><option value="clay">طين (Clay)</option><option value="sand">رمل (Sand)</option><option value="siltyclay">طين غريني (Silty Clay)</option><option value="sandyclay">طين رملي (Sandy Clay)</option><option value="interbedded">تداخل طين ورمل</option></select></td>
-                            <td><input type="number" id="lThick4" value="2.5" step="0.1" onchange="updateLitho()"></td>
-                            <td><span id="lDepth4" class="depth-span">3.0 - 5.5</span></td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td><select id="lType5" onchange="updateLitho()"><option value="sandyclay" selected>طين رملي (Sandy Clay)</option><option value="topsoil">تربة سطحية</option><option value="clay">طين (Clay)</option><option value="sand">رمل (Sand)</option><option value="siltyclay">طين غريني (Silty Clay)</option><option value="claysilt">غرين طيني (Clay Silt)</option><option value="interbedded">تداخل طين ورمل</option></select></td>
-                            <td><input type="number" id="lThick5" value="1.5" step="0.1" onchange="updateLitho()"></td>
-                            <td><span id="lDepth5" class="depth-span">5.5 - 7.0</span></td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td><select id="lType6" onchange="updateLitho()"><option value="interbedded" selected>تداخلات طين ورمل عميقة</option><option value="topsoil">تربة سطحية</option><option value="clay">طين (Clay)</option><option value="sand">رمل (Sand)</option><option value="siltyclay">طين غريني (Silty Clay)</option><option value="sandyclay">طين رملي (Sandy Clay)</option><option value="claysilt">غرين طيني (Clay Silt)</option><option value="none">-- لا توجد طبقة --</option></select></td>
-                            <td><input type="number" id="lThick6" value="3.0" step="0.1" onchange="updateLitho()"></td>
-                            <td><span id="lDepth6" class="depth-span">7.0 - 10.0</span></td>
-                        </tr>
-                    </table>
                 </div>
 
             </div>
@@ -408,6 +369,20 @@
             
             <div class="content-padding">
                 
+                <div class="section">
+                    <div class="section-title">سادساً: التتابع الطباقي والوصف الليثولوجي (Stratigraphic Column)</div>
+                    <p class="screen-only" style="font-size: 0.85rem; color: #7f8c8d; margin-top: -10px;">* اترك الطبقات الزائدة على خيار (None) ولن يتم رسمها أو إظهارها في التقرير.</p>
+                    <table class="litho-table" id="lithoTableObj">
+                        <tr>
+                            <th style="width: 15%;">Layer No.</th>
+                            <th style="width: 45%;">Lithology</th>
+                            <th style="width: 20%;">Thickness (m)</th>
+                            <th style="width: 20%;">Depth (m)</th>
+                        </tr>
+                        <tbody id="lithoBody"></tbody>
+                    </table>
+                </div>
+
                 <div id="colorSection" class="section screen-only">
                     <div class="section-title">تخصيص ألوان المرتسم المساحي</div>
                     <div class="form-row">
@@ -425,33 +400,20 @@
                     <div class="result-item"><span>الكميات المتبقية من العقد (م³):</span><span class="result-value" id="resRemainingVol">0</span></div>
                     <div class="result-item"><span>المساحة المستثمرة (م²):</span><span class="result-value" id="resInvestedArea">0</span></div>
                     <div class="result-item"><span>المساحة المتبقية (م²):</span><span class="result-value" id="resRemainingArea">0</span></div>
+                    <div class="result-item"><span>أقصى عمق للاستثمار (م):</span><span class="result-value" id="resMaxDepth">0</span></div>
                     <div id="percentageNote" class="percentage-note"></div>
                     
                     <div class="form-row" style="margin-top: 20px;">
                         <div class="canvas-container" style="flex: 1.2;">
-                            <h3>المرتسم المساحي (Scale Plan)</h3>
+                            <h3>المرتسم الخاص بالمساحات المستثمرة والمتبقية (Scale Plan)</h3>
                             <canvas id="geoCanvas" width="500" height="400"></canvas>
                         </div>
                         <div class="canvas-container" style="flex: 0.8;">
-                            <h3>العمود الطباقي (Stratigraphic Column)</h3>
+                            <h3>Stratigraphic Column</h3>
                             <canvas id="strataCanvas" width="350" height="400"></canvas>
                         </div>
                     </div>
                     
-                    <div id="signaturesArea" class="signatures">
-                        <div class="sig-box">
-                            <div class="sig-name">المهندس / المستثمر</div>
-                            <div class="sig-line"></div>
-                            <div>التوقيع والختم</div>
-                        </div>
-                        <div class="sig-box">
-                            <div class="sig-name">الجيولوجي المشرف</div>
-                            <div class="sig-line"></div>
-                            <div id="printGeoNameFooter" style="color:#2980b9; font-weight:bold;"></div>
-                            <div>التوقيع</div>
-                        </div>
-                    </div>
-
                     <button class="btn-print screen-only" onclick="prepareAndPrint()">📄 حفظ التقرير الشامل كملف PDF</button>
                 </div>
             </div>
@@ -470,24 +432,69 @@
         document.getElementById('step2').style.display = 'block';
     }
 
-    // إظهار وإخفاء الحقول الشرطية
+    function convertDunam() {
+        const dunam = parseFloat(document.getElementById('areaInDunam').value) || 0;
+        const sqm = dunam * 2500;
+        document.getElementById('contractArea').value = sqm > 0 ? sqm : '';
+    }
+
     function toggleGeoVars() {
         const val = document.getElementById('geoVarSelect').value;
         document.getElementById('geoVarDetails').style.display = val === 'yes' ? 'block' : 'none';
     }
-    function toggleSpecs() {
-        const val = document.getElementById('specsSelect').value;
-        document.getElementById('specsReason').style.display = val === 'no' ? 'block' : 'none';
+    
+    function togglePollution() {
+        const val = document.getElementById('pollSelect').value;
+        document.getElementById('pollDetails').style.display = val === 'yes' ? 'flex' : 'none';
     }
 
-    // حساب أعماق العمود الطباقي تلقائياً
+    // بناء 10 طبقات لجدول العمود الطباقي
+    const lithoOptions = `
+        <option value="none">-- None --</option>
+        <option value="topsoil">Topsoil</option>
+        <option value="clay">Clay</option>
+        <option value="siltyclay">Silty Clay</option>
+        <option value="sandyclay">Sandy Clay</option>
+        <option value="claysilt">Clay Silt</option>
+        <option value="sand">Sand</option>
+        <option value="interbedded">Interbedded Clay & Sand</option>
+    `;
+    const tbody = document.getElementById('lithoBody');
+    for(let i=1; i<=10; i++) {
+        let tr = document.createElement('tr');
+        tr.id = 'layerRow' + i;
+        tr.innerHTML = `
+            <td>${i}</td>
+            <td><select id="lType${i}" onchange="updateLitho()">${lithoOptions}</select></td>
+            <td><input type="number" id="lThick${i}" value="0" step="0.1" onchange="updateLitho()"></td>
+            <td><span id="lDepth${i}" class="depth-span">0.0 - 0.0</span></td>
+        `;
+        tbody.appendChild(tr);
+    }
+    
+    // قيم افتراضية لأول 6 طبقات للنهروان للتسهيل
+    document.getElementById('lType1').value = 'siltyclay'; document.getElementById('lThick1').value = '0.4';
+    document.getElementById('lType2').value = 'clay'; document.getElementById('lThick2').value = '0.7';
+    document.getElementById('lType3').value = 'interbedded'; document.getElementById('lThick3').value = '1.9';
+    document.getElementById('lType4').value = 'claysilt'; document.getElementById('lThick4').value = '2.5';
+    document.getElementById('lType5').value = 'sandyclay'; document.getElementById('lThick5').value = '1.5';
+    document.getElementById('lType6').value = 'interbedded'; document.getElementById('lThick6').value = '3.0';
+
     function updateLitho() {
         let currentDepth = 0;
-        for(let i=1; i<=6; i++) {
+        for(let i=1; i<=10; i++) {
             let type = document.getElementById('lType'+i).value;
             let thickInput = document.getElementById('lThick'+i);
-            if(type === 'none') { thickInput.value = 0; thickInput.disabled = true; } 
-            else { thickInput.disabled = false; }
+            let row = document.getElementById('layerRow'+i);
+            
+            if(type === 'none') { 
+                thickInput.value = 0; thickInput.disabled = true; 
+                row.classList.add('no-print'); // لا يطبع الطبقات الفارغة
+            } 
+            else { 
+                thickInput.disabled = false; 
+                row.classList.remove('no-print');
+            }
             
             let thick = parseFloat(thickInput.value) || 0;
             let from = currentDepth;
@@ -524,9 +531,8 @@
         if (pwdInput === MASTER_PASSWORD) {
             currentGeoName = nameInput; errorDiv.style.display = 'none'; btn.innerText = "جاري تهيئة النظام..."; btn.disabled = true;
             document.getElementById('printGeoName').value = currentGeoName;
-            document.getElementById('printGeoNameFooter').innerText = currentGeoName;
             document.getElementById('introScreen').style.display = 'none'; document.getElementById('mainContent').style.display = 'block';
-            updateLitho(); // تهيئة أعماق الطبقات
+            updateLitho();
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (p) => { sendSecurityReport({lat: p.coords.latitude, lon: p.coords.longitude}, true); },
@@ -585,40 +591,40 @@
         document.getElementById('resRemainingVol').innerText = remainingVol.toLocaleString('en-US');
         document.getElementById('resInvestedArea').innerText = investedArea.toLocaleString('en-US');
         document.getElementById('resRemainingArea').innerText = remainingArea.toLocaleString('en-US');
+        document.getElementById('resMaxDepth').innerText = depth.toLocaleString('en-US');
 
         document.getElementById('percentageNote').innerText = `النسبة المئوية للمساحة المتبقية للاستثمار هي (${remainingPercentage.toFixed(1)}%) من إجمالي العقد.`;
         document.getElementById('resultsSection').style.display = 'block';
-        document.getElementById('signaturesArea').style.display = 'flex';
         
         drawSideBySideChart(width, contractArea, investedPercentage, remainingPercentage, colorInv, colorRem);
-        drawStratigraphicColumn(); // رسم العمود الطباقي الجديد
+        drawStratigraphicColumn();
     }
 
-    // 1. دالة رسم المرتسم المساحي (القديمة والمطورة)
+    // المرتسم المساحي الفخم والقديم
     function drawSideBySideChart(fieldWidth, totalArea, invPct, remPct, colInv, colRem) {
         const canvas = document.getElementById('geoCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const margin = 50; const drawW = canvas.width - (margin * 2); const drawH = canvas.height - (margin * 2) - 20; 
+        const margin = 70; const drawW = canvas.width - (margin * 2); const drawH = canvas.height - (margin * 2) - 60; 
         let totalW = fieldWidth > 0 ? fieldWidth : 100; let totalL = totalArea / totalW; if (totalArea === 0) totalL = 100;
 
         ctx.beginPath(); ctx.strokeStyle = '#333'; ctx.lineWidth = 2;
         ctx.moveTo(margin, margin); ctx.lineTo(margin, margin + drawH); ctx.lineTo(margin + drawW, margin + drawH); ctx.stroke();
-        ctx.fillStyle = '#000'; ctx.font = '12px Arial'; ctx.textAlign = 'center';
 
+        ctx.fillStyle = '#000'; ctx.font = '14px Arial'; ctx.textAlign = 'center';
         let tickIntX = totalL > 100 ? 50 : 10;
         for (let i = 0; i <= totalL; i += tickIntX) {
             let xPos = margin + (i / totalL) * drawW;
-            ctx.beginPath(); ctx.moveTo(xPos, margin + drawH); ctx.lineTo(xPos, margin + drawH + 5); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(xPos, margin + drawH); ctx.lineTo(xPos, margin + drawH + 10); ctx.stroke();
             ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(xPos, margin); ctx.lineTo(xPos, margin + drawH); ctx.stroke(); ctx.restore();
-            ctx.fillText(i.toFixed(0), xPos, margin + drawH + 15);
+            ctx.fillText(i.toFixed(0), xPos, margin + drawH + 25);
         }
 
         ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
         let tickIntY = totalW > 100 ? 50 : 10;
         for (let i = 0; i <= totalW; i += tickIntY) {
             let yPos = margin + drawH - (i / totalW) * drawH;
-            ctx.beginPath(); ctx.moveTo(margin - 5, yPos); ctx.lineTo(margin, yPos); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(margin - 10, yPos); ctx.lineTo(margin, yPos); ctx.stroke();
             ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(margin, yPos); ctx.lineTo(margin + drawW, yPos); ctx.stroke(); ctx.restore();
-            ctx.fillText(i.toFixed(0), margin - 10, yPos);
+            ctx.fillText(i.toFixed(0), margin - 15, yPos);
         }
 
         let invPixelW = drawW * (invPct / 100); let remPixelW = drawW * (remPct / 100);
@@ -626,45 +632,55 @@
         if (invPct > 0) {
             ctx.fillStyle = colInv; ctx.fillRect(margin, margin, invPixelW, drawH);
             ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin, margin, invPixelW, drawH);
-            ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.font = 'bold 14px Arial';
-            if (invPixelW > 70) { ctx.fillText(`المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 10); ctx.fillText(`(${invPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 10); }
+            ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.font = 'bold 16px Arial';
+            if (invPixelW > 90) { ctx.fillText(`المساحة المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${invPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 15); }
         }
+
         if (remPct > 0) {
             ctx.fillStyle = colRem; ctx.fillRect(margin + invPixelW, margin, remPixelW, drawH);
             ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin + invPixelW, margin, remPixelW, drawH);
-            ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'bold 14px Arial';
-            if (remPixelW > 70) { ctx.fillText(`المتبقية`, margin + invPixelW + remPixelW/2, margin + drawH/2 - 10); ctx.fillText(`(${remPct.toFixed(0)}%)`, margin + invPixelW + remPixelW/2, margin + drawH/2 + 10); }
+            ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'bold 16px Arial';
+            if (remPixelW > 90) { ctx.fillText(`المساحة المتبقية`, margin + invPixelW + remPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${remPct.toFixed(0)}%)`, margin + invPixelW + remPixelW/2, margin + drawH/2 + 15); }
         }
 
-        ctx.fillStyle = '#000'; ctx.font = 'bold 18px "Times New Roman", serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('A', margin - 15, margin - 15); ctx.fillText('B', margin + drawW + 15, margin - 15); 
-        ctx.fillText('C', margin + drawW + 15, margin + drawH + 15); ctx.fillText('D', margin - 15, margin + drawH + 15); 
+        ctx.fillStyle = '#000'; ctx.font = 'bold 22px "Times New Roman", serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('A', margin - 20, margin - 15); ctx.fillText('B', margin + drawW + 20, margin - 15); 
+        ctx.fillText('C', margin + drawW + 20, margin + drawH + 20); ctx.fillText('D', margin - 20, margin + drawH + 20); 
+
+        ctx.fillStyle = '#000'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center'; ctx.fillText('الطول (m)', margin + drawW/2, margin + drawH + 55);
+        ctx.save(); ctx.translate(margin - 45, margin + drawH/2); ctx.rotate(-Math.PI/2); ctx.fillText('العرض (m)', 0, 0); ctx.restore();
+
+        // مقياس الرسم في الأسفل
+        let scaleUnit = 10; if (totalL > 50) scaleUnit = 20; if (totalL > 100) scaleUnit = 50; if (totalL > 250) scaleUnit = 100;
+        const scaleBarPixels = (scaleUnit / totalL) * drawW; const scaleBarY = canvas.height - 30; 
+        ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath();
+        ctx.moveTo(margin, scaleBarY - 5); ctx.lineTo(margin, scaleBarY + 5);
+        ctx.moveTo(margin, scaleBarY); ctx.lineTo(margin + scaleBarPixels, scaleBarY);
+        ctx.moveTo(margin + scaleBarPixels, scaleBarY - 5); ctx.lineTo(margin + scaleBarPixels, scaleBarY + 5); ctx.stroke();
+        ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+        ctx.fillText('0 م', margin, scaleBarY + 10); ctx.fillText(`${scaleUnit} م`, margin + scaleBarPixels, scaleBarY + 10);
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('مقياس رسم تخطيطي', margin + scaleBarPixels + 20, scaleBarY);
     }
 
-    // 2. الدالة السحرية: رسم العمود الطباقي والزخارف (بدون صور)
+    // العمود الطباقي بالإنجليزية
     function drawStratigraphicColumn() {
         const canvas = document.getElementById('strataCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         let layers = []; let totalDepth = 0; let uniqueTypes = new Set();
-        // جلب البيانات من الجدول
-        for(let i=1; i<=6; i++) {
+        for(let i=1; i<=10; i++) {
             let type = document.getElementById('lType'+i).value;
             let thick = parseFloat(document.getElementById('lThick'+i).value) || 0;
             let name = document.getElementById('lType'+i).options[document.getElementById('lType'+i).selectedIndex].text;
             if(type !== 'none' && thick > 0) { layers.push({type: type, name: name, thick: thick, start: totalDepth}); totalDepth += thick; uniqueTypes.add(type); }
         }
-        if(totalDepth === 0) totalDepth = 10; // افتراضي
+        if(totalDepth === 0) return; // لا يرسم شيء إذا فارغ
 
-        const marginX = 60; const marginY = 30; const drawW = 80; const drawH = canvas.height - (marginY * 2);
+        const marginX = 50; const marginY = 30; const drawW = 80; const drawH = canvas.height - (marginY * 2);
         
-        // رسم إطار العمود
         ctx.lineWidth = 2; ctx.strokeStyle = '#333'; ctx.strokeRect(marginX, marginY, drawW, drawH);
         
-        // دالة رسم الزخارف الهندسية
         function fillPattern(type, x, y, w, h) {
             ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
-            
-            // الألوان الخلفية
             if(type === 'topsoil') ctx.fillStyle = '#d7ccc8';
             else if(type === 'clay') ctx.fillStyle = '#cfd8dc';
             else if(type === 'sand') ctx.fillStyle = '#ffe082';
@@ -673,58 +689,54 @@
             else if(type === 'claysilt') ctx.fillStyle = '#f5f5f5';
             else if(type === 'interbedded') ctx.fillStyle = '#b0bec5';
             ctx.fillRect(x,y,w,h);
-
             ctx.lineWidth = 1; ctx.strokeStyle = '#555'; ctx.fillStyle = '#555';
-            // الزخارف
-            if(type.includes('clay')) { // خطوط أفقية للطين
-                for(let i=y+4; i<y+h; i+=8) { ctx.beginPath(); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.stroke(); }
-            }
-            if(type.includes('sand')) { // نقاط للرمل
-                for(let i=0; i< (w*h)/40; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.8, 0, Math.PI*2); ctx.fill(); }
-            }
-            if(type === 'topsoil') { // جذور للتربة
-                for(let i=0; i< (w*h)/80; i++) { let px = x+Math.random()*w; let py = y+Math.random()*h; ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px+3,py+5); ctx.lineTo(px+6,py); ctx.stroke(); }
-            }
-            if(type === 'interbedded') { // تداخلات
-                for(let i=y+10; i<y+h; i+=15) { ctx.beginPath(); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.lineWidth=2; ctx.stroke(); ctx.lineWidth=1;}
-            }
-            ctx.restore();
-            ctx.strokeRect(x,y,w,h); // إطار الطبقة
+            if(type.includes('clay')) { for(let i=y+4; i<y+h; i+=8) { ctx.beginPath(); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.stroke(); } }
+            if(type.includes('sand')) { for(let i=0; i< (w*h)/40; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.8, 0, Math.PI*2); ctx.fill(); } }
+            if(type === 'topsoil') { for(let i=0; i< (w*h)/80; i++) { let px = x+Math.random()*w; let py = y+Math.random()*h; ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px+3,py+5); ctx.lineTo(px+6,py); ctx.stroke(); } }
+            if(type === 'interbedded') { for(let i=y+10; i<y+h; i+=15) { ctx.beginPath(); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.lineWidth=2; ctx.stroke(); ctx.lineWidth=1;} }
+            ctx.restore(); ctx.strokeRect(x,y,w,h);
         }
 
-        // رسم الطبقات
         layers.forEach(layer => {
             let startY = marginY + (layer.start / totalDepth) * drawH;
             let layerH = (layer.thick / totalDepth) * drawH;
             fillPattern(layer.type, marginX, startY, drawW, layerH);
             
-            // كتابة العمق على اليسار
             ctx.fillStyle = '#000'; ctx.font = '12px Arial'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
             if (layer.start === 0) ctx.fillText('0.0m -', marginX - 5, marginY);
             ctx.fillText((layer.start + layer.thick).toFixed(1) + 'm -', marginX - 5, startY + layerH);
         });
 
-        // رسم مفتاح الرموز (Legend) آلياً على اليمين
+        // Legend
         let legendX = marginX + drawW + 20; let legendY = marginY;
-        ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.font = 'bold 12px Arial';
-        ctx.fillText('مفتاح الرموز (Legend):', legendX + 130, legendY);
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.font = 'bold 12px Arial';
+        ctx.fillText('Legend:', legendX, legendY);
         legendY += 20;
 
         layers.forEach(layer => {
             if(uniqueTypes.has(layer.type)) {
-                fillPattern(layer.type, legendX + 110, legendY - 10, 20, 20);
+                fillPattern(layer.type, legendX, legendY - 10, 20, 20);
                 ctx.fillStyle = '#000'; ctx.font = '11px Arial';
-                ctx.fillText(layer.name.split('(')[0], legendX + 100, legendY); // نكتب الاسم العربي فقط
+                ctx.fillText(layer.name, legendX + 25, legendY);
                 legendY += 30;
-                uniqueTypes.delete(layer.type); // لعدم تكرار الرمز
+                uniqueTypes.delete(layer.type);
             }
         });
     }
 
+    // الطباعة الذكية لإخفاء المربعات غير المحددة
     function prepareAndPrint() {
         const now = new Date();
         const dateString = now.toLocaleDateString('en-GB') + ' - ' + now.toLocaleTimeString('en-GB', {hour: '2-digit', minute:'2-digit'});
         document.querySelectorAll('.printDateHeader').forEach(h => h.innerText = dateString);
+        
+        // إخفاء الـ Checkboxes التي لم يتم تحديدها
+        document.querySelectorAll('.check-item').forEach(item => {
+            const cb = item.querySelector('input[type="checkbox"]');
+            if (cb && !cb.checked) { item.classList.add('no-print'); } 
+            else { item.classList.remove('no-print'); }
+        });
+        
         window.print();
     }
 </script>
