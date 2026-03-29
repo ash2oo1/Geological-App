@@ -5,179 +5,141 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام المسح الميداني الجيولوجي للمقالع</title>
     <style>
-        /* --------------------------------------------------- */
-        /* شاشة الاستقبال والترحيب (تم ضبط التوسيط للهواتف والآيباد) */
-        /* --------------------------------------------------- */
+        /* --- شاشة الترحيب وتسجيل الدخول (مضبوطة للهواتف) --- */
         #introScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: white; z-index: 9999; display: flex;
-            justify-content: center; align-items: center; /* تم التعديل لتوسيط مثالي */
-            text-align: right; padding: 15px; /* تم تعديل الهوامش */
-            box-sizing: border-box; /* السر لمنع الانزياح الجانبي */
-            overflow-y: auto;
+            justify-content: center; align-items: center; text-align: right; padding: 15px;
+            box-sizing: border-box; overflow-y: auto;
         }
         .intro-box {
             background: rgba(255, 255, 255, 0.05); padding: 35px; border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5);
             max-width: 650px; width: 100%; backdrop-filter: blur(10px); 
-            margin: auto; box-sizing: border-box; /* السر لمنع الانزياح الجانبي */
+            margin: auto; box-sizing: border-box;
         }
-        
-        /* توافقية إضافية للهواتف ذات الشاشات الصغيرة جداً */
         @media (max-width: 600px) {
             #introScreen { align-items: flex-start; }
             .intro-box { padding: 20px; margin: 20px auto; }
         }
-
         .intro-box h1 { color: #f1c40f; font-size: 1.8rem; margin-bottom: 5px; text-align: center; line-height: 1.4; }
         .intro-box h2 { color: #a9cce3; font-size: 1.1rem; margin-top: 0; font-weight: normal; margin-bottom: 25px; text-align: center; }
-        
-        .vision-text {
-            background: rgba(41, 128, 185, 0.15); border-right: 4px solid #2980b9;
-            padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 1rem; line-height: 1.7;
-        }
-        
+        .vision-text { background: rgba(41, 128, 185, 0.15); border-right: 4px solid #2980b9; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 1rem; line-height: 1.7; }
         .instruction-list { list-style: none; padding: 0; margin: 0 0 20px 0; }
-        .instruction-list li {
-            margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6;
-            background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 6px;
-        }
+        .instruction-list li { margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6; background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 6px; }
         .instruction-list li strong { color: #2ecc71; font-size: 1.05rem; }
-
-        .offline-notice {
-            background: rgba(241, 196, 15, 0.2); border: 2px dashed #f1c40f;
-            padding: 15px; border-radius: 6px; margin-bottom: 25px;
-            font-size: 0.95rem; line-height: 1.6; color: #fff;
-        }
+        .offline-notice { background: rgba(241, 196, 15, 0.2); border: 2px dashed #f1c40f; padding: 15px; border-radius: 6px; margin-bottom: 25px; font-size: 0.95rem; line-height: 1.6; color: #fff; }
         .offline-notice h3 { color: #f1c40f; margin-top: 0; margin-bottom: 10px; font-size: 1.1rem; }
         .offline-notice ul { margin: 0; padding-right: 20px; }
         .offline-notice li { margin-bottom: 8px; }
-        
-        .warning-box {
-            background: rgba(231, 76, 60, 0.15); border-right: 4px solid #e74c3c;
-            padding: 20px; border-radius: 8px; margin-bottom: 25px; text-align: right;
-        }
+        .warning-box { background: rgba(231, 76, 60, 0.15); border-right: 4px solid #e74c3c; padding: 20px; border-radius: 8px; margin-bottom: 25px; text-align: right; }
         .warning-box h3 { color: #ffcccc; font-size: 1.1rem; margin-top: 0; margin-bottom: 15px; line-height: 1.5; }
         .warning-box p { color: #ecf0f1; font-size: 1rem; margin-bottom: 10px; line-height: 1.6; }
         .warning-box p:last-child { margin-bottom: 0; }
-        
-        .intro-box input {
-            width: 100%; padding: 15px; font-size: 1.1rem; border-radius: 6px; border: none; 
-            margin-bottom: 15px; outline: none; box-sizing: border-box; font-family: inherit;
-            text-align: center; background: #fff; color: #333; font-weight: bold;
-        }
+        .intro-box input { width: 100%; padding: 15px; font-size: 1.1rem; border-radius: 6px; border: none; margin-bottom: 15px; outline: none; box-sizing: border-box; font-family: inherit; text-align: center; background: #fff; color: #333; font-weight: bold; }
         .intro-box input:focus { border: 2px solid #2ecc71; }
-        
-        .btn-action {
-            background: #27ae60; color: white; padding: 15px; font-size: 1.2rem; 
-            border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s;
-            margin-top: 10px; box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
-            box-sizing: border-box;
-        }
+        .btn-action { background: #27ae60; color: white; padding: 15px; font-size: 1.2rem; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; margin-top: 10px; box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3); box-sizing: border-box; }
         .btn-action:hover { background: #219150; transform: translateY(-2px); }
-        
         .error-text { color: #ff6b6b; font-weight: bold; margin-top: 15px; display: none; font-size: 1rem; text-align: center; background: rgba(255,0,0,0.1); padding: 10px; border-radius: 6px;}
-        
         #step2 { display: none; text-align: center; }
         #mainContent { display: none; }
-        /* --------------------------------------------------- */
 
-        /* باقي النظام (لم يتم تغييره أبداً) */
+        /* --- باقي النظام الأساسي --- */
         :root { --primary: #1c2833; --secondary: #273746; --accent: #2980b9; --bg: #f8f9fa; }
         body { font-family: 'Arial', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: right; color: #333; line-height: 1.6; }
-        .container { background: white; max-width: 900px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
+        .container { background: white; max-width: 950px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
         
-        .screen-only {} 
-
         .header { background: linear-gradient(135deg, #1c2833 0%, #2980b9 100%); color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #f1c40f; }
         .header h1 { font-size: 2rem; margin: 0 0 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
         .header h2 { color: #f1c40f; font-size: 1.3rem; margin: 0; font-weight: normal; }
-        
         .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
-        .social-btn { text-decoration: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s, opacity 0.2s; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .social-btn { text-decoration: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; color: white; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .btn-wa { background: #25D366; }
         .btn-ig { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
 
         .content-padding { padding: 30px; }
         @media (max-width: 600px) { .content-padding { padding: 15px; } body { padding: 10px; } .header h1 { font-size: 1.5rem; } }
 
-        .section { margin-bottom: 35px; }
-        .section-title { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 8px; font-size: 1.3rem; margin-bottom: 20px; font-weight: bold; }
+        .section { margin-bottom: 25px; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .section-title { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 8px; font-size: 1.2rem; margin-bottom: 20px; font-weight: bold; }
         
         .form-row { display: flex; gap: 20px; margin-bottom: 15px; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; }
         label { display: block; font-weight: bold; margin-bottom: 8px; color: var(--secondary); font-size: 0.95rem; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; font-family: inherit; transition: border 0.3s; }
-        input:focus { border-color: var(--accent); outline: none; }
-        input[type="color"] { padding: 0; height: 45px; cursor: pointer; border: 1px solid #ddd; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; font-family: inherit; }
+        input[type="color"] { padding: 0; height: 40px; cursor: pointer; border: 1px solid #ddd; width: 100%; }
         
-        .btn-convert { background: #2980b9; color: white; border: none; padding: 0 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: background 0.3s; white-space: nowrap; }
+        /* تنسيقات الأقسام الجديدة */
+        .litho-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .litho-table th, .litho-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        .litho-table th { background-color: #f4f6f7; color: #2c3e50; font-size: 0.9rem; }
+        .litho-table input { border: none; text-align: center; padding: 5px; background: transparent; }
+        .litho-table input:focus { border-bottom: 2px solid var(--accent); outline: none; border-radius: 0; }
+
+        .check-group { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; }
+        .check-item { display: flex; align-items: center; gap: 5px; background: #f8f9fa; padding: 8px 12px; border-radius: 20px; border: 1px solid #eee; font-size: 0.9rem;}
+        .check-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
 
         .gps-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         @media (min-width: 768px) { .gps-grid { grid-template-columns: 1fr 1fr; } }
+        .gps-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: bold; width: 100%; }
+        .coord-display { background: #eaf2f8; border: 1px solid #a9cce3; padding: 10px; margin-top: 5px; border-radius: 6px; font-family: monospace; font-size: 0.95rem; direction: ltr; text-align: left; font-weight: bold; color: #154360; }
+        
+        .btn-calc { background: var(--accent); color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(41, 128, 185, 0.3); }
+        .btn-convert { background: #2980b9; color: white; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem; }
 
-        .gps-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: 0.2s; font-weight: bold; width: 100%; }
-        .coord-display { background: #eaf2f8; border: 1px solid #a9cce3; padding: 10px; margin-top: 5px; border-radius: 6px; font-family: monospace; font-size: 0.95rem; direction: ltr; text-align: left; font-weight: bold; color: #154360; overflow-wrap: break-word; }
-        
-        .btn-calc { background: var(--accent); color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(41, 128, 185, 0.3); transition: background 0.3s; }
-        
-        #resultsSection { display: none; margin-top: 30px; border: 2px solid #2ecc71; padding: 25px; border-radius: 8px; background: #f9fff9; }
-        .result-item { display: flex; justify-content: space-between; border-bottom: 1px dashed #bdc3c7; padding: 12px 0; font-size: 1.1rem; flex-wrap: wrap; gap: 10px;}
+        #resultsSection { display: none; margin-top: 30px; border: 2px solid #2ecc71; padding: 20px; border-radius: 8px; background: #f9fff9; }
+        .result-item { display: flex; justify-content: space-between; border-bottom: 1px dashed #bdc3c7; padding: 10px 0; font-size: 1.05rem; }
         .result-item:last-child { border-bottom: none; }
-        .result-value { font-weight: bold; color: #145a32; font-size: 1.2rem; }
+        .result-value { font-weight: bold; color: #145a32; font-size: 1.15rem; }
+        .percentage-note { background: #d5f5e3; padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; font-size: 0.95rem; color: #196f3d; text-align: center; border-right: 4px solid #27ae60; }
         
-        .percentage-note { background: #d5f5e3; padding: 15px; border-radius: 6px; margin-top: 20px; font-weight: bold; font-size: 1rem; color: #196f3d; text-align: center; border-right: 4px solid #27ae60; }
-        
-        canvas { background: #fff; width: 100%; height: auto; margin-top: 20px; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        canvas { background: #fff; width: 100%; height: auto; margin-top: 15px; border: 1px solid #ddd; border-radius: 6px; }
         
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
-        .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 25px; transition: 0.3s; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
+        .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
-        /* --------------------------------------------------- */
-        /* التنسيق الهندسي للطباعة (PDF) */
-        /* --------------------------------------------------- */
+        /* --- هندسة الطباعة (مضغوطة لصفحتين مع الأقسام الجديدة) --- */
         .print-only { display: none; }
         
         @media print {
             @page { margin: 0; size: A4 portrait; }
             * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; print-color-adjust: exact !important; }
             
-            body { background: white; margin: 0; padding: 0; color: #333; font-family: 'Arial', sans-serif; }
-            .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; background: white; }
-            
+            body { background: white; margin: 0; padding: 0; color: #333; font-family: 'Arial', sans-serif; font-size: 12px; }
+            .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
             .screen-only, .header, .footer, .btn-calc, .btn-convert, .gps-btn, .social-links, .btn-print, #introScreen, #colorSection { display: none !important; }
             .print-only { display: block; }
             
-            .print-page-wrapper {
-                height: 29.6cm; width: 100%; box-sizing: border-box; padding: 1.5cm 1.5cm 1cm 1.5cm; 
-                page-break-after: always; position: relative; background: white;
-            }
+            .print-page-wrapper { height: 29.6cm; width: 100%; box-sizing: border-box; padding: 1.2cm 1.2cm 1cm 1.2cm; page-break-after: always; position: relative; }
             .print-page-wrapper:last-child { page-break-after: auto; }
+            .print-bottom { position: absolute; bottom: 0.8cm; left: 0; width: 100%; text-align: center; font-weight: bold; font-size: 14px; color: #333; }
             
-            .print-bottom { position: absolute; bottom: 1cm; left: 0; width: 100%; text-align: center; font-weight: bold; font-size: 16px; color: #333; }
-            .form-row { display: flex !important; flex-wrap: nowrap !important; gap: 15px !important; justify-content: space-between !important; margin-bottom: 15px !important; }
+            .print-header { text-align: center; border: 2px solid #2980b9; background-color: #f4f9fc; padding: 10px; margin-bottom: 15px; border-radius: 6px; position: relative; }
+            .print-header h1 { font-size: 18px; color: #1c2833; margin: 0 0 3px 0; }
+            .print-header h2 { font-size: 13px; color: #e67e22; margin: 0; font-weight: bold; }
+            .date-top-left { position: absolute; top: 8px; left: 12px; font-size: 10px; color: #555; font-weight: bold; }
+
+            /* ضغط الأقسام لتتسع الورقة */
+            .section { margin-bottom: 12px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 10px; background-color: #fafafa; box-shadow: none;}
+            .section-title { font-size: 1rem; margin-bottom: 8px; padding-bottom: 3px; }
+            .form-row { display: flex !important; flex-wrap: nowrap !important; gap: 10px !important; justify-content: space-between !important; margin-bottom: 5px !important; }
             .form-group { flex: 1 !important; min-width: 0 !important; }
-
-            .print-header { text-align: center; border: 2px solid #2980b9; background-color: #f4f9fc; padding: 15px; margin-bottom: 25px; border-radius: 8px; position: relative; }
-            .print-header h1 { font-size: 20px; color: #1c2833; margin: 0 0 5px 0; }
-            .print-header h2 { font-size: 15px; color: #e67e22; margin: 0; font-weight: bold; }
-            .date-top-left { position: absolute; top: 10px; left: 15px; font-size: 12px; color: #555; font-weight: bold; }
-
-            .section { margin-bottom: 20px; border: 1px solid #bdc3c7; border-radius: 8px; padding: 15px; background-color: #fafafa; }
-            .section-title { border-bottom: 2px solid #2980b9; color: #2980b9 !important; margin-top: 0; padding-bottom: 5px; margin-bottom: 15px; font-size: 1.1rem; }
-
-            label { color: #555 !important; font-size: 0.9rem; }
-            input[type="number"], input[type="text"] { border: none !important; border-bottom: 1.5px dashed #2980b9 !important; background: transparent !important; padding: 2px 0; color: #16a085 !important; font-weight: bold; font-size: 1rem; border-radius: 0; text-align: center; width: 100%; }
-            .coord-display { border: 1px solid #d5dbdb !important; background: #fff !important; padding: 8px; font-size: 0.9rem; color: #2c3e50 !important; margin-bottom: 5px; }
+            label { font-size: 0.8rem; margin-bottom: 2px; }
+            input[type="number"], input[type="text"], select { border: none !important; border-bottom: 1px dashed #2980b9 !important; padding: 2px 0; font-size: 0.9rem; text-align: center; width: 100%; background: transparent; appearance: none; -webkit-appearance: none;}
+            .coord-display { padding: 4px; font-size: 0.8rem; margin-bottom: 2px; }
             
-            #resultsSection { border: 2px solid #27ae60 !important; background: #f9fff9 !important; padding: 15px; }
-            .result-item { padding: 8px 0; font-size: 1rem; border-bottom: 1px dashed #bdc3c7; }
-            .result-value { color: #27ae60 !important; font-size: 1.1rem; }
-            .percentage-note { background: #eafaf1 !important; border-right: 4px solid #27ae60 !important; color: #1e8449 !important; padding: 10px; font-size: 0.95rem; margin-top: 15px; }
-
-            canvas { box-shadow: none; border: 2px solid #34495e !important; max-width: 100%; max-height: 420px; border-radius: 4px; margin-top: 15px; object-fit: contain; }
+            /* تنسيق الأقسام البيئية في الطباعة */
+            .litho-table th, .litho-table td { padding: 4px; font-size: 0.85rem; }
+            .check-group { gap: 8px; margin-top: 5px; }
+            .check-item { padding: 4px 8px; font-size: 0.8rem; background: #fff; border-color: #ccc; }
             
+            #resultsSection { padding: 10px; margin-top: 15px; }
+            .result-item { padding: 5px 0; font-size: 0.95rem; }
+            .result-value { font-size: 1rem; }
+            .percentage-note { padding: 8px; font-size: 0.85rem; margin-top: 10px; }
+            canvas { max-height: 380px; margin-top: 10px; border: 1.5px solid #34495e !important; }
             .content-padding { padding: 0 !important; }
         }
     </style>
@@ -186,50 +148,39 @@
 
 <div id="introScreen">
     <div class="intro-box">
-        
         <div id="step1">
             <h1>أهلاً بكم في منصة نظام المسح الميداني للمقالع</h1>
             <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
-            
             <div class="vision-text">
                 🎯 <b>رؤية المنصة:</b><br>
-                صُمم هذا الموقع خصيصاً ليسهل العمل ويوفر الجهد والوقت للجيولوجيين، بدقة عالية ونسبة خطأ تكاد تكون معدومة. هدفنا ليس الربح، بل المساهمة في إنتاج جيل جيولوجي واعٍ يقدم تقارير ميدانية احترافية تمثل الحقيقة الجيولوجية بكل أمانة، ليكون هذا النظام الأحدث والأوسع استخداماً في العراق إن شاء الله.
+                صُمم هذا الموقع خصيصاً ليسهل العمل ويوفر الجهد والوقت للجيولوجيين، ليكون وثيقة تفتيش ورقابة هندسية وبيئية متكاملة، تحمي الثروات وتمثل الحقيقة الجيولوجية بكل أمانة.
             </div>
-
             <ul class="instruction-list">
-                <li>📄 <strong>بيانات العقد:</strong> يجب أن يكون الجيولوجي حاصلاً على تقريره الجاهز من المحافظة ليتسنى له إدخال المساحة والكمية المتعاقد عليها.</li>
-                <li>📍 <strong>معرفة الموقع:</strong> يجب أن يكون الجيولوجي عارفاً بموقع المقلع وطرق الوصول إليه قبل بدء العمل الميداني.</li>
-                <li>🚙 <strong>النقل الحقلي:</strong> ضرورة توفر سيارة حقلية ملائمة للتعامل مع التضاريس الوعرة والمتباينة الانحدار للوصول إلى المناطق البعيدة عن المدن.</li>
-                <li>⛏️ <strong>المعدات الجيولوجية:</strong> اصطحاب الأدوات الحقلية وأدوات الحماية والسلامة المهنية.</li>
-                <li>📏 <strong>القياس والتوثيق:</strong> جلب أدوات قياس لحساب أبعاد المنطقة المستثمرة، مع هاتف ذكي أو كاميرا لالتقاط الصور التوثيقية.</li>
+                <li>📄 <strong>بيانات العقد:</strong> إدخال المساحة والكمية المتعاقد عليها من التقرير الرسمي.</li>
+                <li>📍 <strong>التدقيق البيئي:</strong> مراقبة مستويات المياه الجوفية والملوثات في منطقة المقلع.</li>
+                <li>⛏️ <strong>الطباقية:</strong> وصف التتابع الليثولوجي بدقة ضمن الأعماق المسموحة.</li>
+                <li>📏 <strong>القياسات:</strong> التقاط الإحداثيات (UTM) وحساب كميات الاستخراج بدقة.</li>
             </ul>
-
             <div class="offline-notice">
                 <h3>⚠️ تعليمات هامة للعمل الميداني (بدون إنترنت):</h3>
                 <ul>
-                    <li>يجب تسجيل الدخول للموقع <b>أولاً وأنت متصل بالإنترنت</b> (يُفضل قبل ساعة من التوجه للمقلع).</li>
-                    <li>يجب إبقاء خدمة <b>(الموقع / GPS)</b> مفتوحة طيلة فترة العمل.</li>
-                    <li><b>لا تغادر الموقع أو تغلق المتصفح</b> بعد تسجيل الدخول (لأن إعادة الدخول تتطلب إنترنت).</li>
-                    <li>أثناء تواجدك في المقلع، يمكنك التقاط الإحداثيات، إدخال البيانات، رسم المرتسم، وحتى حفظ التقرير (PDF) <b>بدون الحاجة لأي تغطية إنترنت!</b></li>
+                    <li>سجل الدخول للموقع <b>وأنت متصل بالإنترنت</b> قبل التوجه للمقلع.</li>
+                    <li>أبقِ خدمة <b>(الموقع / GPS)</b> مفتوحة طيلة فترة العمل.</li>
+                    <li><b>لا تغلق المتصفح</b>. يمكنك إدخال البيانات وحفظ الـ PDF أوفلاين كلياً!</li>
                 </ul>
             </div>
-
             <button onclick="goToStep2()" class="btn-action">التالي</button>
         </div>
 
         <div id="step2">
-            
             <h1 style="color: #2ecc71; border-bottom: 2px solid #2ecc71; padding-bottom: 10px; display: inline-block; margin-top: 0;">صفحة تسجيل الدخول</h1>
-            
             <div class="warning-box">
                 <h3>⚠️ قم بإدخال المعلومات التالية بحذر وبصورة صحيحة جداً:</h3>
                 <p><b style="color: #f1c40f;">أولاً:</b> اسم الجيولوجي الثلاثي.</p>
-                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري (الذي حصلت عليه من مؤسس المنصة الجيولوجي <b>علي شندل الجنابي</b>).</p>
+                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري (من مؤسس المنصة <b>علي شندل الجنابي</b>).</p>
             </div>
-            
             <input type="text" id="geoNameInput" placeholder="أدخل اسم الجيولوجي (الثلاثي) هنا..." required autocomplete="off">
             <input type="password" id="adminPassword" placeholder="أدخل رمز الدخول السري هنا...">
-            
             <button onclick="handleLogin()" class="btn-action" id="loginBtn">تسجيل الدخول</button>
             <div id="loginError" class="error-text">❌ يرجى التأكد من الاسم وكلمة المرور.</div>
         </div>
@@ -238,14 +189,9 @@
 
 <div id="mainContent">
     <div class="container">
-        
         <div class="header screen-only">
             <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
-            <h2 ondblclick="lockSystem()" style="cursor: pointer;" title="انقر مرتين هنا لإغلاق النظام">بإشراف الجيولوجي علي شندل الجنابي</h2>
-            <div class="social-links">
-                <a href="https://wa.me/9647814993629" class="social-btn btn-wa" target="_blank">💬 تواصل واتساب</a>
-                <a href="https://instagram.com/ash2oo1" class="social-btn btn-ig" target="_blank">📸 إنستغرام</a>
-            </div>
+            <h2 ondblclick="lockSystem()" style="cursor: pointer;" title="انقر مرتين للإغلاق">بإشراف الجيولوجي علي شندل الجنابي</h2>
         </div>
 
         <div class="print-page-wrapper">
@@ -254,67 +200,110 @@
                 <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
                 <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
             </div>
+            
             <div class="content-padding">
                 <div class="section">
-                    <div class="section-title">بيانات العقد الرسمية</div>
+                    <div class="section-title">بيانات العقد والقياسات الميدانية</div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>المساحة بالدونم:</label>
-                            <div style="display: flex; gap: 10px;">
-                                <input type="number" id="areaInDunam" placeholder="مثلاً: 3">
-                                <button type="button" class="btn-convert screen-only" onclick="convertDunam()">تحويل</button>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label>المساحة المتعاقد عليها (m²):</label>
-                            <input type="number" id="contractArea" placeholder="الناتج (مثلاً 7500)">
+                            <input type="number" id="contractArea" placeholder="مثلاً 7500">
                         </div>
                         <div class="form-group">
                             <label>الكمية المتعاقد عليها (m³):</label>
                             <input type="number" id="contractVol" placeholder="مثلاً: 37500">
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>الطول الميداني المستثمر (m):</label>
+                            <input type="number" id="fieldLength" placeholder="أدخل الطول">
+                        </div>
+                        <div class="form-group">
+                            <label>العرض الميداني المستثمر (m):</label>
+                            <input type="number" id="fieldWidth" placeholder="أدخل العرض">
+                        </div>
+                        <div class="form-group">
+                            <label>أقصى عمق للاستثمار (m):</label>
+                            <input type="number" id="fieldDepth" placeholder="أدخل العمق (حد أقصى 10م)">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="section">
-                    <div class="section-title">إحداثيات المقلع (نظام UTM) للتوثيق الميداني</div>
+                    <div class="section-title">إحداثيات المقلع (نظام UTM)</div>
                     <div class="gps-grid">
                         <div class="form-group">
-                            <button class="gps-btn screen-only" onclick="getCoordinates('point1')">التقاط إحداثيات (A)</button>
+                            <button class="gps-btn screen-only" onclick="getCoordinates('point1')">إحداثيات (A)</button>
                             <div id="point1" class="coord-display">E: --- | N: ---</div>
                         </div>
                         <div class="form-group">
-                            <button class="gps-btn screen-only" onclick="getCoordinates('point2')">التقاط إحداثيات (B)</button>
+                            <button class="gps-btn screen-only" onclick="getCoordinates('point2')">إحداثيات (B)</button>
                             <div id="point2" class="coord-display">E: --- | N: ---</div>
                         </div>
                         <div class="form-group">
-                            <button class="gps-btn screen-only" onclick="getCoordinates('point3')">التقاط إحداثيات (C)</button>
+                            <button class="gps-btn screen-only" onclick="getCoordinates('point3')">إحداثيات (C)</button>
                             <div id="point3" class="coord-display">E: --- | N: ---</div>
                         </div>
                         <div class="form-group">
-                            <button class="gps-btn screen-only" onclick="getCoordinates('point4')">التقاط إحداثيات (D)</button>
+                            <button class="gps-btn screen-only" onclick="getCoordinates('point4')">إحداثيات (D)</button>
                             <div id="point4" class="coord-display">E: --- | N: ---</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="section">
-                    <div class="section-title">القياسات الميدانية للمنطقة المستثمرة</div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>الطول الميداني (متر):</label>
-                            <input type="number" id="fieldLength" placeholder="أدخل الطول">
-                        </div>
-                        <div class="form-group">
-                            <label>العرض الميداني (متر):</label>
-                            <input type="number" id="fieldWidth" placeholder="أدخل العرض">
-                        </div>
-                        <div class="form-group">
-                            <label>أقصى عمق للاستثمار (متر):</label>
-                            <input type="number" id="fieldDepth" placeholder="أدخل العمق">
-                        </div>
-                    </div>
+                    <div class="section-title">الوصف الليثولوجي والطباقي (Lithological Description)</div>
+                    <table class="litho-table">
+                        <tr>
+                            <th style="width: 20%;">الطبقة</th>
+                            <th style="width: 50%;">نوع التربة / الليثولوجي</th>
+                            <th style="width: 30%;">السمك (متر)</th>
+                        </tr>
+                        <tr>
+                            <td>الأولى (السطحية)</td>
+                            <td><input type="text" value="تربة سطحية (Topsoil) غير صالحة"></td>
+                            <td><input type="text" value="0.0 - 1.5 م"></td>
+                        </tr>
+                        <tr>
+                            <td>الثانية</td>
+                            <td><input type="text" value="طين غريني (Silty Clay) صالح للاستخدام"></td>
+                            <td><input type="text" value="1.5 - 6.0 م"></td>
+                        </tr>
+                        <tr>
+                            <td>الثالثة</td>
+                            <td><input type="text" value="تداخلات طينية رملية"></td>
+                            <td><input type="text" value="6.0 - 10.0 م"></td>
+                        </tr>
+                    </table>
                 </div>
+
+                <div class="section">
+                    <div class="section-title">التقييم البيئي والمياه الجوفية (Environmental Assessment)</div>
+                    
+                    <label>أ. مستوى التلوث الموضعي الملاحظ:</label>
+                    <div class="check-group" style="margin-bottom: 10px;">
+                        <label class="check-item"><input type="checkbox"> غبار كثيف</label>
+                        <label class="check-item"><input type="checkbox"> انبعاثات من المعمل</label>
+                        <label class="check-item"><input type="checkbox"> نفايات بلاستيكية/كيميائية</label>
+                        <label class="check-item"><input type="checkbox"> لا توجد ملوثات واضحة</label>
+                    </div>
+
+                    <label>ب. تقييم مستوى المياه الجوفية:</label>
+                    <select style="margin-bottom: 10px;">
+                        <option>لم يصل الحفر لمستوى المياه الجوفية (الوضع آمن)</option>
+                        <option>المياه الجوفية ظاهرة في جوف المقلع (تم الوصول للمنسوب)</option>
+                        <option>الحفر أثر على المياه الجوفية (يتطلب إيقاف الحفر فوراً)</option>
+                    </select>
+
+                    <label>ج. خطة إعادة التأهيل (Rehabilitation):</label>
+                    <select>
+                        <option>المقلع قيد الاستثمار (لم يكتمل بعد)</option>
+                        <option>المستثمر ترك المقلع كحفرة خطرة (مخالفة)</option>
+                        <option>جاري/تم تسوية المقلع وإعادة تأهيله</option>
+                    </select>
+                </div>
+
             </div>
             <div class="print-only print-bottom">1</div>
         </div> 
@@ -325,7 +314,29 @@
                 <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
                 <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
             </div>
+            
             <div class="content-padding">
+                
+                <div class="section">
+                    <div class="section-title">السلامة المهنية والمخاطر الجيومورفولوجية</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>استقرارية الميول (زوايا الحفر):</label>
+                            <select>
+                                <option>الميول مستقرة وآمنة للعمل</option>
+                                <option>زوايا حادة جداً وتهدد بانهيار المقلع</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>شروط السلامة والآليات:</label>
+                            <select>
+                                <option>متوفرة وطرق الوصول للمقلع آمنة</option>
+                                <option>غير متوفرة وتوجد خطورة على العمال</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="colorSection" class="section screen-only">
                     <div class="section-title">تخصيص ألوان المرتسم المساحي</div>
                     <div class="form-row">
@@ -350,7 +361,7 @@
                         <span class="result-value" id="resExtractedVol">0</span>
                     </div>
                     <div class="result-item">
-                        <span>الكميات المتبقية (م³):</span>
+                        <span>الكميات المتبقية من العقد (م³):</span>
                         <span class="result-value" id="resRemainingVol">0</span>
                     </div>
                     <div class="result-item">
@@ -360,10 +371,6 @@
                     <div class="result-item">
                         <span>المساحة المتبقية (م²):</span>
                         <span class="result-value" id="resRemainingArea">0</span>
-                    </div>
-                    <div class="result-item">
-                        <span>أقصى عمق للاستثمار (م):</span>
-                        <span class="result-value" id="resMaxDepth">0</span>
                     </div>
                     
                     <div id="percentageNote" class="percentage-note"></div>
@@ -389,105 +396,47 @@
         document.getElementById('step2').style.display = 'block';
     }
 
-    function convertDunam() {
-        const dunam = parseFloat(document.getElementById('areaInDunam').value) || 0;
-        const sqm = dunam * 2500;
-        document.getElementById('contractArea').value = sqm > 0 ? sqm : '';
-    }
-
     const MASTER_PASSWORD = "ali123";
     const TG_TOKEN = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU";
     const TG_CHAT_ID = "1091011395";
 
     async function sendSecurityReport(gpsData = null, hasGps = true) {
-        let ipText = "غير متوفر";
-        let cityText = "غير محدد";
-        let mapLinkIP = "";
-        
+        let ipText = "غير متوفر"; let cityText = "غير محدد"; let mapLinkIP = "";
         try {
-            const ipResponse = await fetch('https://ipapi.co/json/');
-            const ipData = await ipResponse.json();
-            ipText = ipData.ip || "غير معروف";
-            if(ipData.city && ipData.region) cityText = `${ipData.city}, ${ipData.region}`;
-            if(ipData.latitude && ipData.longitude) {
-                mapLinkIP = `https://www.google.com/maps?q=${ipData.latitude},${ipData.longitude}`;
-            }
-        } catch (e) {
-            ipText = "محظور (Ad-blocker)";
-        }
+            const ipResponse = await fetch('https://ipapi.co/json/'); const ipData = await ipResponse.json();
+            ipText = ipData.ip || "غير معروف"; if(ipData.city && ipData.region) cityText = `${ipData.city}, ${ipData.region}`;
+            if(ipData.latitude && ipData.longitude) mapLinkIP = `https://www.google.com/maps?q=${ipData.latitude},${ipData.longitude}`;
+        } catch (e) { ipText = "محظور (Ad-blocker)"; }
 
-        const time = new Date().toLocaleString('ar-IQ');
+        const time = new Date().toLocaleString('en-GB');
         const device = navigator.userAgent.includes("Telegram") ? "تطبيق تليجرام" : "متصفح خارجي";
 
-        let message = `🚨 *دخول جديد لنظام المسح*\n\n`;
-        message += `👤 *الجيولوجي:* ${currentGeoName}\n`;
-        message += `━━━━━━━━━━━━\n`;
-        message += `📱 الجهاز: ${device}\n`;
-        message += `📅 الوقت: ${time}\n`;
-        message += `🌐 IP: \`${ipText}\`\n`;
-        message += `🏢 المنطقة: ${cityText}\n`;
+        let message = `🚨 *دخول لنظام التدقيق الجيولوجي*\n\n👤 *الجيولوجي:* ${currentGeoName}\n📱 الجهاز: ${device}\n📅 الوقت: ${time}\n`;
+        if (hasGps && gpsData) { message += `✅ *GPS:* مفعّل بدقة\n🗺️ [موقع الجيولوجي](https://www.google.com/maps?q=${gpsData.lat},${gpsData.lon})\n`; } 
+        else { message += `⚠️ *GPS:* مغلق\n🗺️ موقع تقريبي: [الخريطة](${mapLinkIP})\n`; }
 
-        if (hasGps && gpsData) {
-            message += `✅ *حالة الـ GPS:* مفعّل وتم التقاط الموقع بدقة\n`;
-            message += `🗺️ [فتح موقع الجيولوجي الدقيق](https://www.google.com/maps?q=${gpsData.lat},${gpsData.lon})\n`;
-        } else {
-            message += `⚠️ *حالة الـ GPS:* مغلق، أو المتصفح رفض الصلاحية\n`;
-            if(mapLinkIP) {
-                message += `🗺️ موقع تقريبي (موقع برج الإنترنت): [فتح الخريطة](${mapLinkIP})\n`;
-            } else {
-                message += `🗺️ موقع تقريبي: غير متوفر\n`;
-            }
-        }
-
-        try {
-            await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
-        } catch (err) {}
+        try { await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`); } catch (err) {}
     }
 
     function handleLogin() {
-        const errorDiv = document.getElementById('loginError');
-        const btn = document.getElementById('loginBtn');
-        const nameInput = document.getElementById('geoNameInput').value.trim();
-        const pwdInput = document.getElementById('adminPassword').value;
+        const errorDiv = document.getElementById('loginError'); const btn = document.getElementById('loginBtn');
+        const nameInput = document.getElementById('geoNameInput').value.trim(); const pwdInput = document.getElementById('adminPassword').value;
 
-        if (nameInput.split(' ').length < 2) {
-            errorDiv.innerHTML = "❌ يرجى كتابة اسم الجيولوجي (الثلاثي) بشكل صحيح.";
-            errorDiv.style.display = 'block';
-            return;
-        }
-
+        if (nameInput.split(' ').length < 2) { errorDiv.innerHTML = "❌ يرجى كتابة الاسم الثلاثي."; errorDiv.style.display = 'block'; return; }
         if (pwdInput === MASTER_PASSWORD) {
-            currentGeoName = nameInput;
-            errorDiv.style.display = 'none';
-            btn.innerText = "جاري تهيئة النظام...";
-            btn.disabled = true;
-
-            enterSystem();
-
+            currentGeoName = nameInput; errorDiv.style.display = 'none'; btn.innerText = "جاري تهيئة النظام..."; btn.disabled = true;
+            document.getElementById('introScreen').style.display = 'none'; document.getElementById('mainContent').style.display = 'block';
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (p) => { sendSecurityReport({lat: p.coords.latitude, lon: p.coords.longitude}, true); },
-                    (error) => { sendSecurityReport(null, false); },
-                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+                    (error) => { sendSecurityReport(null, false); }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
                 );
-            } else {
-                sendSecurityReport(null, false);
-            }
-        } else {
-            errorDiv.innerHTML = "❌ الرمز السري خاطئ.";
-            errorDiv.style.display = 'block';
-        }
+            } else { sendSecurityReport(null, false); }
+        } else { errorDiv.innerHTML = "❌ الرمز السري خاطئ."; errorDiv.style.display = 'block'; }
     }
 
-    function enterSystem() {
-        document.getElementById('introScreen').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'block';
-    }
-
-    document.addEventListener('DOMContentLoaded', (event) => {
-        document.getElementById("adminPassword").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") { event.preventDefault(); handleLogin(); }
-        });
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById("adminPassword").addEventListener("keypress", (e) => { if (e.key === "Enter") handleLogin(); });
     });
 
     function lockSystem() { location.reload(); }
@@ -496,14 +445,9 @@
         const a = 6378137.0; const eccSquared = 0.00669438; const k0 = 0.9996;
         let zoneNumber = Math.floor((lon + 180) / 6) + 1;
         let lonOrigin = (zoneNumber - 1) * 6 - 180 + 3;
-        let lonOriginRad = lonOrigin * (Math.PI / 180.0);
-        let latRad = lat * (Math.PI / 180.0);
-        let lonRad = lon * (Math.PI / 180.0);
+        let lonOriginRad = lonOrigin * (Math.PI / 180.0); let latRad = lat * (Math.PI / 180.0); let lonRad = lon * (Math.PI / 180.0);
         let eccPrimeSquared = (eccSquared) / (1 - eccSquared);
-        let N = a / Math.sqrt(1 - eccSquared * Math.sin(latRad) * Math.sin(latRad));
-        let T = Math.tan(latRad) * Math.tan(latRad);
-        let C = eccPrimeSquared * Math.cos(latRad) * Math.cos(latRad);
-        let A = Math.cos(latRad) * (lonRad - lonOriginRad);
+        let N = a / Math.sqrt(1 - eccSquared * Math.sin(latRad) * Math.sin(latRad)); let T = Math.tan(latRad) * Math.tan(latRad); let C = eccPrimeSquared * Math.cos(latRad) * Math.cos(latRad); let A = Math.cos(latRad) * (lonRad - lonOriginRad);
         let M = a * ((1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * Math.pow(eccSquared, 3) / 256) * latRad - (3 * eccSquared / 8 + 3 * eccSquared * eccSquared / 32 + 45 * Math.pow(eccSquared, 3) / 1024) * Math.sin(2 * latRad) + (15 * eccSquared * eccSquared / 256 + 45 * Math.pow(eccSquared, 3) / 1024) * Math.sin(4 * latRad) - (35 * Math.pow(eccSquared, 3) / 3072) * Math.sin(6 * latRad));
         let UTMEasting = (k0 * N * (A + (1 - T + C) * Math.pow(A, 3) / 6 + (5 - 18 * T + T * T + 72 * C - 58 * eccPrimeSquared) * Math.pow(A, 5) / 120) + 500000.0);
         let UTMNorthing = (k0 * (M + N * Math.tan(latRad) * (Math.pow(A, 2) / 2 + (5 - T + 9 * C + 4 * C * C) * Math.pow(A, 4) / 24 + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) * Math.pow(A, 6) / 720)));
@@ -514,8 +458,8 @@
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
                 const utm = latLonToUTM(position.coords.latitude, position.coords.longitude);
-                document.getElementById(elementId).innerHTML = `E: ${utm.easting} | N: ${utm.northing} <br> <span style="font-size:0.8rem; color:#7f8c8d;">(Zone: ${utm.zone}N)</span>`;
-            }, function() { alert("يرجى تفعيل خدمة الموقع (GPS) بدقة عالية لأخذ الإحداثيات."); }, { enableHighAccuracy: true });
+                document.getElementById(elementId).innerHTML = `E: ${utm.easting} | N: ${utm.northing} <br> <span style="font-size:0.75rem;">(Zone: ${utm.zone}N)</span>`;
+            }, function() { alert("يرجى تفعيل خدمة الموقع (GPS)."); }, { enableHighAccuracy: true });
         } else { alert("المتصفح لا يدعم تحديد الموقع."); }
     }
 
@@ -532,60 +476,44 @@
         const remainingVol = contractVol - extractedVol;
         
         let remainingPercentage = 0; let investedPercentage = 0;
-        if(contractArea > 0) {
-            investedPercentage = (investedArea * 100) / contractArea;
-            remainingPercentage = 100 - investedPercentage;
-        }
+        if(contractArea > 0) { investedPercentage = (investedArea * 100) / contractArea; remainingPercentage = 100 - investedPercentage; }
 
-        const colorInv = document.getElementById('colorInvFill').value;
-        const colorRem = document.getElementById('colorRemFill').value;
+        const colorInv = document.getElementById('colorInvFill').value; const colorRem = document.getElementById('colorRemFill').value;
 
         document.getElementById('resExtractedVol').innerText = extractedVol.toLocaleString('en-US');
         document.getElementById('resRemainingVol').innerText = remainingVol.toLocaleString('en-US');
         document.getElementById('resInvestedArea').innerText = investedArea.toLocaleString('en-US');
         document.getElementById('resRemainingArea').innerText = remainingArea.toLocaleString('en-US');
-        document.getElementById('resMaxDepth').innerText = depth.toLocaleString('en-US');
 
-        document.getElementById('percentageNote').innerText = `من خلال ما موجود من المعلومات أعلاه يمكن حساب النسبة المئوية للمساحة المتبقية وحسب المعادلة التالية (المساحة المتبقية مضروبة في 100 ومقسومة على المساحة المتعاقد عليها فتكون النسبة المئوية ${remainingPercentage.toFixed(0)}%) .`;
-
+        document.getElementById('percentageNote').innerText = `نسبة المساحة المتبقية للاستثمار هي (${remainingPercentage.toFixed(1)}%) من إجمالي العقد.`;
         document.getElementById('resultsSection').style.display = 'block';
-
         drawSideBySideChart(width, contractArea, investedPercentage, remainingPercentage, colorInv, colorRem);
     }
 
     function drawSideBySideChart(fieldWidth, totalArea, invPct, remPct, colInv, colRem) {
-        const canvas = document.getElementById('geoCanvas');
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        const margin = 70;
-        const drawW = canvas.width - (margin * 2);
-        const drawH = canvas.height - (margin * 2) - 60; 
-
-        let totalW = fieldWidth > 0 ? fieldWidth : 100; 
-        let totalL = totalArea / totalW; 
-        if (totalArea === 0) totalL = 100;
+        const canvas = document.getElementById('geoCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const margin = 60; const drawW = canvas.width - (margin * 2); const drawH = canvas.height - (margin * 2) - 40; 
+        let totalW = fieldWidth > 0 ? fieldWidth : 100; let totalL = totalArea / totalW; if (totalArea === 0) totalL = 100;
 
         ctx.beginPath(); ctx.strokeStyle = '#333'; ctx.lineWidth = 2;
         ctx.moveTo(margin, margin); ctx.lineTo(margin, margin + drawH); ctx.lineTo(margin + drawW, margin + drawH); ctx.stroke();
 
-        ctx.fillStyle = '#000'; ctx.font = '14px Arial'; ctx.textAlign = 'center';
-
+        ctx.fillStyle = '#000'; ctx.font = '12px Arial'; ctx.textAlign = 'center';
         let tickIntX = totalL > 100 ? 50 : 10;
         for (let i = 0; i <= totalL; i += tickIntX) {
             let xPos = margin + (i / totalL) * drawW;
-            ctx.beginPath(); ctx.moveTo(xPos, margin + drawH); ctx.lineTo(xPos, margin + drawH + 10); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(xPos, margin + drawH); ctx.lineTo(xPos, margin + drawH + 5); ctx.stroke();
             ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(xPos, margin); ctx.lineTo(xPos, margin + drawH); ctx.stroke(); ctx.restore();
-            ctx.fillText(i.toFixed(0), xPos, margin + drawH + 25);
+            ctx.fillText(i.toFixed(0), xPos, margin + drawH + 20);
         }
 
         ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
         let tickIntY = totalW > 100 ? 50 : 10;
         for (let i = 0; i <= totalW; i += tickIntY) {
             let yPos = margin + drawH - (i / totalW) * drawH;
-            ctx.beginPath(); ctx.moveTo(margin - 10, yPos); ctx.lineTo(margin, yPos); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(margin - 5, yPos); ctx.lineTo(margin, yPos); ctx.stroke();
             ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(margin, yPos); ctx.lineTo(margin + drawW, yPos); ctx.stroke(); ctx.restore();
-            ctx.fillText(i.toFixed(0), margin - 15, yPos);
+            ctx.fillText(i.toFixed(0), margin - 10, yPos);
         }
 
         let invPixelW = drawW * (invPct / 100); let remPixelW = drawW * (remPct / 100);
@@ -593,46 +521,30 @@
         if (invPct > 0) {
             ctx.fillStyle = colInv; ctx.fillRect(margin, margin, invPixelW, drawH);
             ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin, margin, invPixelW, drawH);
-            ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.font = 'bold 18px Arial';
-            if (invPixelW > 100) { ctx.fillText(`المساحة المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${invPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 15); }
+            ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.font = 'bold 16px Arial';
+            if (invPixelW > 80) { ctx.fillText(`المساحة المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 10); ctx.fillText(`(${invPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 10); }
         }
 
         if (remPct > 0) {
             ctx.fillStyle = colRem; ctx.fillRect(margin + invPixelW, margin, remPixelW, drawH);
             ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin + invPixelW, margin, remPixelW, drawH);
-            ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'bold 18px Arial';
-            if (remPixelW > 100) { ctx.fillText(`المساحة المتبقية`, margin + invPixelW + remPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${remPct.toFixed(0)}%)`, margin + invPixelW + remPixelW/2, margin + drawH/2 + 15); }
+            ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'bold 16px Arial';
+            if (remPixelW > 80) { ctx.fillText(`المساحة المتبقية`, margin + invPixelW + remPixelW/2, margin + drawH/2 - 10); ctx.fillText(`(${remPct.toFixed(0)}%)`, margin + invPixelW + remPixelW/2, margin + drawH/2 + 10); }
         }
 
-        ctx.fillStyle = '#000'; ctx.font = 'bold 22px "Times New Roman", serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('A', margin - 20, margin - 15); ctx.fillText('B', margin + drawW + 20, margin - 15); 
-        ctx.fillText('C', margin + drawW + 20, margin + drawH + 20); ctx.fillText('D', margin - 20, margin + drawH + 20); 
+        ctx.fillStyle = '#000'; ctx.font = 'bold 20px "Times New Roman", serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('A', margin - 15, margin - 15); ctx.fillText('B', margin + drawW + 15, margin - 15); 
+        ctx.fillText('C', margin + drawW + 15, margin + drawH + 15); ctx.fillText('D', margin - 15, margin + drawH + 15); 
 
-        ctx.fillStyle = '#000'; ctx.font = 'bold 18px Arial'; ctx.textAlign = 'center'; ctx.fillText('الطول (m)', margin + drawW/2, margin + drawH + 55);
-        ctx.save(); ctx.translate(margin - 50, margin + drawH/2); ctx.rotate(-Math.PI/2); ctx.fillText('العرض (m)', 0, 0); ctx.restore();
-
-        ctx.font = 'bold 20px Arial'; ctx.textAlign = 'right'; ctx.fillText('• المرتسم الخاص بالمساحات المستثمرة والمتبقية (Scale Plan)', canvas.width - 20, 30);
-
-        let scaleUnit = 10; if (totalL > 50) scaleUnit = 20; if (totalL > 100) scaleUnit = 50; if (totalL > 250) scaleUnit = 100;
-        const scaleBarPixels = (scaleUnit / totalL) * drawW; const scaleBarY = canvas.height - 30; 
-
-        ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath();
-        ctx.moveTo(margin, scaleBarY - 5); ctx.lineTo(margin, scaleBarY + 5);
-        ctx.moveTo(margin, scaleBarY); ctx.lineTo(margin + scaleBarPixels, scaleBarY);
-        ctx.moveTo(margin + scaleBarPixels, scaleBarY - 5); ctx.lineTo(margin + scaleBarPixels, scaleBarY + 5); ctx.stroke();
-
-        ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-        ctx.fillText('0 م', margin, scaleBarY + 10); ctx.fillText(`${scaleUnit} م`, margin + scaleBarPixels, scaleBarY + 10);
-        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('مقياس رسم تخطيطي', margin + scaleBarPixels + 20, scaleBarY);
+        ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center'; ctx.fillText('الطول (m)', margin + drawW/2, margin + drawH + 40);
+        ctx.save(); ctx.translate(margin - 40, margin + drawH/2); ctx.rotate(-Math.PI/2); ctx.fillText('العرض (m)', 0, 0); ctx.restore();
+        ctx.font = 'bold 16px Arial'; ctx.textAlign = 'right'; ctx.fillText('• المرتسم المساحي', canvas.width - 20, 25);
     }
 
     function prepareAndPrint() {
         const now = new Date();
         const dateString = now.toLocaleDateString('en-GB') + ' - ' + now.toLocaleTimeString('en-GB', {hour: '2-digit', minute:'2-digit'});
-        
-        const headers = document.querySelectorAll('.printDateHeader');
-        headers.forEach(h => h.innerText = dateString);
-        
+        document.querySelectorAll('.printDateHeader').forEach(h => h.innerText = dateString);
         window.print();
     }
 </script>
