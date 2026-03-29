@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام المسح الميداني الجيولوجي للمقالع</title>
     <style>
-        /* --- شاشات الترحيب وتسجيل الدخول (النسخة الفخمة المريحة للهواتف) --- */
+        /* --- شاشات الترحيب وتسجيل الدخول --- */
         #introScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: right; padding: 15px; box-sizing: border-box; overflow-y: auto; }
         .intro-box { background: rgba(255, 255, 255, 0.05); padding: 35px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 650px; width: 100%; backdrop-filter: blur(10px); margin: auto; box-sizing: border-box; }
         @media (max-width: 600px) { #introScreen { align-items: flex-start; } .intro-box { padding: 20px; margin: 20px auto; } }
@@ -44,6 +44,7 @@
 
         .section { margin-bottom: 25px; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         .section-title { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 8px; font-size: 1.2rem; margin-bottom: 20px; font-weight: bold; }
+        .sub-title { color: #e67e22; font-size: 1.05rem; margin: 15px 0 10px 0; border-bottom: 1px dashed #ccc; padding-bottom: 5px; font-weight: bold;}
         
         .form-row { display: flex; gap: 20px; margin-bottom: 15px; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; }
@@ -57,7 +58,7 @@
         .check-item:hover { background: #eaf2f8; border-color: #a9cce3; }
         .check-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; margin: 0; }
 
-        /* العمود الطباقي (10 طبقات بالإنجليزية) */
+        /* العمود الطباقي */
         .litho-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
         .litho-table th, .litho-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
         .litho-table th { background-color: #f4f6f7; color: #2c3e50; font-size: 0.9rem; }
@@ -79,14 +80,14 @@
         .result-value { font-weight: bold; color: #145a32; font-size: 1.15rem; }
         .percentage-note { background: #d5f5e3; padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; font-size: 0.95rem; color: #196f3d; text-align: center; border-right: 4px solid #27ae60; }
         
-        .canvas-container { margin-top: 20px; text-align: center; }
-        .canvas-container h3 { color: #34495e; margin-bottom: 10px; font-size: 1.1rem; }
-        canvas { background: #fff; width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 20px;}
+        .canvas-container { margin-top: 20px; margin-bottom: 30px; text-align: center; width: 100%; }
+        .canvas-container h3 { color: #34495e; margin-bottom: 15px; font-size: 1.2rem; }
+        canvas { background: #fff; width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);}
         
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
-        /* --- هندسة الطباعة (إخفاء العناصر غير المحددة) --- */
+        /* --- هندسة الطباعة (إخفاء العناصر غير المحددة و 4 صفحات) --- */
         .print-only { display: none; }
         
         @media print {
@@ -112,6 +113,7 @@
 
             .section { margin-bottom: 12px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 12px; background-color: #fafafa; box-shadow: none; page-break-inside: avoid;}
             .section-title { font-size: 1.05rem; margin-bottom: 8px; padding-bottom: 3px; border-bottom: 2px solid #2980b9;}
+            .sub-title { font-size: 0.95rem; margin: 10px 0 5px 0; border-bottom: none;}
             .form-row { display: flex !important; flex-wrap: nowrap !important; gap: 10px !important; justify-content: space-between !important; margin-bottom: 5px !important; }
             .form-group { flex: 1 !important; min-width: 0 !important; }
             label { font-size: 0.85rem; margin-bottom: 2px; color: #1c2833 !important;}
@@ -128,8 +130,8 @@
             .result-value { font-size: 1.05rem; color: #27ae60 !important;}
             .percentage-note { padding: 8px; font-size: 0.85rem; margin-top: 10px; background: #eafaf1 !important; color: #1e8449 !important;}
             
-            .canvas-container { page-break-inside: avoid; }
-            canvas { max-height: 400px; margin-top: 10px; border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; }
+            .canvas-container { page-break-inside: avoid; margin-bottom: 10px;}
+            canvas { max-height: 500px; margin-top: 10px; border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; }
             .content-padding { padding: 0 !important; }
         }
     </style>
@@ -194,7 +196,7 @@
             <div class="content-padding">
                 
                 <div class="section">
-                    <div class="section-title">أولاً: الموقع الجغرافي والبيانات الإدارية</div>
+                    <div class="section-title">أولاً: بيانات الجيولوجي المشرف وموقع العمل</div>
                     <div class="form-row">
                         <div class="form-group"><label>اسم الجيولوجي المشرف:</label><input type="text" id="printGeoName" readonly style="color: #2c3e50;"></div>
                         <div class="form-group">
@@ -213,11 +215,13 @@
 
                 <div class="section">
                     <div class="section-title">ثانياً: البيانات الحقلية والمساحية</div>
+                    
+                    <div class="sub-title">البيانات التعاقدية (الثابتة):</div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>المساحة بالدونم:</label>
+                            <label>المساحة المتعاقد عليها بالدونم:</label>
                             <div style="display: flex; gap: 10px;">
-                                <input type="number" id="areaInDunam" placeholder="مثلاً: 3">
+                                <input type="number" id="areaInDunam" placeholder="مثلاً: 1.5 أو 3">
                                 <button type="button" class="btn-convert screen-only" onclick="convertDunam()">تحويل</button>
                             </div>
                         </div>
@@ -230,6 +234,8 @@
                             <input type="number" id="contractVol" placeholder="مثلاً: 37500">
                         </div>
                     </div>
+
+                    <div class="sub-title" style="margin-top: 20px;">القياسات الميدانية (الفعلية المقاسة في المقلع):</div>
                     <div class="form-row">
                         <div class="form-group">
                             <label>الطول الميداني المستثمر (m):</label>
@@ -241,7 +247,7 @@
                         </div>
                         <div class="form-group">
                             <label>العمق الفعلي للاستثمار (m):</label>
-                            <input type="number" id="fieldDepth" placeholder="العمق">
+                            <input type="number" id="fieldDepth" placeholder="أدخل العمق الفعلي">
                         </div>
                     </div>
                 </div>
@@ -269,7 +275,7 @@
                 </div>
 
             </div>
-            <div class="print-only print-bottom">الصفحة 1 من 3</div>
+            <div class="print-only print-bottom">الصفحة 1 من 4</div>
         </div> 
 
         <div class="print-page-wrapper">
@@ -290,17 +296,19 @@
                         <option value="yes">توجد متغيرات وتراكيب جيولوجية مرصودة في المقلع</option>
                     </select>
                     <div id="geoVarDetails" style="display: none; padding: 10px; background: #eaf2f8; border-radius: 6px; margin-bottom: 15px;">
-                        <label>حدد المتغيرات (يمكن اختيار أكثر من واحد):</label>
+                        <label>حدد المتغيرات (يمكن اختيار أكثر من واحد أو إضافة متغير جديد):</label>
                         <div class="check-group">
                             <label class="check-item"><input type="checkbox"> عروق أو عدسات جبسية/ملحية</label>
                             <label class="check-item"><input type="checkbox"> عدسات رملية متداخلة</label>
                             <label class="check-item"><input type="checkbox"> فواصل وتشقق في الطبقات</label>
                             <label class="check-item"><input type="checkbox"> فوالق أو صدوع محلية</label>
                             <label class="check-item"><input type="checkbox"> تطبق متقاطع</label>
+                            <label class="check-item"><input type="checkbox" id="otherVarCb" onchange="document.getElementById('otherVarInput').style.display = this.checked ? 'block' : 'none'"> أخرى (اذكرها):</label>
                         </div>
+                        <input type="text" id="otherVarInput" placeholder="اكتب المتغيرات الجيولوجية الأخرى هنا..." style="display: none; margin-top: 10px; width: 100%;">
                     </div>
 
-                    <label>ب. مطابقة المواصفات الفنية مع التحاليل المختبرية للمستثمر:</label>
+                    <label style="margin-top: 15px;">ب. مطابقة المواصفات الفنية مع التحاليل المختبرية:</label>
                     <select id="specsSelect" style="margin-bottom: 5px;">
                         <option value="yes">المواصفات الفنية للتربة مطابقة لما جاء بكتاب التحليل المخبري</option>
                         <option value="no">المواصفات الفنية غير مطابقة لما جاء بكتاب التحليل المخبري</option>
@@ -355,23 +363,10 @@
                         <label class="check-item"><input type="checkbox"> كاشطة (Scraper)</label>
                     </div>
                 </div>
-
-            </div>
-            <div class="print-only print-bottom">الصفحة 2 من 3</div>
-        </div>
-
-        <div class="print-page-wrapper">
-            <div class="print-only print-header">
-                <span class="date-top-left printDateHeader"></span>
-                <h1>نظام المسح الميداني الجيولوجي للمقالع (التقرير الشامل)</h1>
-                <h2>إعداد وتدقيق الجيولوجي الميداني</h2>
-            </div>
-            
-            <div class="content-padding">
                 
                 <div class="section">
-                    <div class="section-title">سادساً: التتابع الطباقي والوصف الليثولوجي (Stratigraphic Column)</div>
-                    <p class="screen-only" style="font-size: 0.85rem; color: #7f8c8d; margin-top: -10px;">* اترك الطبقات الزائدة على خيار (None) ولن يتم رسمها أو إظهارها في التقرير.</p>
+                    <div class="section-title">سادساً: التتابع الطباقي والوصف الليثولوجي (Stratigraphic Data)</div>
+                    <p class="screen-only" style="font-size: 0.85rem; color: #7f8c8d; margin-top: -10px;">* يمكنك إضافة حتى 10 طبقات (اترك الطبقات الزائدة على None ولن تظهر).</p>
                     <table class="litho-table" id="lithoTableObj">
                         <tr>
                             <th style="width: 15%;">Layer No.</th>
@@ -383,6 +378,19 @@
                     </table>
                 </div>
 
+            </div>
+            <div class="print-only print-bottom">الصفحة 2 من 4</div>
+        </div>
+
+        <div class="print-page-wrapper">
+            <div class="print-only print-header">
+                <span class="date-top-left printDateHeader"></span>
+                <h1>نظام المسح الميداني الجيولوجي للمقالع (التقرير الشامل)</h1>
+                <h2>إعداد وتدقيق الجيولوجي الميداني</h2>
+            </div>
+            
+            <div class="content-padding">
+                
                 <div id="colorSection" class="section screen-only">
                     <div class="section-title">تخصيص ألوان المرتسم المساحي</div>
                     <div class="form-row">
@@ -394,7 +402,7 @@
                 <button class="btn-calc screen-only" onclick="calculateResults()">إجراء المعالجة وتوليد المرتسمات الهندسية</button>
 
                 <div id="resultsSection" class="section">
-                    <div class="section-title" style="border-bottom-color: #27ae60; color: #27ae60;">سابعاً: النتائج النهائية والمرتسمات الهندسية</div>
+                    <div class="section-title" style="border-bottom-color: #27ae60; color: #27ae60;">سابعاً: النتائج النهائية للمسح الميداني</div>
                     
                     <div class="result-item"><span>الكميات المستخرجة لغاية يوم الزيارة (م³):</span><span class="result-value" id="resExtractedVol">0</span></div>
                     <div class="result-item"><span>الكميات المتبقية من العقد (م³):</span><span class="result-value" id="resRemainingVol">0</span></div>
@@ -403,21 +411,32 @@
                     <div class="result-item"><span>أقصى عمق للاستثمار (م):</span><span class="result-value" id="resMaxDepth">0</span></div>
                     <div id="percentageNote" class="percentage-note"></div>
                     
-                    <div class="form-row" style="margin-top: 20px;">
-                        <div class="canvas-container" style="flex: 1.2;">
-                            <h3>المرتسم الخاص بالمساحات المستثمرة والمتبقية (Scale Plan)</h3>
-                            <canvas id="geoCanvas" width="500" height="400"></canvas>
-                        </div>
-                        <div class="canvas-container" style="flex: 0.8;">
-                            <h3>Stratigraphic Column</h3>
-                            <canvas id="strataCanvas" width="350" height="400"></canvas>
-                        </div>
+                    <div class="canvas-container">
+                        <h3>المرتسم الخاص بالمساحات المستثمرة والمتبقية (Scale Plan)</h3>
+                        <canvas id="geoCanvas" width="850" height="450"></canvas>
                     </div>
                     
                     <button class="btn-print screen-only" onclick="prepareAndPrint()">📄 حفظ التقرير الشامل كملف PDF</button>
                 </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 3 من 3</div>
+            <div class="print-only print-bottom">الصفحة 3 من 4</div>
+        </div>
+        
+        <div class="print-page-wrapper" id="strataPage" style="display: none;">
+            <div class="print-only print-header">
+                <span class="date-top-left printDateHeader"></span>
+                <h1>نظام المسح الميداني الجيولوجي للمقالع (التقرير الشامل)</h1>
+                <h2>إعداد وتدقيق الجيولوجي الميداني</h2>
+            </div>
+            <div class="content-padding">
+                <div class="section" style="border: 2px solid #2980b9;">
+                    <div class="canvas-container" style="margin-bottom: 0;">
+                        <h3>العمود الطباقي الهندسي (Stratigraphic Column)</h3>
+                        <canvas id="strataCanvas" width="700" height="750"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="print-only print-bottom">الصفحة 4 من 4</div>
         </div>
 
         <div class="footer screen-only">جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026</div>
@@ -448,7 +467,7 @@
         document.getElementById('pollDetails').style.display = val === 'yes' ? 'flex' : 'none';
     }
 
-    // بناء 10 طبقات لجدول العمود الطباقي
+    // بناء 10 طبقات باللغة الإنجليزية للعمود الطباقي مع الإضافة الجديدة
     const lithoOptions = `
         <option value="none">-- None --</option>
         <option value="topsoil">Topsoil</option>
@@ -458,6 +477,7 @@
         <option value="claysilt">Clay Silt</option>
         <option value="sand">Sand</option>
         <option value="interbedded">Interbedded Clay & Sand</option>
+        <option value="claysandysilt">Clay sandy interbedded with silt</option>
     `;
     const tbody = document.getElementById('lithoBody');
     for(let i=1; i<=10; i++) {
@@ -472,10 +492,10 @@
         tbody.appendChild(tr);
     }
     
-    // قيم افتراضية لأول 6 طبقات للنهروان للتسهيل
+    // قيم النهروان الافتراضية لأول 6 طبقات
     document.getElementById('lType1').value = 'siltyclay'; document.getElementById('lThick1').value = '0.4';
     document.getElementById('lType2').value = 'clay'; document.getElementById('lThick2').value = '0.7';
-    document.getElementById('lType3').value = 'interbedded'; document.getElementById('lThick3').value = '1.9';
+    document.getElementById('lType3').value = 'claysandysilt'; document.getElementById('lThick3').value = '1.9'; // تم التحديث بناءً على طلبك
     document.getElementById('lType4').value = 'claysilt'; document.getElementById('lThick4').value = '2.5';
     document.getElementById('lType5').value = 'sandyclay'; document.getElementById('lThick5').value = '1.5';
     document.getElementById('lType6').value = 'interbedded'; document.getElementById('lThick6').value = '3.0';
@@ -489,9 +509,8 @@
             
             if(type === 'none') { 
                 thickInput.value = 0; thickInput.disabled = true; 
-                row.classList.add('no-print'); // لا يطبع الطبقات الفارغة
-            } 
-            else { 
+                row.classList.add('no-print'); 
+            } else { 
                 thickInput.disabled = false; 
                 row.classList.remove('no-print');
             }
@@ -595,12 +614,13 @@
 
         document.getElementById('percentageNote').innerText = `النسبة المئوية للمساحة المتبقية للاستثمار هي (${remainingPercentage.toFixed(1)}%) من إجمالي العقد.`;
         document.getElementById('resultsSection').style.display = 'block';
+        document.getElementById('strataPage').style.display = 'block'; // إظهار صفحة الرسم الطباقي
         
         drawSideBySideChart(width, contractArea, investedPercentage, remainingPercentage, colorInv, colorRem);
         drawStratigraphicColumn();
     }
 
-    // المرتسم المساحي الفخم والقديم
+    // المرتسم المساحي الفخم العريض (Scale Plan)
     function drawSideBySideChart(fieldWidth, totalArea, invPct, remPct, colInv, colRem) {
         const canvas = document.getElementById('geoCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         const margin = 70; const drawW = canvas.width - (margin * 2); const drawH = canvas.height - (margin * 2) - 60; 
@@ -650,7 +670,7 @@
         ctx.fillStyle = '#000'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center'; ctx.fillText('الطول (m)', margin + drawW/2, margin + drawH + 55);
         ctx.save(); ctx.translate(margin - 45, margin + drawH/2); ctx.rotate(-Math.PI/2); ctx.fillText('العرض (m)', 0, 0); ctx.restore();
 
-        // مقياس الرسم في الأسفل
+        // مقياس الرسم (Scale Plan)
         let scaleUnit = 10; if (totalL > 50) scaleUnit = 20; if (totalL > 100) scaleUnit = 50; if (totalL > 250) scaleUnit = 100;
         const scaleBarPixels = (scaleUnit / totalL) * drawW; const scaleBarY = canvas.height - 30; 
         ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath();
@@ -658,11 +678,11 @@
         ctx.moveTo(margin, scaleBarY); ctx.lineTo(margin + scaleBarPixels, scaleBarY);
         ctx.moveTo(margin + scaleBarPixels, scaleBarY - 5); ctx.lineTo(margin + scaleBarPixels, scaleBarY + 5); ctx.stroke();
         ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-        ctx.fillText('0 م', margin, scaleBarY + 10); ctx.fillText(`${scaleUnit} م`, margin + scaleBarPixels, scaleBarY + 10);
-        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('مقياس رسم تخطيطي', margin + scaleBarPixels + 20, scaleBarY);
+        ctx.fillText('0 m', margin, scaleBarY + 10); ctx.fillText(`${scaleUnit} m`, margin + scaleBarPixels, scaleBarY + 10);
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('مقياس الرسم (Scale)', margin + scaleBarPixels + 20, scaleBarY);
     }
 
-    // العمود الطباقي بالإنجليزية
+    // العمود الطباقي بالإنجليزية الفخم (مع إضافة مقياس العمق العمودي)
     function drawStratigraphicColumn() {
         const canvas = document.getElementById('strataCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         
@@ -673,9 +693,9 @@
             let name = document.getElementById('lType'+i).options[document.getElementById('lType'+i).selectedIndex].text;
             if(type !== 'none' && thick > 0) { layers.push({type: type, name: name, thick: thick, start: totalDepth}); totalDepth += thick; uniqueTypes.add(type); }
         }
-        if(totalDepth === 0) return; // لا يرسم شيء إذا فارغ
+        if(totalDepth === 0) return;
 
-        const marginX = 50; const marginY = 30; const drawW = 80; const drawH = canvas.height - (marginY * 2);
+        const marginX = 120; const marginY = 40; const drawW = 150; const drawH = canvas.height - (marginY * 2);
         
         ctx.lineWidth = 2; ctx.strokeStyle = '#333'; ctx.strokeRect(marginX, marginY, drawW, drawH);
         
@@ -687,13 +707,16 @@
             else if(type === 'siltyclay') ctx.fillStyle = '#e0e0e0';
             else if(type === 'sandyclay') ctx.fillStyle = '#d7ccc8';
             else if(type === 'claysilt') ctx.fillStyle = '#f5f5f5';
+            else if(type === 'claysandysilt') ctx.fillStyle = '#cfd8dc'; // اللون الأساسي للإضافة الجديدة
             else if(type === 'interbedded') ctx.fillStyle = '#b0bec5';
             ctx.fillRect(x,y,w,h);
             ctx.lineWidth = 1; ctx.strokeStyle = '#555'; ctx.fillStyle = '#555';
-            if(type.includes('clay')) { for(let i=y+4; i<y+h; i+=8) { ctx.beginPath(); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.stroke(); } }
-            if(type.includes('sand')) { for(let i=0; i< (w*h)/40; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.8, 0, Math.PI*2); ctx.fill(); } }
+            
+            if(type.includes('clay') || type === 'claysandysilt') { for(let i=y+4; i<y+h; i+=8) { ctx.beginPath(); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.stroke(); } }
+            if(type.includes('sand') || type === 'claysandysilt') { for(let i=0; i< (w*h)/40; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.8, 0, Math.PI*2); ctx.fill(); } }
             if(type === 'topsoil') { for(let i=0; i< (w*h)/80; i++) { let px = x+Math.random()*w; let py = y+Math.random()*h; ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px+3,py+5); ctx.lineTo(px+6,py); ctx.stroke(); } }
             if(type === 'interbedded') { for(let i=y+10; i<y+h; i+=15) { ctx.beginPath(); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.lineWidth=2; ctx.stroke(); ctx.lineWidth=1;} }
+            
             ctx.restore(); ctx.strokeRect(x,y,w,h);
         }
 
@@ -702,29 +725,46 @@
             let layerH = (layer.thick / totalDepth) * drawH;
             fillPattern(layer.type, marginX, startY, drawW, layerH);
             
-            ctx.fillStyle = '#000'; ctx.font = '12px Arial'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-            if (layer.start === 0) ctx.fillText('0.0m -', marginX - 5, marginY);
-            ctx.fillText((layer.start + layer.thick).toFixed(1) + 'm -', marginX - 5, startY + layerH);
+            ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+            if (layer.start === 0) ctx.fillText('0.0 m -', marginX - 10, marginY);
+            ctx.fillText((layer.start + layer.thick).toFixed(1) + ' m -', marginX - 10, startY + layerH);
         });
 
+        // مقياس العمق العمودي (Vertical Scale)
+        let scaleUnitStrata = totalDepth > 5 ? 2 : 1;
+        let scalePixels = (scaleUnitStrata / totalDepth) * drawH;
+        let sX = marginX - 70; 
+        let sY = marginY + drawH - scalePixels;
+        ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath();
+        ctx.moveTo(sX - 5, sY); ctx.lineTo(sX + 5, sY);
+        ctx.moveTo(sX, sY); ctx.lineTo(sX, sY + scalePixels);
+        ctx.moveTo(sX - 5, sY + scalePixels); ctx.lineTo(sX + 5, sY + scalePixels);
+        ctx.stroke();
+        ctx.save();
+        ctx.translate(sX - 15, sY + scalePixels / 2);
+        ctx.rotate(-Math.PI/2);
+        ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.font = 'bold 13px Arial';
+        ctx.fillText(`Scale: ${scaleUnitStrata}m`, 0, 0);
+        ctx.restore();
+
         // Legend
-        let legendX = marginX + drawW + 20; let legendY = marginY;
-        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.font = 'bold 12px Arial';
+        let legendX = marginX + drawW + 40; let legendY = marginY + 20;
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.font = 'bold 16px Arial';
         ctx.fillText('Legend:', legendX, legendY);
-        legendY += 20;
+        legendY += 30;
 
         layers.forEach(layer => {
             if(uniqueTypes.has(layer.type)) {
-                fillPattern(layer.type, legendX, legendY - 10, 20, 20);
-                ctx.fillStyle = '#000'; ctx.font = '11px Arial';
-                ctx.fillText(layer.name, legendX + 25, legendY);
-                legendY += 30;
+                fillPattern(layer.type, legendX, legendY - 15, 30, 30);
+                ctx.fillStyle = '#000'; ctx.font = 'bold 13px Arial';
+                ctx.fillText(layer.name, legendX + 40, legendY);
+                legendY += 40;
                 uniqueTypes.delete(layer.type);
             }
         });
     }
 
-    // الطباعة الذكية لإخفاء المربعات غير المحددة
+    // الطباعة الذكية (إخفاء العناصر غير المحددة والمتغيرات الفارغة)
     function prepareAndPrint() {
         const now = new Date();
         const dateString = now.toLocaleDateString('en-GB') + ' - ' + now.toLocaleTimeString('en-GB', {hour: '2-digit', minute:'2-digit'});
@@ -736,6 +776,15 @@
             if (cb && !cb.checked) { item.classList.add('no-print'); } 
             else { item.classList.remove('no-print'); }
         });
+
+        // إخفاء حقل الإدخال "أخرى" إذا لم يكن الخيار مفعلاً
+        const otherCb = document.getElementById('otherVarCb');
+        const otherInput = document.getElementById('otherVarInput');
+        if(otherCb && !otherCb.checked) {
+            otherInput.classList.add('no-print');
+        } else {
+            otherInput.classList.remove('no-print');
+        }
         
         window.print();
     }
