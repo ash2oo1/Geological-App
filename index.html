@@ -9,7 +9,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
-        /* --- شاشات الترحيب وتسجيل الدخول --- */
+        /* --- شاشات الترحيب وتسجيل الدخول (عادت كما كانت تماماً) --- */
         #introScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: right; padding: 15px; box-sizing: border-box; overflow-y: auto; }
         .intro-box { background: rgba(255, 255, 255, 0.05); padding: 35px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 650px; width: 100%; backdrop-filter: blur(10px); margin: auto; box-sizing: border-box; }
         @media (max-width: 600px) { #introScreen { align-items: flex-start; } .intro-box { padding: 20px; margin: 20px auto; } }
@@ -86,15 +86,21 @@
         .result-item { display: flex; justify-content: space-between; border-bottom: 1px dashed #bdc3c7; padding: 10px 0; font-size: 1.05rem; }
         .result-item:last-child { border-bottom: none; }
         .result-value { font-weight: bold; color: #145a32; font-size: 1.15rem; }
-        .percentage-note { background: #d5f5e3; padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; font-size: 0.95rem; color: #196f3d; text-align: center; border-right: 4px solid #27ae60; }
+        .percentage-note { background: #d5f5e3; padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; font-size: 0.95rem; color: #196f3d; text-align: center; border-right: 4px solid #27ae60; margin-bottom: 25px;}
         
-        .canvas-container { margin-top: 20px; margin-bottom: 30px; text-align: center; width: 100%; }
+        /* فصل المرتسمات لتأخذ مساحة كاملة */
+        .canvas-container { margin-bottom: 30px; text-align: center; width: 100%; }
         .canvas-container h3 { color: #34495e; margin-bottom: 15px; font-size: 1.2rem; }
-        canvas { background: #fff; width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);}
+        canvas { background: #fff; width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);}
         
-        /* تنسيق الخريطة الفضائية */
-        .map-wrapper { border: 2px solid #34495e; border-radius: 6px; overflow: hidden; height: 400px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        /* تنسيق الخريطة الفضائية ومحتوياتها */
+        .map-wrapper { border: 2px solid #34495e; border-radius: 6px; overflow: hidden; height: 500px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative;}
         .map-label { background: rgba(255, 255, 255, 0.9); border: 2px solid #e74c3c; font-weight: bold; font-size: 14px; color: #c0392b; padding: 2px 6px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);}
+        
+        /* عناصر الخريطة (شمال، دليل) */
+        .map-north { position: absolute; top: 15px; right: 15px; z-index: 1000; background: rgba(255,255,255,0.9); padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 16px; color: #333; border: 2px solid #555; box-shadow: 0 2px 5px rgba(0,0,0,0.3); direction: ltr;}
+        .map-legend-box { position: absolute; bottom: 25px; right: 15px; z-index: 1000; background: rgba(255,255,255,0.95); padding: 10px; border-radius: 6px; border: 2px solid #2c3e50; font-size: 12px; text-align: right; box-shadow: 0 2px 5px rgba(0,0,0,0.3); line-height: 1.8;}
+        .map-legend-box b { color: #2c3e50; display: block; margin-bottom: 5px; font-size: 13px; border-bottom: 1px solid #ccc; padding-bottom: 3px;}
 
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
@@ -139,11 +145,15 @@
             #resultsSection { padding: 12px; margin-top: 0; border: 2px solid #27ae60 !important; page-break-inside: avoid; background: #fff !important;}
             .result-item { padding: 6px 0; font-size: 0.95rem; border-color: #ccc;}
             .result-value { font-size: 1.05rem; color: #27ae60 !important;}
-            .percentage-note { padding: 8px; font-size: 0.85rem; margin-top: 10px; background: #eafaf1 !important; color: #1e8449 !important;}
+            .percentage-note { padding: 8px; font-size: 0.85rem; margin-top: 10px; background: #eafaf1 !important; color: #1e8449 !important; margin-bottom: 15px;}
             
-            .canvas-container { page-break-inside: avoid; margin-bottom: 10px;}
-            canvas { max-height: 380px; margin-top: 5px; border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; }
-            .map-wrapper { height: 350px !important; border: 1.5px solid #34495e !important; }
+            .canvas-container { page-break-inside: avoid; margin-bottom: 15px; width: 100% !important; display: block !important;}
+            canvas { max-height: 350px; margin-top: 5px; border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; }
+            
+            /* الحفاظ على أبعاد الخريطة الفضائية ومحتوياتها عند الطباعة */
+            .map-wrapper { height: 400px !important; border: 1.5px solid #34495e !important; position: relative !important; page-break-inside: avoid;}
+            .leaflet-control-container { display: none !important; } /* إخفاء أزرار الزووم الافتراضية للطباعة */
+            
             .content-padding { padding: 0 !important; }
         }
     </style>
@@ -154,26 +164,34 @@
     <div class="intro-box">
         <div id="step1">
             <h1>أهلاً بكم في منصة نظام المسح الميداني للمقالع</h1>
-            <h2>بإشراف الجيولوجي علي شندل الجنابي</h2>
+            <h2>بإشراف الجيولوجي علي شندل فلاح</h2>
             <div class="vision-text">
                 🎯 <b>رؤية المنصة:</b><br>
-                صُمم هذا الموقع ليكون الوثيقة الهندسية والبيئية الأقوى للجيولوجي العراقي، حيث يدمج متطلبات النقابة مع دقة الحسابات، بالإضافة إلى <b>التحقق الأرضي الفضائي (Ground Truthing)</b> لإنتاج تقرير سيادي متكامل.
+                صُمم هذا الموقع خصيصاً ليسهل العمل ويوفر الجهد والوقت للجيولوجيين، ليكون وثيقة تفتيش ورقابة هندسية وبيئية متكاملة، تحمي الثروات وتمثل الحقيقة الجيولوجية بكل أمانة.
             </div>
             <ul class="instruction-list">
-                <li>📄 <strong>البيانات:</strong> مطابقة المواصفات ورصد المتغيرات بدقة.</li>
-                <li>📍 <strong>الرقابة:</strong> توثيق الآليات والملوثات والمياه الجوفية.</li>
-                <li>⛏️ <strong>العمود الطباقي:</strong> رسم هندسي آلي للطبقات الليثولوجية.</li>
-                <li>🌍 <strong>إثبات فضائي:</strong> التقاط الإحداثيات ورسم صورة قمر صناعي حية للمقلع.</li>
+                <li>📄 <strong>بيانات العقد:</strong> إدخال المساحة والكمية المتعاقد عليها من التقرير الرسمي.</li>
+                <li>📍 <strong>التدقيق البيئي:</strong> مراقبة مستويات المياه الجوفية والملوثات في منطقة المقلع.</li>
+                <li>⛏️ <strong>الطباقية:</strong> وصف التتابع الليثولوجي بدقة ضمن الأعماق المسموحة.</li>
+                <li>📏 <strong>القياسات:</strong> التقاط الإحداثيات (UTM) وحساب كميات الاستخراج بدقة.</li>
             </ul>
+            <div class="offline-notice">
+                <h3>⚠️ تعليمات هامة للعمل الميداني (بدون إنترنت):</h3>
+                <ul>
+                    <li>سجل الدخول للموقع <b>وأنت متصل بالإنترنت</b> قبل التوجه للمقلع.</li>
+                    <li>أبقِ خدمة <b>(الموقع / GPS)</b> مفتوحة طيلة فترة العمل.</li>
+                    <li><b>لا تغلق المتصفح</b>. يمكنك إدخال البيانات وحفظ الـ PDF أوفلاين كلياً!</li>
+                </ul>
+            </div>
             <button onclick="goToStep2()" class="btn-action">التالي</button>
         </div>
 
         <div id="step2">
             <h1 style="color: #2ecc71; border-bottom: 2px solid #2ecc71; padding-bottom: 10px; display: inline-block; margin-top: 0;">صفحة تسجيل الدخول</h1>
             <div class="warning-box">
-                <h3>⚠️ قم بإدخال المعلومات التالية بحذر:</h3>
+                <h3>⚠️ قم بإدخال المعلومات التالية بحذر وبصورة صحيحة جداً:</h3>
                 <p><b style="color: #f1c40f;">أولاً:</b> اسم الجيولوجي الثلاثي.</p>
-                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري (من <b>علي شندل الجنابي</b>).</p>
+                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري (من مؤسس المنصة <b>علي شندل فلاح</b>).</p>
             </div>
             <input type="text" id="geoNameInput" placeholder="أدخل اسم الجيولوجي (الثلاثي) هنا..." required autocomplete="off">
             <input type="password" id="adminPassword" placeholder="أدخل رمز الدخول السري هنا...">
@@ -187,7 +205,7 @@
     <div class="container">
         <div class="header screen-only">
             <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
-            <h2 ondblclick="lockSystem()" style="cursor: pointer;" title="انقر مرتين للإغلاق">بإشراف الجيولوجي علي شندل الجنابي</h2>
+            <h2 ondblclick="lockSystem()" style="cursor: pointer;" title="انقر مرتين للإغلاق">بإشراف الجيولوجي علي شندل فلاح</h2>
         </div>
 
         <div class="print-page-wrapper">
@@ -404,7 +422,6 @@
                 </div>
 
                 <button class="btn-calc screen-only" onclick="calculateResults()">إجراء المعالجة وتوليد المرتسمات الهندسية</button>
-                
                 <button class="btn-satellite screen-only" id="satBtn" onclick="generateSatelliteMap()" style="display: none;">🌍 توليد الصورة الفضائية للمقلع (يتطلب إنترنت)</button>
 
                 <div id="resultsSection" class="section">
@@ -417,15 +434,22 @@
                     <div class="result-item"><span>أقصى عمق للاستثمار (م):</span><span class="result-value" id="resMaxDepth">0</span></div>
                     <div id="percentageNote" class="percentage-note"></div>
                     
-                    <div class="form-row" style="margin-top: 20px;">
-                        <div class="canvas-container" style="flex: 1;">
-                            <h3>المرتسم المساحي (Scale Plan)</h3>
-                            <canvas id="geoCanvas" width="450" height="400"></canvas>
-                        </div>
-                        
-                        <div class="canvas-container" id="mapSection" style="flex: 1; display: none;">
-                            <h3>الصورة الفضائية للمقلع (Satellite Map)</h3>
-                            <div id="satelliteMap" class="map-wrapper" dir="ltr"></div>
+                    <div class="canvas-container" style="display: block; width: 100%;">
+                        <h3>المرتسم المساحي (Scale Plan)</h3>
+                        <canvas id="geoCanvas" width="850" height="400"></canvas>
+                    </div>
+                    
+                    <div class="canvas-container" id="mapSection" style="display: none; width: 100%; margin-top: 30px;">
+                        <h3>الصورة الفضائية للمقلع (Satellite View)</h3>
+                        <div id="satelliteMap" class="map-wrapper" dir="ltr">
+                            <div class="map-north">⬆ N</div>
+                            <div class="map-legend-box">
+                                <b>دليل الصورة الفضائية (Legend)</b>
+                                <span style="color:#27ae60; font-size:16px;">■</span> غطاء نباتي/زراعي<br>
+                                <span style="color:#d35400; font-size:16px;">■</span> أراضي ترابية/مقلع<br>
+                                <span style="color:#2980b9; font-size:16px;">■</span> تجمعات مائية<br>
+                                <span style="color:#e74c3c; font-weight:bold; font-size:16px;">▬</span> حدود المقلع المستثمر
+                            </div>
                         </div>
                     </div>
                     
@@ -452,14 +476,12 @@
             <div class="print-only print-bottom">الصفحة 4 من 4</div>
         </div>
 
-        <div class="footer screen-only">جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026</div>
+        <div class="footer screen-only">جميع الحقوق محفوظة لدى الجيولوجي علي شندل فلاح © 2026</div>
     </div>
 </div>
 
 <script>
     let currentGeoName = "";
-    
-    // متغيرات لتخزين إحداثيات الـ GPS الحقيقية لرسم الخريطة لاحقاً
     let rawGpsPoints = { point1: null, point2: null, point3: null, point4: null };
 
     function goToStep2() {
@@ -483,7 +505,6 @@
         document.getElementById('pollDetails').style.display = val === 'yes' ? 'flex' : 'none';
     }
 
-    // بناء 10 طبقات للعمود الطباقي
     const lithoOptions = `
         <option value="none">-- None --</option>
         <option value="topsoil">Topsoil</option>
@@ -508,7 +529,6 @@
         tbody.appendChild(tr);
     }
     
-    // قيم النهروان الافتراضية
     document.getElementById('lType1').value = 'siltyclay'; document.getElementById('lThick1').value = '0.4';
     document.getElementById('lType2').value = 'clay'; document.getElementById('lThick2').value = '0.7';
     document.getElementById('lType3').value = 'claysandysilt'; document.getElementById('lThick3').value = '1.9'; 
@@ -592,10 +612,7 @@
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
                 const lat = position.coords.latitude; const lon = position.coords.longitude;
-                
-                // تخزين الإحداثيات لرسم خريطة القمر الصناعي لاحقاً
                 rawGpsPoints[elementId] = { lat: lat, lng: lon };
-                
                 const utm = latLonToUTM(lat, lon);
                 document.getElementById(elementId).innerHTML = `E: ${utm.easting} | N: ${utm.northing} <br> <span style="font-size:0.75rem;">(Zone: ${utm.zone}N)</span>`;
             }, function() { alert("يرجى تفعيل خدمة الموقع (GPS)."); }, { enableHighAccuracy: true });
@@ -628,14 +645,14 @@
         document.getElementById('percentageNote').innerText = `النسبة المئوية للمساحة المتبقية للاستثمار هي (${remainingPercentage.toFixed(1)}%) من إجمالي العقد.`;
         
         document.getElementById('resultsSection').style.display = 'block';
-        document.getElementById('satBtn').style.display = 'block'; // إظهار زر القمر الصناعي
+        document.getElementById('satBtn').style.display = 'block';
         document.getElementById('strataPage').style.display = 'block'; 
         
         drawSideBySideChart(width, contractArea, investedPercentage, remainingPercentage, colorInv, colorRem);
         drawStratigraphicColumn();
     }
 
-    // 🌍 دالة توليد الصورة الفضائية (Satellite Map)
+    // 🌍 دالة توليد الصورة الفضائية (مع فتح التقريب لـ 22 ومقياس الرسم)
     let myLeafletMap = null;
     function generateSatelliteMap() {
         let pts = [];
@@ -653,17 +670,21 @@
         
         if(myLeafletMap !== null) { myLeafletMap.remove(); }
 
-        myLeafletMap = L.map('satelliteMap');
+        // تفعيل أداة الـ Zoom الافتراضية
+        myLeafletMap = L.map('satelliteMap', { zoomControl: true });
         
-        // استدعاء قمر Esri الصناعي (مجاني وعالي الدقة)
+        // استدعاء قمر Esri مع فتح الحد الأقصى للتقريب إلى 22
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, GeoEye, Earthstar, Geographics'
+            attribution: 'Tiles © Esri',
+            maxZoom: 22,
+            maxNativeZoom: 19 // القمر يدعم 19 والمكتبة تقوم بتقريب الصورة أوتوماتيكياً للـ 22
         }).addTo(myLeafletMap);
 
-        // رسم مضلع المقلع باللون الأحمر
+        // إضافة مقياس الرسم الجغرافي (Scale Control) أسفل يسار الخريطة
+        L.control.scale({metric: true, imperial: false, position: 'bottomleft'}).addTo(myLeafletMap);
+
         let polygon = L.polygon(pts, {color: '#e74c3c', weight: 3, fillColor: '#e74c3c', fillOpacity: 0.35}).addTo(myLeafletMap);
         
-        // إضافة العلامات A, B, C, D
         const labels = ['A', 'B', 'C', 'D'];
         pts.forEach((p, index) => {
             L.circleMarker(p, {radius: 4, color: '#fff', fillColor: '#e74c3c', fillOpacity: 1})
@@ -672,41 +693,39 @@
              .openTooltip();
         });
 
-        // ضبط الكاميرا لتشمل المضلع بالكامل
         myLeafletMap.fitBounds(polygon.getBounds(), {padding: [50, 50]});
         
-        // تأخير بسيط لإعادة حساب الحجم لضمان الطباعة الصحيحة
         setTimeout(() => { myLeafletMap.invalidateSize(); }, 500);
         
-        document.getElementById('satBtn').innerText = "✅ تم توليد الصورة الفضائية بنجاح!";
+        document.getElementById('satBtn').innerText = "✅ تم توليد الصورة الفضائية بنجاح! (يمكنك التقريب الان)";
         document.getElementById('satBtn').style.background = "#27ae60";
     }
 
-    // المرتسم المساحي
+    // المرتسم المساحي (مفصول وعريض)
     function drawSideBySideChart(fieldWidth, totalArea, invPct, remPct, colInv, colRem) {
         const canvas = document.getElementById('geoCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const margin = 50; const drawW = canvas.width - (margin * 2); const drawH = canvas.height - (margin * 2) - 40; 
+        const margin = 70; const drawW = canvas.width - (margin * 2); const drawH = canvas.height - (margin * 2) - 60; 
         let totalW = fieldWidth > 0 ? fieldWidth : 100; let totalL = totalArea / totalW; if (totalArea === 0) totalL = 100;
 
         ctx.beginPath(); ctx.strokeStyle = '#333'; ctx.lineWidth = 2;
         ctx.moveTo(margin, margin); ctx.lineTo(margin, margin + drawH); ctx.lineTo(margin + drawW, margin + drawH); ctx.stroke();
-        ctx.fillStyle = '#000'; ctx.font = '12px Arial'; ctx.textAlign = 'center';
 
+        ctx.fillStyle = '#000'; ctx.font = '14px Arial'; ctx.textAlign = 'center';
         let tickIntX = totalL > 100 ? 50 : 10;
         for (let i = 0; i <= totalL; i += tickIntX) {
             let xPos = margin + (i / totalL) * drawW;
-            ctx.beginPath(); ctx.moveTo(xPos, margin + drawH); ctx.lineTo(xPos, margin + drawH + 5); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(xPos, margin + drawH); ctx.lineTo(xPos, margin + drawH + 10); ctx.stroke();
             ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(xPos, margin); ctx.lineTo(xPos, margin + drawH); ctx.stroke(); ctx.restore();
-            ctx.fillText(i.toFixed(0), xPos, margin + drawH + 18);
+            ctx.fillText(i.toFixed(0), xPos, margin + drawH + 25);
         }
 
         ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
         let tickIntY = totalW > 100 ? 50 : 10;
         for (let i = 0; i <= totalW; i += tickIntY) {
             let yPos = margin + drawH - (i / totalW) * drawH;
-            ctx.beginPath(); ctx.moveTo(margin - 5, yPos); ctx.lineTo(margin, yPos); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(margin - 10, yPos); ctx.lineTo(margin, yPos); ctx.stroke();
             ctx.save(); ctx.strokeStyle = '#eee'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(margin, yPos); ctx.lineTo(margin + drawW, yPos); ctx.stroke(); ctx.restore();
-            ctx.fillText(i.toFixed(0), margin - 10, yPos);
+            ctx.fillText(i.toFixed(0), margin - 15, yPos);
         }
 
         let invPixelW = drawW * (invPct / 100); let remPixelW = drawW * (remPct / 100);
@@ -714,19 +733,33 @@
         if (invPct > 0) {
             ctx.fillStyle = colInv; ctx.fillRect(margin, margin, invPixelW, drawH);
             ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin, margin, invPixelW, drawH);
-            ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.font = 'bold 14px Arial';
-            if (invPixelW > 70) { ctx.fillText(`المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 10); ctx.fillText(`(${invPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 10); }
+            ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.font = 'bold 16px Arial';
+            if (invPixelW > 90) { ctx.fillText(`المساحة المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${invPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 15); }
         }
+
         if (remPct > 0) {
             ctx.fillStyle = colRem; ctx.fillRect(margin + invPixelW, margin, remPixelW, drawH);
             ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin + invPixelW, margin, remPixelW, drawH);
-            ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'bold 14px Arial';
-            if (remPixelW > 70) { ctx.fillText(`المتبقية`, margin + invPixelW + remPixelW/2, margin + drawH/2 - 10); ctx.fillText(`(${remPct.toFixed(0)}%)`, margin + invPixelW + remPixelW/2, margin + drawH/2 + 10); }
+            ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'bold 16px Arial';
+            if (remPixelW > 90) { ctx.fillText(`المساحة المتبقية`, margin + invPixelW + remPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${remPct.toFixed(0)}%)`, margin + invPixelW + remPixelW/2, margin + drawH/2 + 15); }
         }
 
-        ctx.fillStyle = '#000'; ctx.font = 'bold 18px "Times New Roman", serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('A', margin - 15, margin - 15); ctx.fillText('B', margin + drawW + 15, margin - 15); 
-        ctx.fillText('C', margin + drawW + 15, margin + drawH + 15); ctx.fillText('D', margin - 15, margin + drawH + 15); 
+        ctx.fillStyle = '#000'; ctx.font = 'bold 22px "Times New Roman", serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('A', margin - 20, margin - 15); ctx.fillText('B', margin + drawW + 20, margin - 15); 
+        ctx.fillText('C', margin + drawW + 20, margin + drawH + 20); ctx.fillText('D', margin - 20, margin + drawH + 20); 
+
+        ctx.fillStyle = '#000'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center'; ctx.fillText('الطول (m)', margin + drawW/2, margin + drawH + 55);
+        ctx.save(); ctx.translate(margin - 45, margin + drawH/2); ctx.rotate(-Math.PI/2); ctx.fillText('العرض (m)', 0, 0); ctx.restore();
+
+        let scaleUnit = 10; if (totalL > 50) scaleUnit = 20; if (totalL > 100) scaleUnit = 50; if (totalL > 250) scaleUnit = 100;
+        const scaleBarPixels = (scaleUnit / totalL) * drawW; const scaleBarY = canvas.height - 30; 
+        ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath();
+        ctx.moveTo(margin, scaleBarY - 5); ctx.lineTo(margin, scaleBarY + 5);
+        ctx.moveTo(margin, scaleBarY); ctx.lineTo(margin + scaleBarPixels, scaleBarY);
+        ctx.moveTo(margin + scaleBarPixels, scaleBarY - 5); ctx.lineTo(margin + scaleBarPixels, scaleBarY + 5); ctx.stroke();
+        ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+        ctx.fillText('0 m', margin, scaleBarY + 10); ctx.fillText(`${scaleUnit} m`, margin + scaleBarPixels, scaleBarY + 10);
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('مقياس الرسم (Scale)', margin + scaleBarPixels + 20, scaleBarY);
     }
 
     // العمود الطباقي
@@ -791,13 +824,19 @@
         });
     }
 
+    // الطباعة (تحافظ على مكان تقريبك بفضل تحديث الحجم)
     function prepareAndPrint() {
         const now = new Date();
         const dateString = now.toLocaleDateString('en-GB') + ' - ' + now.toLocaleTimeString('en-GB', {hour: '2-digit', minute:'2-digit'});
         document.querySelectorAll('.printDateHeader').forEach(h => h.innerText = dateString);
+        
         document.querySelectorAll('.check-item').forEach(item => { const cb = item.querySelector('input[type="checkbox"]'); if (cb && !cb.checked) { item.classList.add('no-print'); } else { item.classList.remove('no-print'); } });
         const otherCb = document.getElementById('otherVarCb'); const otherInput = document.getElementById('otherVarInput');
         if(otherCb && !otherCb.checked) { otherInput.classList.add('no-print'); } else { otherInput.classList.remove('no-print'); }
+        
+        // تحديث حجم الخريطة قبل الطباعة لضمان بقائها كما هي
+        if(myLeafletMap) { myLeafletMap.invalidateSize(); }
+        
         window.print();
     }
 </script>
