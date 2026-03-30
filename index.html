@@ -459,7 +459,7 @@
     let rawGpsPoints = { point1: null, point2: null, point3: null, point4: null };
     let loginLocation = { lat: null, lng: null, enabled: false };
 
-    // عندما يضغط على زر (التالي) نطلب منه الـ GPS مباشرة ليكسب الوقت
+    // طلب تحديد الموقع فوراً لكسب الوقت
     function goToStep2() {
         document.getElementById('step1').style.display = 'none';
         document.getElementById('step2').style.display = 'block';
@@ -539,7 +539,6 @@
 
     const MASTER_PASSWORD = "ali123";
 
-    // 🚀 كود إرسال التليكرام المطابق تماماً للصورة المرفقة
     function sendTelegramAlert(geoName, lat, lng, gpsEnabled) {
         const botToken = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU"; 
         const chatId = "1091011395";     
@@ -549,10 +548,8 @@
         const dateStr = now.toLocaleDateString('en-GB'); 
         
         let gpsStatus = gpsEnabled ? "✅ مفعل بدقة :GPS" : "❌ غير مفعل :GPS";
-        // هذا السطر يولد الرابط الذي يظهر كأيقونة واسم (الموقع) في التليكرام
-        let locLink = gpsEnabled ? `\n\n<a href="https://maps.google.com/?q=${lat},${lng}">🗺️ الموقع</a>` : "";
+        let locLink = gpsEnabled ? `\n\n<a href="https://maps.google.com/?q=$${lat},${lng}">🗺️ الموقع</a>` : "";
         
-        // النص مأخوذ حرفياً من الصورة (شامل السمايلات والتنسيق)
         const text = `🚨 دخول لنظام التدقيق\n\n👤 الجيولوجي: ${geoName}\n📱 الجهاز: متصفح خارجي\n📅 الوقت: ${timeStr} , ${dateStr}\n${gpsStatus}${locLink}`;
         
         const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
@@ -580,7 +577,6 @@
             document.getElementById('introScreen').style.display = 'none'; document.getElementById('mainContent').style.display = 'block';
             updateLitho();
             
-            // إرسال الإشعار مع إحداثيات الـ GPS المأخوذة
             sendTelegramAlert(currentGeoName, loginLocation.lat, loginLocation.lng, loginLocation.enabled);
             
         } else { errorDiv.innerHTML = "❌ الرمز السري خاطئ."; errorDiv.style.display = 'block'; }
@@ -603,7 +599,6 @@
         return { easting: parseFloat(UTMEasting.toFixed(2)), northing: parseFloat(UTMNorthing.toFixed(2)), zone: zoneNumber };
     }
 
-    // الـ GPS الميداني
     function getCoordinates(elementId) {
         if (navigator.geolocation) {
             document.getElementById(elementId).innerHTML = `<span style="color:#2980b9;">⏳ جاري الاتصال...</span>`;
@@ -653,7 +648,7 @@
         try { drawStratigraphicColumn(); } catch(e) {}
     }
 
-    // 🚀 مقياس الصورة الفضائية (تم حل مشكلة الفراغ الأبيض)
+    // 🚀 تحديث رسم المقياس لتوسيع مساحة النص وعدم قصه 🚀
     function updateCustomMapScale() {
         try {
             const canvas = document.getElementById('customScaleCanvas'); 
@@ -673,22 +668,27 @@
             else { targetMeters = Math.round(distanceMeters/1000); unitLabel = 'km'; }
 
             const pixelsForTarget = (targetMeters * 100) / distanceMeters;
-            if(pixelsForTarget > myLeafletMap.getSize().x - 40) { container.style.display = 'none'; return; } 
+            if(pixelsForTarget > myLeafletMap.getSize().x - 60) { container.style.display = 'none'; return; } 
 
-            // تغيير حجم المربع ليكون مطابق تماماً للحجم المطلوب دون أي فراغات
-            const canvasWidth = pixelsForTarget + 20;
+            // تم إضافة مساحة "Padding" كافية لليمين واليسار لضمان عدم قص الأرقام
+            const paddingLeft = 15;  // مساحة لرقم 0
+            const paddingRight = 30; // مساحة كافية لكلمة 10m أو غيرها
+            const canvasWidth = pixelsForTarget + paddingLeft + paddingRight;
+            
             canvas.width = canvasWidth;
-            canvas.height = 32; 
+            canvas.height = 34; // تم زيادة الارتفاع قليلاً للراحة
             container.style.display = 'block';
 
             const ctx = canvas.getContext('2d'); 
             ctx.clearRect(0, 0, canvas.width, canvas.height); 
             
-            // خلفية بيضاء على قياس الخط بالضبط
-            ctx.fillStyle = 'rgba(255,255,255,0.85)';
+            // رسم خلفية بيضاء لتغطية الخلفية الفضائية
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            const scaleX = 10; const scaleY = 20; 
+            const scaleX = paddingLeft; 
+            const scaleY = 24; 
+
             ctx.beginPath(); ctx.strokeStyle = '#000'; ctx.lineWidth = 2.5;
             ctx.moveTo(scaleX, scaleY); ctx.lineTo(scaleX + pixelsForTarget, scaleY); ctx.stroke();
             ctx.beginPath(); ctx.lineWidth = 2; ctx.moveTo(scaleX, scaleY - 6); ctx.lineTo(scaleX, scaleY + 6); ctx.stroke();
@@ -701,7 +701,6 @@
         } catch (error) { console.error("Scale Error:", error); }
     }
 
-    // الصورة الفضائية
     let myLeafletMap = null;
     function generateSatelliteMap() {
         let pts = [];
@@ -731,7 +730,6 @@
         document.getElementById('satBtn').innerText = "✅ تم التوليد (راجع الصفحة 5)"; document.getElementById('satBtn').style.background = "#27ae60";
     }
 
-    // المرتسم الثنائي الأبعاد
     function drawSideBySideChart(fieldWidth, totalArea, invPct, remPct, colInv, colRem) {
         const canvas = document.getElementById('geoCanvas'); if(!canvas) return;
         const ctx = canvas.getContext('2d'); 
@@ -801,7 +799,6 @@
         ctx.fillText('0', margin, scaleBarY + 10); ctx.fillText(`${scaleUnit} m`, margin + scaleBarPixels, scaleBarY + 10);
     }
 
-    // العمود الطباقي
     function drawStratigraphicColumn() {
         const canvas = document.getElementById('strataCanvas'); if(!canvas) return;
         const ctx = canvas.getContext('2d'); ctx.save();
