@@ -9,7 +9,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
-        /* --- شاشات الترحيب وتسجيل الدخول (النسخة الأصلية التي طلبتها) --- */
+        /* --- شاشات الترحيب وتسجيل الدخول --- */
         #introScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: right; padding: 15px; box-sizing: border-box; overflow-y: auto; }
         .intro-box { background: rgba(255, 255, 255, 0.05); padding: 35px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 650px; width: 100%; backdrop-filter: blur(10px); margin: auto; box-sizing: border-box; }
         @media (max-width: 600px) { #introScreen { align-items: flex-start; } .intro-box { padding: 20px; margin: 20px auto; } }
@@ -87,10 +87,10 @@
         .result-value { font-weight: bold; color: #145a32; font-size: 1.15rem; }
         .percentage-note { background: #d5f5e3; padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; font-size: 0.95rem; color: #196f3d; text-align: center; border-right: 4px solid #27ae60; margin-bottom: 20px;}
         
-        /* حاويات المرتسمات */
-        .canvas-container { text-align: center; width: 100%; }
-        .canvas-container h3 { color: #34495e; margin-bottom: 15px; font-size: 1.2rem; }
-        canvas { background: #fff; width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);}
+        /* حاويات المرتسمات - تم تقويتها لضمان الظهور الدائم */
+        .canvas-container { text-align: center; width: 100%; display: block; }
+        .canvas-container h3 { color: #34495e; margin-bottom: 15px; font-size: 1.2rem; border-bottom: 1px dashed #ccc; padding-bottom: 10px;}
+        canvas { background: #fff; width: 100%; height: auto; border: 1.5px solid #bdc3c7; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: block;}
         
         /* تنسيق الخريطة الفضائية ومحتوياتها */
         .map-wrapper { border: 2px solid #34495e; border-radius: 6px; overflow: hidden; height: 500px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative;}
@@ -115,7 +115,6 @@
             .print-only { display: block; }
             .no-print { display: none !important; }
             
-            /* الغلاف الأساسي لكل صفحة لتأكيد فصل الصفحات */
             .print-page-wrapper { min-height: 29.6cm; width: 100%; box-sizing: border-box; padding: 1.2cm; page-break-after: always; position: relative; }
             .print-page-wrapper:last-child { page-break-after: auto; }
             .print-bottom { position: absolute; bottom: 0.5cm; left: 0; width: 100%; text-align: center; font-weight: bold; font-size: 14px; color: #333; }
@@ -125,7 +124,6 @@
             .print-header h2 { font-size: 13px; color: #e67e22; margin: 0; font-weight: bold; }
             .date-top-left { position: absolute; top: 8px; left: 12px; font-size: 10px; color: #555; font-weight: bold; }
 
-            /* السماح للأقسام بالانقسام إذا اضطر الأمر لتجنب ترحيل المرتسمات بالكامل */
             .section { margin-bottom: 12px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 12px; background-color: #fafafa; box-shadow: none; }
             .section-title { font-size: 1.05rem; margin-bottom: 8px; padding-bottom: 3px; border-bottom: 2px solid #2980b9;}
             .sub-title { font-size: 0.95rem; margin: 10px 0 5px 0; border-bottom: none;}
@@ -145,15 +143,15 @@
             .result-value { font-size: 1.05rem; color: #27ae60 !important;}
             .percentage-note { padding: 6px; font-size: 0.85rem; margin-top: 8px; background: #eafaf1 !important; color: #1e8449 !important; margin-bottom: 10px;}
             
-            /* ضبط ارتفاعات المرتسمات في الصفحة الثالثة لتتسع جميعها دون الانتقال للصفحة الرابعة */
+            /* أبعاد دقيقة جداً لضمان عدم هروب المرتسمات للصفحة الرابعة */
             .canvas-container { width: 100% !important; display: block !important; margin-bottom: 10px !important;}
-            canvas { border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; }
-            #strataCanvas { max-height: 350px !important; }
-            #geoCanvas { max-height: 280px !important; }
+            canvas { border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; background: #fff !important; }
+            #strataCanvas { max-height: 310px !important; }
+            #geoCanvas { max-height: 260px !important; }
             
-            /* الصفحة الرابعة الخاصة بالقمر الصناعي */
-            .map-wrapper { height: 800px !important; border: 2px solid #34495e !important; position: relative !important;}
-            .leaflet-control-container { display: none !important; } /* إخفاء أزرار الزووم في الطباعة */
+            /* الصفحة الرابعة (القمر الصناعي) */
+            .map-wrapper { height: 750px !important; border: 2px solid #34495e !important; position: relative !important; page-break-inside: avoid;}
+            .leaflet-control-container { display: none !important; } 
             .content-padding { padding: 0 !important; }
         }
     </style>
@@ -167,20 +165,20 @@
             <h2>بإشراف الجيولوجي علي شندل فلاح</h2>
             <div class="vision-text">
                 🎯 <b>رؤية المنصة:</b><br>
-                صُمم هذا الموقع خصيصاً ليسهل العمل ويوفر الجهد والوقت للجيولوجيين، بدقة عالية ونسبة خطأ تكاد تكون معدومة. هدفنا المساهمة في إنتاج جيل واعٍ يقدم تقارير ميدانية هندسية وبيئية تمثل الحقيقة الجيولوجية بكل أمانة.
+                صُمم هذا الموقع خصيصاً ليسهل العمل ويوفر الجهد والوقت للجيولوجيين، ليكون وثيقة تفتيش ورقابة هندسية وبيئية متكاملة، تحمي الثروات وتمثل الحقيقة الجيولوجية بكل أمانة.
             </div>
             <ul class="instruction-list">
-                <li>📄 <strong>بيانات وتفاصيل:</strong> مطابقة المواصفات ورصد المتغيرات بدقة.</li>
-                <li>📍 <strong>الرقابة البيئية:</strong> توثيق الآليات والملوثات والمياه الجوفية.</li>
-                <li>⛏️ <strong>العمود الطباقي:</strong> رسم هندسي آلي للطبقات الليثولوجية بدقة عالية.</li>
-                <li>📏 <strong>القياسات:</strong> إحداثيات (UTM) وحسابات كمية ومساحية خالية من الأخطاء.</li>
+                <li>📄 <strong>بيانات العقد:</strong> إدخال المساحة والكمية المتعاقد عليها من التقرير الرسمي.</li>
+                <li>📍 <strong>التدقيق البيئي:</strong> مراقبة مستويات المياه الجوفية والملوثات في منطقة المقلع.</li>
+                <li>⛏️ <strong>الطباقية:</strong> وصف التتابع الليثولوجي بدقة ضمن الأعماق المسموحة.</li>
+                <li>📏 <strong>القياسات:</strong> التقاط الإحداثيات (UTM) وحساب كميات الاستخراج بدقة.</li>
             </ul>
             <div class="offline-notice">
                 <h3>⚠️ تعليمات هامة للعمل الميداني (بدون إنترنت):</h3>
                 <ul>
-                    <li>سجل الدخول للموقع <b>أولاً وأنت متصل بالإنترنت</b>.</li>
+                    <li>سجل الدخول للموقع <b>وأنت متصل بالإنترنت</b> قبل التوجه للمقلع.</li>
                     <li>أبقِ خدمة <b>(الموقع / GPS)</b> مفتوحة طيلة فترة العمل.</li>
-                    <li><b>لا تغلق المتصفح</b>. يمكنك إدخال البيانات ورسم المخططات وحفظ الـ PDF أوفلاين كلياً!</li>
+                    <li><b>لا تغلق المتصفح</b>. يمكنك إدخال البيانات وحفظ الـ PDF أوفلاين كلياً!</li>
                 </ul>
             </div>
             <button onclick="goToStep2()" class="btn-action">التالي</button>
@@ -191,7 +189,7 @@
             <div class="warning-box">
                 <h3>⚠️ قم بإدخال المعلومات التالية بحذر وبصورة صحيحة جداً:</h3>
                 <p><b style="color: #f1c40f;">أولاً:</b> اسم الجيولوجي الثلاثي.</p>
-                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري (الذي حصلت عليه من مؤسس المنصة <b>علي شندل فلاح</b>).</p>
+                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري (من مؤسس المنصة <b>علي شندل فلاح</b>).</p>
             </div>
             <input type="text" id="geoNameInput" placeholder="أدخل اسم الجيولوجي (الثلاثي) هنا..." required autocomplete="off">
             <input type="password" id="adminPassword" placeholder="أدخل رمز الدخول السري هنا...">
@@ -214,7 +212,6 @@
                 <h1>نظام المسح الميداني الجيولوجي للمقالع (التقرير الشامل)</h1>
                 <h2>إعداد وتدقيق الجيولوجي الميداني</h2>
             </div>
-            
             <div class="content-padding">
                 <div class="section">
                     <div class="section-title">أولاً: بيانات الجيولوجي المشرف وموقع العمل</div>
@@ -400,8 +397,8 @@
                     
                 <div class="section" style="border: 2px solid #27ae60; margin-bottom: 0;">
                     <div class="canvas-container" style="margin-bottom: 0;">
-                        <h3>المرتسم المساحي (Scale Plan)</h3>
-                        <canvas id="geoCanvas" width="850" height="350"></canvas>
+                        <h3 style="color: #27ae60;">المرتسم المساحي (Scale Plan)</h3>
+                        <canvas id="geoCanvas" width="850" height="350" style="background: #fff; width: 100%; border: 1px solid #ddd;"></canvas>
                     </div>
                 </div>
                 
@@ -549,7 +546,7 @@
         return { easting: parseFloat(UTMEasting.toFixed(2)), northing: parseFloat(UTMNorthing.toFixed(2)), zone: zoneNumber };
     }
 
-    // 🚀 كود الـ GPS الخارق (بدون ذاكرة مؤقتة، 30 ثانية، مع عرض الدقة بالأمتار)
+    // الـ GPS: (بدون ذاكرة مؤقتة، 30 ثانية، مع قراءة الدقة بالأمتار)
     function getCoordinates(elementId) {
         if (navigator.geolocation) {
             document.getElementById(elementId).innerHTML = `<span style="color:#2980b9;">⏳ جاري الاتصال بالأقمار الصناعية بدقة...</span>`;
@@ -557,12 +554,11 @@
             navigator.geolocation.getCurrentPosition(function(position) {
                 const lat = position.coords.latitude; 
                 const lon = position.coords.longitude;
-                const accuracy = position.coords.accuracy; // قراءة دقة الإحداثيات بالأمتار
+                const accuracy = position.coords.accuracy; 
                 
                 rawGpsPoints[elementId] = { lat: lat, lng: lon };
                 const utm = latLonToUTM(lat, lon);
                 
-                // تلوين الدقة بناءً على جودتها
                 let accColor = accuracy <= 10 ? '#27ae60' : (accuracy <= 30 ? '#f39c12' : '#e74c3c');
                 let accText = `<span style="color:${accColor}; font-size:0.85rem; display:block; margin-top:5px; font-weight:bold;">دقة الـ GPS: ± ${accuracy.toFixed(1)} متر</span>`;
 
@@ -575,8 +571,8 @@
                 document.getElementById(elementId).innerHTML = `E: --- | N: ---`;
             }, { 
                 enableHighAccuracy: true, 
-                timeout: 30000, // 30 ثانية للاتصال الممتاز
-                maximumAge: 0 // منع الذاكرة المؤقتة نهائياً
+                timeout: 30000, 
+                maximumAge: 0 
             });
         } else { alert("المتصفح لا يدعم تحديد الموقع."); }
     }
@@ -606,12 +602,17 @@
 
         document.getElementById('percentageNote').innerText = `النسبة المئوية للمساحة المتبقية للاستثمار هي (${remainingPercentage.toFixed(1)}%) من إجمالي العقد.`;
         
-        // إخفاء الأزرار وإظهار الصفحة التجميعية
         document.getElementById('calcButtonsArea').style.display = 'none';
         document.getElementById('page3Wrapper').style.display = 'block';
         
-        drawSideBySideChart(width, contractArea, investedPercentage, remainingPercentage, colorInv, colorRem);
-        drawStratigraphicColumn();
+        // استخدام try-catch لضمان عدم توقف النظام حتى لو حدثت أي مشكلة مفاجئة
+        try {
+            drawSideBySideChart(width, contractArea, investedPercentage, remainingPercentage, colorInv, colorRem);
+        } catch(e) { console.error(e); }
+        
+        try {
+            drawStratigraphicColumn();
+        } catch(e) { console.error(e); }
     }
 
     // 🌍 دالة توليد الصورة الفضائية
@@ -629,18 +630,13 @@
         }
 
         document.getElementById('satPageWrapper').style.display = 'block';
-        
         if(myLeafletMap !== null) { myLeafletMap.remove(); }
 
         myLeafletMap = L.map('satelliteMap', { zoomControl: true });
-        
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles © Esri',
-            maxZoom: 22,
-            maxNativeZoom: 19 
+            attribution: 'Tiles © Esri', maxZoom: 22, maxNativeZoom: 19 
         }).addTo(myLeafletMap);
 
-        // مقياس الرسم للستلايت
         L.control.scale({metric: true, imperial: false, position: 'bottomleft'}).addTo(myLeafletMap);
 
         let polygon = L.polygon(pts, {color: '#e74c3c', weight: 3, fillColor: '#e74c3c', fillOpacity: 0.35}).addTo(myLeafletMap);
@@ -656,21 +652,40 @@
         myLeafletMap.fitBounds(polygon.getBounds(), {padding: [50, 50]});
         setTimeout(() => { myLeafletMap.invalidateSize(); }, 500);
         
-        document.getElementById('satBtn').innerText = "✅ تم توليد الصورة الفضائية (الصفحة 4)";
+        document.getElementById('satBtn').innerText = "✅ تم توليد الصورة الفضائية (راجع الصفحة 4)";
         document.getElementById('satBtn').style.background = "#27ae60";
     }
 
-    // المرتسم المساحي الثنائي (Scale Plan)
+    // المرتسم المساحي (تم بناء جدار حماية رياضي يمنع أي اختفاء أو انهيار)
     function drawSideBySideChart(fieldWidth, totalArea, invPct, remPct, colInv, colRem) {
-        const canvas = document.getElementById('geoCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const margin = 70; const drawW = canvas.width - (margin * 2); const drawH = canvas.height - (margin * 2) - 40; 
-        let totalW = fieldWidth > 0 ? fieldWidth : 100; let totalL = totalArea / totalW; if (totalArea === 0) totalL = 100;
+        const canvas = document.getElementById('geoCanvas'); 
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d'); 
+        
+        // تنظيف وإجبار وضع خلفية بيضاء لضمان ظهور المربع دائماً
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const margin = 70; 
+        const drawW = canvas.width - (margin * 2); 
+        const drawH = canvas.height - (margin * 2) - 40; 
+        
+        // جدار الحماية ضد المالانهاية والصفر
+        let totalW = parseFloat(fieldWidth);
+        if (isNaN(totalW) || totalW <= 0) totalW = 100;
+        
+        let totalL = parseFloat(totalArea) / totalW;
+        if (isNaN(totalL) || totalL <= 0 || !isFinite(totalL)) totalL = 100;
 
         ctx.beginPath(); ctx.strokeStyle = '#333'; ctx.lineWidth = 2;
         ctx.moveTo(margin, margin); ctx.lineTo(margin, margin + drawH); ctx.lineTo(margin + drawW, margin + drawH); ctx.stroke();
 
         ctx.fillStyle = '#000'; ctx.font = '14px Arial'; ctx.textAlign = 'center';
+        
         let tickIntX = totalL > 100 ? 50 : 10;
+        if(totalL / tickIntX > 100) tickIntX = totalL / 10; // حماية ضد التكرار اللانهائي
+        
         for (let i = 0; i <= totalL; i += tickIntX) {
             let xPos = margin + (i / totalL) * drawW;
             ctx.beginPath(); ctx.moveTo(xPos, margin + drawH); ctx.lineTo(xPos, margin + drawH + 10); ctx.stroke();
@@ -680,6 +695,8 @@
 
         ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
         let tickIntY = totalW > 100 ? 50 : 10;
+        if(totalW / tickIntY > 100) tickIntY = totalW / 10;
+        
         for (let i = 0; i <= totalW; i += tickIntY) {
             let yPos = margin + drawH - (i / totalW) * drawH;
             ctx.beginPath(); ctx.moveTo(margin - 10, yPos); ctx.lineTo(margin, yPos); ctx.stroke();
@@ -687,20 +704,26 @@
             ctx.fillText(i.toFixed(0), margin - 15, yPos);
         }
 
-        let invPixelW = drawW * (invPct / 100); let remPixelW = drawW * (remPct / 100);
+        let safeInvPct = isNaN(invPct) ? 0 : invPct;
+        let safeRemPct = isNaN(remPct) ? 0 : remPct;
 
-        if (invPct > 0) {
-            ctx.fillStyle = colInv; ctx.fillRect(margin, margin, invPixelW, drawH);
+        let invPixelW = drawW * (safeInvPct / 100); 
+        let remPixelW = drawW * (safeRemPct / 100);
+
+        if (safeInvPct > 0) {
+            ctx.fillStyle = colInv || '#cceeff'; 
+            ctx.fillRect(margin, margin, invPixelW, drawH);
             ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin, margin, invPixelW, drawH);
             ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.font = 'bold 16px Arial';
-            if (invPixelW > 90) { ctx.fillText(`المساحة المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${invPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 15); }
+            if (invPixelW > 90) { ctx.fillText(`المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${safeInvPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 15); }
         }
 
-        if (remPct > 0) {
-            ctx.fillStyle = colRem; ctx.fillRect(margin + invPixelW, margin, remPixelW, drawH);
+        if (safeRemPct > 0) {
+            ctx.fillStyle = colRem || '#115577'; 
+            ctx.fillRect(margin + invPixelW, margin, remPixelW, drawH);
             ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin + invPixelW, margin, remPixelW, drawH);
             ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'bold 16px Arial';
-            if (remPixelW > 90) { ctx.fillText(`المساحة المتبقية`, margin + invPixelW + remPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${remPct.toFixed(0)}%)`, margin + invPixelW + remPixelW/2, margin + drawH/2 + 15); }
+            if (remPixelW > 90) { ctx.fillText(`المتبقية`, margin + invPixelW + remPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${safeRemPct.toFixed(0)}%)`, margin + invPixelW + remPixelW/2, margin + drawH/2 + 15); }
         }
 
         ctx.fillStyle = '#000'; ctx.font = 'bold 22px "Times New Roman", serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -711,7 +734,10 @@
         ctx.save(); ctx.translate(margin - 45, margin + drawH/2); ctx.rotate(-Math.PI/2); ctx.fillText('العرض (m)', 0, 0); ctx.restore();
 
         let scaleUnit = 10; if (totalL > 50) scaleUnit = 20; if (totalL > 100) scaleUnit = 50; if (totalL > 250) scaleUnit = 100;
-        const scaleBarPixels = (scaleUnit / totalL) * drawW; const scaleBarY = canvas.height - 25; 
+        let scaleBarPixels = (scaleUnit / totalL) * drawW; 
+        if (!isFinite(scaleBarPixels)) scaleBarPixels = 0; // حماية المقياس
+
+        const scaleBarY = canvas.height - 25; 
         ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath();
         ctx.moveTo(margin, scaleBarY - 5); ctx.lineTo(margin, scaleBarY + 5);
         ctx.moveTo(margin, scaleBarY); ctx.lineTo(margin + scaleBarPixels, scaleBarY);
@@ -723,7 +749,14 @@
 
     // العمود الطباقي لمنطقة المقلع
     function drawStratigraphicColumn() {
-        const canvas = document.getElementById('strataCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const canvas = document.getElementById('strataCanvas'); 
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d'); 
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
         let layers = []; let totalDepth = 0; let uniqueTypes = new Set();
         for(let i=1; i<=10; i++) {
             let type = document.getElementById('lType'+i).value;
@@ -731,7 +764,8 @@
             let name = document.getElementById('lType'+i).options[document.getElementById('lType'+i).selectedIndex].text;
             if(type !== 'none' && thick > 0) { layers.push({type: type, name: name, thick: thick, start: totalDepth}); totalDepth += thick; uniqueTypes.add(type); }
         }
-        if(totalDepth === 0) return;
+        
+        if(totalDepth === 0) return; // لن يرسم شيئاً سوى المربع الأبيض إن كانت الحقول فارغة
 
         const marginX = 120; const marginY = 40; const drawW = 150; const drawH = canvas.height - (marginY * 2);
         ctx.lineWidth = 2; ctx.strokeStyle = '#333'; ctx.strokeRect(marginX, marginY, drawW, drawH);
@@ -783,7 +817,7 @@
         });
     }
 
-    // الطباعة الذكية وتحافظ على مكان تقريب الصورة الفضائية
+    // الطباعة الذكية
     function prepareAndPrint() {
         const now = new Date();
         const dateString = now.toLocaleDateString('en-GB') + ' - ' + now.toLocaleTimeString('en-GB', {hour: '2-digit', minute:'2-digit'});
