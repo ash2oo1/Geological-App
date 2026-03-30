@@ -529,21 +529,24 @@
 
     const MASTER_PASSWORD = "ali123";
 
-    // 🚀 كود إشعار التلجرام
+    // 🚀 كود إشعار التلجرام يعمل ومربوط بالبيانات الخاصة بك
     function sendTelegramAlert(geoName) {
-        // 🔴 انتبه يا صديقي: يجب استبدال هاتين القيمتين بالتوكن والـ ID الخاصين بك لكي يعمل الإشعار 🔴
-        const botToken = "YOUR_BOT_TOKEN_HERE"; 
-        const chatId = "YOUR_CHAT_ID_HERE";
-        
-        if(botToken === "YOUR_BOT_TOKEN_HERE") {
-            console.warn("إشعار: التلجرام لم يرسل لأن التوكن لم يتم إدخاله في الكود.");
-            return; 
-        }
+        // تم إضافة التوكن والـ ID الخاص بك هنا
+        const botToken = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU"; 
+        const chatId = "1091011395";     
         
         const text = `🟢 دخول جديد لنظام المسح الميداني\nالجيولوجي: ${geoName}\nالوقت: ${new Date().toLocaleString('en-GB')}`;
         const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}`;
         
-        fetch(url).catch(err => console.error("Telegram Error:", err));
+        fetch(url)
+            .then(response => {
+                if(!response.ok) throw new Error("فشل الإرسال، تأكد من التوكن أو ID");
+                console.log("تم إرسال إشعار التلجرام بنجاح!");
+            })
+            .catch(err => {
+                console.error("Telegram Error:", err);
+                alert("❌ حدث خطأ في إرسال رسالة التلجرام. تأكد من اتصالك بالإنترنت.");
+            });
     }
 
     function handleLogin() {
@@ -557,7 +560,7 @@
             document.getElementById('introScreen').style.display = 'none'; document.getElementById('mainContent').style.display = 'block';
             updateLitho();
             
-            // استدعاء دالة الإرسال
+            // تفعيل الإشعار بمجرد تسجيل الدخول
             sendTelegramAlert(currentGeoName);
             
         } else { errorDiv.innerHTML = "❌ الرمز السري خاطئ."; errorDiv.style.display = 'block'; }
@@ -660,7 +663,6 @@
             ctx.fillStyle = '#000'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText('0', scaleX, scaleY - 8);
             ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText(`${targetMeters}${unitLabel}`, scaleX + pixelsForTarget, scaleY - 8);
 
-            // تم حذف عبارة "مقياس الرسم الخطى"
             ctx.restore();
         } catch (error) { console.error("Scale Error:", error); }
     }
@@ -763,7 +765,6 @@
 
         ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
         ctx.fillText('0', margin, scaleBarY + 10); ctx.fillText(`${scaleUnit} m`, margin + scaleBarPixels, scaleBarY + 10);
-        // تم حذف عبارة "مقياس الرسم الخطى (Scale)"
     }
 
     // العمود الطباقي
@@ -781,7 +782,7 @@
         }
         if(totalDepth === 0) { ctx.restore(); return; }
 
-        const marginX = 80; const marginY = 40; const drawW = 150; const drawH = canvas.height - (marginY * 2);
+        const marginX = 60; const marginY = 40; const drawW = 150; const drawH = canvas.height - (marginY * 2);
         ctx.lineWidth = 2; ctx.strokeStyle = '#333'; ctx.strokeRect(marginX, marginY, drawW, drawH);
         
         function fillPattern(type, x, y, w, h) {
@@ -818,25 +819,31 @@
             drawDepth(layer.start + layer.thick, startY + layerH); 
         });
 
-        // --- المقياس الأفقي الجديد للعمود الطباقي ---
+        let legendX = marginX + drawW + 100; 
+        let legendY = marginY + 20;
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.font = 'bold 17px Arial'; ctx.fillStyle = '#2c3e50'; 
+        ctx.fillText('Legend', legendX, legendY); legendY += 35;
+        layers.forEach(layer => {
+            if(uniqueTypes.has(layer.type)) { 
+                fillPattern(layer.type, legendX, legendY - 12, 25, 25); 
+                ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; 
+                ctx.fillText(layer.name, legendX + 35, legendY); 
+                legendY += 35; 
+                uniqueTypes.delete(layer.type); 
+            }
+        });
+
         let scaleUnitStrata = totalDepth > 5 ? 2 : 1; let scalePixels = (scaleUnitStrata / totalDepth) * drawH;
-        let sX = 35; let sY = marginY + drawH; // أسفل اليسار بجانب العمود
+        let sX = legendX; 
+        let sY = marginY + drawH; 
         ctx.strokeStyle = '#000'; ctx.lineWidth = 2.5; ctx.beginPath();
-        ctx.moveTo(sX, sY - 6); ctx.lineTo(sX, sY + 6); // خط البداية
-        ctx.moveTo(sX, sY); ctx.lineTo(sX + scalePixels, sY); // الخط الأفقي
-        ctx.moveTo(sX + scalePixels, sY - 6); ctx.lineTo(sX + scalePixels, sY + 6); // خط النهاية
+        ctx.moveTo(sX, sY - 6); ctx.lineTo(sX, sY + 6); 
+        ctx.moveTo(sX, sY); ctx.lineTo(sX + scalePixels, sY); 
+        ctx.moveTo(sX + scalePixels, sY - 6); ctx.lineTo(sX + scalePixels, sY + 6); 
         ctx.stroke();
         ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
         ctx.fillText('0', sX, sY - 8); ctx.fillText(`${scaleUnitStrata}m`, sX + scalePixels, sY - 8);
 
-        // --- مفتاح الرسم (تم تعديل الكلمة إلى Legend فقط) ---
-        let legendX = marginX + drawW + 110; 
-        let legendY = marginY + 20;
-        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.font = 'bold 17px Arial'; ctx.fillStyle = '#2c3e50'; 
-        ctx.fillText('Legend', legendX, legendY); legendY += 40;
-        layers.forEach(layer => {
-            if(uniqueTypes.has(layer.type)) { fillPattern(layer.type, legendX, legendY - 15, 35, 35); ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.fillText(layer.name, legendX + 45, legendY); legendY += 45; uniqueTypes.delete(layer.type); }
-        });
         ctx.restore();
     }
 
