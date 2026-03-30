@@ -31,6 +31,7 @@
         .intro-box input:focus { border: 2px solid #2ecc71; }
         .btn-action { background: #27ae60; color: white; padding: 15px; font-size: 1.2rem; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; margin-top: 10px; box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3); box-sizing: border-box; }
         .btn-action:hover { background: #219150; transform: translateY(-2px); }
+        .btn-action:disabled { background: #7f8c8d; cursor: not-allowed; box-shadow: none; transform: none; }
         .error-text { color: #ff6b6b; font-weight: bold; margin-top: 15px; display: none; font-size: 1rem; text-align: center; background: rgba(255,0,0,0.1); padding: 10px; border-radius: 6px;}
         #step2 { display: none; text-align: center; }
         #mainContent { display: none; }
@@ -180,7 +181,7 @@
                     <li><b>لا تغلق المتصفح</b>. يمكنك إدخال البيانات وحفظ الـ PDF أوفلاين كلياً!</li>
                 </ul>
             </div>
-            <button onclick="goToStep2()" class="btn-action">التالي</button>
+            <button onclick="goToStep2()" class="btn-action" id="btnNextStep1">التالي</button>
         </div>
 
         <div id="step2">
@@ -457,20 +458,51 @@
 <script>
     let currentGeoName = "";
     let rawGpsPoints = { point1: null, point2: null, point3: null, point4: null };
-    let loginLocation = { lat: null, lng: null, enabled: false };
+    
+    // متغير لتخزين الموقع سواء وافق المستخدم (GPS دقيق) أو رفض (موقع تقريبي عبر الإنترنت)
+    let loginLocation = { lat: null, lng: null, enabled: false, type: 'قيد الانتظار' };
 
-    // طلب تحديد الموقع فوراً لكسب الوقت
+    // 🚀 دالة إجبار المستخدم على تحديد الموقع "شِئ أم أبى"
     function goToStep2() {
-        document.getElementById('step1').style.display = 'none';
-        document.getElementById('step2').style.display = 'block';
-        
+        const btn = document.getElementById('btnNextStep1');
+        btn.innerText = "جاري طلب إذن الموقع... ⏳";
+        btn.disabled = true;
+
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                (pos) => { loginLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude, enabled: true }; },
-                (err) => { loginLocation.enabled = false; },
-                { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+                (pos) => {
+                    // إذا وافق المستخدم (دقيق)
+                    loginLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude, enabled: true, type: 'موقع دقيق GPS' };
+                    transitionToLogin();
+                },
+                (err) => {
+                    // إذا رفض أو حدث خطأ (نسحب الموقع تقريبياً رغماً عنه)
+                    fetch('https://get.geojs.io/v1/ip/geo.json')
+                        .then(res => res.json())
+                        .then(data => {
+                            loginLocation = { lat: data.latitude, lng: data.longitude, enabled: false, type: 'موقع تقريبي عبر الشبكة' };
+                            alert("⚠️ تنبيه هام: لقد قمت برفض أو تجاهل طلب الـ GPS. تم تسجيل موقعك التقريبي عبر الإنترنت. \n\nلن تتمكن من أخذ إحداثيات (UTM) داخل النظام إلا بعد تفعيل الـ GPS في المتصفح وإعادة تحميل الصفحة.");
+                            transitionToLogin();
+                        })
+                        .catch(e => {
+                            // في حال فشل كل شيء
+                            loginLocation = { lat: 33.3152, lng: 44.3661, enabled: false, type: 'غير متوفر' };
+                            transitionToLogin();
+                        });
+                },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
             );
+        } else {
+            // المتصفح قديم جداً
+            loginLocation = { lat: 33.3152, lng: 44.3661, enabled: false, type: 'المتصفح لا يدعم' };
+            transitionToLogin();
         }
+    }
+
+    // الانتقال الفعلي للصفحة الثانية بعد انتهاء فحص الموقع
+    function transitionToLogin() {
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'block';
     }
 
     function convertDunam() {
@@ -539,7 +571,8 @@
 
     const MASTER_PASSWORD = "ali123";
 
-    function sendTelegramAlert(geoName, lat, lng, gpsEnabled) {
+    // 🚀 كود إرسال التليكرام المطابق تماماً للصورة مع تحديد نوع دقة الموقع
+    function sendTelegramAlert(geoName, locData) {
         const botToken = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU"; 
         const chatId = "1091011395";     
         
@@ -547,8 +580,11 @@
         const timeStr = now.toLocaleTimeString('en-GB', {hour12: false});
         const dateStr = now.toLocaleDateString('en-GB'); 
         
-        let gpsStatus = gpsEnabled ? "✅ مفعل بدقة :GPS" : "❌ غير مفعل :GPS";
-        let locLink = gpsEnabled ? `\n\n<a href="https://maps.google.com/?q=$${lat},${lng}">🗺️ الموقع</a>` : "";
+        // إذا كان مفعلاً يظهر باللون الأخضر ويخبرنا أنه دقيق، وإذا لا يظهر أحمر ويخبرنا نوعه
+        let gpsStatus = locData.enabled ? "✅ مفعل بدقة :GPS" : `❌ غير مفعل (${locData.type})`;
+        
+        // رابط الخريطة الصحيح لجوجل ماب
+        let locLink = (locData.lat && locData.lng) ? `\n\n<a href="https://maps.google.com/?q=${locData.lat},${locData.lng}">🗺️ الموقع</a>` : "";
         
         const text = `🚨 دخول لنظام التدقيق\n\n👤 الجيولوجي: ${geoName}\n📱 الجهاز: متصفح خارجي\n📅 الوقت: ${timeStr} , ${dateStr}\n${gpsStatus}${locLink}`;
         
@@ -577,7 +613,8 @@
             document.getElementById('introScreen').style.display = 'none'; document.getElementById('mainContent').style.display = 'block';
             updateLitho();
             
-            sendTelegramAlert(currentGeoName, loginLocation.lat, loginLocation.lng, loginLocation.enabled);
+            // نمرر كائن الموقع بالكامل לדالة التليكرام
+            sendTelegramAlert(currentGeoName, loginLocation);
             
         } else { errorDiv.innerHTML = "❌ الرمز السري خاطئ."; errorDiv.style.display = 'block'; }
     }
@@ -648,7 +685,7 @@
         try { drawStratigraphicColumn(); } catch(e) {}
     }
 
-    // 🚀 تحديث رسم المقياس لتوسيع مساحة النص وعدم قصه 🚀
+    // 🚀 المربع الأبيض المطاطي لمقياس الرسم 🚀
     function updateCustomMapScale() {
         try {
             const canvas = document.getElementById('customScaleCanvas'); 
@@ -670,19 +707,17 @@
             const pixelsForTarget = (targetMeters * 100) / distanceMeters;
             if(pixelsForTarget > myLeafletMap.getSize().x - 60) { container.style.display = 'none'; return; } 
 
-            // تم إضافة مساحة "Padding" كافية لليمين واليسار لضمان عدم قص الأرقام
-            const paddingLeft = 15;  // مساحة لرقم 0
-            const paddingRight = 30; // مساحة كافية لكلمة 10m أو غيرها
+            const paddingLeft = 15;  
+            const paddingRight = 30; 
             const canvasWidth = pixelsForTarget + paddingLeft + paddingRight;
             
             canvas.width = canvasWidth;
-            canvas.height = 34; // تم زيادة الارتفاع قليلاً للراحة
+            canvas.height = 34; 
             container.style.display = 'block';
 
             const ctx = canvas.getContext('2d'); 
             ctx.clearRect(0, 0, canvas.width, canvas.height); 
             
-            // رسم خلفية بيضاء لتغطية الخلفية الفضائية
             ctx.fillStyle = 'rgba(255,255,255,0.9)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
