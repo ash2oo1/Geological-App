@@ -440,8 +440,8 @@
                                 <span style="color:#2980b9; font-size:16px;">■</span> تجمعات مائية<br>
                                 <span style="color:#e74c3c; font-weight:bold; font-size:16px;">▬</span> حدود المقلع المستثمر
                             </div>
-                            <div id="customScaleContainer" style="position: absolute; bottom: 10px; left: 10px; z-index: 1000; background: rgba(255,255,255,0.85); padding: 5px; border-radius: 4px; pointer-events: none;">
-                                <canvas id="customScaleCanvas" width="200" height="50"></canvas>
+                            <div id="customScaleContainer" style="position: absolute; bottom: 10px; left: 10px; z-index: 1000; pointer-events: none; border-radius: 4px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.3); display: none;">
+                                <canvas id="customScaleCanvas"></canvas>
                             </div>
                         </div>
                     </div>
@@ -457,10 +457,20 @@
 <script>
     let currentGeoName = "";
     let rawGpsPoints = { point1: null, point2: null, point3: null, point4: null };
+    let loginLocation = { lat: null, lng: null, enabled: false };
 
+    // عندما يضغط على زر (التالي) نطلب منه الـ GPS مباشرة ليكسب الوقت
     function goToStep2() {
         document.getElementById('step1').style.display = 'none';
         document.getElementById('step2').style.display = 'block';
+        
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => { loginLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude, enabled: true }; },
+                (err) => { loginLocation.enabled = false; },
+                { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+            );
+        }
     }
 
     function convertDunam() {
@@ -529,24 +539,34 @@
 
     const MASTER_PASSWORD = "ali123";
 
-    // 🚀 كود إشعار التلجرام يعمل ومربوط بالبيانات الخاصة بك
-    function sendTelegramAlert(geoName) {
-        // تم إضافة التوكن والـ ID الخاص بك هنا
+    // 🚀 كود إرسال التليكرام المطابق تماماً للصورة المرفقة
+    function sendTelegramAlert(geoName, lat, lng, gpsEnabled) {
         const botToken = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU"; 
         const chatId = "1091011395";     
         
-        const text = `🟢 دخول جديد لنظام المسح الميداني\nالجيولوجي: ${geoName}\nالوقت: ${new Date().toLocaleString('en-GB')}`;
-        const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}`;
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('en-GB', {hour12: false});
+        const dateStr = now.toLocaleDateString('en-GB'); 
         
-        fetch(url)
-            .then(response => {
-                if(!response.ok) throw new Error("فشل الإرسال، تأكد من التوكن أو ID");
-                console.log("تم إرسال إشعار التلجرام بنجاح!");
+        let gpsStatus = gpsEnabled ? "✅ مفعل بدقة :GPS" : "❌ غير مفعل :GPS";
+        // هذا السطر يولد الرابط الذي يظهر كأيقونة واسم (الموقع) في التليكرام
+        let locLink = gpsEnabled ? `\n\n<a href="https://maps.google.com/?q=${lat},${lng}">🗺️ الموقع</a>` : "";
+        
+        // النص مأخوذ حرفياً من الصورة (شامل السمايلات والتنسيق)
+        const text = `🚨 دخول لنظام التدقيق\n\n👤 الجيولوجي: ${geoName}\n📱 الجهاز: متصفح خارجي\n📅 الوقت: ${timeStr} , ${dateStr}\n${gpsStatus}${locLink}`;
+        
+        const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+        
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: text,
+                parse_mode: 'HTML',
+                disable_web_page_preview: false
             })
-            .catch(err => {
-                console.error("Telegram Error:", err);
-                alert("❌ حدث خطأ في إرسال رسالة التلجرام. تأكد من اتصالك بالإنترنت.");
-            });
+        }).catch(err => console.error("Telegram Error:", err));
     }
 
     function handleLogin() {
@@ -560,8 +580,8 @@
             document.getElementById('introScreen').style.display = 'none'; document.getElementById('mainContent').style.display = 'block';
             updateLitho();
             
-            // تفعيل الإشعار بمجرد تسجيل الدخول
-            sendTelegramAlert(currentGeoName);
+            // إرسال الإشعار مع إحداثيات الـ GPS المأخوذة
+            sendTelegramAlert(currentGeoName, loginLocation.lat, loginLocation.lng, loginLocation.enabled);
             
         } else { errorDiv.innerHTML = "❌ الرمز السري خاطئ."; errorDiv.style.display = 'block'; }
     }
@@ -583,7 +603,7 @@
         return { easting: parseFloat(UTMEasting.toFixed(2)), northing: parseFloat(UTMNorthing.toFixed(2)), zone: zoneNumber };
     }
 
-    // الـ GPS
+    // الـ GPS الميداني
     function getCoordinates(elementId) {
         if (navigator.geolocation) {
             document.getElementById(elementId).innerHTML = `<span style="color:#2980b9;">⏳ جاري الاتصال...</span>`;
@@ -633,18 +653,19 @@
         try { drawStratigraphicColumn(); } catch(e) {}
     }
 
-    // مقياس الصورة الفضائية
+    // 🚀 مقياس الصورة الفضائية (تم حل مشكلة الفراغ الأبيض)
     function updateCustomMapScale() {
         try {
-            const canvas = document.getElementById('customScaleCanvas'); if(!canvas || !myLeafletMap) return;
-            const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.save();
-
+            const canvas = document.getElementById('customScaleCanvas'); 
+            const container = document.getElementById('customScaleContainer');
+            if(!canvas || !myLeafletMap) return;
+            
             const mapBounds = myLeafletMap.getBounds(); const center = mapBounds.getCenter();
             const startPoint = myLeafletMap.latLngToContainerPoint(center); const endPoint = L.point(startPoint.x + 100, startPoint.y);
             const latLngStart = myLeafletMap.containerPointToLatLng(startPoint); const latLngEnd = myLeafletMap.containerPointToLatLng(endPoint);
             const distanceMeters = myLeafletMap.distance(latLngStart, latLngEnd);
 
-            if(!isFinite(distanceMeters) || distanceMeters <= 0) { ctx.restore(); return; }
+            if(!isFinite(distanceMeters) || distanceMeters <= 0) { container.style.display = 'none'; return; }
 
             let targetMeters = 0; let unitLabel = 'm';
             if(distanceMeters < 1) { targetMeters = distanceMeters; unitLabel = 'm'; } 
@@ -652,18 +673,31 @@
             else { targetMeters = Math.round(distanceMeters/1000); unitLabel = 'km'; }
 
             const pixelsForTarget = (targetMeters * 100) / distanceMeters;
-            if(pixelsForTarget > canvas.width - 20) { ctx.restore(); return; } 
+            if(pixelsForTarget > myLeafletMap.getSize().x - 40) { container.style.display = 'none'; return; } 
 
-            const scaleX = 10; const scaleY = 30; 
+            // تغيير حجم المربع ليكون مطابق تماماً للحجم المطلوب دون أي فراغات
+            const canvasWidth = pixelsForTarget + 20;
+            canvas.width = canvasWidth;
+            canvas.height = 32; 
+            container.style.display = 'block';
+
+            const ctx = canvas.getContext('2d'); 
+            ctx.clearRect(0, 0, canvas.width, canvas.height); 
+            
+            // خلفية بيضاء على قياس الخط بالضبط
+            ctx.fillStyle = 'rgba(255,255,255,0.85)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const scaleX = 10; const scaleY = 20; 
             ctx.beginPath(); ctx.strokeStyle = '#000'; ctx.lineWidth = 2.5;
             ctx.moveTo(scaleX, scaleY); ctx.lineTo(scaleX + pixelsForTarget, scaleY); ctx.stroke();
             ctx.beginPath(); ctx.lineWidth = 2; ctx.moveTo(scaleX, scaleY - 6); ctx.lineTo(scaleX, scaleY + 6); ctx.stroke();
             ctx.beginPath(); ctx.moveTo(scaleX + pixelsForTarget, scaleY - 6); ctx.lineTo(scaleX + pixelsForTarget, scaleY + 6); ctx.stroke();
 
-            ctx.fillStyle = '#000'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText('0', scaleX, scaleY - 8);
-            ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText(`${targetMeters}${unitLabel}`, scaleX + pixelsForTarget, scaleY - 8);
+            ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+            ctx.fillText('0', scaleX, scaleY - 8);
+            ctx.fillText(`${targetMeters}${unitLabel}`, scaleX + pixelsForTarget, scaleY - 8);
 
-            ctx.restore();
         } catch (error) { console.error("Scale Error:", error); }
     }
 
