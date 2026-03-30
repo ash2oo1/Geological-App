@@ -56,13 +56,11 @@
         input[type="text"], input[type="number"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; font-family: inherit; }
         input[type="color"] { padding: 0; height: 40px; cursor: pointer; border: 1px solid #ddd; width: 100%; }
         
-        /* الأقسام التفاعلية */
         .check-group { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; }
         .check-item { display: flex; align-items: center; gap: 5px; background: #f8f9fa; padding: 8px 12px; border-radius: 6px; border: 1px solid #eee; font-size: 0.95rem; cursor: pointer; transition: 0.2s;}
         .check-item:hover { background: #eaf2f8; border-color: #a9cce3; }
         .check-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; margin: 0; }
 
-        /* الجدول الطباقي */
         .litho-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
         .litho-table th, .litho-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
         .litho-table th { background-color: #f4f6f7; color: #2c3e50; font-size: 0.9rem; }
@@ -87,12 +85,10 @@
         .result-value { font-weight: bold; color: #145a32; font-size: 1.15rem; }
         .percentage-note { background: #d5f5e3; padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; font-size: 0.95rem; color: #196f3d; text-align: center; border-right: 4px solid #27ae60; margin-bottom: 20px;}
         
-        /* حاويات المرتسمات - تم تقويتها لضمان الظهور الدائم */
         .canvas-container { text-align: center; width: 100%; display: block; }
         .canvas-container h3 { color: #34495e; margin-bottom: 15px; font-size: 1.2rem; border-bottom: 1px dashed #ccc; padding-bottom: 10px;}
         canvas { background: #fff; width: 100%; height: auto; border: 1.5px solid #bdc3c7; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: block;}
         
-        /* تنسيق الخريطة الفضائية ومحتوياتها */
         .map-wrapper { border: 2px solid #34495e; border-radius: 6px; overflow: hidden; height: 500px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative;}
         .map-label { background: rgba(255, 255, 255, 0.9); border: 2px solid #e74c3c; font-weight: bold; font-size: 14px; color: #c0392b; padding: 2px 6px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);}
         .map-north { position: absolute; top: 15px; right: 15px; z-index: 1000; background: rgba(255,255,255,0.9); padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 16px; color: #333; border: 2px solid #555; box-shadow: 0 2px 5px rgba(0,0,0,0.3); direction: ltr;}
@@ -102,7 +98,7 @@
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
-        /* --- هندسة الطباعة الصارمة (4 صفحات مرتبة ومضبوطة الأبعاد) --- */
+        /* --- هندسة الطباعة (5 صفحات صارمة) --- */
         .print-only { display: none; }
         
         @media print {
@@ -111,7 +107,8 @@
             
             body { background: white; margin: 0; padding: 0; color: #333; font-family: 'Arial', sans-serif; font-size: 12px; }
             .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
-            .screen-only, .header, .footer, .btn-calc, .btn-satellite, .btn-convert, .gps-btn, .btn-print, #introScreen, #calcButtonsArea { display: none !important; }
+            .screen-only { display: none !important; } /* سيخفي دقة الـ GPS وكل الأزرار */
+            .header, .footer, .btn-calc, .btn-satellite, .btn-convert, .gps-btn, .btn-print, #introScreen, #calcButtonsArea { display: none !important; }
             .print-only { display: block; }
             .no-print { display: none !important; }
             
@@ -143,15 +140,15 @@
             .result-value { font-size: 1.05rem; color: #27ae60 !important;}
             .percentage-note { padding: 6px; font-size: 0.85rem; margin-top: 8px; background: #eafaf1 !important; color: #1e8449 !important; margin-bottom: 10px;}
             
-            /* أبعاد دقيقة جداً لضمان عدم هروب المرتسمات للصفحة الرابعة */
             .canvas-container { width: 100% !important; display: block !important; margin-bottom: 10px !important;}
             canvas { border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; background: #fff !important; }
-            #strataCanvas { max-height: 310px !important; }
-            #geoCanvas { max-height: 260px !important; }
             
-            /* الصفحة الرابعة (القمر الصناعي) */
-            .map-wrapper { height: 750px !important; border: 2px solid #34495e !important; position: relative !important; page-break-inside: avoid;}
-            .leaflet-control-container { display: none !important; } 
+            /* تعديل المقياس ليظهر بوضوح في الطباعة */
+            .leaflet-control-zoom { display: none !important; } /* إخفاء أزرار الزووم فقط */
+            .leaflet-control-scale { display: block !important; margin-bottom: 20px !important; margin-left: 10px !important; }
+            .leaflet-control-scale-line { border: 2px solid #000 !important; border-top: none !important; color: #000 !important; font-weight: bold !important; font-size: 14px !important; background: rgba(255,255,255,0.85) !important; padding: 2px 5px !important; box-shadow: none !important;}
+            
+            .map-wrapper { height: 800px !important; border: 2px solid #34495e !important; position: relative !important; page-break-inside: avoid;}
             .content-padding { padding: 0 !important; }
         }
     </style>
@@ -206,7 +203,7 @@
             <h2 ondblclick="lockSystem()" style="cursor: pointer;" title="انقر مرتين للإغلاق">بإشراف الجيولوجي علي شندل فلاح</h2>
         </div>
 
-        <div class="print-page-wrapper">
+        <div class="print-page-wrapper" id="page1Wrapper">
             <div class="print-only print-header">
                 <span class="date-top-left printDateHeader"></span>
                 <h1>نظام المسح الميداني الجيولوجي للمقالع (التقرير الشامل)</h1>
@@ -275,10 +272,10 @@
                     </div>
                 </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 1 من 4</div>
+            <div class="print-only print-bottom">الصفحة 1 من 5</div>
         </div> 
 
-        <div class="print-page-wrapper">
+        <div class="print-page-wrapper" id="page2Wrapper">
             <div class="print-only print-header">
                 <span class="date-top-left printDateHeader"></span>
                 <h1>نظام المسح الميداني الجيولوجي للمقالع (التقرير الشامل)</h1>
@@ -346,7 +343,17 @@
                         <label class="check-item"><input type="checkbox"> كاشطة (Scraper)</label>
                     </div>
                 </div>
-                
+            </div>
+            <div class="print-only print-bottom">الصفحة 2 من 5</div>
+        </div>
+
+        <div class="print-page-wrapper" id="page3Wrapper">
+            <div class="print-only print-header">
+                <span class="date-top-left printDateHeader"></span>
+                <h1>نظام المسح الميداني الجيولوجي للمقالع (التقرير الشامل)</h1>
+                <h2>إعداد وتدقيق الجيولوجي الميداني</h2>
+            </div>
+            <div class="content-padding">
                 <div class="section">
                     <div class="section-title">سادساً: التتابع الطباقي والوصف الليثولوجي (Stratigraphic Data)</div>
                     <p class="screen-only" style="font-size: 0.85rem; color: #7f8c8d; margin-top: -10px;">* يمكنك إضافة حتى 10 طبقات (اترك الطبقات الزائدة على None ولن تظهر).</p>
@@ -355,8 +362,15 @@
                         <tbody id="lithoBody"></tbody>
                     </table>
                 </div>
+
+                <div class="section" id="strataCanvasContainer" style="display: none; border: 2px solid #2980b9; margin-bottom: 15px;">
+                    <div class="canvas-container" style="margin-bottom: 0;">
+                        <h3>العمود الطباقي لمنطقة المقلع (Stratigraphic Column)</h3>
+                        <canvas id="strataCanvas" width="700" height="400"></canvas>
+                    </div>
+                </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 2 من 4</div>
+            <div class="print-only print-bottom">الصفحة 3 من 5</div>
         </div>
 
         <div id="calcButtonsArea" class="content-padding screen-only">
@@ -370,7 +384,7 @@
             <button class="btn-calc" onclick="calculateResults()">إجراء المعالجة وتوليد المرتسمات الهندسية</button>
         </div>
 
-        <div class="print-page-wrapper" id="page3Wrapper" style="display: none;">
+        <div class="print-page-wrapper" id="page4Wrapper" style="display: none;">
             <div class="print-only print-header">
                 <span class="date-top-left printDateHeader"></span>
                 <h1>نظام المسح الميداني الجيولوجي للمقالع (التقرير الشامل)</h1>
@@ -378,13 +392,6 @@
             </div>
             <div class="content-padding">
                 
-                <div class="section" style="border: 2px solid #2980b9; margin-bottom: 15px;">
-                    <div class="canvas-container" style="margin-bottom: 0;">
-                        <h3>العمود الطباقي لمنطقة المقلع (Stratigraphic Column)</h3>
-                        <canvas id="strataCanvas" width="700" height="400"></canvas>
-                    </div>
-                </div>
-
                 <div class="section" id="resultsSection" style="margin-bottom: 15px;">
                     <div class="section-title" style="border-bottom-color: #27ae60; color: #27ae60; margin-bottom: 10px;">النتائج النهائية للكميات والمساحة والعمق</div>
                     <div class="result-item"><span>الكميات المستخرجة لغاية يوم الزيارة (م³):</span><span class="result-value" id="resExtractedVol">0</span></div>
@@ -398,7 +405,7 @@
                 <div class="section" style="border: 2px solid #27ae60; margin-bottom: 0;">
                     <div class="canvas-container" style="margin-bottom: 0;">
                         <h3 style="color: #27ae60;">المرتسم المساحي (Scale Plan)</h3>
-                        <canvas id="geoCanvas" width="850" height="350" style="background: #fff; width: 100%; border: 1px solid #ddd;"></canvas>
+                        <canvas id="geoCanvas" width="850" height="400" style="background: #fff; width: 100%; border: 1px solid #ddd;"></canvas>
                     </div>
                 </div>
                 
@@ -408,7 +415,7 @@
                 </div>
 
             </div>
-            <div class="print-only print-bottom">الصفحة 3 من 4</div>
+            <div class="print-only print-bottom">الصفحة 4 من 5</div>
         </div>
 
         <div class="print-page-wrapper" id="satPageWrapper" style="display: none;">
@@ -434,7 +441,7 @@
                     </div>
                 </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 4 من 4</div>
+            <div class="print-only print-bottom">الصفحة 5 من 5</div>
         </div>
 
         <div class="footer screen-only">جميع الحقوق محفوظة لدى الجيولوجي علي شندل فلاح © 2026</div>
@@ -546,10 +553,10 @@
         return { easting: parseFloat(UTMEasting.toFixed(2)), northing: parseFloat(UTMNorthing.toFixed(2)), zone: zoneNumber };
     }
 
-    // الـ GPS: (بدون ذاكرة مؤقتة، 30 ثانية، مع قراءة الدقة بالأمتار)
+    // الـ GPS (تم تغليف نص الدقة بـ screen-only ليختفي في الطباعة)
     function getCoordinates(elementId) {
         if (navigator.geolocation) {
-            document.getElementById(elementId).innerHTML = `<span style="color:#2980b9;">⏳ جاري الاتصال بالأقمار الصناعية بدقة...</span>`;
+            document.getElementById(elementId).innerHTML = `<span style="color:#2980b9;">⏳ جاري الاتصال بالأقمار الصناعية...</span>`;
             
             navigator.geolocation.getCurrentPosition(function(position) {
                 const lat = position.coords.latitude; 
@@ -560,20 +567,16 @@
                 const utm = latLonToUTM(lat, lon);
                 
                 let accColor = accuracy <= 10 ? '#27ae60' : (accuracy <= 30 ? '#f39c12' : '#e74c3c');
-                let accText = `<span style="color:${accColor}; font-size:0.85rem; display:block; margin-top:5px; font-weight:bold;">دقة الـ GPS: ± ${accuracy.toFixed(1)} متر</span>`;
+                let accText = `<span class="screen-only" style="color:${accColor}; font-size:0.85rem; display:block; margin-top:5px; font-weight:bold;">دقة الـ GPS: ± ${accuracy.toFixed(1)} متر</span>`;
 
                 document.getElementById(elementId).innerHTML = `E: ${utm.easting} | N: ${utm.northing} <br> <span style="font-size:0.75rem; color:#555;">(Zone: ${utm.zone}N)</span> ${accText}`;
                 
             }, function(error) { 
                 let msg = "تعذر تحديد الموقع.";
-                if(error.code === 3) msg = "انتهى وقت الاستجابة (30 ثانية). يرجى التأكد من وقوفك تحت سماء مفتوحة بعيداً عن السقوف والمباني.";
+                if(error.code === 3) msg = "انتهى وقت الاستجابة. يرجى التأكد من وقوفك تحت سماء مفتوحة.";
                 alert("⚠️ " + msg); 
                 document.getElementById(elementId).innerHTML = `E: --- | N: ---`;
-            }, { 
-                enableHighAccuracy: true, 
-                timeout: 30000, 
-                maximumAge: 0 
-            });
+            }, { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 });
         } else { alert("المتصفح لا يدعم تحديد الموقع."); }
     }
 
@@ -602,20 +605,16 @@
 
         document.getElementById('percentageNote').innerText = `النسبة المئوية للمساحة المتبقية للاستثمار هي (${remainingPercentage.toFixed(1)}%) من إجمالي العقد.`;
         
+        // إظهار الصفحات 3 و 4 بعد الحساب
         document.getElementById('calcButtonsArea').style.display = 'none';
-        document.getElementById('page3Wrapper').style.display = 'block';
+        document.getElementById('strataCanvasContainer').style.display = 'block';
+        document.getElementById('page4Wrapper').style.display = 'block';
         
-        // استخدام try-catch لضمان عدم توقف النظام حتى لو حدثت أي مشكلة مفاجئة
-        try {
-            drawSideBySideChart(width, contractArea, investedPercentage, remainingPercentage, colorInv, colorRem);
-        } catch(e) { console.error(e); }
-        
-        try {
-            drawStratigraphicColumn();
-        } catch(e) { console.error(e); }
+        try { drawSideBySideChart(width, contractArea, investedPercentage, remainingPercentage, colorInv, colorRem); } catch(e) {}
+        try { drawStratigraphicColumn(); } catch(e) {}
     }
 
-    // 🌍 دالة توليد الصورة الفضائية
+    // الصورة الفضائية (الصفحة 5)
     let myLeafletMap = null;
     function generateSatelliteMap() {
         let pts = [];
@@ -624,10 +623,7 @@
         if(rawGpsPoints.point3) pts.push([rawGpsPoints.point3.lat, rawGpsPoints.point3.lng]);
         if(rawGpsPoints.point4) pts.push([rawGpsPoints.point4.lat, rawGpsPoints.point4.lng]);
 
-        if(pts.length < 3) {
-            alert("⚠️ يرجى التقاط إحداثيات (GPS) لثلاث نقاط على الأقل في المقلع لرسم الصورة الفضائية.");
-            return;
-        }
+        if(pts.length < 3) { alert("⚠️ يرجى التقاط إحداثيات (GPS) لثلاث نقاط على الأقل."); return; }
 
         document.getElementById('satPageWrapper').style.display = 'block';
         if(myLeafletMap !== null) { myLeafletMap.remove(); }
@@ -637,6 +633,7 @@
             attribution: 'Tiles © Esri', maxZoom: 22, maxNativeZoom: 19 
         }).addTo(myLeafletMap);
 
+        // مقياس الرسم الجغرافي (سيظهر بالطباعة بناءً على كود الـ CSS الجديد)
         L.control.scale({metric: true, imperial: false, position: 'bottomleft'}).addTo(myLeafletMap);
 
         let polygon = L.polygon(pts, {color: '#e74c3c', weight: 3, fillColor: '#e74c3c', fillOpacity: 0.35}).addTo(myLeafletMap);
@@ -652,40 +649,26 @@
         myLeafletMap.fitBounds(polygon.getBounds(), {padding: [50, 50]});
         setTimeout(() => { myLeafletMap.invalidateSize(); }, 500);
         
-        document.getElementById('satBtn').innerText = "✅ تم توليد الصورة الفضائية (راجع الصفحة 4)";
+        document.getElementById('satBtn').innerText = "✅ تم التوليد (راجع الصفحة 5)";
         document.getElementById('satBtn').style.background = "#27ae60";
     }
 
-    // المرتسم المساحي (تم بناء جدار حماية رياضي يمنع أي اختفاء أو انهيار)
+    // المرتسم المساحي الثنائي
     function drawSideBySideChart(fieldWidth, totalArea, invPct, remPct, colInv, colRem) {
-        const canvas = document.getElementById('geoCanvas'); 
-        if(!canvas) return;
+        const canvas = document.getElementById('geoCanvas'); if(!canvas) return;
         const ctx = canvas.getContext('2d'); 
-        
-        // تنظيف وإجبار وضع خلفية بيضاء لضمان ظهور المربع دائماً
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        const margin = 70; 
-        const drawW = canvas.width - (margin * 2); 
-        const drawH = canvas.height - (margin * 2) - 40; 
+        const margin = 70; const drawW = canvas.width - (margin * 2); const drawH = canvas.height - (margin * 2) - 40; 
         
-        // جدار الحماية ضد المالانهاية والصفر
-        let totalW = parseFloat(fieldWidth);
-        if (isNaN(totalW) || totalW <= 0) totalW = 100;
-        
-        let totalL = parseFloat(totalArea) / totalW;
-        if (isNaN(totalL) || totalL <= 0 || !isFinite(totalL)) totalL = 100;
+        let totalW = parseFloat(fieldWidth); if (isNaN(totalW) || totalW <= 0) totalW = 100;
+        let totalL = parseFloat(totalArea) / totalW; if (isNaN(totalL) || totalL <= 0 || !isFinite(totalL)) totalL = 100;
 
         ctx.beginPath(); ctx.strokeStyle = '#333'; ctx.lineWidth = 2;
         ctx.moveTo(margin, margin); ctx.lineTo(margin, margin + drawH); ctx.lineTo(margin + drawW, margin + drawH); ctx.stroke();
 
         ctx.fillStyle = '#000'; ctx.font = '14px Arial'; ctx.textAlign = 'center';
-        
-        let tickIntX = totalL > 100 ? 50 : 10;
-        if(totalL / tickIntX > 100) tickIntX = totalL / 10; // حماية ضد التكرار اللانهائي
-        
+        let tickIntX = totalL > 100 ? 50 : 10; if(totalL / tickIntX > 100) tickIntX = totalL / 10; 
         for (let i = 0; i <= totalL; i += tickIntX) {
             let xPos = margin + (i / totalL) * drawW;
             ctx.beginPath(); ctx.moveTo(xPos, margin + drawH); ctx.lineTo(xPos, margin + drawH + 10); ctx.stroke();
@@ -694,9 +677,7 @@
         }
 
         ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-        let tickIntY = totalW > 100 ? 50 : 10;
-        if(totalW / tickIntY > 100) tickIntY = totalW / 10;
-        
+        let tickIntY = totalW > 100 ? 50 : 10; if(totalW / tickIntY > 100) tickIntY = totalW / 10;
         for (let i = 0; i <= totalW; i += tickIntY) {
             let yPos = margin + drawH - (i / totalW) * drawH;
             ctx.beginPath(); ctx.moveTo(margin - 10, yPos); ctx.lineTo(margin, yPos); ctx.stroke();
@@ -704,23 +685,18 @@
             ctx.fillText(i.toFixed(0), margin - 15, yPos);
         }
 
-        let safeInvPct = isNaN(invPct) ? 0 : invPct;
-        let safeRemPct = isNaN(remPct) ? 0 : remPct;
-
-        let invPixelW = drawW * (safeInvPct / 100); 
-        let remPixelW = drawW * (safeRemPct / 100);
+        let safeInvPct = isNaN(invPct) ? 0 : invPct; let safeRemPct = isNaN(remPct) ? 0 : remPct;
+        let invPixelW = drawW * (safeInvPct / 100); let remPixelW = drawW * (safeRemPct / 100);
 
         if (safeInvPct > 0) {
-            ctx.fillStyle = colInv || '#cceeff'; 
-            ctx.fillRect(margin, margin, invPixelW, drawH);
+            ctx.fillStyle = colInv || '#cceeff'; ctx.fillRect(margin, margin, invPixelW, drawH);
             ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin, margin, invPixelW, drawH);
             ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.font = 'bold 16px Arial';
             if (invPixelW > 90) { ctx.fillText(`المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${safeInvPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 15); }
         }
 
         if (safeRemPct > 0) {
-            ctx.fillStyle = colRem || '#115577'; 
-            ctx.fillRect(margin + invPixelW, margin, remPixelW, drawH);
+            ctx.fillStyle = colRem || '#115577'; ctx.fillRect(margin + invPixelW, margin, remPixelW, drawH);
             ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin + invPixelW, margin, remPixelW, drawH);
             ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.font = 'bold 16px Arial';
             if (remPixelW > 90) { ctx.fillText(`المتبقية`, margin + invPixelW + remPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${safeRemPct.toFixed(0)}%)`, margin + invPixelW + remPixelW/2, margin + drawH/2 + 15); }
@@ -734,8 +710,7 @@
         ctx.save(); ctx.translate(margin - 45, margin + drawH/2); ctx.rotate(-Math.PI/2); ctx.fillText('العرض (m)', 0, 0); ctx.restore();
 
         let scaleUnit = 10; if (totalL > 50) scaleUnit = 20; if (totalL > 100) scaleUnit = 50; if (totalL > 250) scaleUnit = 100;
-        let scaleBarPixels = (scaleUnit / totalL) * drawW; 
-        if (!isFinite(scaleBarPixels)) scaleBarPixels = 0; // حماية المقياس
+        let scaleBarPixels = (scaleUnit / totalL) * drawW; if (!isFinite(scaleBarPixels)) scaleBarPixels = 0;
 
         const scaleBarY = canvas.height - 25; 
         ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath();
@@ -749,13 +724,9 @@
 
     // العمود الطباقي لمنطقة المقلع
     function drawStratigraphicColumn() {
-        const canvas = document.getElementById('strataCanvas'); 
-        if(!canvas) return;
+        const canvas = document.getElementById('strataCanvas'); if(!canvas) return;
         const ctx = canvas.getContext('2d'); 
-        
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         let layers = []; let totalDepth = 0; let uniqueTypes = new Set();
         for(let i=1; i<=10; i++) {
@@ -764,22 +735,17 @@
             let name = document.getElementById('lType'+i).options[document.getElementById('lType'+i).selectedIndex].text;
             if(type !== 'none' && thick > 0) { layers.push({type: type, name: name, thick: thick, start: totalDepth}); totalDepth += thick; uniqueTypes.add(type); }
         }
-        
-        if(totalDepth === 0) return; // لن يرسم شيئاً سوى المربع الأبيض إن كانت الحقول فارغة
+        if(totalDepth === 0) return;
 
         const marginX = 120; const marginY = 40; const drawW = 150; const drawH = canvas.height - (marginY * 2);
         ctx.lineWidth = 2; ctx.strokeStyle = '#333'; ctx.strokeRect(marginX, marginY, drawW, drawH);
         
         function fillPattern(type, x, y, w, h) {
             ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
-            if(type === 'topsoil') ctx.fillStyle = '#d7ccc8';
-            else if(type === 'clay') ctx.fillStyle = '#cfd8dc';
-            else if(type === 'sand') ctx.fillStyle = '#ffe082';
-            else if(type === 'siltyclay') ctx.fillStyle = '#e0e0e0';
-            else if(type === 'sandyclay') ctx.fillStyle = '#d7ccc8';
-            else if(type === 'claysilt') ctx.fillStyle = '#f5f5f5';
-            else if(type === 'claysandysilt') ctx.fillStyle = '#cfd8dc'; 
-            else if(type === 'interbedded') ctx.fillStyle = '#b0bec5';
+            if(type === 'topsoil') ctx.fillStyle = '#d7ccc8'; else if(type === 'clay') ctx.fillStyle = '#cfd8dc';
+            else if(type === 'sand') ctx.fillStyle = '#ffe082'; else if(type === 'siltyclay') ctx.fillStyle = '#e0e0e0';
+            else if(type === 'sandyclay') ctx.fillStyle = '#d7ccc8'; else if(type === 'claysilt') ctx.fillStyle = '#f5f5f5';
+            else if(type === 'claysandysilt') ctx.fillStyle = '#cfd8dc'; else if(type === 'interbedded') ctx.fillStyle = '#b0bec5';
             ctx.fillRect(x,y,w,h);
             ctx.lineWidth = 1; ctx.strokeStyle = '#555'; ctx.fillStyle = '#555';
             if(type.includes('clay') || type === 'claysandysilt') { for(let i=y+4; i<y+h; i+=8) { ctx.beginPath(); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.stroke(); } }
@@ -790,16 +756,14 @@
         }
 
         layers.forEach(layer => {
-            let startY = marginY + (layer.start / totalDepth) * drawH;
-            let layerH = (layer.thick / totalDepth) * drawH;
+            let startY = marginY + (layer.start / totalDepth) * drawH; let layerH = (layer.thick / totalDepth) * drawH;
             fillPattern(layer.type, marginX, startY, drawW, layerH);
             ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
             if (layer.start === 0) ctx.fillText('0.0 m -', marginX - 10, marginY);
             ctx.fillText((layer.start + layer.thick).toFixed(1) + ' m -', marginX - 10, startY + layerH);
         });
 
-        let scaleUnitStrata = totalDepth > 5 ? 2 : 1;
-        let scalePixels = (scaleUnitStrata / totalDepth) * drawH;
+        let scaleUnitStrata = totalDepth > 5 ? 2 : 1; let scalePixels = (scaleUnitStrata / totalDepth) * drawH;
         let sX = marginX - 70; let sY = marginY + drawH - scalePixels;
         ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath();
         ctx.moveTo(sX - 5, sY); ctx.lineTo(sX + 5, sY); ctx.moveTo(sX, sY); ctx.lineTo(sX, sY + scalePixels); ctx.moveTo(sX - 5, sY + scalePixels); ctx.lineTo(sX + 5, sY + scalePixels); ctx.stroke();
@@ -809,11 +773,7 @@
         let legendX = marginX + drawW + 40; let legendY = marginY + 20;
         ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.font = 'bold 16px Arial'; ctx.fillText('Legend:', legendX, legendY); legendY += 30;
         layers.forEach(layer => {
-            if(uniqueTypes.has(layer.type)) {
-                fillPattern(layer.type, legendX, legendY - 15, 30, 30);
-                ctx.fillStyle = '#000'; ctx.font = 'bold 13px Arial'; ctx.fillText(layer.name, legendX + 40, legendY); legendY += 40;
-                uniqueTypes.delete(layer.type);
-            }
+            if(uniqueTypes.has(layer.type)) { fillPattern(layer.type, legendX, legendY - 15, 30, 30); ctx.fillStyle = '#000'; ctx.font = 'bold 13px Arial'; ctx.fillText(layer.name, legendX + 40, legendY); legendY += 40; uniqueTypes.delete(layer.type); }
         });
     }
 
@@ -828,7 +788,6 @@
         if(otherCb && !otherCb.checked) { otherInput.classList.add('no-print'); } else { otherInput.classList.remove('no-print'); }
         
         if(myLeafletMap) { myLeafletMap.invalidateSize(); }
-        
         window.print();
     }
 </script>
