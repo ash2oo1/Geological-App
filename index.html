@@ -85,10 +85,12 @@
         .result-value { font-weight: bold; color: #145a32; font-size: 1.15rem; }
         .percentage-note { background: #d5f5e3; padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; font-size: 0.95rem; color: #196f3d; text-align: center; border-right: 4px solid #27ae60; margin-bottom: 20px;}
         
+        /* حاويات المرتسمات - تم تقويتها لضمان الظهور الدائم */
         .canvas-container { text-align: center; width: 100%; display: block; }
         .canvas-container h3 { color: #34495e; margin-bottom: 15px; font-size: 1.2rem; border-bottom: 1px dashed #ccc; padding-bottom: 10px;}
         canvas { background: #fff; width: 100%; height: auto; border: 1.5px solid #bdc3c7; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: block;}
         
+        /* تنسيق الخريطة الفضائية ومحتوياتها */
         .map-wrapper { border: 2px solid #34495e; border-radius: 6px; overflow: hidden; height: 500px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative;}
         .map-label { background: rgba(255, 255, 255, 0.9); border: 2px solid #e74c3c; font-weight: bold; font-size: 14px; color: #c0392b; padding: 2px 6px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);}
         .map-north { position: absolute; top: 15px; right: 15px; z-index: 1000; background: rgba(255,255,255,0.9); padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 16px; color: #333; border: 2px solid #555; box-shadow: 0 2px 5px rgba(0,0,0,0.3); direction: ltr;}
@@ -98,7 +100,7 @@
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
-        /* --- هندسة الطباعة (5 صفحات صارمة) --- */
+        /* --- هندسة الطباعة الصارمة (5 صفحات مرتبة ومضبوطة الأبعاد) --- */
         .print-only { display: none; }
         
         @media print {
@@ -107,7 +109,7 @@
             
             body { background: white; margin: 0; padding: 0; color: #333; font-family: 'Arial', sans-serif; font-size: 12px; }
             .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
-            .screen-only { display: none !important; } /* سيخفي دقة الـ GPS وكل الأزرار */
+            .screen-only { display: none !important; } /* سيخفي دقة الـ GPS بالأمتار وكل الأزرار */
             .header, .footer, .btn-calc, .btn-satellite, .btn-convert, .gps-btn, .btn-print, #introScreen, #calcButtonsArea { display: none !important; }
             .print-only { display: block; }
             .no-print { display: none !important; }
@@ -140,15 +142,16 @@
             .result-value { font-size: 1.05rem; color: #27ae60 !important;}
             .percentage-note { padding: 6px; font-size: 0.85rem; margin-top: 8px; background: #eafaf1 !important; color: #1e8449 !important; margin-bottom: 10px;}
             
+            /* أبعاد دقيقة جداً لضمان عدم هروب المرتسمات للصفحة الرابعة */
             .canvas-container { width: 100% !important; display: block !important; margin-bottom: 10px !important;}
             canvas { border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; background: #fff !important; }
             
-            /* تعديل المقياس ليظهر بوضوح في الطباعة */
-            .leaflet-control-zoom { display: none !important; } /* إخفاء أزرار الزووم فقط */
-            .leaflet-control-scale { display: block !important; margin-bottom: 20px !important; margin-left: 10px !important; }
-            .leaflet-control-scale-line { border: 2px solid #000 !important; border-top: none !important; color: #000 !important; font-weight: bold !important; font-size: 14px !important; background: rgba(255,255,255,0.85) !important; padding: 2px 5px !important; box-shadow: none !important;}
+            /* إخفاء المقياس الافتراضي في الطباعة تماماً لأننا سنستبدله بمقياس مخصص */
+            .leaflet-control-scale { display: none !important; }
             
-            .map-wrapper { height: 800px !important; border: 2px solid #34495e !important; position: relative !important; page-break-inside: avoid;}
+            .map-wrapper { height: 800px !important; border: 2px solid #34495e !important; position: relative !important; page-break-inside: avoid; background-color: white !important;}
+            .leaflet-control-zoom { display: none !important; } /* إخفاء أزرار الزووم فقط */
+            .leaflet-control-container { background: white !important; }
             .content-padding { padding: 0 !important; }
         }
     </style>
@@ -203,7 +206,7 @@
             <h2 ondblclick="lockSystem()" style="cursor: pointer;" title="انقر مرتين للإغلاق">بإشراف الجيولوجي علي شندل فلاح</h2>
         </div>
 
-        <div class="print-page-wrapper" id="page1Wrapper">
+        <div class="print-page-wrapper">
             <div class="print-only print-header">
                 <span class="date-top-left printDateHeader"></span>
                 <h1>نظام المسح الميداني الجيولوجي للمقالع (التقرير الشامل)</h1>
@@ -275,7 +278,7 @@
             <div class="print-only print-bottom">الصفحة 1 من 5</div>
         </div> 
 
-        <div class="print-page-wrapper" id="page2Wrapper">
+        <div class="print-page-wrapper">
             <div class="print-only print-header">
                 <span class="date-top-left printDateHeader"></span>
                 <h1>نظام المسح الميداني الجيولوجي للمقالع (التقرير الشامل)</h1>
@@ -428,7 +431,7 @@
                 <div class="section" style="border: 2px solid #8e44ad; padding: 10px; box-shadow: none;">
                     <div class="canvas-container" id="mapSection" style="margin-bottom: 0;">
                         <h3>الصورة الفضائية للمقلع (Satellite View)</h3>
-                        <div id="satelliteMap" class="map-wrapper" dir="ltr">
+                        <div id="satelliteMap" class="map-wrapper" dir="ltr" style="position: relative;">
                             <div class="map-north">⬆ N</div>
                             <div class="map-legend-box">
                                 <b>دليل الصورة الفضائية (Legend)</b>
@@ -436,6 +439,9 @@
                                 <span style="color:#d35400; font-size:16px;">■</span> أراضي ترابية/مقلع<br>
                                 <span style="color:#2980b9; font-size:16px;">■</span> تجمعات مائية<br>
                                 <span style="color:#e74c3c; font-weight:bold; font-size:16px;">▬</span> حدود المقلع المستثمر
+                            </div>
+                            <div id="customScaleContainer" style="position: absolute; bottom: 10px; left: 10px; z-index: 1000; background: rgba(255,255,255,0.8); padding: 5px; border-radius: 4px; pointer-events: none;">
+                                <canvas id="customScaleCanvas" width="200" height="50"></canvas>
                             </div>
                         </div>
                     </div>
@@ -573,7 +579,7 @@
                 
             }, function(error) { 
                 let msg = "تعذر تحديد الموقع.";
-                if(error.code === 3) msg = "انتهى وقت الاستجابة. يرجى التأكد من وقوفك تحت سماء مفتوحة.";
+                if(error.code === 3) msg = "انتهى وقت الاستجابة. يرجى التأكد من وقوفك تحت سماء مفتوحة بعيداً عن السقوف والمباني.";
                 alert("⚠️ " + msg); 
                 document.getElementById(elementId).innerHTML = `E: --- | N: ---`;
             }, { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 });
@@ -605,7 +611,6 @@
 
         document.getElementById('percentageNote').innerText = `النسبة المئوية للمساحة المتبقية للاستثمار هي (${remainingPercentage.toFixed(1)}%) من إجمالي العقد.`;
         
-        // إظهار الصفحات 3 و 4 بعد الحساب
         document.getElementById('calcButtonsArea').style.display = 'none';
         document.getElementById('strataCanvasContainer').style.display = 'block';
         document.getElementById('page4Wrapper').style.display = 'block';
@@ -614,8 +619,48 @@
         try { drawStratigraphicColumn(); } catch(e) {}
     }
 
-    // الصورة الفضائية (الصفحة 5)
-    let myLeafletMap = null;
+    // دالة لرسم مقياس رسم خطي مخصص فوق الصورة الفضائية
+    function updateCustomMapScale() {
+        const canvas = document.getElementById('customScaleCanvas'); if(!canvas || !myLeafletMap) return;
+        const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.save();
+
+        // حساب المسافة الجغرافية التي يمثلها 100 بكسل أفقياً على الخريطة
+        const mapBounds = myLeafletMap.getBounds(); const center = mapBounds.getCenter();
+        const startPoint = myLeafletMap.latLngToContainerPoint(center); const endPoint = L.point(startPoint.x + 100, startPoint.y);
+        const latLngStart = myLeafletMap.containerPointToLatLng(startPoint); const latLngEnd = myLeafletMap.containerPointToLatLng(endPoint);
+        const distanceMeters = myLeafletMap.distance(latLngStart, latLngEnd);
+
+        if(!isFinite(distanceMeters) || distanceMeters <= 0) { ctx.restore(); return; }
+
+        // تحديد وحدة هندسية مقربة ومناسبة للرسم
+        let targetMeters = 0; let unitLabel = 'm';
+        if(distanceMeters < 1) { targetMeters = distanceMeters; unitLabel = 'm'; } 
+        else if(distanceMeters < 1000) { targetMeters = (distanceMeters < 50) ? 10 : ((distanceMeters < 100) ? 50 : Math.round(distanceMeters/100)*100); unitLabel = 'm'; } 
+        else { targetMeters = Math.round(distanceMeters/1000); unitLabel = 'km'; }
+
+        // حساب عدد البكسلات الذي يمثل الوحدة المستهدفة
+        const pixelsForTarget = (targetMeters * 100) / distanceMeters;
+        if(pixelsForTarget > canvas.width - 20) { ctx.restore(); return; } // حماية ضد الخروج من الكانفاس
+
+        const scaleX = 10; const scaleY = 30; // إحداثيات بداية الرسم داخل الكانفاس
+
+        // رسم الخط الخطي الرئيسي
+        ctx.beginPath(); ctx.strokeStyle = '#000'; ctx.lineWidth = 2.5;
+        ctx.moveTo(scaleX, scaleY); ctx.lineTo(scaleX + pixelsForTarget, scaleY); ctx.stroke();
+
+        // رسم العلامات العمودية عند البداية والنهاية
+        ctx.beginPath(); ctx.lineWidth = 2; ctx.moveTo(scaleX, scaleY - 6); ctx.lineTo(scaleX, scaleY + 6); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(scaleX + pixelsForTarget, scaleY - 6); ctx.lineTo(scaleX + pixelsForTarget, scaleY + 6); ctx.stroke();
+
+        // كتابة الأرقام والوحدات
+        ctx.fillStyle = '#000'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText('0', scaleX, scaleY - 8);
+        ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText(`${targetMeters}${unitLabel}`, scaleX + pixelsForTarget, scaleY - 8);
+
+        // كتابة عنوان المقياس
+        ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.font = 'bold 14px Arial'; ctx.fillText('مقياس الرسم الخطى الموحد', scaleX, scaleY + 10); ctx.restore();
+    }
+
+    // الصورة الفضائية للمقلع (الصفحة 5)
     function generateSatelliteMap() {
         let pts = [];
         if(rawGpsPoints.point1) pts.push([rawGpsPoints.point1.lat, rawGpsPoints.point1.lng]);
@@ -628,13 +673,14 @@
         document.getElementById('satPageWrapper').style.display = 'block';
         if(myLeafletMap !== null) { myLeafletMap.remove(); }
 
-        myLeafletMap = L.map('satelliteMap', { zoomControl: true });
+        // إنشاء الخريطة مع تحديد منطقة العرض القصوى لمنع ظهور المناطق الرمادية
+        myLeafletMap = L.map('satelliteMap', { zoomControl: true, maxBoundsViscosity: 1.0, background: 'white' });
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles © Esri', maxZoom: 22, maxNativeZoom: 19 
         }).addTo(myLeafletMap);
 
-        // مقياس الرسم الجغرافي (سيظهر بالطباعة بناءً على كود الـ CSS الجديد)
-        L.control.scale({metric: true, imperial: false, position: 'bottomleft'}).addTo(myLeafletMap);
+        // إخفاء مقياس الـ Leaflet الافتراضي لأننا نستخدم مقياساً خطياً مخصصاً
+        // L.control.scale({metric: true, imperial: false, position: 'bottomleft'}).addTo(myLeafletMap);
 
         let polygon = L.polygon(pts, {color: '#e74c3c', weight: 3, fillColor: '#e74c3c', fillOpacity: 0.35}).addTo(myLeafletMap);
         
@@ -646,14 +692,19 @@
              .openTooltip();
         });
 
-        myLeafletMap.fitBounds(polygon.getBounds(), {padding: [50, 50]});
-        setTimeout(() => { myLeafletMap.invalidateSize(); }, 500);
+        // ضبط منطقة العرض لتشمل المضلع بالكامل
+        const bounds = polygon.getBounds(); myLeafletMap.fitBounds(bounds, {padding: [70, 70]});
+        myLeafletMap.setMaxBounds(bounds.pad(1)); // تحديد منطقة العرض القصوى
+
+        // تحديث مقياس الرسم المخصص عند تحميل الخريطة وعند أي تغيير في التكبير أو الحركة
+        setTimeout(() => { myLeafletMap.invalidateSize(); updateCustomMapScale(); }, 600);
+        myLeafletMap.on('moveend zoomend', updateCustomMapScale);
         
         document.getElementById('satBtn').innerText = "✅ تم التوليد (راجع الصفحة 5)";
         document.getElementById('satBtn').style.background = "#27ae60";
     }
 
-    // المرتسم المساحي الثنائي
+    // المرتسم المساحي الثنائي الأبعاد (Scale Plan)
     function drawSideBySideChart(fieldWidth, totalArea, invPct, remPct, colInv, colRem) {
         const canvas = document.getElementById('geoCanvas'); if(!canvas) return;
         const ctx = canvas.getContext('2d'); 
@@ -709,23 +760,26 @@
         ctx.fillStyle = '#000'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center'; ctx.fillText('الطول (m)', margin + drawW/2, margin + drawH + 55);
         ctx.save(); ctx.translate(margin - 45, margin + drawH/2); ctx.rotate(-Math.PI/2); ctx.fillText('العرض (m)', 0, 0); ctx.restore();
 
+        // رسم مقياس الرسم الخطي الخاص بالمرتسم المساحي
         let scaleUnit = 10; if (totalL > 50) scaleUnit = 20; if (totalL > 100) scaleUnit = 50; if (totalL > 250) scaleUnit = 100;
         let scaleBarPixels = (scaleUnit / totalL) * drawW; if (!isFinite(scaleBarPixels)) scaleBarPixels = 0;
 
         const scaleBarY = canvas.height - 25; 
         ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath();
-        ctx.moveTo(margin, scaleBarY - 5); ctx.lineTo(margin, scaleBarY + 5);
-        ctx.moveTo(margin, scaleBarY); ctx.lineTo(margin + scaleBarPixels, scaleBarY);
-        ctx.moveTo(margin + scaleBarPixels, scaleBarY - 5); ctx.lineTo(margin + scaleBarPixels, scaleBarY + 5); ctx.stroke();
+        ctx.moveTo(margin, scaleBarY - 6); ctx.lineTo(margin, scaleBarY + 6); // بداية
+        ctx.moveTo(margin, scaleBarY); ctx.lineTo(margin + scaleBarPixels, scaleBarY); // خط رئيسي
+        ctx.moveTo(margin + scaleBarPixels, scaleBarY - 6); ctx.lineTo(margin + scaleBarPixels, scaleBarY + 6); // نهاية
+        ctx.stroke();
+
         ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
         ctx.fillText('0 m', margin, scaleBarY + 10); ctx.fillText(`${scaleUnit} m`, margin + scaleBarPixels, scaleBarY + 10);
-        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('مقياس الرسم (Scale)', margin + scaleBarPixels + 20, scaleBarY);
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('مقياس الرسم الخطى (Scale)', margin + scaleBarPixels + 20, scaleBarY);
     }
 
-    // العمود الطباقي لمنطقة المقلع
+    // العمود الطباقي لمنطقة المقلع لمنطقة المقلع (التحديث الجوهري للتنسيق)
     function drawStratigraphicColumn() {
         const canvas = document.getElementById('strataCanvas'); if(!canvas) return;
-        const ctx = canvas.getContext('2d'); 
+        const ctx = canvas.getContext('2d'); ctx.save();
         ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         let layers = []; let totalDepth = 0; let uniqueTypes = new Set();
@@ -735,9 +789,10 @@
             let name = document.getElementById('lType'+i).options[document.getElementById('lType'+i).selectedIndex].text;
             if(type !== 'none' && thick > 0) { layers.push({type: type, name: name, thick: thick, start: totalDepth}); totalDepth += thick; uniqueTypes.add(type); }
         }
-        if(totalDepth === 0) return;
+        if(totalDepth === 0) { ctx.restore(); return; }
 
-        const marginX = 120; const marginY = 40; const drawW = 150; const drawH = canvas.height - (marginY * 2);
+        // إحداثيات الرسم: نقل العمود إلى اليسار قليلاً لإفساح مجال للـ Legend على اليمين
+        const marginX = 80; const marginY = 40; const drawW = 150; const drawH = canvas.height - (marginY * 2);
         ctx.lineWidth = 2; ctx.strokeStyle = '#333'; ctx.strokeRect(marginX, marginY, drawW, drawH);
         
         function fillPattern(type, x, y, w, h) {
@@ -758,23 +813,46 @@
         layers.forEach(layer => {
             let startY = marginY + (layer.start / totalDepth) * drawH; let layerH = (layer.thick / totalDepth) * drawH;
             fillPattern(layer.type, marginX, startY, drawW, layerH);
-            ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-            if (layer.start === 0) ctx.fillText('0.0 m -', marginX - 10, marginY);
-            ctx.fillText((layer.start + layer.thick).toFixed(1) + ' m -', marginX - 10, startY + layerH);
+            
+            // --- التنسيق الجديد للأرقام والمؤشرات على جهة اليمين ---
+            ctx.fillStyle = '#000'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+            ctx.lineWidth = 1.5; ctx.strokeStyle = '#2c3e50';
+
+            // دالة لرسم الأرقام مع المؤشر الهندسي
+            const drawDepth = (depth, yCoord) => {
+                const textX = marginX + drawW + 25; // موقع الرقم
+                ctx.fillText(`${depth.toFixed(1)}m`, textX, yCoord);
+
+                // رسم المؤشر الهندسي (السهم/الخط) يخرج من حدود الطبقة ويشير للرقم
+                ctx.beginPath();
+                ctx.moveTo(marginX + drawW, yCoord); // بداية من خط حدود الطبقة
+                ctx.lineTo(textX - 8, yCoord); // خط أفقي نحو الرقم
+                ctx.moveTo(textX - 8, yCoord); // رأس السهم
+                ctx.lineTo(textX - 14, yCoord - 4);
+                ctx.moveTo(textX - 8, yCoord); // رأس السهم
+                ctx.lineTo(textX - 14, yCoord + 4);
+                ctx.stroke();
+            };
+
+            if (layer.start === 0) drawDepth(0.0, marginY); // عمق البداية
+            drawDepth(layer.start + layer.thick, startY + layerH); // عمق النهاية
         });
 
+        // المقياس الخطي للعمود
         let scaleUnitStrata = totalDepth > 5 ? 2 : 1; let scalePixels = (scaleUnitStrata / totalDepth) * drawH;
-        let sX = marginX - 70; let sY = marginY + drawH - scalePixels;
-        ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath();
-        ctx.moveTo(sX - 5, sY); ctx.lineTo(sX + 5, sY); ctx.moveTo(sX, sY); ctx.lineTo(sX, sY + scalePixels); ctx.moveTo(sX - 5, sY + scalePixels); ctx.lineTo(sX + 5, sY + scalePixels); ctx.stroke();
-        ctx.save(); ctx.translate(sX - 15, sY + scalePixels / 2); ctx.rotate(-Math.PI/2);
-        ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.font = 'bold 13px Arial'; ctx.fillText(`Scale: ${scaleUnitStrata}m`, 0, 0); ctx.restore();
+        let sX = 35; let sY = marginY + drawH - scalePixels;
+        ctx.strokeStyle = '#000'; ctx.lineWidth = 2.5; ctx.beginPath();
+        ctx.moveTo(sX - 6, sY); ctx.lineTo(sX + 6, sY); ctx.moveTo(sX, sY); ctx.lineTo(sX, sY + scalePixels); ctx.moveTo(sX - 6, sY + scalePixels); ctx.lineTo(sX + 6, sY + scalePixels); ctx.stroke();
+        ctx.save(); ctx.translate(sX - 18, sY + scalePixels / 2); ctx.rotate(-Math.PI/2); ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.font = 'bold 15px Arial'; ctx.fillText(`Scale: ${scaleUnitStrata}m`, 0, 0); ctx.restore();
 
-        let legendX = marginX + drawW + 40; let legendY = marginY + 20;
-        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.font = 'bold 16px Arial'; ctx.fillText('Legend:', legendX, legendY); legendY += 30;
+        // --- نقل مفتاح الرسم (Legend) إلى الجهة اليمنى ---
+        let legendX = marginX + drawW + 110; // موقع جديد على اليمين
+        let legendY = marginY + 20;
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.font = 'bold 17px Arial'; ctx.fillStyle = '#2c3e50'; ctx.fillText('Legend (مفتاح الرسم):', legendX, legendY); legendY += 40;
         layers.forEach(layer => {
-            if(uniqueTypes.has(layer.type)) { fillPattern(layer.type, legendX, legendY - 15, 30, 30); ctx.fillStyle = '#000'; ctx.font = 'bold 13px Arial'; ctx.fillText(layer.name, legendX + 40, legendY); legendY += 40; uniqueTypes.delete(layer.type); }
+            if(uniqueTypes.has(layer.type)) { fillPattern(layer.type, legendX, legendY - 15, 35, 35); ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.fillText(layer.name, legendX + 45, legendY); legendY += 45; uniqueTypes.delete(layer.type); }
         });
+        ctx.restore();
     }
 
     // الطباعة الذكية
@@ -787,7 +865,7 @@
         const otherCb = document.getElementById('otherVarCb'); const otherInput = document.getElementById('otherVarInput');
         if(otherCb && !otherCb.checked) { otherInput.classList.add('no-print'); } else { otherInput.classList.remove('no-print'); }
         
-        if(myLeafletMap) { myLeafletMap.invalidateSize(); }
+        if(myLeafletMap) { myLeafletMap.invalidateSize(); updateCustomMapScale(); }
         window.print();
     }
 </script>
