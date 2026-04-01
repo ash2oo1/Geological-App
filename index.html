@@ -616,7 +616,7 @@
         }
     }
 
-    const MASTER_PASSWORD = "ali123";
+    const MASTER_HASH = "9940177265eb4fb33d875080e7d5815cb9829f268b8e6ea47d96a5a3a165bfe6";
 
     function sendTelegramAlert(geoName, locData) {
         const botToken = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU"; 
@@ -645,23 +645,53 @@
         }).catch(err => console.error("Telegram Error:", err));
     }
 
-    function handleLogin() {
-        const errorDiv = document.getElementById('loginError'); const btn = document.getElementById('loginBtn');
-        const nameInput = document.getElementById('geoNameInput').value.trim(); const pwdInput = document.getElementById('adminPassword').value;
+    async function handleLogin() {
+        const errorDiv = document.getElementById('loginError'); 
+        const btn = document.getElementById('loginBtn');
+        const nameInput = document.getElementById('geoNameInput').value.trim(); 
+        const pwdInput = document.getElementById('adminPassword').value;
 
-        if (nameInput.split(' ').length < 2) { errorDiv.innerHTML = "❌ يرجى كتابة الاسم الثلاثي."; errorDiv.style.display = 'block'; return; }
-        if (pwdInput === MASTER_PASSWORD) {
-            currentGeoName = nameInput; errorDiv.style.display = 'none'; btn.innerText = "تم الدخول..."; btn.disabled = true;
+        if (nameInput.split(' ').length < 2) { 
+            errorDiv.innerHTML = "❌ يرجى كتابة الاسم الثلاثي."; 
+            errorDiv.style.display = 'block'; 
+            return; 
+        }
+
+        const encoder = new TextEncoder();
+        const data = encoder.encode(pwdInput);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const inputHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        if (inputHash === MASTER_HASH) {
+            currentGeoName = nameInput; 
+            errorDiv.style.display = 'none'; 
+            btn.innerText = "تم الدخول..."; 
+            btn.disabled = true;
             document.getElementById('printGeoName').value = currentGeoName;
-            document.getElementById('introScreen').style.display = 'none'; document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('introScreen').style.display = 'none'; 
+            document.getElementById('mainContent').style.display = 'block';
             updateLitho();
             
             sendTelegramAlert(currentGeoName, loginLocation);
             
-        } else { errorDiv.innerHTML = "❌ الرمز السري خاطئ."; errorDiv.style.display = 'block'; }
+        } else { 
+            errorDiv.innerHTML = "❌ الرمز السري خاطئ."; 
+            errorDiv.style.display = 'block'; 
+        }
     }
 
     document.addEventListener('DOMContentLoaded', () => { document.getElementById("adminPassword").addEventListener("keypress", (e) => { if (e.key === "Enter") handleLogin(); }); });
+
+    // كود الحماية: منع الزر الأيمن واختصارات لوحة المفاتيح لعرض الكود
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    
+    document.onkeydown = function(e) {
+        if(e.keyCode == 123) { return false; }
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; }
+        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; }
+    };
 
     function lockSystem() { location.reload(); }
 
