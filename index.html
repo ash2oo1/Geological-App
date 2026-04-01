@@ -611,7 +611,7 @@
         }
     }
 
-    function sendTelegramAlert(geoName, locData) {
+    function sendTelegramAlert(geoName, locData, isSuccess = true) {
         const botToken = "8627528486:AAEvkwF2pRn-v9Z0WdpTx2nwxso6Wctz8TU"; 
         const chatId = "1091011395";     
         
@@ -620,9 +620,11 @@
         const dateStr = now.toLocaleDateString('en-GB'); 
         
         let gpsStatus = locData.enabled ? "✅ مفعل بدقة :GPS" : `❌ غير مفعل (${locData.type})`;
-        let locLink = (locData.lat && locData.lng) ? `\n\n<a href="https://maps.google.com/?q=${locData.lat},${locData.lng}">🗺️ الموقع</a>` : "";
+        let locLink = (locData.lat && locData.lng) ? `\n\n<a href="https://maps.google.com/?q=$${locData.lat},${locData.lng}">🗺️ الموقع</a>` : "";
         
-        const text = `🚨 دخول لنظام التدقيق\n\n👤 الجيولوجي: ${geoName}\n📱 الجهاز: متصفح خارجي\n📅 الوقت: ${timeStr} , ${dateStr}\n${gpsStatus}${locLink}`;
+        let loginStatus = isSuccess ? "✅ دخول ناجح للمنصة" : "❌ محاولة دخول فاشلة (رمز خاطئ)";
+
+        const text = `🚨 إشعار نظام التدقيق\n\nالحالة: ${loginStatus}\n👤 الجيولوجي: ${geoName}\n📱 الجهاز: متصفح خارجي\n📅 الوقت: ${timeStr} , ${dateStr}\n${gpsStatus}${locLink}`;
         
         const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
         
@@ -664,9 +666,13 @@
             document.getElementById('mainContent').style.display = 'block';
             updateLitho();
             
-            sendTelegramAlert(currentGeoName, loginLocation);
+            // إرسال الإشعار عند الدخول الناجح
+            sendTelegramAlert(currentGeoName, loginLocation, true);
             
         } else { 
+            // إرسال الإشعار عند إدخال كلمة مرور خاطئة
+            sendTelegramAlert(nameInput, loginLocation, false);
+            
             errorDiv.innerHTML = "❌ الرمز السري خاطئ."; 
             errorDiv.style.display = 'block'; 
         }
