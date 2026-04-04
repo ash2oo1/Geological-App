@@ -134,7 +134,7 @@
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
-        /* --- هندسة الطباعة (6 صفحات صارمة لاحتواء المرتسم براحة تامة) --- */
+        /* --- هندسة الطباعة (5 صفحات صارمة + التعديل الجديد لصفحة 3) --- */
         .print-only { display: none; }
         
         @media print {
@@ -157,9 +157,10 @@
             .print-header h2 { font-size: 13px; color: #e67e22; margin: 0; font-weight: bold; }
             .date-top-left { position: absolute; top: 8px; left: 12px; font-size: 10px; color: #555; font-weight: bold; }
 
-            .section { margin-bottom: 12px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 12px; background-color: #fafafa; box-shadow: none; }
-            .section-title { font-size: 1.05rem; margin-bottom: 8px; padding-bottom: 3px; border-bottom: 2px solid #2980b9;}
-            .sub-title { font-size: 0.95rem; margin: 10px 0 5px 0; border-bottom: none;}
+            /* تقليص الهوامش في وضع الطباعة لاحتواء الـ 10 طبقات */
+            .section { margin-bottom: 8px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 8px; background-color: #fafafa; box-shadow: none; }
+            .section-title { font-size: 1.05rem; margin-bottom: 6px; padding-bottom: 3px; border-bottom: 2px solid #2980b9;}
+            .sub-title { font-size: 0.95rem; margin: 8px 0 5px 0; border-bottom: none;}
             .form-row { display: flex !important; flex-wrap: nowrap !important; gap: 10px !important; justify-content: space-between !important; margin-bottom: 5px !important; }
             .form-group { flex: 1 !important; min-width: 0 !important; }
             label { font-size: 0.85rem; margin-bottom: 2px; color: #1c2833 !important;}
@@ -167,7 +168,8 @@
             input[type="number"], input[type="text"], select { border: none !important; border-bottom: 1px dashed #2980b9 !important; padding: 2px 0; font-size: 0.95rem; text-align: center; width: 100%; background: transparent; appearance: none; -webkit-appearance: none; color: #16a085 !important; font-weight: bold;}
             .coord-display { padding: 4px; font-size: 0.85rem; margin-bottom: 2px; border: 1px solid #ccc !important; background: #fff !important;}
             
-            .litho-table th, .litho-table td { padding: 5px; font-size: 0.9rem; }
+            /* ضغط الجدول الخاص بالـ 10 طبقات */
+            .litho-table th, .litho-table td { padding: 3px; font-size: 0.8rem; }
             .check-group { gap: 8px; margin-top: 5px; }
             .check-item { padding: 4px 8px; font-size: 0.85rem; background: #fff; border-color: #ccc; }
             
@@ -176,9 +178,11 @@
             .result-value { font-size: 1.05rem; color: #27ae60 !important;}
             .percentage-note { padding: 6px; font-size: 0.85rem; margin-top: 8px; background: #eafaf1 !important; color: #1e8449 !important; margin-bottom: 10px;}
             
-            /* إعطاء الكانفاس مساحته الكاملة في الصفحة الرابعة */
-            .canvas-container { width: 100% !important; display: block !important; margin-bottom: 10px !important;}
-            canvas { border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; background: #fff !important; display: block; margin: auto; max-width: 100%;}
+            /* تعديل مهم لتقليص الكانفاس (العمود الطباقي) في الصفحة 3 */
+            #strataCanvasContainer { padding: 5px !important; margin-bottom: 5px !important; }
+            .canvas-container { width: 100% !important; display: block !important; margin-bottom: 5px !important;}
+            canvas { border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; background: #fff !important; display: inline-block; }
+            #strataCanvas { max-height: 280px !important; width: auto !important; margin: 0 auto; display: block; }
             
             .leaflet-control-scale { display: none !important; }
             
@@ -201,15 +205,23 @@
             <div class="official-text">
                 <h3><i class="fas fa-landmark"></i> نبذة تعريفية عن المنصة:</h3>
                 <p>أُسست هذه المنصة الرقمية الرائدة في عام <b>2026</b>، كطفرة نوعية في إدارة الثروات المعدنية، على يد الجيولوجي <b>علي شندل الجنابي</b>. لقد وُلدت هذه المنصة من رَحِم المعاناة الميدانية؛ لتكون الأداة الرسمية والحل الجذري الموثوق، الذي ينقل العمل الجيولوجي الرقابي من حقبة القياسات الورقية التقليدية إلى عصر الأتمتة والرقمنة الفضائية.</p>
-                <p>تاريخياً، كان التفتيش الجيولوجي يتطلب جهداً استثنائياً؛ بدءاً من أخذ الإحداثيات بالأجهزة اليدوية، مروراً بالحسابات الرياضية المعقدة، وصولاً إلى الاستعانة ببرامج حاسوبية خارجية لرسم الأعمدة الطباقية. أما اليوم، فقد صُممت هذه المنصة لتتولى كافة هذه المهام نيابة عن الجيولوجي بدقة تصل إلى 100%.</p>
+                <p>تاريخياً، كان التفتيش الجيولوجي يتطلب جهداً استثنائياً؛ بدءاً من أخذ الإحداثيات بالأجهزة اليدوية، مروراً بالحسابات الرياضية المعقدة، وصولاً إلى الاستعانة ببرامج حاسوبية خارجية (Software) لرسم الأعمدة الطباقية. أما اليوم، فقد صُممت هذه المنصة لتتولى كافة هذه المهام نيابة عن الجيولوجي بدقة تصل إلى 100%.</p>
+                <b>أبرز ما تُقدمه المنصة فنياً وهندسياً:</b>
+                <ul>
+                    <li><b>المعالجة الرياضية الفورية:</b> حساب المساحات (تحويل الدونم إلى متر مربع)، والكميات المستخرجة والمتبقية، وتحديد أقصى عمق استثماري مسموح.</li>
+                    <li><b>النمذجة ثنائية الأبعاد والطباقية:</b> توليد مرتسم هندسي للمساحات، ورسم "العمود الطباقي" (Stratigraphic Column) باحترافية قياسية مع تحديد الطبقات وسُمكها.</li>
+                    <li><b>الرفع الطوبوغرافي الفضائي:</b> اتصال مباشر بالأقمار الصناعية لتحديد الأركان (A,B,C,D) بنظام (UTM)، مع عرض دقة إشارة الـ GPS لحظياً لإعادة الرصد إن لزم الأمر.</li>
+                    <li><b>التوثيق البيئي والسلامة:</b> إتاحة توثيق المتغيرات الجيولوجية، مراقبة مستويات المياه الجوفية، ورصد التزام المستثمر بتعليمات السلامة المهنية.</li>
+                </ul>
             </div>
 
             <div class="instruction-section">
                 <h3><i class="fas fa-exclamation-triangle"></i> تعليمات وإرشادات حقلية هامة جداً:</h3>
                 <ul class="instruction-list">
-                    <li><i class="fas fa-location-arrow" style="color: #e74c3c;"></i> <strong>تفعيل الموقع (GPS):</strong> يجب تفعيل خدمة الموقع الجغرافي (Location) <b>فور الدخول للمنصة</b>. الإجراء إلزامي لضمان قدرة النظام على رفع الإحداثيات الميدانية (UTM).</li>
-                    <li><i class="fas fa-wifi" style="color: #3498db;"></i> <strong>الاتصال بالإنترنت:</strong> يُشترط وجود إنترنت <b>فقط</b> عند تسجيل الدخول الأول وتوليد الخريطة الفضائية. بعد ذلك يمكنك العمل أوفلاين بالكامل.</li>
-                    <li><i class="fas fa-user-check" style="color: #2ecc71;"></i> <strong>الاشتراك والتسجيل:</strong> النظام محمي ومخصص للمشتركين. يتطلب الدخول "رمزاً سرياً" مسبقاً من مؤسس المنصة.</li>
+                    <li><i class="fas fa-location-arrow" style="color: #e74c3c;"></i> <strong>تفعيل الموقع (GPS):</strong> يجب تفعيل خدمة الموقع الجغرافي (Location) في هاتفك أو متصفحك <b>فور الدخول للمنصة</b>. هذا الإجراء إلزامي لضمان قدرة النظام على التقاط إشارات الأقمار الصناعية بدقة، وبدونه لن تتمكن من رفع الإحداثيات الميدانية (UTM).</li>
+                    <li><i class="fas fa-wifi" style="color: #3498db;"></i> <strong>الاتصال بالإنترنت:</strong> يُشترط وجود اتصال بالإنترنت <b>فقط</b> عند تسجيل الدخول الأول وتوليد الخريطة الفضائية. بعد تسجيل الدخول، يمكنك التوجه إلى المقالع النائية وسيعمل النظام وتسجيل الإحداثيات والطباعة (أوفلاين) بالكامل.</li>
+                    <li><i class="fas fa-hard-hat" style="color: #f1c40f;"></i> <strong>الاستعداد الحقلي:</strong> لا غنى للجيولوجي عن معداته؛ يُرجى اصطحاب شريط القياس الميداني (الفيتا) للمطابقة، وتأمين مصدر طاقة احتياطي للهاتف (Power Bank/شاحن)، مع الالتزام التام بمعدات السلامة المهنية (PPE) داخل المقلع.</li>
+                    <li><i class="fas fa-user-check" style="color: #2ecc71;"></i> <strong>الاشتراك والتسجيل:</strong> النظام محمي ومخصص للمشتركين فقط. يتطلب الدخول "رمزاً سرياً" مسبقاً. في حال عدم امتلاكك للرمز، يُرجى التواصل المباشر مع مؤسس المنصة عبر الأزرار أدناه.</li>
                 </ul>
             </div>
 
@@ -230,7 +242,7 @@
             <div class="warning-box">
                 <h3>⚠️ قم بإدخال المعلومات التالية بحذر وبصورة صحيحة جداً:</h3>
                 <p><b style="color: #f1c40f;">أولاً:</b> اسم الجيولوجي الثلاثي.</p>
-                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري.</p>
+                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري (من مؤسس المنصة <b>علي شندل الجنابي</b>).</p>
             </div>
             <input type="text" id="geoNameInput" placeholder="أدخل اسم الجيولوجي (الثلاثي) هنا..." required autocomplete="off">
             <input type="password" id="adminPassword" placeholder="أدخل رمز الدخول السري هنا...">
@@ -246,9 +258,11 @@
         <div class="header screen-only">
             <h1>نظام المسح الميداني الجيولوجي للمقالع</h1>
             <h2 ondblclick="lockSystem()" style="cursor: pointer;" title="انقر مرتين للإغلاق">بإشراف الجيولوجي: علي شندل الجنابي</h2>
+            
             <div class="social-links" style="margin-top: 20px; justify-content: center;">
                 <a href="https://wa.me/9647814993629" target="_blank" class="social-btn btn-whatsapp" style="padding: 8px 15px; font-size: 0.95rem;"><i class="fab fa-whatsapp"></i> واتساب</a>
                 <a href="https://www.facebook.com/share/1a8sii4wcf/" target="_blank" class="social-btn btn-facebook" style="padding: 8px 15px; font-size: 0.95rem;"><i class="fab fa-facebook-f"></i> فيسبوك</a>
+                <a href="https://www.instagram.com/ash2oo1?igsh=MWR5Zng0dGkybmV1Zw==" target="_blank" class="social-btn btn-instagram" style="padding: 8px 15px; font-size: 0.95rem;"><i class="fab fa-instagram"></i> إنستجرام</a>
             </div>
         </div>
 
@@ -302,14 +316,26 @@
                 <div class="section">
                     <div class="section-title">ثالثاً: الإحداثيات الميدانية للمقلع (نظام UTM)</div>
                     <div class="gps-grid">
-                        <div class="form-group"><button class="gps-btn screen-only" onclick="getCoordinates('point1')">إحداثيات (A)</button><div id="point1" class="coord-display">E: --- | N: ---</div></div>
-                        <div class="form-group"><button class="gps-btn screen-only" onclick="getCoordinates('point2')">إحداثيات (B)</button><div id="point2" class="coord-display">E: --- | N: ---</div></div>
-                        <div class="form-group"><button class="gps-btn screen-only" onclick="getCoordinates('point3')">إحداثيات (C)</button><div id="point3" class="coord-display">E: --- | N: ---</div></div>
-                        <div class="form-group"><button class="gps-btn screen-only" onclick="getCoordinates('point4')">إحداثيات (D)</button><div id="point4" class="coord-display">E: --- | N: ---</div></div>
+                        <div class="form-group">
+                            <button class="gps-btn screen-only" onclick="getCoordinates('point1')">إحداثيات (A)</button>
+                            <div id="point1" class="coord-display">E: --- | N: ---</div>
+                        </div>
+                        <div class="form-group">
+                            <button class="gps-btn screen-only" onclick="getCoordinates('point2')">إحداثيات (B)</button>
+                            <div id="point2" class="coord-display">E: --- | N: ---</div>
+                        </div>
+                        <div class="form-group">
+                            <button class="gps-btn screen-only" onclick="getCoordinates('point3')">إحداثيات (C)</button>
+                            <div id="point3" class="coord-display">E: --- | N: ---</div>
+                        </div>
+                        <div class="form-group">
+                            <button class="gps-btn screen-only" onclick="getCoordinates('point4')">إحداثيات (D)</button>
+                            <div id="point4" class="coord-display">E: --- | N: ---</div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 1 من 6</div>
+            <div class="print-only print-bottom">الصفحة 1 من 5</div>
         </div> 
 
         <div class="print-page-wrapper">
@@ -327,13 +353,16 @@
                         <option value="yes">توجد متغيرات وتراكيب جيولوجية مرصودة في المقلع</option>
                     </select>
                     <div id="geoVarDetails" style="display: none; padding: 10px; background: #eaf2f8; border-radius: 6px; margin-bottom: 15px;">
+                        <label>حدد المتغيرات (يمكن اختيار أكثر من واحد أو إضافة متغير جديد):</label>
                         <div class="check-group">
                             <label class="check-item"><input type="checkbox"> عروق أو عدسات جبسية/ملحية</label>
                             <label class="check-item"><input type="checkbox"> عدسات رملية متداخلة</label>
                             <label class="check-item"><input type="checkbox"> فواصل وتشقق في الطبقات</label>
                             <label class="check-item"><input type="checkbox"> فوالق أو صدوع محلية</label>
                             <label class="check-item"><input type="checkbox"> تطبق متقاطع</label>
+                            <label class="check-item"><input type="checkbox" id="otherVarCb" onchange="document.getElementById('otherVarInput').style.display = this.checked ? 'block' : 'none'"> أخرى (اذكرها):</label>
                         </div>
+                        <input type="text" id="otherVarInput" placeholder="اكتب المتغيرات الجيولوجية الأخرى هنا..." style="display: none; margin-top: 10px; width: 100%;">
                     </div>
                     <label style="margin-top: 15px;">ب. مطابقة المواصفات الفنية مع التحاليل المختبرية:</label>
                     <select id="specsSelect" style="margin-bottom: 5px;">
@@ -356,22 +385,29 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group"><label>ب. تقييم مستوى المياه الجوفية:</label>
-                            <select style="margin-bottom: 10px;"><option>الحفر آمن ولم يصل لمستوى المياه الجوفية</option><option>المياه الجوفية ظاهرة في جوف المقلع</option></select>
+                            <select style="margin-bottom: 10px;"><option>الحفر آمن ولم يصل لمستوى المياه الجوفية</option><option>المياه الجوفية ظاهرة في جوف المقلع</option><option>تأثير سلبي على المياه (يتطلب إيقاف الحفر)</option></select>
                         </div>
                         <div class="form-group"><label>ج. خطة إعادة التأهيل للمقلع:</label>
-                            <select style="margin-bottom: 10px;"><option>المقلع قيد الاستثمار المستمر</option><option>متروك كحفرة خطرة</option><option>تمت أعمال التسوية</option></select>
+                            <select style="margin-bottom: 10px;"><option>المقلع قيد الاستثمار المستمر</option><option>متروك كحفرة خطرة (مخالفة لتعليمات التأهيل)</option><option>تمت أعمال التسوية وإعادة التأهيل</option></select>
                         </div>
                     </div>
                     <label style="border-top: 1px dashed #ccc; padding-top: 10px; margin-top: 5px;">د. رصد عمليات التصنيع الأولية والآليات في المقلع:</label>
                     <div class="check-group">
-                        <label class="check-item"><input type="checkbox"> إزالة الغطاء الترابي</label>
-                        <label class="check-item"><input type="checkbox"> عمليات القلع والتكديس</label>
-                        <label class="check-item"><input type="checkbox"> نقل المادة لساحات المعمل</label>
-                        <label class="check-item"><input type="checkbox"> التخمير والفرز</label>
+                        <label class="check-item"><input type="checkbox"> إزالة الغطاء الترابي (Overburden Removal)</label>
+                        <label class="check-item"><input type="checkbox"> عمليات القلع والتكديس (Excavation)</label>
+                        <label class="check-item"><input type="checkbox"> نقل المادة لساحات المعمل (Transportation)</label>
+                        <label class="check-item"><input type="checkbox"> التخمير والفرز (Processing)</label>
+                    </div>
+                    <div class="check-group" style="margin-top: 5px;">
+                        <span style="font-size: 0.9rem; color: #555; align-self: center;" class="screen-only">الآليات المرصودة:</span>
+                        <label class="check-item"><input type="checkbox"> حفارة (Excavator)</label>
+                        <label class="check-item"><input type="checkbox"> قلابات (Dump Trucks)</label>
+                        <label class="check-item"><input type="checkbox"> شفل (Loader)</label>
+                        <label class="check-item"><input type="checkbox"> كاشطة (Scraper)</label>
                     </div>
                 </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 2 من 6</div>
+            <div class="print-only print-bottom">الصفحة 2 من 5</div>
         </div>
 
         <div class="print-page-wrapper" id="page3Wrapper">
@@ -382,15 +418,22 @@
             </div>
             <div class="content-padding">
                 <div class="section">
-                    <div class="section-title">سادساً: التتابع الطباقي والوصف الليثولوجي (جدول الطبقات)</div>
-                    <p class="screen-only" style="font-size: 0.85rem; color: #7f8c8d; margin-top: -10px;">* يمكنك إضافة حتى 10 طبقات وسيقوم النظام برسمها بدقة متناهية.</p>
+                    <div class="section-title">سادساً: التتابع الطباقي والوصف الليثولوجي (Stratigraphic Data)</div>
+                    <p class="screen-only" style="font-size: 0.85rem; color: #7f8c8d; margin-top: -10px;">* يمكنك إضافة حتى 10 طبقات (اترك الطبقات الزائدة على None ولن تظهر).</p>
                     <table class="litho-table" id="lithoTableObj">
                         <tr><th style="width: 15%;">Layer No.</th><th style="width: 45%;">Lithology</th><th style="width: 20%;">Thickness (m)</th><th style="width: 20%;">Depth (m)</th></tr>
                         <tbody id="lithoBody"></tbody>
                     </table>
                 </div>
+
+                <div class="section" id="strataCanvasContainer" style="display: none; border: 2px solid #2980b9; margin-bottom: 15px;">
+                    <div class="canvas-container" style="margin-bottom: 0;">
+                        <h3>العمود الطباقي لمنطقة المقلع (Stratigraphic Column)</h3>
+                        <canvas id="strataCanvas" width="700" height="400"></canvas>
+                    </div>
+                </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 3 من 6</div>
+            <div class="print-only print-bottom">الصفحة 3 من 5</div>
         </div>
 
         <div id="calcButtonsArea" class="content-padding screen-only">
@@ -411,23 +454,7 @@
                 <h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
             </div>
             <div class="content-padding">
-                <div class="section" style="border: 2px solid #2980b9; margin-bottom: 15px;">
-                    <div class="canvas-container" style="margin-bottom: 0;">
-                        <h3>العمود الطباقي لمنطقة المقلع (Stratigraphic Column)</h3>
-                        <canvas id="strataCanvas" width="800" height="600"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="print-only print-bottom">الصفحة 4 من 6</div>
-        </div>
-
-        <div class="print-page-wrapper" id="page5Wrapper" style="display: none;">
-            <div class="print-only print-header">
-                <span class="date-top-left printDateHeader"></span>
-                <h1>نظام المسح الميداني الجيولوجي للمقالع (التقرير الشامل)</h1>
-                <h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
-            </div>
-            <div class="content-padding">
+                
                 <div class="section" id="resultsSection" style="margin-bottom: 15px;">
                     <div class="section-title" style="border-bottom-color: #27ae60; color: #27ae60; margin-bottom: 10px;">النتائج النهائية للكميات والمساحة والعمق</div>
                     <div class="result-item"><span>الكميات المستخرجة لغاية يوم الزيارة (م³):</span><span class="result-value" id="resExtractedVol">0</span></div>
@@ -449,8 +476,9 @@
                     <button class="btn-satellite" id="satBtn" onclick="generateSatelliteMap()">🌍 توليد الصورة الفضائية للمقلع (يتطلب إنترنت)</button>
                     <button class="btn-print" onclick="prepareAndPrint()">📄 حفظ التقرير الشامل كملف PDF</button>
                 </div>
+
             </div>
-            <div class="print-only print-bottom">الصفحة 5 من 6</div>
+            <div class="print-only print-bottom">الصفحة 4 من 5</div>
         </div>
 
         <div class="print-page-wrapper" id="satPageWrapper" style="display: none;">
@@ -480,7 +508,7 @@
                     </div>
                 </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 6 من 6</div>
+            <div class="print-only print-bottom">الصفحة 5 من 5</div>
         </div>
 
         <div class="footer screen-only">جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026</div>
@@ -489,9 +517,9 @@
 
 <script>
     // ==========================================
-    // إعدادات Discord Webhook (المجانية واللامحدودة)
+    // إعدادات Discord Webhook (اللامحدودة والمجانية)
     // ==========================================
-    // الصق رابط الـ Webhook الخاص بك هنا 
+    // الصق رابط الـ Webhook الخاص بك هنا بين علامتي التنصيص
     const DISCORD_WEBHOOK_URL = "ضع_رابط_ديسكورد_هنا";
 
     function sendDiscordAlert(geoName, locData, isSuccess = true) {
@@ -500,6 +528,7 @@
         const dateStr = now.toLocaleDateString('en-GB'); 
         
         let gpsStatus = locData.enabled ? "✅ مفعل بدقة :GPS" : `❌ غير مفعل (${locData.type})`;
+        // إصلاح رابط خرائط جوجل
         let locLink = (locData.lat && locData.lng) ? `http://googleusercontent.com/maps.google.com/maps?q=${locData.lat},${locData.lng}` : "غير متوفر";
         
         let loginStatus = isSuccess ? "✅ دخول ناجح للمنصة" : "❌ محاولة دخول فاشلة (رمز خاطئ)";
@@ -529,7 +558,7 @@
     }
 
     // ==========================================
-    // الوظائف البرمجية
+    // الوظائف البرمجية الأساسية للمنصة
     // ==========================================
     let currentGeoName = "";
     let rawGpsPoints = { point1: null, point2: null, point3: null, point4: null };
@@ -551,7 +580,7 @@
                         .then(res => res.json())
                         .then(data => {
                             loginLocation = { lat: data.latitude, lng: data.longitude, enabled: false, type: 'موقع تقريبي عبر الشبكة' };
-                            alert("⚠️ تنبيه هام: لقد قمت برفض طلب الـ GPS. تم تسجيل موقعك التقريبي عبر الإنترنت.");
+                            alert("⚠️ تنبيه هام: لقد قمت برفض أو تجاهل طلب الـ GPS. تم تسجيل موقعك التقريبي عبر الإنترنت. \n\nلن تتمكن من أخذ إحداثيات (UTM) داخل النظام إلا بعد تفعيل الـ GPS في المتصفح وإعادة تحميل الصفحة.");
                             transitionToLogin();
                         })
                         .catch(e => {
@@ -574,7 +603,8 @@
 
     function convertDunam() {
         const dunam = parseFloat(document.getElementById('areaInDunam').value) || 0;
-        document.getElementById('contractArea').value = dunam * 2500;
+        const sqm = dunam * 2500;
+        document.getElementById('contractArea').value = sqm > 0 ? sqm : '';
     }
 
     function toggleGeoVars() {
@@ -642,20 +672,32 @@
         const pwdInput = document.getElementById('adminPassword').value;
 
         if (nameInput.split(' ').length < 2) { 
-            errorDiv.innerHTML = "❌ يرجى كتابة الاسم الثلاثي."; errorDiv.style.display = 'block'; return; 
+            errorDiv.innerHTML = "❌ يرجى كتابة الاسم الثلاثي."; 
+            errorDiv.style.display = 'block'; 
+            return; 
         }
 
         const secretCode = String.fromCharCode(97, 108, 105, 49, 50, 51);
 
         if (pwdInput === secretCode) {
-            currentGeoName = nameInput; errorDiv.style.display = 'none'; btn.innerText = "تم الدخول..."; btn.disabled = true;
+            currentGeoName = nameInput; 
+            errorDiv.style.display = 'none'; 
+            btn.innerText = "تم الدخول..."; 
+            btn.disabled = true;
             document.getElementById('printGeoName').value = currentGeoName;
-            document.getElementById('introScreen').style.display = 'none'; document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('introScreen').style.display = 'none'; 
+            document.getElementById('mainContent').style.display = 'block';
             updateLitho();
+            
+            // استدعاء ديسكورد عند الدخول الناجح
             sendDiscordAlert(currentGeoName, loginLocation, true);
+            
         } else { 
+            // استدعاء ديسكورد عند الدخول الفاشل
             sendDiscordAlert(nameInput, loginLocation, false);
-            errorDiv.innerHTML = "❌ الرمز السري خاطئ."; errorDiv.style.display = 'block'; 
+            
+            errorDiv.innerHTML = "❌ الرمز السري خاطئ."; 
+            errorDiv.style.display = 'block'; 
         }
     }
 
@@ -664,7 +706,10 @@
     document.addEventListener('contextmenu', event => event.preventDefault());
     
     document.onkeydown = function(e) {
-        if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0))) return false;
+        if(e.keyCode == 123) { return false; }
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; }
+        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; }
     };
 
     function lockSystem() { location.reload(); }
@@ -693,9 +738,10 @@
                 let accText = `<span class="screen-only" style="color:${accColor}; font-size:0.85rem; display:block; margin-top:5px; font-weight:bold;">دقة الـ GPS: ± ${accuracy.toFixed(1)} متر</span>`;
                 document.getElementById(elementId).innerHTML = `E: ${utm.easting} | N: ${utm.northing} <br> <span style="font-size:0.75rem; color:#555;">(Zone: ${utm.zone}N)</span> ${accText}`;
             }, function(error) { 
-                alert("⚠️ تعذر تحديد الموقع."); document.getElementById(elementId).innerHTML = `E: --- | N: ---`;
+                let msg = error.code === 3 ? "انتهى وقت الاستجابة." : "تعذر تحديد الموقع."; alert("⚠️ " + msg); 
+                document.getElementById(elementId).innerHTML = `E: --- | N: ---`;
             }, { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 });
-        }
+        } else { alert("المتصفح لا يدعم تحديد الموقع."); }
     }
 
     function calculateResults() {
@@ -722,10 +768,9 @@
         document.getElementById('resMaxDepth').innerText = depth.toLocaleString('en-US');
         document.getElementById('percentageNote').innerText = `النسبة المئوية للمساحة المتبقية للاستثمار هي (${remainingPercentage.toFixed(1)}%) من إجمالي العقد.`;
         
-        // إظهار الصفحات 4 و 5
         document.getElementById('calcButtonsArea').style.display = 'none';
+        document.getElementById('strataCanvasContainer').style.display = 'block';
         document.getElementById('page4Wrapper').style.display = 'block';
-        document.getElementById('page5Wrapper').style.display = 'block';
         
         try { drawSideBySideChart(width, contractArea, investedPercentage, remainingPercentage, colorInv, colorRem); } catch(e) {}
         try { drawStratigraphicColumn(); } catch(e) {}
@@ -762,9 +807,12 @@
 
             const ctx = canvas.getContext('2d'); 
             ctx.clearRect(0, 0, canvas.width, canvas.height); 
-            ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            const scaleX = paddingLeft; const scaleY = 24; 
+            const scaleX = paddingLeft; 
+            const scaleY = 24; 
 
             ctx.beginPath(); ctx.strokeStyle = '#000'; ctx.lineWidth = 2.5;
             ctx.moveTo(scaleX, scaleY); ctx.lineTo(scaleX + pixelsForTarget, scaleY); ctx.stroke();
@@ -772,7 +820,8 @@
             ctx.beginPath(); ctx.moveTo(scaleX + pixelsForTarget, scaleY - 6); ctx.lineTo(scaleX + pixelsForTarget, scaleY + 6); ctx.stroke();
 
             ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-            ctx.fillText('0', scaleX, scaleY - 8); ctx.fillText(`${targetMeters}${unitLabel}`, scaleX + pixelsForTarget, scaleY - 8);
+            ctx.fillText('0', scaleX, scaleY - 8);
+            ctx.fillText(`${targetMeters}${unitLabel}`, scaleX + pixelsForTarget, scaleY - 8);
 
         } catch (error) { console.error("Scale Error:", error); }
     }
@@ -803,7 +852,7 @@
         setTimeout(() => { myLeafletMap.invalidateSize(); updateCustomMapScale(); }, 600);
         myLeafletMap.on('moveend zoomend', updateCustomMapScale);
         
-        document.getElementById('satBtn').innerText = "✅ تم التوليد (راجع الصفحة 6)"; document.getElementById('satBtn').style.background = "#27ae60";
+        document.getElementById('satBtn').innerText = "✅ تم التوليد (راجع الصفحة 5)"; document.getElementById('satBtn').style.background = "#27ae60";
     }
 
     function drawSideBySideChart(fieldWidth, totalArea, invPct, remPct, colInv, colRem) {
@@ -812,6 +861,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         const margin = 70; const drawW = canvas.width - (margin * 2); const drawH = canvas.height - (margin * 2) - 40; 
+        
         let totalW = parseFloat(fieldWidth); if (isNaN(totalW) || totalW <= 0) totalW = 100;
         let totalL = parseFloat(totalArea) / totalW; if (isNaN(totalL) || totalL <= 0 || !isFinite(totalL)) totalL = 100;
 
@@ -859,9 +909,21 @@
 
         ctx.fillStyle = '#000'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center'; ctx.fillText('الطول (m)', margin + drawW/2, margin + drawH + 55);
         ctx.save(); ctx.translate(margin - 45, margin + drawH/2); ctx.rotate(-Math.PI/2); ctx.fillText('العرض (m)', 0, 0); ctx.restore();
+
+        let scaleUnit = 10; if (totalL > 50) scaleUnit = 20; if (totalL > 100) scaleUnit = 50; if (totalL > 250) scaleUnit = 100;
+        let scaleBarPixels = (scaleUnit / totalL) * drawW; if (!isFinite(scaleBarPixels)) scaleBarPixels = 0;
+
+        const scaleBarY = canvas.height - 25; 
+        ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.beginPath();
+        ctx.moveTo(margin, scaleBarY - 6); ctx.lineTo(margin, scaleBarY + 6);
+        ctx.moveTo(margin, scaleBarY); ctx.lineTo(margin + scaleBarPixels, scaleBarY); 
+        ctx.moveTo(margin + scaleBarPixels, scaleBarY - 6); ctx.lineTo(margin + scaleBarPixels, scaleBarY + 6);
+        ctx.stroke();
+
+        ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+        ctx.fillText('0', margin, scaleBarY + 10); ctx.fillText(`${scaleUnit} m`, margin + scaleBarPixels, scaleBarY + 10);
     }
 
-    // الخوارزمية الذكية لرسم العمود الطباقي لمنع التداخل
     function drawStratigraphicColumn() {
         const canvas = document.getElementById('strataCanvas'); if(!canvas) return;
         const ctx = canvas.getContext('2d'); ctx.save();
@@ -876,7 +938,7 @@
         }
         if(totalDepth === 0) { ctx.restore(); return; }
 
-        const marginX = 80; const marginY = 50; const drawW = 180; const drawH = canvas.height - (marginY * 2);
+        const marginX = 60; const marginY = 40; const drawW = 150; const drawH = canvas.height - (marginY * 2);
         ctx.lineWidth = 2; ctx.strokeStyle = '#333'; ctx.strokeRect(marginX, marginY, drawW, drawH);
         
         function fillPattern(type, x, y, w, h) {
@@ -894,77 +956,49 @@
             ctx.restore(); ctx.strokeRect(x,y,w,h);
         }
 
-        let lastTextY = -50; // متغير لمنع تداخل النصوص
-        
-        const drawDepth = (depth, yCoord) => {
-            const textX = marginX + drawW + 40; // مسافة التأشيرة
-            let textY = yCoord;
-            
-            // الخوارزمية الذكية: إذا كان النص الجديد قريباً جداً من النص السابق، ندفعه للأسفل
-            if (textY - lastTextY < 25) {
-                textY = lastTextY + 25;
-            }
-
-            ctx.fillStyle = '#000'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-            ctx.fillText(`${depth.toFixed(1)}m`, textX, textY);
-            
-            // رسم السهم الذكي (خط مستقيم ثم يميل نحو النص إذا تطلب الأمر)
-            ctx.beginPath();
-            ctx.moveTo(marginX + drawW, yCoord); // بداية من العمود
-            ctx.lineTo(textX - 25, yCoord); // خط مستقيم قصير
-            ctx.lineTo(textX - 10, textY); // خط مائل نحو النص
-            
-            // رأس السهم
-            ctx.moveTo(textX - 10, textY);
-            ctx.lineTo(textX - 16, textY - 4);
-            ctx.moveTo(textX - 10, textY);
-            ctx.lineTo(textX - 16, textY + 4);
-            ctx.stroke();
-
-            lastTextY = textY; // تحديث موقع آخر نص تمت كتابته
-        };
-
-        // رسم الطبقات والتأشيرات
-        layers.forEach((layer, index) => {
-            let startY = marginY + (layer.start / totalDepth) * drawH; 
-            let layerH = (layer.thick / totalDepth) * drawH;
-            
+        layers.forEach(layer => {
+            let startY = marginY + (layer.start / totalDepth) * drawH; let layerH = (layer.thick / totalDepth) * drawH;
             fillPattern(layer.type, marginX, startY, drawW, layerH);
             
-            if (index === 0) drawDepth(0.0, marginY); // تأشيرة عمق الصفر
-            drawDepth(layer.start + layer.thick, startY + layerH); // تأشيرة نهاية كل طبقة
+            ctx.fillStyle = '#000'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+            ctx.lineWidth = 1.5; ctx.strokeStyle = '#2c3e50';
+
+            const drawDepth = (depth, yCoord) => {
+                const textX = marginX + drawW + 25; 
+                ctx.fillText(`${depth.toFixed(1)}m`, textX, yCoord);
+                ctx.beginPath(); ctx.moveTo(marginX + drawW, yCoord); ctx.lineTo(textX - 8, yCoord);
+                ctx.moveTo(textX - 8, yCoord); ctx.lineTo(textX - 14, yCoord - 4);
+                ctx.moveTo(textX - 8, yCoord); ctx.lineTo(textX - 14, yCoord + 4); ctx.stroke();
+            };
+
+            if (layer.start === 0) drawDepth(0.0, marginY); 
+            drawDepth(layer.start + layer.thick, startY + layerH); 
         });
 
-        // رسم الدليل (Legend)
-        let legendX = marginX + drawW + 140; 
+        let legendX = marginX + drawW + 100; 
         let legendY = marginY + 20;
-        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.font = 'bold 18px Arial'; ctx.fillStyle = '#2c3e50'; 
-        ctx.fillText('Legend', legendX, legendY); legendY += 40;
-        
+        ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.font = 'bold 17px Arial'; ctx.fillStyle = '#2c3e50'; 
+        ctx.fillText('Legend', legendX, legendY); legendY += 35;
         layers.forEach(layer => {
             if(uniqueTypes.has(layer.type)) { 
-                fillPattern(layer.type, legendX, legendY - 15, 30, 30); 
-                ctx.fillStyle = '#000'; ctx.font = 'bold 15px Arial'; 
-                ctx.fillText(layer.name, legendX + 45, legendY); 
-                legendY += 45; 
+                fillPattern(layer.type, legendX, legendY - 12, 25, 25); 
+                ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; 
+                ctx.fillText(layer.name, legendX + 35, legendY); 
+                legendY += 35; 
                 uniqueTypes.delete(layer.type); 
             }
         });
 
-        // رسم مقياس الرسم الجانبي للعمود
-        let scaleUnitStrata = totalDepth > 5 ? 2 : 1; 
-        let scalePixels = (scaleUnitStrata / totalDepth) * drawH;
+        let scaleUnitStrata = totalDepth > 5 ? 2 : 1; let scalePixels = (scaleUnitStrata / totalDepth) * drawH;
         let sX = legendX; 
         let sY = marginY + drawH; 
-        
         ctx.strokeStyle = '#000'; ctx.lineWidth = 2.5; ctx.beginPath();
         ctx.moveTo(sX, sY - 6); ctx.lineTo(sX, sY + 6); 
         ctx.moveTo(sX, sY); ctx.lineTo(sX + scalePixels, sY); 
         ctx.moveTo(sX + scalePixels, sY - 6); ctx.lineTo(sX + scalePixels, sY + 6); 
         ctx.stroke();
-        
-        ctx.fillStyle = '#000'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-        ctx.fillText('0', sX, sY - 10); ctx.fillText(`${scaleUnitStrata}m`, sX + scalePixels, sY - 10);
+        ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+        ctx.fillText('0', sX, sY - 8); ctx.fillText(`${scaleUnitStrata}m`, sX + scalePixels, sY - 8);
 
         ctx.restore();
     }
@@ -976,10 +1010,12 @@
             document.querySelectorAll('.printDateHeader').forEach(h => h.innerText = dateString);
             
             document.querySelectorAll('.check-item').forEach(item => { const cb = item.querySelector('input[type="checkbox"]'); if (cb && !cb.checked) { item.classList.add('no-print'); } else { item.classList.remove('no-print'); } });
+            const otherCb = document.getElementById('otherVarCb'); const otherInput = document.getElementById('otherVarInput');
+            if(otherCb && !otherCb.checked) { otherInput.classList.add('no-print'); } else { otherInput.classList.remove('no-print'); }
             
             if(myLeafletMap) { myLeafletMap.invalidateSize(); updateCustomMapScale(); }
             window.print();
-        } catch (error) { console.error("Print Error:", error); alert("حدث خطأ أثناء التجهيز للطباعة."); }
+        } catch (error) { console.error("Print Error:", error); alert("حدث خطأ أثناء التجهيز."); }
     }
 </script>
 
