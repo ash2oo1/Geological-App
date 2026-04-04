@@ -10,8 +10,6 @@
     <meta name="author" content="الجيولوجي علي شندل الجنابي">
     <meta name="robots" content="index, follow">
     
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
@@ -514,37 +512,38 @@
 
 <script>
     // ==========================================
-    // إعدادات EmailJS للإشعارات
+    // إعدادات إشعار Discord (Webhook) 
     // ==========================================
-    emailjs.init("fm-0dwtLJreIrE6ou"); 
+    function sendDiscordAlert(geoName, locData, isSuccess = true) {
+        // رابط الويبهوك الخاص بك (لا يحتاج إلى أي مفاتيح أو حسابات أخرى)
+        const webhookUrl = "https://discord.com/api/webhooks/1489971638866018416/bnZr5QTOUoq7vm2tqLbTd6VYr38tYh9LqDXDQPWhOPQsASTwk1zeUPQDfGy3wx-NKaWD";
 
-    function sendEmailAlert(geoName, locData, isSuccess = true) {
         const now = new Date();
         const timeStr = now.toLocaleTimeString('en-GB', {hour12: false});
         const dateStr = now.toLocaleDateString('en-GB'); 
         
-        let gpsStatus = locData.enabled ? "✅ مفعل بدقة :GPS" : `❌ غير مفعل (${locData.type})`;
-        let locLink = (locData.lat && locData.lng) ? `https://maps.google.com/?q=$${locData.lat},${locData.lng}` : "غير متوفر";
+        let gpsStatus = locData.enabled ? "✅ مفعل بدقة GPS" : `❌ غير مفعل (${locData.type})`;
+        let locLink = (locData.lat && locData.lng) ? `https://www.google.com/maps/search/?api=1&query=${locData.lat},${locData.lng}` : "الرابط غير متوفر";
         
         let loginStatus = isSuccess ? "✅ دخول ناجح للمنصة" : "❌ محاولة دخول فاشلة (رمز خاطئ)";
 
-        const templateParams = {
-            status: loginStatus,
-            geo_name: geoName,
-            time_date: `${timeStr} , ${dateStr}`,
-            gps_status: gpsStatus,
-            location_link: locLink
-        };
+        // ترتيب رسالة الديسكورد وتجميلها لتظهر بشكل احترافي
+        const message = `🚨 **إشعار نظام المسح الميداني** 🚨\n\n**الحالة:** ${loginStatus}\n**اسم الجيولوجي:** ${geoName}\n**الوقت:** ${timeStr} | **التاريخ:** ${dateStr}\n\n**معلومات الموقع الجغرافي:**\n${gpsStatus}\n**رابط الموقع على الخريطة:**\n${locLink}`;
 
-        const serviceID = "service_wvhdhb9";
-        const templateID = "template_lj3l727";
-
-        emailjs.send(serviceID, templateID, templateParams)
-            .then(function(response) {
-               console.log('تم إرسال الإشعار لبريدك بنجاح!', response.status, response.text);
-            }, function(error) {
-               console.log('فشل إرسال الإشعار...', error);
-            });
+        // إرسال البيانات مباشرة إلى سيرفر الديسكورد
+        fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                content: message
+            })
+        }).then(response => {
+            console.log("تم إرسال الإشعار إلى ديسكورد بنجاح!");
+        }).catch(error => {
+            console.error("حدث خطأ أثناء الإرسال إلى ديسكورد:", error);
+        });
     }
 
     // ==========================================
@@ -679,12 +678,12 @@
             document.getElementById('mainContent').style.display = 'block';
             updateLitho();
             
-            // استدعاء الإيميل عند الدخول الناجح
-            sendEmailAlert(currentGeoName, loginLocation, true);
+            // استدعاء ديسكورد عند الدخول الناجح
+            sendDiscordAlert(currentGeoName, loginLocation, true);
             
         } else { 
-            // استدعاء الإيميل عند الدخول الفاشل
-            sendEmailAlert(nameInput, loginLocation, false);
+            // استدعاء ديسكورد عند الدخول الفاشل
+            sendDiscordAlert(nameInput, loginLocation, false);
             
             errorDiv.innerHTML = "❌ الرمز السري خاطئ."; 
             errorDiv.style.display = 'block'; 
