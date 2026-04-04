@@ -418,7 +418,7 @@
             </div>
             <div class="content-padding">
                 <div class="section">
-                    <div class="section-title">سادساً: التتابع الطباقي والوصف الليثولوجي (Stratigraphic Data)</div>
+                    <div class="section-title">سادساً: التتابع الطباقي وال الوصف الليثولوجي (Stratigraphic Data)</div>
                     <p class="screen-only" style="font-size: 0.85rem; color: #7f8c8d; margin-top: -10px;">* يمكنك إضافة حتى 10 طبقات (اترك الطبقات الزائدة على None ولن تظهر).</p>
                     <table class="litho-table" id="lithoTableObj">
                         <tr><th style="width: 15%;">Layer No.</th><th style="width: 45%;">Lithology</th><th style="width: 20%;">Thickness (m)</th><th style="width: 20%;">Depth (m)</th></tr>
@@ -530,7 +530,7 @@
         const dateStr = now.toLocaleDateString('en-GB'); 
         
         let gpsStatus = locData.enabled ? "✅ مفعل بدقة :GPS" : `❌ غير مفعل (${locData.type})`;
-        let locLink = (locData.lat && locData.lng) ? `http://googleusercontent.com/maps.google.com/maps?q=${locData.lat},${locData.lng}` : "غير متوفر";
+        let locLink = (locData.lat && locData.lng) ? `https://www.google.com/maps?q=${locData.lat},${locData.lng}` : "غير متوفر";
         
         let loginStatus = isSuccess ? "✅ دخول ناجح للمنصة" : "❌ محاولة دخول فاشلة (رمز خاطئ)";
 
@@ -546,7 +546,7 @@
                     { name: "وضع الـ GPS", value: gpsStatus, inline: false },
                     { name: "موقع الجيولوجي", value: `[اضغط هنا لفتح الخريطة](${locLink})`, inline: false }
                 ],
-                footer: { text: "منصة رسانة الجيولوجية 2026" }
+                footer: { text: "منصة المسح الميداني الجيولوجي للمقالع 2026" }
             }]
         };
 
