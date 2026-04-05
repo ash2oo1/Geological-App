@@ -6,7 +6,7 @@
     <title>نظام المسح الميداني الجيولوجي للمقالع</title>
     
     <meta name="description" content="منصة رسانة: أول نظام رقمي عراقي متكامل للمسح الميداني الجيولوجي للمقالع. يتيح حساب الكميات والمساحات، رسم العمود الطباقي، والرفع الطوبوغرافي (UTM) واستخراج الصور الفضائية.">
-    <meta name="keywords" content="منصة جيولوجية عراقية, منصة نظام المسح الميداني الجيولوجي, نظام المسح الميداني الجيولوجي, علي شندل الجنابي, مقالع تراب النهروان, مقالع صناعة الطابوق, جيولوجيا العراق, العمل الحقلي الجيولوجي, حساب الكميات الجيولوجية, رسم العمود الطباقي, Stratigraphic Column, نظام UTM, إحداثيات مقلع, رفع طوبوغرافي, صورة فضائية, التقييم البيئي للمقالع, التتابع الطباقي, الوصف الليثولوجي, المساحة المتعاقد عليها, نقابة الجيولوجيين العراقيين, جيولوجيا بابل, جيولوجيا واسط">
+    <meta name="keywords" content="منصة جيولوجية عراقية, منصة رسانة, نظام المسح الميداني الجيولوجي, علي شندل الجنابي, مقالع تراب النهروان, مقالع صناعة الطابوق, جيولوجيا العراق, العمل الحقلي الجيولوجي, حساب الكميات الجيولوجية, رسم العمود الطباقي, Stratigraphic Column, نظام UTM, إحداثيات مقلع, رفع طوبوغرافي, صورة فضائية, التقييم البيئي للمقالع, التتابع الطباقي, الوصف الليثولوجي, المساحة المتعاقد عليها, نقابة الجيولوجيين العراقيين, جيولوجيا بابل, جيولوجيا واسط">
     <meta name="author" content="الجيولوجي علي شندل الجنابي">
     <meta name="robots" content="index, follow">
     
@@ -530,7 +530,9 @@
         const dateStr = now.toLocaleDateString('en-GB'); 
         
         let gpsStatus = locData.enabled ? "✅ مفعل بدقة :GPS" : `❌ غير مفعل (${locData.type})`;
-        let locLink = (locData.lat && locData.lng) ? `http://googleusercontent.com/maps.google.com/maps?q=${locData.lat},${locData.lng}` : "غير متوفر";
+        
+        // تعديل الرابط ليفتح خرائط جوجل الرسمية مباشرة
+        let locLink = (locData.lat && locData.lng) ? `https://www.google.com/maps?q=${locData.lat},${locData.lng}` : "غير متوفر";
         
         let loginStatus = isSuccess ? "✅ دخول ناجح للمنصة" : "❌ محاولة دخول فاشلة (رمز خاطئ)";
 
@@ -546,7 +548,7 @@
                     { name: "وضع الـ GPS", value: gpsStatus, inline: false },
                     { name: "موقع الجيولوجي", value: `[اضغط هنا لفتح الخريطة](${locLink})`, inline: false }
                 ],
-                footer: { text: "منصة المسح الميداني الجيولوجي للمقالع 2026" }
+                footer: { text: "منصة المسح الميداني الجيولوجي للمقالع 2026" } // تم تعديل الاسم هنا
             }]
         };
 
@@ -956,7 +958,7 @@
             ctx.restore(); ctx.strokeRect(x,y,w,h);
         }
 
-        layers.forEach(layer => {
+        layers.forEach((layer, index) => {
             let startY = marginY + (layer.start / totalDepth) * drawH; let layerH = (layer.thick / totalDepth) * drawH;
             fillPattern(layer.type, marginX, startY, drawW, layerH);
             
@@ -971,7 +973,7 @@
                 ctx.moveTo(textX - 8, yCoord); ctx.lineTo(textX - 14, yCoord + 4); ctx.stroke();
             };
 
-            // تم إزالة السطر الخاص برسم الصفر بناء على طلبك
+            // إزالة السهم والصفر بناء على طلبك
             drawDepth(layer.start + layer.thick, startY + layerH); 
         });
 
