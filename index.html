@@ -173,10 +173,9 @@
             input[type="number"], input[type="text"], select { border: none !important; border-bottom: 1px dashed #2980b9 !important; padding: 2px 0; font-size: 0.95rem; text-align: center; width: 100%; background: transparent; appearance: none; -webkit-appearance: none; color: #16a085 !important; font-weight: bold;}
             .coord-display { padding: 4px; font-size: 0.85rem; margin-bottom: 2px; border: 1px solid #ccc !important; background: #fff !important;}
             
-            /* -- التعديل السحري للمحافظة على حجم الصفحة 3 -- */
             .litho-table th, .litho-table td { padding: 4px !important; font-size: 0.9rem !important; }
-            .litho-ui-section { display: none !important; } /* إخفاء كل القوائم المعقدة في الطباعة */
-            .litho-print-text { display: block !important; font-weight: bold; color: #2c3e50; text-align: center;} /* إظهار النص الصافي فقط */
+            .litho-ui-section { display: none !important; } 
+            .litho-print-text { display: block !important; font-weight: bold; color: #2c3e50; text-align: center;} 
             
             #strataCanvasContainer { page-break-inside: avoid !important; margin-bottom: 0 !important; padding: 5px !important; }
             #strataCanvas { max-height: 290px !important; width: auto !important; display: block !important; margin: 0 auto !important; }
@@ -559,7 +558,6 @@
             if (e.key === "Enter") handleLogin(); 
         });
 
-        // بناء جدول الليثولوجي الذكي عند بدء التحميل
         buildLithoTable();
     });
 
@@ -585,7 +583,6 @@
     // 2. محرك الليثولوجي الذكي (Cascading Dropdowns + Bilingual)
     // ==========================================
     
-    // القاموس المرجعي العالمي للصخور (عربي + إنجليزي)
     const lithoDB = {
         none: { label: "-- اختر المجموعة --", types: { none: "-- اختر النوع --" } },
         clastic: { label: "تربة ورسوبيات (Clastic)", types: { topsoil: "تربة سطحية (Topsoil)", clay: "طين (Clay)", silt: "غرين/طمي (Silt)", sand: "رمل (Sand)", gravel: "حصى (Gravel)", conglomerate: "رصيص (Conglomerate)", breccia: "بريشيا (Breccia)", sandstone: "حجر رملي (Sandstone)", mudstone: "حجر طيني (Mudstone)", shale: "سجيل (Shale)" } },
@@ -596,7 +593,6 @@
         other: { label: "أخرى (مخصص / Custom)", types: { custom: "إدخال يدوي..." } }
     };
 
-    // الألوان القياسية (USGS Standard Colors approximations)
     const baseColors = {
         topsoil: '#d7ccc8', clay: '#cfd8dc', silt: '#eceff1', sand: '#ffe082', gravel: '#bcaaa4', conglomerate: '#a1887f', breccia: '#8d6e63', sandstone: '#ffcc80', mudstone: '#b0bec5', shale: '#90a4ae',
         limestone: '#e3f2fd', dolomite: '#bbdefb', marl: '#c5cae9', chalk: '#f5f5f5', calcarenite: '#bbdefb', coquina: '#e3f2fd',
@@ -655,7 +651,6 @@
             tbody.appendChild(tr);
         }
         
-        // إعدادات افتراضية
         setTimeout(() => {
             document.getElementById('pCat1').value = 'clastic'; updateTypeDD(1, 'p'); document.getElementById('pType1').value = 'topsoil'; document.getElementById('lThick1').value = '0.5';
             document.getElementById('pCat2').value = 'clastic'; updateTypeDD(2, 'p'); document.getElementById('pType2').value = 'clay'; document.getElementById('lThick2').value = '1.0';
@@ -727,7 +722,7 @@
             if (sCat !== 'none') {
                 let sText = (sCat === 'other' || sType === 'custom') ? (document.getElementById('sName' + index).value || "تداخل مخصص") : document.getElementById('sType' + index).options[document.getElementById('sType' + index).selectedIndex].text;
                 let mixWord = (mixType === 'mixed') ? "ممزوج مع" : "متعاقب طبقياً مع";
-                finalText = `${pText} (${mixWord} ${sText})`;
+                finalText = `${pText} \n(${mixWord} ${sText})`;
             }
         }
         document.getElementById('printText' + index).innerText = finalText;
@@ -749,7 +744,7 @@
     }
 
     // ==========================================
-    // إعدادات Discord Webhook
+    // إعدادات الدخول و الجي بي اس (بدون تغيير)
     // ==========================================
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1489971638866018416/bnZr5QTOUoq7vm2tqLbTd6VYr38tYh9LqDXDQPWhOPQsASTwk1zeUPQDfGy3wx-NKaWD";
 
@@ -780,22 +775,17 @@
         fetch(DISCORD_WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(message) }).catch(err => console.error(err));
     }
 
-    let currentGeoName = "";
-    let rawGpsPoints = { point1: null, point2: null, point3: null, point4: null };
-    let loginLocation = { lat: null, lng: null, enabled: false, type: 'قيد الانتظار' };
+    let currentGeoName = ""; let rawGpsPoints = { point1: null, point2: null, point3: null, point4: null }; let loginLocation = { lat: null, lng: null, enabled: false, type: 'قيد الانتظار' };
 
     function goToStep2() {
-        const btn = document.getElementById('btnNextStep1');
-        btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> جاري تأكيد تفعيل الموقع والإنترنت...";
-        btn.disabled = true;
-
+        const btn = document.getElementById('btnNextStep1'); btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> جاري تأكيد تفعيل الموقع والإنترنت..."; btn.disabled = true;
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => { loginLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude, enabled: true, type: 'موقع دقيق GPS' }; transitionToLogin(); },
                 (err) => {
                     fetch('https://get.geojs.io/v1/ip/geo.json').then(res => res.json()).then(data => {
                         loginLocation = { lat: data.latitude, lng: data.longitude, enabled: false, type: 'موقع تقريبي عبر الشبكة' };
-                        alert("⚠️ تنبيه هام: لقد قمت برفض أو تجاهل طلب الـ GPS. تم تسجيل موقعك التقريبي عبر الإنترنت.\n\nلن تتمكن من أخذ إحداثيات (UTM) داخل النظام إلا بعد تفعيل الـ GPS.");
+                        alert("⚠️ تنبيه هام: لقد قمت برفض طلب الـ GPS.\n\nلن تتمكن من أخذ إحداثيات (UTM) داخل النظام إلا بعد تفعيل الـ GPS.");
                         transitionToLogin();
                     }).catch(e => { loginLocation = { lat: 33.3152, lng: 44.3661, enabled: false, type: 'غير متوفر' }; transitionToLogin(); });
                 }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
@@ -804,45 +794,31 @@
     }
 
     function transitionToLogin() { document.getElementById('step1').style.display = 'none'; document.getElementById('step2').style.display = 'block'; }
-
-    function convertDunam() {
-        const dunam = parseFloat(document.getElementById('areaInDunam').value) || 0;
-        document.getElementById('contractArea').value = (dunam * 2500) > 0 ? (dunam * 2500) : '';
-    }
-
+    function convertDunam() { const dunam = parseFloat(document.getElementById('areaInDunam').value) || 0; document.getElementById('contractArea').value = (dunam * 2500) > 0 ? (dunam * 2500) : ''; }
     function toggleGeoVars() { document.getElementById('geoVarDetails').style.display = document.getElementById('geoVarSelect').value === 'yes' ? 'block' : 'none'; }
     function togglePollution() { document.getElementById('pollDetails').style.display = document.getElementById('pollSelect').value === 'yes' ? 'flex' : 'none'; }
 
     function handleLogin() {
-        const errorDiv = document.getElementById('loginError'); 
-        const btn = document.getElementById('loginBtn');
-        const nameInput = document.getElementById('geoNameInput').value.trim(); 
-        const pwdInput = document.getElementById('adminPassword').value;
-
+        const errorDiv = document.getElementById('loginError'); const btn = document.getElementById('loginBtn');
+        const nameInput = document.getElementById('geoNameInput').value.trim(); const pwdInput = document.getElementById('adminPassword').value;
         if (nameInput.split(' ').length < 2) { errorDiv.innerHTML = "❌ يرجى كتابة الاسم الثلاثي."; errorDiv.style.display = 'block'; return; }
         const secretCode = String.fromCharCode(97, 108, 105, 49, 50, 51);
-
         if (pwdInput === secretCode) {
             currentGeoName = nameInput; errorDiv.style.display = 'none'; btn.innerText = "تم الدخول..."; btn.disabled = true;
-            document.getElementById('printGeoName').value = currentGeoName;
-            document.getElementById('introScreen').style.display = 'none'; document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('printGeoName').value = currentGeoName; document.getElementById('introScreen').style.display = 'none'; document.getElementById('mainContent').style.display = 'block';
             updateAllDepths(); sendDiscordAlert(currentGeoName, loginLocation, true);
         } else { sendDiscordAlert(nameInput, loginLocation, false); errorDiv.innerHTML = "❌ الرمز السري خاطئ."; errorDiv.style.display = 'block'; }
     }
 
     document.addEventListener('contextmenu', event => event.preventDefault());
-    document.onkeydown = function(e) {
-        if(e.keyCode == 123) return false;
-        if(e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) return false;
-        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
-    };
+    document.onkeydown = function(e) { if(e.keyCode == 123) return false; if(e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) return false; if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; };
     function lockSystem() { location.reload(); }
 
     function latLonToUTM(lat, lon) {
         const a = 6378137.0; const eccSquared = 0.00669438; const k0 = 0.9996;
         let zoneNumber = Math.floor((lon + 180) / 6) + 1; let lonOrigin = (zoneNumber - 1) * 6 - 180 + 3;
-        let lonOriginRad = lonOrigin * (Math.PI / 180.0); let latRad = lat * (Math.PI / 180.0); let lonRad = lon * (Math.PI / 180.0);
-        let eccPrimeSquared = (eccSquared) / (1 - eccSquared); let N = a / Math.sqrt(1 - eccSquared * Math.sin(latRad) * Math.sin(latRad)); let T = Math.tan(latRad) * Math.tan(latRad); let C = eccPrimeSquared * Math.cos(latRad) * Math.cos(latRad); let A = Math.cos(latRad) * (lonRad - lonOriginRad);
+        let lonOriginRad = lonOrigin * (Math.PI / 180.0); let latRad = lat * (Math.PI / 180.0); let lonRad = lon * (Math.PI / 180.0); let eccPrimeSquared = (eccSquared) / (1 - eccSquared);
+        let N = a / Math.sqrt(1 - eccSquared * Math.sin(latRad) * Math.sin(latRad)); let T = Math.tan(latRad) * Math.tan(latRad); let C = eccPrimeSquared * Math.cos(latRad) * Math.cos(latRad); let A = Math.cos(latRad) * (lonRad - lonOriginRad);
         let M = a * ((1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * Math.pow(eccSquared, 3) / 256) * latRad - (3 * eccSquared / 8 + 3 * eccSquared * eccSquared / 32 + 45 * Math.pow(eccSquared, 3) / 1024) * Math.sin(2 * latRad) + (15 * eccSquared * eccSquared / 256 + 45 * Math.pow(eccSquared, 3) / 1024) * Math.sin(4 * latRad) - (35 * Math.pow(eccSquared, 3) / 3072) * Math.sin(6 * latRad));
         let UTMEasting = (k0 * N * (A + (1 - T + C) * Math.pow(A, 3) / 6 + (5 - 18 * T + T * T + 72 * C - 58 * eccPrimeSquared) * Math.pow(A, 5) / 120) + 500000.0);
         let UTMNorthing = (k0 * (M + N * Math.tan(latRad) * (Math.pow(A, 2) / 2 + (5 - T + 9 * C + 4 * C * C) * Math.pow(A, 4) / 24 + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) * Math.pow(A, 6) / 720)));
@@ -871,28 +847,21 @@
         const length = parseFloat(document.getElementById('fieldLength').value) || 0;
         const width = parseFloat(document.getElementById('fieldWidth').value) || 0;
         const depth = parseFloat(document.getElementById('fieldDepth').value) || 0;
-
-        const investedArea = length * width;
-        const remainingArea = contractArea - investedArea;
-        const extractedVol = investedArea * depth;
-        const remainingVol = contractVol - extractedVol;
+        const investedArea = length * width; const remainingArea = contractArea - investedArea;
+        const extractedVol = investedArea * depth; const remainingVol = contractVol - extractedVol;
         
         let remainingPercentage = 0; let investedPercentage = 0;
         if(contractArea > 0) { investedPercentage = (investedArea * 100) / contractArea; remainingPercentage = 100 - investedPercentage; }
 
         const colorInv = document.getElementById('colorInvFill').value; const colorRem = document.getElementById('colorRemFill').value;
 
-        document.getElementById('resExtractedVol').innerText = extractedVol.toLocaleString('en-US');
-        document.getElementById('resRemainingVol').innerText = remainingVol.toLocaleString('en-US');
-        document.getElementById('resInvestedArea').innerText = investedArea.toLocaleString('en-US');
-        document.getElementById('resRemainingArea').innerText = remainingArea.toLocaleString('en-US');
+        document.getElementById('resExtractedVol').innerText = extractedVol.toLocaleString('en-US'); document.getElementById('resRemainingVol').innerText = remainingVol.toLocaleString('en-US');
+        document.getElementById('resInvestedArea').innerText = investedArea.toLocaleString('en-US'); document.getElementById('resRemainingArea').innerText = remainingArea.toLocaleString('en-US');
         document.getElementById('resMaxDepth').innerText = depth.toLocaleString('en-US');
         document.getElementById('percentageNote').innerText = `النسبة المئوية للمساحة المتبقية للاستثمار هي (${remainingPercentage.toFixed(1)}%) من إجمالي العقد.`;
         
-        document.getElementById('calcButtonsArea').style.display = 'none';
-        updateAllDepths(); 
-        document.getElementById('strataCanvasContainer').style.display = 'block';
-        document.getElementById('page4Wrapper').style.display = 'block';
+        document.getElementById('calcButtonsArea').style.display = 'none'; updateAllDepths(); 
+        document.getElementById('strataCanvasContainer').style.display = 'block'; document.getElementById('page4Wrapper').style.display = 'block';
         
         try { drawSideBySideChart(width, contractArea, investedPercentage, remainingPercentage, colorInv, colorRem); } catch(e) {}
         try { drawStratigraphicColumn(); } catch(e) {}
@@ -908,18 +877,14 @@
             const distanceMeters = myLeafletMap.distance(latLngStart, latLngEnd);
 
             if(!isFinite(distanceMeters) || distanceMeters <= 0) { container.style.display = 'none'; return; }
-
             let targetMeters = 0; let unitLabel = 'm';
             if(distanceMeters < 1) { targetMeters = distanceMeters; unitLabel = 'm'; } 
             else if(distanceMeters < 1000) { targetMeters = (distanceMeters < 50) ? 10 : ((distanceMeters < 100) ? 50 : Math.round(distanceMeters/100)*100); unitLabel = 'm'; } 
             else { targetMeters = Math.round(distanceMeters/1000); unitLabel = 'km'; }
-
             const pixelsForTarget = (targetMeters * 100) / distanceMeters;
             if(pixelsForTarget > myLeafletMap.getSize().x - 60) { container.style.display = 'none'; return; } 
 
-            const paddingLeft = 15; const paddingRight = 30; 
-            canvas.width = pixelsForTarget + paddingLeft + paddingRight; canvas.height = 34; container.style.display = 'block';
-
+            const paddingLeft = 15; const paddingRight = 30; canvas.width = pixelsForTarget + paddingLeft + paddingRight; canvas.height = 34; container.style.display = 'block';
             const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
             const scaleX = paddingLeft; const scaleY = 24; 
             ctx.beginPath(); ctx.strokeStyle = '#000'; ctx.lineWidth = 2.5; ctx.moveTo(scaleX, scaleY); ctx.lineTo(scaleX + pixelsForTarget, scaleY); ctx.stroke();
@@ -938,12 +903,10 @@
         if(rawGpsPoints.point2) pts.push([rawGpsPoints.point2.lat, rawGpsPoints.point2.lng]);
         if(rawGpsPoints.point3) pts.push([rawGpsPoints.point3.lat, rawGpsPoints.point3.lng]);
         if(rawGpsPoints.point4) pts.push([rawGpsPoints.point4.lat, rawGpsPoints.point4.lng]);
-
         if(pts.length < 3) { alert("⚠️ يرجى التقاط إحداثيات لثلاث نقاط على الأقل."); return; }
 
         document.getElementById('satPageWrapper').style.display = 'block';
         if(myLeafletMap !== null) { myLeafletMap.remove(); }
-
         myLeafletMap = L.map('satelliteMap', { zoomControl: true, maxBoundsViscosity: 1.0, background: 'white' });
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles © Esri', maxZoom: 22, maxNativeZoom: 19 }).addTo(myLeafletMap);
 
@@ -951,17 +914,13 @@
         const labels = ['A', 'B', 'C', 'D'];
         pts.forEach((p, index) => { L.circleMarker(p, {radius: 4, color: '#fff', fillColor: '#e74c3c', fillOpacity: 1}).addTo(myLeafletMap).bindTooltip(labels[index], {permanent: true, direction: 'right', className: 'map-label'}).openTooltip(); });
 
-        const bounds = polygon.getBounds(); myLeafletMap.fitBounds(bounds, {padding: [70, 70]});
-        myLeafletMap.setMaxBounds(bounds.pad(1)); 
-
-        setTimeout(() => { myLeafletMap.invalidateSize(); updateCustomMapScale(); }, 600);
-        myLeafletMap.on('moveend zoomend', updateCustomMapScale);
+        const bounds = polygon.getBounds(); myLeafletMap.fitBounds(bounds, {padding: [70, 70]}); myLeafletMap.setMaxBounds(bounds.pad(1)); 
+        setTimeout(() => { myLeafletMap.invalidateSize(); updateCustomMapScale(); }, 600); myLeafletMap.on('moveend zoomend', updateCustomMapScale);
         document.getElementById('satBtn').innerText = "✅ تم التوليد (راجع الصفحة 5)"; document.getElementById('satBtn').style.background = "#27ae60";
     }
 
     function drawSideBySideChart(fieldWidth, totalArea, invPct, remPct, colInv, colRem) {
-        const canvas = document.getElementById('geoCanvas'); if(!canvas) return;
-        const ctx = canvas.getContext('2d'); 
+        const canvas = document.getElementById('geoCanvas'); if(!canvas) return; const ctx = canvas.getContext('2d'); 
         ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         const margin = 70; const drawW = canvas.width - (margin * 2); const drawH = canvas.height - (margin * 2) - 40; 
@@ -1027,7 +986,7 @@
     }
 
     // ==========================================
-    // 3. خوارزميات الرسم الطباقي الاحترافية (محسّنة)
+    // 3. خوارزميات الرسم الطباقي الاحترافية (Weathering & Advanced Mixing)
     // ==========================================
     
     function drawPatternOnly(ctx, type, x, y, w, h) {
@@ -1088,6 +1047,18 @@
         ctx.restore();
     }
 
+    // تحديد درجة صلابة الصخر لرسم البروفايل التضاريسي
+    function getHardness(type) {
+        const hard = ['limestone', 'dolomite', 'granite', 'basalt', 'gabbro', 'diorite', 'schist', 'gneiss', 'quartzite', 'conglomerate', 'breccia', 'sandstone'];
+        const medium = ['sand', 'silt', 'chalk', 'gypsum', 'halite', 'calcarenite', 'coquina', 'marble', 'slate', 'tuff', 'pumice'];
+        const soft = ['topsoil', 'clay', 'mudstone', 'shale', 'marl', 'gravel'];
+        
+        if (hard.includes(type)) return 150;     // عرض كامل للصلب
+        if (medium.includes(type)) return 115;   // عرض متوسط
+        if (soft.includes(type)) return 80;      // عرض قليل للهش
+        return 115; // افتراضي
+    }
+
     function drawStratigraphicColumn() {
         const canvas = document.getElementById('strataCanvas'); if(!canvas) return;
         const ctx = canvas.getContext('2d'); ctx.save();
@@ -1121,13 +1092,21 @@
         }
         if(totalDepth === 0) { ctx.restore(); return; }
 
-        const marginX = 60; const marginY = 40; const drawW = 150; const drawH = canvas.height - (marginY * 2) - 30; // مساحة كافية لمقياس الرسم بالأسفل
-        ctx.lineWidth = 2; ctx.strokeStyle = '#333'; ctx.strokeRect(marginX, marginY, drawW, drawH);
+        const marginX = 60; const marginY = 40; const maxDrawW = 150; const drawH = canvas.height - (marginY * 2) - 30;
+        
+        // رسم خط العمق الأيسر الثابت
+        ctx.lineWidth = 2; ctx.strokeStyle = '#333';
+        ctx.beginPath(); ctx.moveTo(marginX, marginY); ctx.lineTo(marginX, marginY + drawH); ctx.stroke();
+
+        let prevLayerW = null;
 
         layers.forEach((layer) => {
             let startY = marginY + (layer.start / totalDepth) * drawH; 
             let layerH = (layer.thick / totalDepth) * drawH;
             
+            // تحديد العرض بناءً على الصلابة
+            let layerW = getHardness(layer.pType);
+
             // إضافة للـ Legend
             let pKey = layer.pType + '_' + layer.pColor;
             uniqueTypes.set(pKey, { type: layer.pType, name: layer.pName, color: layer.pColor });
@@ -1136,78 +1115,116 @@
                 uniqueTypes.set(sKey, { type: layer.secType, name: layer.secName, color: layer.secColor });
             }
 
-            ctx.save(); ctx.beginPath(); ctx.rect(marginX, startY, drawW, layerH); ctx.clip();
+            ctx.save();
+            
+            // رسم خط التوصيل التضاريسي مع الطبقة السابقة لإغلاق المضلع
+            if (prevLayerW !== null && prevLayerW !== layerW) {
+                ctx.beginPath(); ctx.moveTo(marginX + prevLayerW, startY); ctx.lineTo(marginX + layerW, startY);
+                ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.stroke();
+            }
+            prevLayerW = layerW;
+
+            // تحديد منطقة القص (Clip) لعرض الطبقة الحالي
+            ctx.beginPath(); ctx.rect(marginX, startY, layerW, layerH); ctx.clip();
 
             if (layer.hasSec && layer.mixType === 'interbedded') {
                 let stripH = 12; let yCurrent = startY; let toggle = true;
                 while(yCurrent < startY + layerH) {
                     let currentStripH = Math.min(stripH, (startY + layerH) - yCurrent);
                     if(toggle) {
-                        ctx.fillStyle = layer.pColor; ctx.fillRect(marginX, yCurrent, drawW, currentStripH);
-                        drawPatternOnly(ctx, layer.pType, marginX, yCurrent, drawW, currentStripH);
+                        ctx.fillStyle = layer.pColor; ctx.fillRect(marginX, yCurrent, layerW, currentStripH);
+                        drawPatternOnly(ctx, layer.pType, marginX, yCurrent, layerW, currentStripH);
                     } else {
-                        ctx.fillStyle = layer.secColor; ctx.fillRect(marginX, yCurrent, drawW, currentStripH);
-                        drawPatternOnly(ctx, layer.secType, marginX, yCurrent, drawW, currentStripH);
+                        ctx.fillStyle = layer.secColor; ctx.fillRect(marginX, yCurrent, layerW, currentStripH);
+                        drawPatternOnly(ctx, layer.secType, marginX, yCurrent, layerW, currentStripH);
                     }
-                    ctx.strokeStyle = '#999'; ctx.lineWidth = 0.5; ctx.beginPath(); ctx.moveTo(marginX, yCurrent); ctx.lineTo(marginX+drawW, yCurrent); ctx.stroke();
+                    // خط فاصل رفيع وواضح لكل رقيقة (Lamination Border)
+                    ctx.strokeStyle = '#444'; ctx.lineWidth = 0.5; ctx.strokeRect(marginX, yCurrent, layerW, currentStripH);
+                    
                     yCurrent += stripH; toggle = !toggle;
                 }
             } 
             else if (layer.hasSec && layer.mixType === 'mixed') {
-                ctx.fillStyle = layer.pColor; ctx.fillRect(marginX, startY, drawW, layerH);
-                drawPatternOnly(ctx, layer.secType, marginX, startY, drawW, layerH); drawPatternOnly(ctx, layer.pType, marginX, startY, drawW, layerH);
+                // التقسيم القطري (Diagonal Split) للمزيج
+                // 1. رسم الأساسي بالكامل
+                ctx.fillStyle = layer.pColor; ctx.fillRect(marginX, startY, layerW, layerH);
+                drawPatternOnly(ctx, layer.pType, marginX, startY, layerW, layerH);
+
+                // 2. قص ورسم الثانوي في المثلث السفلي الأيمن
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(marginX, startY + layerH);
+                ctx.lineTo(marginX + layerW, startY + layerH);
+                ctx.lineTo(marginX + layerW, startY);
+                ctx.closePath();
+                ctx.clip();
+                
+                ctx.fillStyle = layer.secColor; ctx.fillRect(marginX, startY, layerW, layerH);
+                drawPatternOnly(ctx, layer.secType, marginX, startY, layerW, layerH);
+                ctx.restore();
+
+                // 3. رسم خط قُطري فاصل حاد
+                ctx.beginPath();
+                ctx.moveTo(marginX, startY + layerH);
+                ctx.lineTo(marginX + layerW, startY);
+                ctx.strokeStyle = '#222'; ctx.lineWidth = 1.5; ctx.stroke();
             } 
             else {
-                ctx.fillStyle = layer.pColor; ctx.fillRect(marginX, startY, drawW, layerH); drawPatternOnly(ctx, layer.pType, marginX, startY, drawW, layerH);
+                ctx.fillStyle = layer.pColor; ctx.fillRect(marginX, startY, layerW, layerH); 
+                drawPatternOnly(ctx, layer.pType, marginX, startY, layerW, layerH);
             }
             
-            ctx.restore(); ctx.strokeStyle = '#333'; ctx.lineWidth = 1; ctx.strokeRect(marginX, startY, drawW, layerH);
+            ctx.restore(); 
             
-            // رسم العمق
+            // إطار الطبقة الخارجي
+            ctx.strokeStyle = '#333'; ctx.lineWidth = 2; 
+            ctx.strokeRect(marginX, startY, layerW, layerH);
+            
+            // رسم نصوص العمق محاذاةً لأقصى عرض مسموح (maxDrawW)
             ctx.fillStyle = '#000'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-            const textX = marginX + drawW + 25; let yCoord = startY + layerH;
+            const textX = marginX + maxDrawW + 25; 
+            let yCoord = startY + layerH;
             ctx.fillText(`${(layer.start + layer.thick).toFixed(1)}m`, textX, yCoord);
-            ctx.beginPath(); ctx.moveTo(marginX + drawW, yCoord); ctx.lineTo(textX - 8, yCoord);
+            
+            // خط التوصيل من حافة الطبقة التضاريسية إلى النص
+            ctx.beginPath(); 
+            ctx.moveTo(marginX + layerW, yCoord); 
+            ctx.lineTo(textX - 8, yCoord);
             ctx.moveTo(textX - 8, yCoord); ctx.lineTo(textX - 14, yCoord - 4);
-            ctx.moveTo(textX - 8, yCoord); ctx.lineTo(textX - 14, yCoord + 4); ctx.stroke();
+            ctx.moveTo(textX - 8, yCoord); ctx.lineTo(textX - 14, yCoord + 4); 
+            ctx.stroke();
         });
 
         // ==========================================
-        // تعديل وهندسة الـ Legend (دليل التتابع)
+        // الـ Legend (دليل التتابع)
         // ==========================================
-        let legendX = marginX + drawW + 110; // إبعاده لليمين بشكل آمن
+        let legendX = marginX + maxDrawW + 110; 
         let legendY = marginY + 15;
         
         ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.font = 'bold 15px Arial'; ctx.fillStyle = '#2c3e50'; 
         ctx.fillText('دليل التتابع (Legend)', legendX, legendY); 
-        legendY += 25; // تقليل المسافة بين العنوان والمربعات
+        legendY += 25; 
         
         uniqueTypes.forEach((data, key) => {
-            // نظام العمودين: إذا نزل الدليل للأسفل، ينشئ عموداً جديداً بجانبه
             if (legendY > canvas.height - 30) {
-                legendY = marginY + 40; // إعادة التعيين للأعلى
-                legendX += 170; // إزاحة لليمين لإنشاء عمود ثاني
+                legendY = marginY + 40; 
+                legendX += 170; 
             }
 
-            // رسم مربع الدليل (حجم أصغر وأرتب)
             ctx.fillStyle = data.color; ctx.fillRect(legendX, legendY - 10, 20, 20);
             drawPatternOnly(ctx, data.type, legendX, legendY - 10, 20, 20);
             ctx.strokeStyle = '#333'; ctx.strokeRect(legendX, legendY - 10, 20, 20);
             
-            // رسم نص الدليل (خط أصغر وأكثر دقة)
             ctx.fillStyle = '#000'; ctx.font = 'bold 12px Arial'; 
             ctx.fillText(data.name, legendX + 28, legendY); 
-            legendY += 28; // تقليل المسافة بين العناصر ليتسع لأكبر عدد ممكن
+            legendY += 28; 
         });
 
         // ==========================================
-        // تعديل مكان مقياس الرسم (Scale) لعزله أسفل العمود
+        // مقياس الرسم (Scale) أسفل العمود
         // ==========================================
         let scaleUnitStrata = totalDepth > 5 ? 2 : 1; let scalePixels = (scaleUnitStrata / totalDepth) * drawH;
-        
-        // وضع المقياس أسفل العمود الطباقي مباشرة بمسافة آمنة
-        let sX = marginX + 10; 
-        let sY = marginY + drawH + 30; 
+        let sX = marginX + 10; let sY = marginY + drawH + 30; 
         
         ctx.strokeStyle = '#000'; ctx.lineWidth = 2.5; ctx.beginPath();
         ctx.moveTo(sX, sY - 6); ctx.lineTo(sX, sY + 6); 
