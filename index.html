@@ -95,7 +95,7 @@
         .check-item:hover { background: #eaf2f8; border-color: #a9cce3; }
         .check-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; margin: 0; }
 
-        /* ستايل الجدول في الشاشة فقط */
+        /* ستايل الجدول في الشاشة فقط (للإدخال) */
         .litho-table-wrapper { overflow-x: auto; max-height: 600px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; }
         .litho-table { width: 100%; border-collapse: collapse; min-width: 800px;}
         .litho-table th, .litho-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
@@ -141,11 +141,16 @@
         .map-legend-box { position: absolute; bottom: 25px; right: 15px; z-index: 1000; background: rgba(255,255,255,0.95); padding: 10px; border-radius: 6px; border: 2px solid #2c3e50; font-size: 12px; text-align: right; box-shadow: 0 2px 5px rgba(0,0,0,0.3); line-height: 1.8; pointer-events: none;}
         .map-legend-box b { color: #2c3e50; display: block; margin-bottom: 5px; font-size: 13px; border-bottom: 1px solid #ccc; padding-bottom: 3px;}
 
+        /* ستايل المربع النصي الذكي في الشاشة */
+        .report-content { width: 100%; min-height: 250px; padding: 20px; font-family: 'Arial', sans-serif; font-size: 1.1rem; line-height: 2; border: 1px solid #bdc3c7; border-radius: 8px; box-sizing: border-box; background-color: #fcfcfc; color: #2c3e50; text-align: justify; outline: none; }
+        .report-content p { margin-bottom: 15px; }
+        .report-content b { color: #1c2833; font-size: 1.15rem; }
+
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
         /* --- هندسة الطباعة والتحكم بالصفحات الديناميكية --- */
-        .print-only { display: none; }
+        .print-only { display: none !important; }
         
         @media print {
             @page { margin: 0; size: A4 portrait; }
@@ -155,10 +160,10 @@
             .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
             .screen-only { display: none !important; }
             .header, .footer, .btn-calc, .btn-satellite, .btn-convert, .gps-btn, .btn-print, #introScreen, #calcButtonsArea, #inputLithoSection { display: none !important; }
-            .print-only { display: block; }
+            .print-only { display: block !important; }
             .no-print { display: none !important; }
             
-            .print-page-wrapper { min-height: 29.6cm; width: 100%; box-sizing: border-box; padding: 1.2cm; page-break-after: always; position: relative; }
+            .print-page-wrapper { min-height: 29.6cm; width: 100%; box-sizing: border-box; padding: 1.2cm; page-break-after: always; position: relative; display: block !important; }
             .print-page-wrapper:last-child { page-break-after: auto; }
             .print-bottom { position: absolute; bottom: 0.5cm; left: 0; width: 100%; text-align: center; font-weight: bold; font-size: 14px; color: #333; }
             
@@ -187,7 +192,7 @@
             #strataCanvasContainer h3 { font-size: 1.2rem !important; margin-bottom: 15px !important; padding-bottom: 10px !important;}
             #strataCanvas { max-height: none !important; width: auto !important; max-width: 100% !important; display: block !important; margin: 0 auto !important; }
 
-            .report-content { font-family: 'Arial', sans-serif; text-align: justify; font-size: 1.05rem; line-height: 1.9; color: #222; border: none !important; background: transparent !important; padding: 0 !important; overflow: visible !important;}
+            .report-content { font-family: 'Arial', sans-serif; text-align: justify; font-size: 1.05rem; line-height: 1.9; color: #222; border: none !important; background: transparent !important; padding: 0 !important; overflow: visible !important; min-height: 0 !important;}
             .report-content p { margin-bottom: 15px; }
             .report-content b { color: #1c2833; font-size: 1.15rem; }
 
@@ -456,7 +461,7 @@
             </div>
         </div>
 
-        <div id="dynamicTablePagesContainer"></div>
+        <div id="dynamicTablePagesContainer" class="print-only"></div>
 
         <div class="print-page-wrapper page-counter-element" id="pageStrataCanvas" style="display: none;">
             <div class="print-only print-header">
@@ -475,22 +480,15 @@
             <div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesText">X</span></div>
         </div>
 
-        <div id="dynamicTextPagesContainer"></div>
-
-        <div class="print-page-wrapper page-counter-element" id="pageSketch" style="display: none;">
-            <div class="print-only print-header">
-                <span class="date-top-left printDateHeader"></span>
-                <h1>نظام المسح الميداني الجيولوجي (التقرير الشامل)</h1>
-                <h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
+        <div class="content-padding screen-only" id="uiReportSection" style="display: none;">
+            <div class="section">
+                <div class="section-title" style="border-bottom-color: #8e44ad; color: #8e44ad;">سابعاً: التفسير الجيولوجي والوصف الليثولوجي للمقطع الحقلي</div>
+                <div id="uiReportContent" class="report-content" contenteditable="true">
+                    </div>
             </div>
-            <div class="content-padding">
-                <div class="section" style="min-height: 800px; border: 1px dashed #bdc3c7;">
-                    <div class="section-title" style="border-bottom-color: #f39c12; color: #f39c12;">ثامناً: ملاحظات حقلية إضافية (اسكتش حر - Sketch)</div>
-                    <p style="color: #7f8c8d; font-size: 1.1rem; text-align: center; margin-top: 50px;">(هذه الصفحة مخصصة للملاحظات اليدوية الإضافية أو لرسم كروكي (Sketch) حقلي للظواهر الجيولوجية بالموقع)</p>
-                </div>
-            </div>
-            <div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesText">X</span></div>
         </div>
+
+        <div id="dynamicTextPagesContainer" class="print-only"></div>
 
         <div id="calcButtonsArea" class="content-padding screen-only">
             <div id="colorSection" class="section">
@@ -512,7 +510,7 @@
             <div class="content-padding">
                 
                 <div class="section" id="resultsSection" style="margin-bottom: 15px;">
-                    <div class="section-title" style="border-bottom-color: #27ae60; color: #27ae60; margin-bottom: 10px;">تاسعاً: النتائج النهائية للكميات والمساحة والعمق</div>
+                    <div class="section-title" style="border-bottom-color: #27ae60; color: #27ae60; margin-bottom: 10px;">ثامناً: النتائج النهائية للكميات والمساحة والعمق</div>
                     <div class="result-item"><span>الكميات المستخرجة لغاية يوم الزيارة (م³):</span><span class="result-value" id="resExtractedVol">0</span></div>
                     <div class="result-item"><span>الكميات المتبقية من العقد (م³):</span><span class="result-value" id="resRemainingVol">0</span></div>
                     <div class="result-item"><span>المساحة المستثمرة (م²):</span><span class="result-value" id="resInvestedArea">0</span></div>
@@ -546,7 +544,7 @@
             <div class="content-padding">
                 <div class="section" style="border: 2px solid #8e44ad; padding: 10px; box-shadow: none;">
                     <div class="canvas-container" id="mapSection" style="margin-bottom: 0;">
-                        <h3>عاشراً: الصورة الفضائية للموقع (Satellite View)</h3>
+                        <h3>تاسعاً: الصورة الفضائية للموقع (Satellite View)</h3>
                         <div class="map-wrapper" dir="ltr">
                             <div id="satelliteMap"></div>
                             <div class="map-north">⬆ N</div>
@@ -576,7 +574,7 @@
     // تهيئة المتغيرات والدول
     // ==========================================
     let inputLayerCount = 0; 
-    const LITHOLOGY_PER_PAGE = 14; 
+    const LITHOLOGY_PER_PAGE = 15; // تم التعديل إلى 15 طبقة في الصفحة بدلاً من 14
     const TEXT_PER_PAGE = 8;       
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -588,7 +586,6 @@
 
         document.getElementById("adminPassword").addEventListener("keypress", (e) => { if (e.key === "Enter") handleLogin(); });
 
-        // إضافة أول 5 طبقات بشكل افتراضي
         for(let i=0; i<5; i++) addLayerRow();
         
         setTimeout(() => {
@@ -808,7 +805,7 @@
     }
 
     // ==========================================
-    // 3. المعالجة والتقطيع الديناميكي للطباعة (The Core Engine)
+    // 3. المعالجة والتقطيع الديناميكي للطباعة
     // ==========================================
     
     function getLayerString(pCat, pTypeVal, pNameCustom, pTextDD) {
@@ -819,7 +816,7 @@
         updateAllDepths();
 
         let validLayers = []; let totalDepth = 0; let currentD = 0;
-        // جلب البيانات الصحيحة فقط من واجهة الإدخال
+        
         for(let i=1; i<=inputLayerCount; i++) {
             let pCat = document.getElementById('pCat'+i).value;
             let thick = parseFloat(document.getElementById('lThick'+i).value) || 0;
@@ -845,7 +842,7 @@
             }
         }
 
-        // أ. تقطيع جداول التتابع الطباقي إلى صفحات
+        // أ. تقطيع جداول التتابع الطباقي إلى صفحات (للطباعة فقط)
         const tableContainer = document.getElementById('dynamicTablePagesContainer');
         tableContainer.innerHTML = '';
         let tableChunks = Math.ceil(validLayers.length / LITHOLOGY_PER_PAGE) || 1; 
@@ -859,7 +856,8 @@
             if(chunk.length === 0) { tbodyHTML = `<tr><td colspan="4">لا توجد بيانات ليثولوجية مدخلة.</td></tr>`; }
             else {
                 chunk.forEach(L => {
-                    tbodyHTML += `<tr><td>${L.index}</td><td style="white-space: pre-wrap;">${L.printText}</td><td>${L.thick.toFixed(1)}</td><td class="depth-span">${L.depthFrom.toFixed(1)} - ${L.depthTo.toFixed(1)}</td></tr>`;
+                    // تم إضافة style="white-space: nowrap; direction: ltr;" لحل مشكلة ترتيب الأرقام
+                    tbodyHTML += `<tr><td>${L.index}</td><td style="white-space: pre-wrap;">${L.printText}</td><td>${L.thick.toFixed(1)}</td><td dir="ltr" style="white-space: nowrap; font-weight: bold; color: #2c3e50;">${L.depthFrom.toFixed(1)} - ${L.depthTo.toFixed(1)}</td></tr>`;
                 });
             }
 
@@ -880,27 +878,29 @@
             tableContainer.innerHTML += pageHTML;
         }
 
-        // ب. تقطيع النص السردي الجيولوجي إلى صفحات
+        // ب. توليد النص السردي (قطعة واحدة للشاشة + مقسم للطباعة)
         const textContainer = document.getElementById('dynamicTextPagesContainer');
         textContainer.innerHTML = '';
         let textChunks = Math.ceil(validLayers.length / TEXT_PER_PAGE) || 1;
-        const ordinals = ["الأولى", "الثانية", "الثالثة", "الرابعة", "الخامسة", "السادسة", "السابعة", "الثامنة", "التاسعة", "العاشرة", "الحادية عشر", "الثانية عشر", "الثالثة عشر", "الرابعة عشر", "الخامسة عشر", "السادسة عشر", "السابعة عشر", "الثامنة عشر", "التاسعة عشر", "العشرون", "الحادية والعشرون", "الثانية والعشرون", "الثالثة والعشرون", "الرابعة والعشرون", "الخامسة والعشرون", "السادسة والعشرون", "السابعة والعشرون", "الثامنة والعشرون", "التاسعة والعشرون", "الثلاثون", "الحادية والثلاثون", "الثانية والثلاثون", "الثالثة والثلاثون", "الرابعة والثلاثون", "الخامسة والثلاثون", "السادسة والثلاثون", "السابعة والثلاثون", "الثامنة والثلاثون", "التاسعة والثلاثون", "الأربعون"];
+        const ordinals = ["الأولى", "الثانية", "الثالثة", "الرابعة", "الخامسة", "السادسة", "السابعة", "الثامنة", "التاسعة", "العاشرة", "الحادية عشر", "الثانية عشر", "الثالثة عشر", "الرابعة عشر", "الخامسة عشر", "السادسة عشر", "السابعة عشر", "الثامنة عشر", "التاسعة عشر", "العشرون", "الحادية والعشرون", "الثانية والعشرون", "الثالثة والعشرون", "الرابعة والعشرون", "الخامسة والعشرون", "السادسة والعشرون", "السابعة والعشرون", "الثامنة والعشرون", "التاسعة والعشرون", "الثلاثون", "الحادية والثلاثون", "الثانية والثلاثون", "الثالثة والثلاثون", "الرابعة والثلاثون", "الخامسة والثلاثون", "السادسة والثلاثون", "السابعة والثلاثون", "الثامنة والثلاثون", "التاسعة والثلاثون", "الأربعون", "الحادية والأربعون", "الثانية والأربعون", "الثالثة والأربعون", "الرابعة والأربعون", "الخامسة والأربعون", "السادسة والأربعون", "السابعة والأربعون", "الثامنة والأربعون", "التاسعة والأربعون", "الخمسون"];
+
+        let fullScreenReportHTML = `<p>بناءً على المشاهدات الحقلية والقياسات الميدانية، يُظهر المقطع الحقلي للموقع تتابعاً طبقياً يبدأ من السطح (العمق 0.0m) وصولاً إلى أقصى عمق مرصود وهو (${totalDepth.toFixed(1)}m). ويمكن وصف التتابع الليثولوجي والسحني <b>جيولوجياً</b> كما يلي:</p>`;
 
         for(let page=0; page<textChunks; page++) {
             let startIdx = page * TEXT_PER_PAGE;
             let endIdx = Math.min(startIdx + TEXT_PER_PAGE, validLayers.length);
             let chunk = validLayers.slice(startIdx, endIdx);
 
-            let reportHTML = '';
+            let pageReportHTML = '';
             if(page === 0) {
-                reportHTML = `<p>بناءً على المشاهدات الحقلية والقياسات الميدانية، يُظهر المقطع الحقلي للموقع تتابعاً طبقياً يبدأ من السطح (العمق 0.0m) وصولاً إلى أقصى عمق مرصود وهو (${totalDepth.toFixed(1)}m). ويمكن وصف التتابع الليثولوجي والسحني <b>جيولوجياً</b> كما يلي:</p>`;
+                pageReportHTML = `<p>بناءً على المشاهدات الحقلية والقياسات الميدانية، يُظهر المقطع الحقلي للموقع تتابعاً طبقياً يبدأ من السطح (العمق 0.0m) وصولاً إلى أقصى عمق مرصود وهو (${totalDepth.toFixed(1)}m). ويمكن وصف التتابع الليثولوجي والسحني <b>جيولوجياً</b> كما يلي:</p>`;
             }
 
-            if(chunk.length === 0 && page === 0) { reportHTML += "<p>لم يتم إدخال بيانات التتابع الطباقي.</p>"; }
+            if(chunk.length === 0 && page === 0) { pageReportHTML += "<p>لم يتم إدخال بيانات التتابع الطباقي.</p>"; fullScreenReportHTML += "<p>لم يتم إدخال بيانات التتابع الطباقي.</p>"; }
             else {
                 chunk.forEach(L => {
                     let ordStr = ordinals[L.index-1] || `رقم ${L.index}`;
-                    let rawPText = L.printText.split('\n')[0]; // أخذ النص الرئيسي بدون السطر الثاني
+                    let rawPText = L.printText.split('\n')[0];
                     let line = `<p><b>- الطبقة ${ordStr}:</b> تمتد من عمق ${L.depthFrom.toFixed(1)}m إلى عمق ${L.depthTo.toFixed(1)}m (بسُمك يبلغ ${L.thick.toFixed(1)}m). تتكون هذه الطبقة بشكل أساسي من ${rawPText}`;
                     
                     if(L.hasSec) {
@@ -908,7 +908,8 @@
                         else { line += `، حيث يظهر (${rawPText}) متعاقباً طبقياً (Interbedded) بشكل واضح مع رقائق وأشرطة من (${L.sText}).`; }
                     } else { line += `.`; }
                     line += `</p>`;
-                    reportHTML += line;
+                    pageReportHTML += line;
+                    fullScreenReportHTML += line; // إضافة نفس السطر للواجهة الموحدة
                 });
             }
 
@@ -918,13 +919,17 @@
                 <div class="content-padding">
                     <div class="section" style="min-height: 800px;">
                         <div class="section-title" style="border-bottom-color: #8e44ad; color: #8e44ad;">سابعاً: التفسير الجيولوجي والوصف الليثولوجي للمقطع الحقلي ${textChunks > 1 ? `- (تكملة ${page+1})` : ''}</div>
-                        <div class="report-content" contenteditable="true">${reportHTML}</div>
+                        <div class="report-content">${pageReportHTML}</div>
                     </div>
                 </div>
                 <div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesText">X</span></div>
             </div>`;
             textContainer.innerHTML += pageHTML;
         }
+
+        // عرض النص الموحد في واجهة المنصة (الشاشة)
+        document.getElementById('uiReportContent').innerHTML = fullScreenReportHTML;
+        document.getElementById('uiReportSection').style.display = 'block';
 
         // ج. الحسابات والمساحات
         const contractArea = parseFloat(document.getElementById('contractArea').value) || 0; const contractVol = parseFloat(document.getElementById('contractVol').value) || 0;
@@ -940,7 +945,6 @@
         // د. إظهار وتحديث الصفحات الثابتة
         document.getElementById('calcButtonsArea').style.display = 'none'; 
         document.getElementById('pageStrataCanvas').style.display = 'block';
-        document.getElementById('pageSketch').style.display = 'block';
         document.getElementById('pageResults').style.display = 'block';
         
         try { drawSideBySideChart(width, contractArea, investedPercentage, remainingPercentage, document.getElementById('colorInvFill').value, document.getElementById('colorRemFill').value); } catch(e) {}
@@ -990,7 +994,7 @@
         const ctx = canvas.getContext('2d'); ctx.save();
         ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Auto-Fit: الارتفاع ثابت دائماً ليتناسب مع صفحة واحدة مهما كان عدد الطبقات (تضغط آلياً)
+        // Auto-Fit
         const marginX = 60; const marginY = 40; const maxDrawW = 150; const drawH = canvas.height - (marginY * 2) - 30;
         let uniqueTypes = new Map();
         
@@ -1013,7 +1017,7 @@
             ctx.beginPath(); ctx.rect(marginX, startY, layerW, layerH); ctx.clip();
 
             if (layer.hasSec && layer.mixType === 'interbedded') {
-                let stripH = Math.max(4, 12 * (layerH / (drawH / layers.length))); // ضبط سُمك الرقائق ليتناسب مع الضغط
+                let stripH = Math.max(4, 12 * (layerH / (drawH / layers.length))); 
                 let yCurrent = startY; let toggle = true;
                 while(yCurrent < startY + layerH) {
                     let currentStripH = Math.min(stripH, (startY + layerH) - yCurrent);
@@ -1038,7 +1042,7 @@
             ctx.beginPath(); ctx.moveTo(marginX + layerW, yCoord); ctx.lineTo(textX - 8, yCoord); ctx.moveTo(textX - 8, yCoord); ctx.lineTo(textX - 14, yCoord - 4); ctx.moveTo(textX - 8, yCoord); ctx.lineTo(textX - 14, yCoord + 4); ctx.stroke();
         });
 
-        // الـ Legend (دليل التتابع)
+        // الـ Legend 
         let legendX = marginX + maxDrawW + 110; let legendY = marginY + 15;
         ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.font = 'bold 15px Arial'; ctx.fillStyle = '#2c3e50'; 
         ctx.fillText('دليل التتابع (Legend)', legendX, legendY); legendY += 25; 
