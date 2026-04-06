@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- شاشات الترحيب وتسجيل الدخول (النسخة الأصلية الكاملة) --- */
+        /* --- شاشات الترحيب وتسجيل الدخول --- */
         #introScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: right; padding: 15px; box-sizing: border-box; }
         
         .intro-box { background: rgba(255, 255, 255, 0.05); padding: 35px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 850px; width: 100%; max-height: 90vh; overflow-y: auto; backdrop-filter: blur(10px); margin: auto; box-sizing: border-box; }
@@ -149,7 +149,7 @@
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
-        /* --- هندسة الطباعة والتحكم بالصفحات الديناميكية --- */
+        /* --- هندسة الطباعة والتحكم بالصفحات الديناميكية المدمجة (الاحترافية) --- */
         .print-only { display: none !important; }
         
         @media print {
@@ -182,18 +182,24 @@
             input[type="number"], input[type="text"], select { border: none !important; border-bottom: 1px dashed #2980b9 !important; padding: 2px 0; font-size: 0.95rem; text-align: center; width: 100%; background: transparent; appearance: none; -webkit-appearance: none; color: #16a085 !important; font-weight: bold;}
             .coord-display { padding: 4px; font-size: 0.85rem; margin-bottom: 2px; border: 1px solid #ccc !important; background: #fff !important;}
             
-            /* جداول الطباعة الديناميكية */
-            .print-litho-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-            .print-litho-table th, .print-litho-table td { border: 1px solid #bdc3c7; padding: 6px; text-align: center; font-size: 0.9rem; }
-            .print-litho-table th { background-color: #eaf2f8; color: #2c3e50; font-weight: bold;}
+            /* جداول الطباعة الديناميكية المحسنة (Compact) */
+            .print-litho-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+            .print-litho-table th, .print-litho-table td { 
+                border: 1px solid #bdc3c7; 
+                padding: 4px 6px; /* تقليل المسافات لضغط الجدول */
+                text-align: center; 
+                font-size: 0.85rem; /* تصغير الخط بشكل طفيف للرسمية */
+                line-height: 1.4;
+            }
+            .print-litho-table th { background-color: #eaf2f8; color: #2c3e50; font-weight: bold; padding: 6px;}
             .print-litho-table td { font-weight: bold; color: #2c3e50; }
             
             #strataCanvasContainer { page-break-inside: avoid !important; margin-bottom: 0 !important; padding: 10px !important; border: 1px solid #bdc3c7 !important;}
             #strataCanvasContainer h3 { font-size: 1.2rem !important; margin-bottom: 15px !important; padding-bottom: 10px !important;}
             #strataCanvas { max-height: none !important; width: auto !important; max-width: 100% !important; display: block !important; margin: 0 auto !important; }
 
-            .report-content { font-family: 'Arial', sans-serif; text-align: justify; font-size: 1.05rem; line-height: 1.9; color: #222; border: none !important; background: transparent !important; padding: 0 !important; overflow: visible !important; min-height: 0 !important;}
-            .report-content p { margin-bottom: 15px; }
+            .report-content { font-family: 'Arial', sans-serif; text-align: justify; font-size: 1.05rem; line-height: 1.8; color: #222; border: none !important; background: transparent !important; padding: 0 !important; overflow: visible !important; min-height: 0 !important;}
+            .report-content p { margin-bottom: 12px; }
             .report-content b { color: #1c2833; font-size: 1.15rem; }
 
             .check-group { gap: 8px; margin-top: 5px; }
@@ -574,7 +580,7 @@
     // تهيئة المتغيرات والدول
     // ==========================================
     let inputLayerCount = 0; 
-    const LITHOLOGY_PER_PAGE = 15; // تم التعديل إلى 15 طبقة في الصفحة بدلاً من 14
+    const LITHOLOGY_PER_PAGE = 22; // تمت الزيادة من 15 إلى 22 طبقة لملء فراغ الصفحة بشكل مثالي
     const TEXT_PER_PAGE = 8;       
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -909,7 +915,7 @@
                     } else { line += `.`; }
                     line += `</p>`;
                     pageReportHTML += line;
-                    fullScreenReportHTML += line; // إضافة نفس السطر للواجهة الموحدة
+                    fullScreenReportHTML += line; 
                 });
             }
 
