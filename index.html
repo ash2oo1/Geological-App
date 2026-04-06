@@ -1145,29 +1145,15 @@
                 }
             } 
             else if (layer.hasSec && layer.mixType === 'mixed') {
-                // التقسيم القطري (Diagonal Split) للمزيج
-                // 1. رسم الأساسي بالكامل
-                ctx.fillStyle = layer.pColor; ctx.fillRect(marginX, startY, layerW, layerH);
+                // المزيج المتجانس (Matrix & Inclusions) بناءً على طلبك النموذجي
+                
+                // 1. رسم الأساسي بالكامل (لون ونقش الأرضية - Matrix)
+                ctx.fillStyle = layer.pColor; 
+                ctx.fillRect(marginX, startY, layerW, layerH);
                 drawPatternOnly(ctx, layer.pType, marginX, startY, layerW, layerH);
 
-                // 2. قص ورسم الثانوي في المثلث السفلي الأيمن
-                ctx.save();
-                ctx.beginPath();
-                ctx.moveTo(marginX, startY + layerH);
-                ctx.lineTo(marginX + layerW, startY + layerH);
-                ctx.lineTo(marginX + layerW, startY);
-                ctx.closePath();
-                ctx.clip();
-                
-                ctx.fillStyle = layer.secColor; ctx.fillRect(marginX, startY, layerW, layerH);
+                // 2. رسم نقش المكون الثانوي فقط (متناثر فوق الأساسي بدون لون خلفية)
                 drawPatternOnly(ctx, layer.secType, marginX, startY, layerW, layerH);
-                ctx.restore();
-
-                // 3. رسم خط قُطري فاصل حاد
-                ctx.beginPath();
-                ctx.moveTo(marginX, startY + layerH);
-                ctx.lineTo(marginX + layerW, startY);
-                ctx.strokeStyle = '#222'; ctx.lineWidth = 1.5; ctx.stroke();
             } 
             else {
                 ctx.fillStyle = layer.pColor; ctx.fillRect(marginX, startY, layerW, layerH); 
