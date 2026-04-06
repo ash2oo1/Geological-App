@@ -277,8 +277,19 @@
                     <div class="section-title">أولاً: بيانات الجيولوجي المشرف وموقع العمل</div>
                     <div class="form-row">
                         <div class="form-group"><label>اسم الجيولوجي المشرف:</label><input type="text" id="printGeoName" readonly style="color: #2c3e50;"></div>
+                        
                         <div class="form-group">
-                            <label>المحافظة:</label>
+                            <label>الدولة:</label>
+                            <select id="countrySelect" onchange="updateGovs()">
+                                <option value="iraq">العراق</option>
+                                <option value="sudan">السودان</option>
+                                <option value="algeria">الجزائر</option>
+                                <option value="other">أخرى</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label id="govLabel">المحافظة:</label>
                             <select id="govSelect">
                                 <option>بغداد</option><option>البصرة</option><option>نينوى</option>
                                 <option>أربيل</option><option>النجف الأشرف</option><option>كربلاء المقدسة</option>
@@ -287,7 +298,9 @@
                                 <option>ميسان</option><option>واسط</option><option>صلاح الدين</option>
                                 <option>الديوانية</option><option>المثنى</option><option>دهوك</option><option>حلبجة</option>
                             </select>
+                            <input type="text" id="govInput" style="display:none; width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box; font-size:1rem; font-family:inherit;" placeholder="اكتب اسم المحافظة أو الولاية...">
                         </div>
+
                     </div>
                 </div>
 
@@ -305,7 +318,7 @@
                         <div class="form-group"><label>المساحة المتعاقد عليها (m²):</label><input type="number" id="contractArea" placeholder="الناتج (مثلاً 7500)"></div>
                         <div class="form-group"><label>الكمية المتعاقد عليها (m³):</label><input type="number" id="contractVol" placeholder="مثلاً: 37500"></div>
                     </div>
-                    <div class="sub-title" style="margin-top: 20px;">القياسات الميدانية (الفعلية المقاسة في المقلع):</div>
+                    <div class="sub-title" style="margin-top: 20px;">القياسات الميدانية (الفعلية المقاسة في الموقع):</div>
                     <div class="form-row">
                         <div class="form-group"><label>الطول الميداني المستثمر (m):</label><input type="number" id="fieldLength" placeholder="أدخل الطول"></div>
                         <div class="form-group"><label>العرض الميداني المستثمر (m):</label><input type="number" id="fieldWidth" placeholder="أدخل العرض"></div>
@@ -314,7 +327,7 @@
                 </div>
 
                 <div class="section">
-                    <div class="section-title">ثالثاً: الإحداثيات الميدانية للمقلع (نظام UTM)</div>
+                    <div class="section-title">ثالثاً: الإحداثيات الميدانية للموقع (نظام UTM)</div>
                     <div class="gps-grid">
                         <div class="form-group">
                             <button class="gps-btn screen-only" onclick="getCoordinates('point1')">إحداثيات (A)</button>
@@ -349,8 +362,8 @@
                     <div class="section-title">رابعاً: التقييم الجيولوجي الفني ومطابقة المواصفات</div>
                     <label>أ. المتغيرات الجيولوجية والتركيبية في الموقع:</label>
                     <select id="geoVarSelect" onchange="toggleGeoVars()" style="margin-bottom: 10px;">
-                        <option value="no">لا توجد أي متغيرات جيولوجية في موقع القلع (الطبقات مستقرة)</option>
-                        <option value="yes">توجد متغيرات وتراكيب جيولوجية مرصودة في المقلع</option>
+                        <option value="no">لا توجد أي متغيرات جيولوجية في موقع العمل (الطبقات مستقرة)</option>
+                        <option value="yes">توجد متغيرات وتراكيب جيولوجية مرصودة في الموقع</option>
                     </select>
                     <div id="geoVarDetails" style="display: none; padding: 10px; background: #eaf2f8; border-radius: 6px; margin-bottom: 15px;">
                         <label>حدد المتغيرات (يمكن اختيار أكثر من واحد أو إضافة متغير جديد):</label>
@@ -373,9 +386,9 @@
 
                 <div class="section">
                     <div class="section-title">خامساً: التقييم البيئي، السلامة، ورصد عمليات التصنيع</div>
-                    <label>أ. مستوى التلوث الموضعي الملاحظ بالمقلع:</label>
+                    <label>أ. مستوى التلوث الموضعي الملاحظ في الموقع:</label>
                     <select id="pollSelect" onchange="togglePollution()" style="margin-bottom: 10px;">
-                        <option value="no">لا يوجد تلوث ملحوظ في موقع المقلع</option>
+                        <option value="no">لا يوجد تلوث ملحوظ في موقع العمل</option>
                         <option value="yes">تم رصد ملوثات في الموقع (كما محدد أدناه)</option>
                     </select>
                     <div id="pollDetails" class="check-group" style="display: none; margin-bottom: 15px;">
@@ -385,13 +398,13 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group"><label>ب. تقييم مستوى المياه الجوفية:</label>
-                            <select style="margin-bottom: 10px;"><option>الحفر آمن ولم يصل لمستوى المياه الجوفية</option><option>المياه الجوفية ظاهرة في جوف المقلع</option><option>تأثير سلبي على المياه (يتطلب إيقاف الحفر)</option></select>
+                            <select style="margin-bottom: 10px;"><option>الحفر آمن ولم يصل لمستوى المياه الجوفية</option><option>المياه الجوفية ظاهرة في جوف الحفر</option><option>تأثير سلبي على المياه (يتطلب إيقاف الحفر)</option></select>
                         </div>
-                        <div class="form-group"><label>ج. خطة إعادة التأهيل للمقلع:</label>
-                            <select style="margin-bottom: 10px;"><option>المقلع قيد الاستثمار المستمر</option><option>متروك كحفرة خطرة (مخالفة لتعليمات التأهيل)</option><option>تمت أعمال التسوية وإعادة التأهيل</option></select>
+                        <div class="form-group"><label>ج. خطة إعادة التأهيل للموقع:</label>
+                            <select style="margin-bottom: 10px;"><option>الموقع قيد الاستثمار المستمر</option><option>متروك كحفرة خطرة (مخالفة لتعليمات التأهيل)</option><option>تمت أعمال التسوية وإعادة التأهيل</option></select>
                         </div>
                     </div>
-                    <label style="border-top: 1px dashed #ccc; padding-top: 10px; margin-top: 5px;">د. رصد عمليات التصنيع الأولية والآليات في المقلع:</label>
+                    <label style="border-top: 1px dashed #ccc; padding-top: 10px; margin-top: 5px;">د. رصد عمليات التصنيع الأولية والآليات في الموقع:</label>
                     <div class="check-group">
                         <label class="check-item"><input type="checkbox"> إزالة الغطاء الترابي (Overburden Removal)</label>
                         <label class="check-item"><input type="checkbox"> عمليات القلع والتكديس (Excavation)</label>
@@ -428,7 +441,7 @@
 
                 <div class="section" id="strataCanvasContainer" style="display: none; border: 2px solid #2980b9; margin-bottom: 15px;">
                     <div class="canvas-container" style="margin-bottom: 0;">
-                        <h3>العمود الطباقي لمنطقة المقلع (Stratigraphic Column)</h3>
+                        <h3>العمود الطباقي لمنطقة العمل (Stratigraphic Column)</h3>
                         <canvas id="strataCanvas" width="700" height="400"></canvas>
                     </div>
                 </div>
@@ -473,7 +486,7 @@
                 </div>
                 
                 <div class="screen-only" style="margin-top: 20px;">
-                    <button class="btn-satellite" id="satBtn" onclick="generateSatelliteMap()">🌍 توليد الصورة الفضائية للمقلع (يتطلب إنترنت)</button>
+                    <button class="btn-satellite" id="satBtn" onclick="generateSatelliteMap()">🌍 توليد الصورة الفضائية للموقع (يتطلب إنترنت)</button>
                     <button class="btn-print" onclick="prepareAndPrint()">📄 حفظ التقرير الشامل كملف PDF</button>
                 </div>
 
@@ -490,16 +503,16 @@
             <div class="content-padding">
                 <div class="section" style="border: 2px solid #8e44ad; padding: 10px; box-shadow: none;">
                     <div class="canvas-container" id="mapSection" style="margin-bottom: 0;">
-                        <h3>الصورة الفضائية للمقلع (Satellite View)</h3>
+                        <h3>الصورة الفضائية للموقع (Satellite View)</h3>
                         <div class="map-wrapper" dir="ltr">
                             <div id="satelliteMap"></div>
                             <div class="map-north">⬆ N</div>
                             <div class="map-legend-box">
                                 <b>دليل الصورة الفضائية</b>
                                 <span style="color:#27ae60; font-size:16px;">■</span> غطاء نباتي/زراعي<br>
-                                <span style="color:#d35400; font-size:16px;">■</span> أراضي ترابية/مقلع<br>
+                                <span style="color:#d35400; font-size:16px;">■</span> أراضي ترابية<br>
                                 <span style="color:#2980b9; font-size:16px;">■</span> تجمعات مائية<br>
-                                <span style="color:#e74c3c; font-weight:bold; font-size:16px;">▬</span> حدود المقلع المستثمر
+                                <span style="color:#e74c3c; font-weight:bold; font-size:16px;">▬</span> حدود الموقع المستثمر
                             </div>
                             <div id="customScaleContainer" style="position: absolute; bottom: 10px; left: 10px; z-index: 1000; pointer-events: none; border-radius: 4px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.3); display: none;">
                                 <canvas id="customScaleCanvas"></canvas>
@@ -517,9 +530,44 @@
 
 <script>
     // ==========================================
+    // إعدادات بيانات الدول والمحافظات (الميزة الذكية)
+    // ==========================================
+    const govsData = {
+        iraq: ['بغداد', 'البصرة', 'نينوى', 'أربيل', 'النجف الأشرف', 'كربلاء المقدسة', 'كركوك', 'الأنبار', 'ديالى', 'ذي قار', 'السليمانية', 'بابل', 'ميسان', 'واسط', 'صلاح الدين', 'الديوانية', 'المثنى', 'دهوك', 'حلبجة'],
+        sudan: ['الخرطوم', 'البحر الأحمر', 'نهر النيل', 'الجزيرة', 'كسلا', 'القضارف', 'سنار', 'النيل الأبيض', 'النيل الأزرق', 'شمال كردفان', 'جنوب كردفان', 'شمال دارفور', 'جنوب دارفور', 'الشمالية'],
+        algeria: ['الجزائر', 'وهران', 'قسنطينة', 'عنابة', 'البليدة', 'باتنة', 'الجلفة', 'سطيف', 'سيدي بلعباس', 'بسكرة', 'تبسة', 'تيارت', 'ورقلة', 'بجاية', 'سكيكدة', 'تلمسان', 'أدرار']
+    };
+
+    function updateGovs() {
+        const country = document.getElementById('countrySelect').value;
+        const govSelect = document.getElementById('govSelect');
+        const govInput = document.getElementById('govInput');
+        const govLabel = document.getElementById('govLabel');
+
+        if (govsData[country]) {
+            govSelect.style.display = 'block';
+            if(govInput) govInput.style.display = 'none';
+            govSelect.innerHTML = '';
+            govsData[country].forEach(g => {
+                let opt = document.createElement('option');
+                opt.value = g;
+                opt.innerText = g;
+                govSelect.appendChild(opt);
+            });
+            govLabel.innerText = country === 'iraq' ? 'المحافظة:' : 'الولاية / المقاطعة:';
+        } else {
+            govSelect.style.display = 'none';
+            if(govInput) {
+                govInput.style.display = 'block';
+                govInput.value = '';
+            }
+            govLabel.innerText = 'المحافظة / الولاية:';
+        }
+    }
+
+    // ==========================================
     // إعدادات Discord Webhook
     // ==========================================
-    // الصق رابط الديسكورد بين علامتي التنصيص هنا
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1489971638866018416/bnZr5QTOUoq7vm2tqLbTd6VYr38tYh9LqDXDQPWhOPQsASTwk1zeUPQDfGy3wx-NKaWD";
 
     function sendDiscordAlert(geoName, locData, isSuccess = true) {
@@ -531,7 +579,6 @@
         
         let gpsStatus = locData.enabled ? "✅ مفعل بدقة :GPS" : `❌ غير مفعل (${locData.type})`;
         
-        // تعديل الرابط ليفتح خرائط جوجل الرسمية مباشرة
         let locLink = (locData.lat && locData.lng) ? `https://www.google.com/maps?q=${locData.lat},${locData.lng}` : "غير متوفر";
         
         let loginStatus = isSuccess ? "✅ دخول ناجح للمنصة" : "❌ محاولة دخول فاشلة (رمز خاطئ)";
@@ -548,7 +595,7 @@
                     { name: "وضع الـ GPS", value: gpsStatus, inline: false },
                     { name: "موقع الجيولوجي", value: `[اضغط هنا لفتح الخريطة](${locLink})`, inline: false }
                 ],
-                footer: { text: "منصة المسح الميداني الجيولوجي 2026" } // تم حذف كلمة للمقالع
+                footer: { text: "منصة المسح الميداني الجيولوجي 2026" } 
             }]
         };
 
@@ -691,11 +738,9 @@
             document.getElementById('mainContent').style.display = 'block';
             updateLitho();
             
-            // استدعاء ديسكورد عند الدخول الناجح
             sendDiscordAlert(currentGeoName, loginLocation, true);
             
         } else { 
-            // استدعاء ديسكورد عند الدخول الفاشل
             sendDiscordAlert(nameInput, loginLocation, false);
             
             errorDiv.innerHTML = "❌ الرمز السري خاطئ."; 
@@ -973,7 +1018,6 @@
                 ctx.moveTo(textX - 8, yCoord); ctx.lineTo(textX - 14, yCoord + 4); ctx.stroke();
             };
 
-            // إزالة السهم والصفر بناء على طلبك
             drawDepth(layer.start + layer.thick, startY + layerH); 
         });
 
