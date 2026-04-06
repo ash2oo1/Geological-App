@@ -167,11 +167,14 @@
             input[type="number"], input[type="text"], select { border: none !important; border-bottom: 1px dashed #2980b9 !important; padding: 2px 0; font-size: 0.95rem; text-align: center; width: 100%; background: transparent; appearance: none; -webkit-appearance: none; color: #16a085 !important; font-weight: bold;}
             .coord-display { padding: 4px; font-size: 0.85rem; margin-bottom: 2px; border: 1px solid #ccc !important; background: #fff !important;}
             
-            /* --- التعديل السحري لضغط الصفحة 3 لاحتواء الـ 10 طبقات مع الرسم --- */
             .litho-table th, .litho-table td { padding: 3px !important; font-size: 0.8rem !important; }
+            .litho-table select { display: block !important; margin-bottom: 2px !important; }
+            .litho-table div[id^="customDiv"] { justify-content: center !important; }
+            .litho-table div[id^="customDiv"] input[type="text"] { font-size: 10px !important; border: 1px solid #ccc !important; text-align: center !important; background: transparent !important;}
+            .litho-table div[id^="customDiv"] input[type="color"] { border: 1px solid #ccc !important;}
+            
             #strataCanvasContainer { page-break-inside: avoid !important; margin-bottom: 0 !important; padding: 5px !important; }
             #strataCanvas { max-height: 220px !important; width: auto !important; display: block !important; margin: 0 auto !important; }
-            /* --------------------------------------------------------------- */
 
             .check-group { gap: 8px; margin-top: 5px; }
             .check-item { padding: 4px 8px; font-size: 0.85rem; background: #fff; border-color: #ccc; }
@@ -282,7 +285,7 @@
                             <label>الدولة:</label>
                             <select id="countrySelect" onchange="updateGovs()">
                                 <option value="iraq" selected>العراق</option>
-                                </select>
+                            </select>
                         </div>
                         
                         <div class="form-group">
@@ -547,7 +550,6 @@
         });
     });
 
-    // دالة إخفاء وإظهار المحافظات الذكية
     function updateGovs() {
         const country = document.getElementById('countrySelect').value;
         const govSelect = document.getElementById('govSelect');
@@ -573,15 +575,11 @@
 
     function sendDiscordAlert(geoName, locData, isSuccess = true) {
         if(!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL === "ضع_رابط_ديسكورد_هنا") return;
-        
         const now = new Date();
         const timeStr = now.toLocaleTimeString('en-GB', {hour12: false});
         const dateStr = now.toLocaleDateString('en-GB'); 
-        
         let gpsStatus = locData.enabled ? "✅ مفعل بدقة :GPS" : `❌ غير مفعل (${locData.type})`;
-        
         let locLink = (locData.lat && locData.lng) ? `https://www.google.com/maps?q=${locData.lat},${locData.lng}` : "غير متوفر";
-        
         let loginStatus = isSuccess ? "✅ دخول ناجح للمنصة" : "❌ محاولة دخول فاشلة (رمز خاطئ)";
 
         const message = {
@@ -608,7 +606,7 @@
     }
 
     // ==========================================
-    // الوظائف البرمجية الأساسية للمنصة
+    // الوظائف البرمجية الأساسية وإعدادات الطبقات
     // ==========================================
     let currentGeoName = "";
     let rawGpsPoints = { point1: null, point2: null, point3: null, point4: null };
@@ -667,36 +665,71 @@
         document.getElementById('pollDetails').style.display = val === 'yes' ? 'flex' : 'none';
     }
 
+    // خيارات الليثولوجي الجديدة الموحدة عالمياً
     const lithoOptions = `
-        <option value="none">-- None --</option>
-        <option value="topsoil">Topsoil</option>
-        <option value="clay">Clay</option>
-        <option value="siltyclay">Silty Clay</option>
-        <option value="sandyclay">Sandy Clay</option>
-        <option value="claysilt">Clay Silt</option>
-        <option value="sand">Sand</option>
-        <option value="interbedded">Interbedded Clay & Sand</option>
-        <option value="claysandysilt">Clay sandy interbedded with silt</option>
+        <option value="none">-- غير محدد --</option>
+        <optgroup label="التربة والرسوبيات الفتاتية (Clastic)">
+            <option value="topsoil">تربة سطحية (Topsoil)</option>
+            <option value="clay">طين (Clay)</option>
+            <option value="silt">غرين/طمى (Silt)</option>
+            <option value="sand">رمل (Sand)</option>
+            <option value="gravel">حصى (Gravel)</option>
+            <option value="conglomerate">رصيص (Conglomerate)</option>
+        </optgroup>
+        <optgroup label="الصخور الكاربوناتية (Carbonates)">
+            <option value="limestone">حجر جيري (Limestone)</option>
+            <option value="dolomite">دولومايت (Dolomite)</option>
+            <option value="marl">مارل (Marl)</option>
+            <option value="chalk">طباشير (Chalk)</option>
+        </optgroup>
+        <optgroup label="المتبخرات (Evaporites)">
+            <option value="gypsum">جبس/أنهيدرايت (Gypsum)</option>
+            <option value="halite">ملح صخري (Halite)</option>
+        </optgroup>
+        <optgroup label="الصخور النارية والمتحولة (Igneous)">
+            <option value="granite">جرانيت (Granite)</option>
+            <option value="basalt">بازلت (Basalt)</option>
+            <option value="schist">شيست (Schist)</option>
+        </optgroup>
+        <optgroup label="إضافي">
+            <option value="custom">أخرى (مخصص / Custom)</option>
+        </optgroup>
     `;
+    
     const tbody = document.getElementById('lithoBody');
     for(let i=1; i<=10; i++) {
         let tr = document.createElement('tr');
         tr.id = 'layerRow' + i;
         tr.innerHTML = `
             <td>${i}</td>
-            <td><select id="lType${i}" onchange="updateLitho()">${lithoOptions}</select></td>
+            <td style="padding: 5px;">
+                <select id="lType${i}" onchange="updateLithoUI(${i})" style="margin-bottom:2px;">${lithoOptions}</select>
+                <div id="customDiv${i}" style="display:none; gap:5px; align-items:center; justify-content:center; margin-top:3px;">
+                    <input type="text" id="customName${i}" placeholder="اسم الطبقة..." style="width:65%; font-size:0.85rem; padding:4px;" onchange="updateLitho()">
+                    <input type="color" id="customColor${i}" value="#aed6f1" style="width:30%; height:28px; padding:0; border:1px solid #ccc; cursor:pointer;" onchange="updateLitho()">
+                </div>
+            </td>
             <td><input type="number" id="lThick${i}" value="0" step="0.1" onchange="updateLitho()"></td>
             <td><span id="lDepth${i}" class="depth-span">0.0 - 0.0</span></td>
         `;
         tbody.appendChild(tr);
     }
     
-    document.getElementById('lType1').value = 'siltyclay'; document.getElementById('lThick1').value = '0.4';
-    document.getElementById('lType2').value = 'clay'; document.getElementById('lThick2').value = '0.7';
-    document.getElementById('lType3').value = 'claysandysilt'; document.getElementById('lThick3').value = '1.9'; 
-    document.getElementById('lType4').value = 'claysilt'; document.getElementById('lThick4').value = '2.5';
-    document.getElementById('lType5').value = 'sandyclay'; document.getElementById('lThick5').value = '1.5';
-    document.getElementById('lType6').value = 'interbedded'; document.getElementById('lThick6').value = '3.0';
+    // قيم ابتدائية لتوضيح الرسوم
+    document.getElementById('lType1').value = 'topsoil'; document.getElementById('lThick1').value = '0.5';
+    document.getElementById('lType2').value = 'clay'; document.getElementById('lThick2').value = '1.2';
+    document.getElementById('lType3').value = 'silt'; document.getElementById('lThick3').value = '1.8'; 
+    document.getElementById('lType4').value = 'sand'; document.getElementById('lThick4').value = '2.5';
+    document.getElementById('lType5').value = 'gravel'; document.getElementById('lThick5').value = '1.5';
+    document.getElementById('lType6').value = 'limestone'; document.getElementById('lThick6').value = '3.0';
+
+    function updateLithoUI(index) {
+        let selectVal = document.getElementById('lType'+index).value;
+        let customDiv = document.getElementById('customDiv'+index);
+        if(selectVal === 'custom') { customDiv.style.display = 'flex'; } 
+        else { customDiv.style.display = 'none'; }
+        updateLitho();
+    }
 
     function updateLitho() {
         let currentDepth = 0;
@@ -722,9 +755,7 @@
         const pwdInput = document.getElementById('adminPassword').value;
 
         if (nameInput.split(' ').length < 2) { 
-            errorDiv.innerHTML = "❌ يرجى كتابة الاسم الثلاثي."; 
-            errorDiv.style.display = 'block'; 
-            return; 
+            errorDiv.innerHTML = "❌ يرجى كتابة الاسم الثلاثي."; errorDiv.style.display = 'block'; return; 
         }
 
         const secretCode = String.fromCharCode(97, 108, 105, 49, 50, 51);
@@ -732,25 +763,19 @@
         if (pwdInput === secretCode) {
             currentGeoName = nameInput; 
             errorDiv.style.display = 'none'; 
-            btn.innerText = "تم الدخول..."; 
-            btn.disabled = true;
+            btn.innerText = "تم الدخول..."; btn.disabled = true;
             document.getElementById('printGeoName').value = currentGeoName;
             document.getElementById('introScreen').style.display = 'none'; 
             document.getElementById('mainContent').style.display = 'block';
             updateLitho();
-            
             sendDiscordAlert(currentGeoName, loginLocation, true);
-            
         } else { 
             sendDiscordAlert(nameInput, loginLocation, false);
-            
-            errorDiv.innerHTML = "❌ الرمز السري خاطئ."; 
-            errorDiv.style.display = 'block'; 
+            errorDiv.innerHTML = "❌ الرمز السري خاطئ."; errorDiv.style.display = 'block'; 
         }
     }
 
     document.addEventListener('contextmenu', event => event.preventDefault());
-    
     document.onkeydown = function(e) {
         if(e.keyCode == 123) { return false; }
         if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
@@ -853,13 +878,9 @@
 
             const ctx = canvas.getContext('2d'); 
             ctx.clearRect(0, 0, canvas.width, canvas.height); 
-            
-            ctx.fillStyle = 'rgba(255,255,255,0.9)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            const scaleX = paddingLeft; 
-            const scaleY = 24; 
-
+            const scaleX = paddingLeft; const scaleY = 24; 
             ctx.beginPath(); ctx.strokeStyle = '#000'; ctx.lineWidth = 2.5;
             ctx.moveTo(scaleX, scaleY); ctx.lineTo(scaleX + pixelsForTarget, scaleY); ctx.stroke();
             ctx.beginPath(); ctx.lineWidth = 2; ctx.moveTo(scaleX, scaleY - 6); ctx.lineTo(scaleX, scaleY + 6); ctx.stroke();
@@ -907,7 +928,6 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         const margin = 70; const drawW = canvas.width - (margin * 2); const drawH = canvas.height - (margin * 2) - 40; 
-        
         let totalW = parseFloat(fieldWidth); if (isNaN(totalW) || totalW <= 0) totalW = 100;
         let totalL = parseFloat(totalArea) / totalW; if (isNaN(totalL) || totalL <= 0 || !isFinite(totalL)) totalL = 100;
 
@@ -941,7 +961,6 @@
             ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.font = 'bold 16px Arial';
             if (invPixelW > 90) { ctx.fillText(`المستثمرة`, margin + invPixelW/2, margin + drawH/2 - 15); ctx.fillText(`(${safeInvPct.toFixed(0)}%)`, margin + invPixelW/2, margin + drawH/2 + 15); }
         }
-
         if (safeRemPct > 0) {
             ctx.fillStyle = colRem || '#115577'; ctx.fillRect(margin + invPixelW, margin, remPixelW, drawH);
             ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.strokeRect(margin + invPixelW, margin, remPixelW, drawH);
@@ -977,34 +996,115 @@
 
         let layers = []; let totalDepth = 0; let uniqueTypes = new Set();
         for(let i=1; i<=10; i++) {
-            let type = document.getElementById('lType'+i).value;
+            let typeSelect = document.getElementById('lType'+i);
+            let type = typeSelect.value;
             let thick = parseFloat(document.getElementById('lThick'+i).value) || 0;
-            let name = document.getElementById('lType'+i).options[document.getElementById('lType'+i).selectedIndex].text;
-            if(type !== 'none' && thick > 0) { layers.push({type: type, name: name, thick: thick, start: totalDepth}); totalDepth += thick; uniqueTypes.add(type); }
+            let name = typeSelect.options[typeSelect.selectedIndex].text;
+            let color = null;
+
+            if (type === 'custom') {
+                name = document.getElementById('customName'+i).value || 'طبقة مخصصة';
+                color = document.getElementById('customColor'+i).value;
+            } else if (type === 'none') { continue; }
+
+            let uniqueId = type === 'custom' ? `custom_${name}_${color}` : type;
+
+            if(thick > 0) {
+                layers.push({id: uniqueId, type: type, name: name, color: color, thick: thick, start: totalDepth});
+                totalDepth += thick;
+                uniqueTypes.add(uniqueId);
+            }
         }
         if(totalDepth === 0) { ctx.restore(); return; }
 
         const marginX = 60; const marginY = 40; const drawW = 150; const drawH = canvas.height - (marginY * 2);
         ctx.lineWidth = 2; ctx.strokeStyle = '#333'; ctx.strokeRect(marginX, marginY, drawW, drawH);
         
-        function fillPattern(type, x, y, w, h) {
+        function fillPattern(type, x, y, w, h, customColor) {
             ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
-            if(type === 'topsoil') ctx.fillStyle = '#d7ccc8'; else if(type === 'clay') ctx.fillStyle = '#cfd8dc';
-            else if(type === 'sand') ctx.fillStyle = '#ffe082'; else if(type === 'siltyclay') ctx.fillStyle = '#e0e0e0';
-            else if(type === 'sandyclay') ctx.fillStyle = '#d7ccc8'; else if(type === 'claysilt') ctx.fillStyle = '#f5f5f5';
-            else if(type === 'claysandysilt') ctx.fillStyle = '#cfd8dc'; else if(type === 'interbedded') ctx.fillStyle = '#b0bec5';
+            
+            // Background colors
+            if(type === 'custom') ctx.fillStyle = customColor || '#cccccc';
+            else if(type === 'topsoil') ctx.fillStyle = '#d7ccc8';
+            else if(type === 'clay') ctx.fillStyle = '#cfd8dc';
+            else if(type === 'silt') ctx.fillStyle = '#eceff1';
+            else if(type === 'sand') ctx.fillStyle = '#ffe082';
+            else if(type === 'gravel' || type === 'conglomerate') ctx.fillStyle = '#bcaaa4';
+            else if(type === 'limestone' || type === 'dolomite' || type === 'marl' || type === 'chalk') ctx.fillStyle = '#e3f2fd';
+            else if(type === 'gypsum' || type === 'halite') ctx.fillStyle = '#f8bbd0';
+            else if(type === 'granite') ctx.fillStyle = '#ffccbc';
+            else if(type === 'basalt') ctx.fillStyle = '#b0bec5';
+            else if(type === 'schist') ctx.fillStyle = '#c5cae9';
+            
             ctx.fillRect(x,y,w,h);
+            
             ctx.lineWidth = 1; ctx.strokeStyle = '#555'; ctx.fillStyle = '#555';
-            if(type.includes('clay') || type === 'claysandysilt') { for(let i=y+4; i<y+h; i+=8) { ctx.beginPath(); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.stroke(); } }
-            if(type.includes('sand') || type === 'claysandysilt') { for(let i=0; i< (w*h)/40; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.8, 0, Math.PI*2); ctx.fill(); } }
-            if(type === 'topsoil') { for(let i=0; i< (w*h)/80; i++) { let px = x+Math.random()*w; let py = y+Math.random()*h; ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px+3,py+5); ctx.lineTo(px+6,py); ctx.stroke(); } }
-            if(type === 'interbedded') { for(let i=y+10; i<y+h; i+=15) { ctx.beginPath(); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.lineWidth=2; ctx.stroke(); ctx.lineWidth=1;} }
+            
+            // Standard Drawings
+            if(type === 'clay' || type === 'marl') { 
+                for(let i=y+5; i<y+h; i+=8) { ctx.beginPath(); ctx.setLineDash([8, 4]); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.stroke(); } 
+                ctx.setLineDash([]);
+            }
+            if(type === 'silt' || type === 'marl') {
+                 for(let i=0; i< (w*h)/60; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.5, 0, Math.PI*2); ctx.fill(); }
+                 for(let i=y+4; i<y+h; i+=10) { ctx.beginPath(); ctx.moveTo(x + Math.random()*w, i); ctx.lineTo(x + Math.random()*w + 5, i); ctx.stroke(); }
+            }
+            if(type === 'sand') { 
+                for(let i=0; i< (w*h)/30; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.8, 0, Math.PI*2); ctx.fill(); } 
+            }
+            if(type === 'gravel' || type === 'conglomerate') {
+                for(let i=0; i< (w*h)/150; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 2 + Math.random()*3, 0, Math.PI*2); ctx.stroke(); }
+            }
+            if(type === 'conglomerate') {
+                for(let i=0; i< (w*h)/50; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.8, 0, Math.PI*2); ctx.fill(); }
+            }
+            if(type === 'limestone' || type === 'dolomite') {
+                for(let i=y; i<y+h; i+=12) { 
+                    ctx.beginPath(); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.stroke(); 
+                    let offset = (Math.floor(i/12)%2 === 0) ? 0 : 10;
+                    for(let j=x+offset; j<x+w; j+=20) {
+                        ctx.beginPath(); 
+                        if(type === 'dolomite') { ctx.moveTo(j, i); ctx.lineTo(j+5, i+12); } else { ctx.moveTo(j, i); ctx.lineTo(j, i+12); }
+                        ctx.stroke();
+                    }
+                }
+            }
+            if(type === 'chalk') {
+                for(let i=0; i< (w*h)/80; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.5, 0, Math.PI*2); ctx.fill(); }
+            }
+            if(type === 'gypsum' || type === 'halite') {
+                for(let i=x-h; i<x+w; i+=10) { ctx.beginPath(); ctx.moveTo(i, y); ctx.lineTo(i+h, y+h); ctx.stroke(); }
+                if(type === 'halite') { for(let i=x; i<x+w+h; i+=10) { ctx.beginPath(); ctx.moveTo(i, y); ctx.lineTo(i-h, y+h); ctx.stroke(); } }
+            }
+            if(type === 'granite') {
+                 for(let i=0; i< (w*h)/100; i++) {
+                    let px = x + Math.random()*w; let py = y + Math.random()*h;
+                    ctx.beginPath(); ctx.moveTo(px-2, py-2); ctx.lineTo(px+2, py+2); ctx.moveTo(px+2, py-2); ctx.lineTo(px-2, py+2); ctx.stroke();
+                 }
+            }
+            if(type === 'basalt') {
+                 for(let i=0; i< (w*h)/100; i++) {
+                    let px = x + Math.random()*w; let py = y + Math.random()*h;
+                    ctx.beginPath(); ctx.moveTo(px-3, py-3); ctx.lineTo(px, py); ctx.lineTo(px+3, py-3); ctx.stroke();
+                 }
+            }
+            if(type === 'schist') {
+                for(let i=y+5; i<y+h; i+=10) {
+                    ctx.beginPath(); ctx.moveTo(x, i); 
+                    for(let j=x; j<x+w; j+=10) { ctx.quadraticCurveTo(j+5, i+3, j+10, i); }
+                    ctx.stroke();
+                }
+            }
+            if(type === 'topsoil') { 
+                for(let i=0; i< (w*h)/80; i++) { let px = x+Math.random()*w; let py = y+Math.random()*h; ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px+3,py+5); ctx.lineTo(px+6,py); ctx.stroke(); } 
+            }
+            
             ctx.restore(); ctx.strokeRect(x,y,w,h);
         }
 
         layers.forEach((layer, index) => {
             let startY = marginY + (layer.start / totalDepth) * drawH; let layerH = (layer.thick / totalDepth) * drawH;
-            fillPattern(layer.type, marginX, startY, drawW, layerH);
+            fillPattern(layer.type, marginX, startY, drawW, layerH, layer.color);
             
             ctx.fillStyle = '#000'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
             ctx.lineWidth = 1.5; ctx.strokeStyle = '#2c3e50';
@@ -1025,18 +1125,17 @@
         ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.font = 'bold 17px Arial'; ctx.fillStyle = '#2c3e50'; 
         ctx.fillText('Legend', legendX, legendY); legendY += 35;
         layers.forEach(layer => {
-            if(uniqueTypes.has(layer.type)) { 
-                fillPattern(layer.type, legendX, legendY - 12, 25, 25); 
+            if(uniqueTypes.has(layer.id)) { 
+                fillPattern(layer.type, legendX, legendY - 12, 25, 25, layer.color); 
                 ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; 
                 ctx.fillText(layer.name, legendX + 35, legendY); 
                 legendY += 35; 
-                uniqueTypes.delete(layer.type); 
+                uniqueTypes.delete(layer.id); 
             }
         });
 
         let scaleUnitStrata = totalDepth > 5 ? 2 : 1; let scalePixels = (scaleUnitStrata / totalDepth) * drawH;
-        let sX = legendX; 
-        let sY = marginY + drawH; 
+        let sX = legendX; let sY = marginY + drawH; 
         ctx.strokeStyle = '#000'; ctx.lineWidth = 2.5; ctx.beginPath();
         ctx.moveTo(sX, sY - 6); ctx.lineTo(sX, sY + 6); 
         ctx.moveTo(sX, sY); ctx.lineTo(sX + scalePixels, sY); 
