@@ -137,6 +137,10 @@
         .map-legend-box { position: absolute; bottom: 25px; right: 15px; z-index: 1000; background: rgba(255,255,255,0.95); padding: 10px; border-radius: 6px; border: 2px solid #2c3e50; font-size: 12px; text-align: right; box-shadow: 0 2px 5px rgba(0,0,0,0.3); line-height: 1.8; pointer-events: none;}
         .map-legend-box b { color: #2c3e50; display: block; margin-bottom: 5px; font-size: 13px; border-bottom: 1px solid #ccc; padding-bottom: 3px;}
 
+        /* ستايل المربع النصي الذكي */
+        .report-textarea { width: 100%; min-height: 350px; padding: 15px; font-family: 'Arial', sans-serif; font-size: 1.1rem; line-height: 2; border: 1px solid #bdc3c7; border-radius: 8px; box-sizing: border-box; background-color: #fcfcfc; color: #2c3e50; text-align: justify; resize: vertical; }
+        .report-textarea:focus { outline: none; border-color: #2980b9; box-shadow: 0 0 5px rgba(41, 128, 185, 0.3); }
+
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
@@ -177,8 +181,12 @@
             .litho-ui-section { display: none !important; } 
             .litho-print-text { display: block !important; font-weight: bold; color: #2c3e50; text-align: center;} 
             
+            /* تكبير مساحة العمود الطباقي للطباعة */
             #strataCanvasContainer { page-break-inside: avoid !important; margin-bottom: 0 !important; padding: 5px !important; }
-            #strataCanvas { max-height: 290px !important; width: auto !important; display: block !important; margin: 0 auto !important; }
+            #strataCanvas { max-height: 480px !important; width: auto !important; max-width: 100% !important; display: block !important; margin: 0 auto !important; }
+
+            /* ستايل المربع النصي في الطباعة (لجعله يبدو كتقرير رسمي وليس صندوق إدخال) */
+            .report-textarea { border: none !important; background: transparent !important; resize: none !important; padding: 0 !important; overflow: hidden !important; min-height: 0 !important; height: auto !important; box-shadow: none !important; color: #222 !important; }
 
             .check-group { gap: 8px; margin-top: 5px; }
             .check-item { padding: 4px 8px; font-size: 0.85rem; background: #fff; border-color: #ccc; }
@@ -351,7 +359,7 @@
                     </div>
                 </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 1 من 5</div>
+            <div class="print-only print-bottom">الصفحة 1 من 6</div>
         </div> 
 
         <div class="print-page-wrapper">
@@ -423,7 +431,7 @@
                     </div>
                 </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 2 من 5</div>
+            <div class="print-only print-bottom">الصفحة 2 من 6</div>
         </div>
 
         <div class="print-page-wrapper" id="page3Wrapper">
@@ -455,7 +463,23 @@
                     </div>
                 </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 3 من 5</div>
+            <div class="print-only print-bottom">الصفحة 3 من 6</div>
+        </div>
+
+        <div class="print-page-wrapper" id="page4Wrapper" style="display: none;">
+            <div class="print-only print-header">
+                <span class="date-top-left printDateHeader"></span>
+                <h1>نظام المسح الميداني الجيولوجي (التقرير الشامل)</h1>
+                <h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
+            </div>
+            <div class="content-padding">
+                <div class="section">
+                    <div class="section-title" style="border-bottom-color: #8e44ad; color: #8e44ad;">سابعاً: التفسير الجيولوجي والوصف الليثولوجي للمقطع الحقلي</div>
+                    <p class="screen-only" style="font-size: 0.9rem; color: #555; margin-bottom: 10px;">* تم توليد هذا الوصف آلياً بواسطة خوارزمية النظام الذكية بناءً على الجدول الطباقي. يمكنك التعديل عليه أو الإضافة قبل الطباعة.</p>
+                    <textarea id="geoReportText" class="report-textarea"></textarea>
+                </div>
+            </div>
+            <div class="print-only print-bottom">الصفحة 4 من 6</div>
         </div>
 
         <div id="calcButtonsArea" class="content-padding screen-only">
@@ -466,10 +490,10 @@
                     <div class="form-group"><label>لون المساحة المتبقية:</label><input type="color" id="colorRemFill" value="#115577"></div>
                 </div>
             </div>
-            <button class="btn-calc" onclick="calculateResults()">إجراء المعالجة وتوليد المرتسمات الهندسية</button>
+            <button class="btn-calc" onclick="calculateResults()">إجراء المعالجة وتوليد المرتسمات والتقارير</button>
         </div>
 
-        <div class="print-page-wrapper" id="page4Wrapper" style="display: none;">
+        <div class="print-page-wrapper" id="page5Wrapper" style="display: none;">
             <div class="print-only print-header">
                 <span class="date-top-left printDateHeader"></span>
                 <h1>نظام المسح الميداني الجيولوجي (التقرير الشامل)</h1>
@@ -478,7 +502,7 @@
             <div class="content-padding">
                 
                 <div class="section" id="resultsSection" style="margin-bottom: 15px;">
-                    <div class="section-title" style="border-bottom-color: #27ae60; color: #27ae60; margin-bottom: 10px;">النتائج النهائية للكميات والمساحة والعمق</div>
+                    <div class="section-title" style="border-bottom-color: #27ae60; color: #27ae60; margin-bottom: 10px;">ثامناً: النتائج النهائية للكميات والمساحة والعمق</div>
                     <div class="result-item"><span>الكميات المستخرجة لغاية يوم الزيارة (م³):</span><span class="result-value" id="resExtractedVol">0</span></div>
                     <div class="result-item"><span>الكميات المتبقية من العقد (م³):</span><span class="result-value" id="resRemainingVol">0</span></div>
                     <div class="result-item"><span>المساحة المستثمرة (م²):</span><span class="result-value" id="resInvestedArea">0</span></div>
@@ -500,10 +524,10 @@
                 </div>
 
             </div>
-            <div class="print-only print-bottom">الصفحة 4 من 5</div>
+            <div class="print-only print-bottom">الصفحة 5 من 6</div>
         </div>
 
-        <div class="print-page-wrapper" id="satPageWrapper" style="display: none;">
+        <div class="print-page-wrapper" id="page6Wrapper" style="display: none;">
             <div class="print-only print-header">
                 <span class="date-top-left printDateHeader"></span>
                 <h1>نظام المسح الميداني الجيولوجي (التقرير الشامل)</h1>
@@ -512,7 +536,7 @@
             <div class="content-padding">
                 <div class="section" style="border: 2px solid #8e44ad; padding: 10px; box-shadow: none;">
                     <div class="canvas-container" id="mapSection" style="margin-bottom: 0;">
-                        <h3>الصورة الفضائية للموقع (Satellite View)</h3>
+                        <h3>تاسعاً: الصورة الفضائية للموقع (Satellite View)</h3>
                         <div class="map-wrapper" dir="ltr">
                             <div id="satelliteMap"></div>
                             <div class="map-north">⬆ N</div>
@@ -530,7 +554,7 @@
                     </div>
                 </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 5 من 5</div>
+            <div class="print-only print-bottom">الصفحة 6 من 6</div>
         </div>
 
         <div class="footer screen-only">جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026</div>
@@ -841,6 +865,66 @@
         } else { alert("المتصفح لا يدعم تحديد الموقع."); }
     }
 
+    // ==========================================
+    // خوارزمية الذكاء الاصطناعي لكتابة التقرير الجيولوجي
+    // ==========================================
+    function generateGeoReport() {
+        let report = "بناءً على المشاهدات الحقلية والقياسات الميدانية، يُظهر المقطع الحقلي للموقع تتابعاً طبقياً يبدأ من السطح (العمق 0.0 متر)، ويمكن وصف التتابع الليثولوجي والسحني هندسياً كما يلي:\n\n";
+        let currentDepth = 0;
+        let layerCount = 0;
+        const ordinals = ["الأولى", "الثانية", "الثالثة", "الرابعة", "الخامسة", "السادسة", "السابعة", "الثامنة", "التاسعة", "العاشرة"];
+
+        for(let i=1; i<=10; i++) {
+            let thick = parseFloat(document.getElementById('lThick'+i).value) || 0;
+            let pCat = document.getElementById('pCat'+i).value;
+            
+            if(pCat !== 'none' && thick > 0) {
+                let pType = document.getElementById('pType'+i).value;
+                let pName = (pCat==='other' || pType==='custom') ? document.getElementById('pName'+i).value : document.getElementById('pType'+i).options[document.getElementById('pType'+i).selectedIndex].text;
+                
+                // تنظيف الاسم من اللغة الإنجليزية ليظهر عربياً خالصاً في السرد
+                let pNameClean = pName.split(' (')[0] || pName; 
+                
+                let startD = currentDepth;
+                let endD = currentDepth + thick;
+                
+                let layerText = `- الطبقة ${ordinals[layerCount]}: تمتد من عمق ${startD.toFixed(1)}m إلى عمق ${endD.toFixed(1)}m (بسُمك يبلغ ${thick.toFixed(1)}m). تتكون هذه الطبقة بشكل أساسي من ${pNameClean || 'صخور غير محددة'}`;
+                
+                if(document.getElementById('hasSec'+i).checked) {
+                    let sCat = document.getElementById('sCat'+i).value;
+                    if(sCat !== 'none') {
+                        let sType = document.getElementById('sType'+i).value;
+                        let sName = (sCat==='other' || sType==='custom') ? document.getElementById('sName'+i).value : document.getElementById('sType'+i).options[document.getElementById('sType'+i).selectedIndex].text;
+                        let sNameClean = sName.split(' (')[0] || sName;
+                        let mixType = document.getElementById('mixType'+i).value;
+                        
+                        if (mixType === 'mixed') {
+                            layerText += `، وهي عبارة عن مزيج متجانس يغلب عليه الـ(${pNameClean}) كأرضية (Matrix)، مع وجود تداخل وتناثر لحبيبات الـ(${sNameClean}) ضمن المصفوفة.`;
+                        } else {
+                            layerText += `، حيث يظهر الـ(${pNameClean}) متعاقباً طبقياً (Interbedded) بشكل واضح مع رقائق وأشرطة من الـ(${sNameClean}).`;
+                        }
+                    } else {
+                        layerText += `.`;
+                    }
+                } else {
+                    layerText += `.`;
+                }
+                
+                report += layerText + "\n";
+                currentDepth = endD;
+                layerCount++;
+            }
+        }
+        
+        if (layerCount === 0) {
+            report = "لم يتم إدخال بيانات التتابع الطباقي في الجدول المخصص.";
+        } else {
+            report += `\nوبناءً على هذا التتابع السحني، تم تحديد أقصى عمق آمن وفعال للاستثمار عند عمق (${currentDepth.toFixed(1)}m) من مستوى سطح الأرض المرجعي.`;
+        }
+        
+        document.getElementById('geoReportText').value = report;
+    }
+
     function calculateResults() {
         const contractArea = parseFloat(document.getElementById('contractArea').value) || 0;
         const contractVol = parseFloat(document.getElementById('contractVol').value) || 0;
@@ -860,8 +944,16 @@
         document.getElementById('resMaxDepth').innerText = depth.toLocaleString('en-US');
         document.getElementById('percentageNote').innerText = `النسبة المئوية للمساحة المتبقية للاستثمار هي (${remainingPercentage.toFixed(1)}%) من إجمالي العقد.`;
         
-        document.getElementById('calcButtonsArea').style.display = 'none'; updateAllDepths(); 
-        document.getElementById('strataCanvasContainer').style.display = 'block'; document.getElementById('page4Wrapper').style.display = 'block';
+        document.getElementById('calcButtonsArea').style.display = 'none'; 
+        updateAllDepths(); 
+        
+        // استدعاء توليد التقرير النصي
+        generateGeoReport();
+
+        // إظهار الصفحات الجديدة
+        document.getElementById('strataCanvasContainer').style.display = 'block'; 
+        document.getElementById('page4Wrapper').style.display = 'block';
+        document.getElementById('page5Wrapper').style.display = 'block';
         
         try { drawSideBySideChart(width, contractArea, investedPercentage, remainingPercentage, colorInv, colorRem); } catch(e) {}
         try { drawStratigraphicColumn(); } catch(e) {}
@@ -905,7 +997,7 @@
         if(rawGpsPoints.point4) pts.push([rawGpsPoints.point4.lat, rawGpsPoints.point4.lng]);
         if(pts.length < 3) { alert("⚠️ يرجى التقاط إحداثيات لثلاث نقاط على الأقل."); return; }
 
-        document.getElementById('satPageWrapper').style.display = 'block';
+        document.getElementById('page6Wrapper').style.display = 'block';
         if(myLeafletMap !== null) { myLeafletMap.remove(); }
         myLeafletMap = L.map('satelliteMap', { zoomControl: true, maxBoundsViscosity: 1.0, background: 'white' });
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles © Esri', maxZoom: 22, maxNativeZoom: 19 }).addTo(myLeafletMap);
@@ -916,7 +1008,7 @@
 
         const bounds = polygon.getBounds(); myLeafletMap.fitBounds(bounds, {padding: [70, 70]}); myLeafletMap.setMaxBounds(bounds.pad(1)); 
         setTimeout(() => { myLeafletMap.invalidateSize(); updateCustomMapScale(); }, 600); myLeafletMap.on('moveend zoomend', updateCustomMapScale);
-        document.getElementById('satBtn').innerText = "✅ تم التوليد (راجع الصفحة 5)"; document.getElementById('satBtn').style.background = "#27ae60";
+        document.getElementById('satBtn').innerText = "✅ تم التوليد (راجع الصفحة 6)"; document.getElementById('satBtn').style.background = "#27ae60";
     }
 
     function drawSideBySideChart(fieldWidth, totalArea, invPct, remPct, colInv, colRem) {
@@ -1145,7 +1237,7 @@
                 }
             } 
             else if (layer.hasSec && layer.mixType === 'mixed') {
-                // المزيج المتجانس (Matrix & Inclusions) بناءً على طلبك النموذجي
+                // المزيج المتجانس (Matrix & Inclusions)
                 
                 // 1. رسم الأساسي بالكامل (لون ونقش الأرضية - Matrix)
                 ctx.fillStyle = layer.pColor; 
