@@ -98,9 +98,15 @@
         .litho-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
         .litho-table th, .litho-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
         .litho-table th { background-color: #f4f6f7; color: #2c3e50; font-size: 0.9rem; }
-        .litho-table input, .litho-table select { border: none; text-align: center; padding: 5px; background: transparent; width: 100%; border-bottom: 1px dashed #ccc; font-weight: bold; font-family: 'Arial', sans-serif;}
-        .litho-table input:focus, .litho-table select:focus { border-bottom: 2px solid var(--accent); outline: none; }
+        .litho-table input, .litho-table select { border: 1px solid #ccc; border-radius: 4px; padding: 4px; font-size: 0.85rem; width: 100%; font-family: 'Arial', sans-serif;}
+        .litho-table input:focus, .litho-table select:focus { border-color: var(--accent); outline: none; }
         .depth-span { font-weight: bold; color: #e67e22; direction: ltr; display: inline-block;}
+        
+        .litho-ui-section { margin-bottom: 8px; text-align: right; background: #fafafa; padding: 6px; border-radius: 6px; border: 1px solid #eee; }
+        .litho-ui-label { font-size: 0.8rem; font-weight: bold; color: #2980b9; margin-bottom: 4px; display: block; }
+        .litho-flex-row { display: flex; gap: 5px; margin-bottom: 4px; }
+        .litho-custom-div { display: none; gap: 5px; margin-top: 4px; }
+        .litho-print-text { display: none; }
 
         .gps-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         @media (min-width: 768px) { .gps-grid { grid-template-columns: 1fr 1fr; } }
@@ -134,7 +140,7 @@
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
-        /* --- هندسة الطباعة (5 صفحات صارمة - الكود الأصلي) --- */
+        /* --- هندسة الطباعة --- */
         .print-only { display: none; }
         
         @media print {
@@ -167,14 +173,13 @@
             input[type="number"], input[type="text"], select { border: none !important; border-bottom: 1px dashed #2980b9 !important; padding: 2px 0; font-size: 0.95rem; text-align: center; width: 100%; background: transparent; appearance: none; -webkit-appearance: none; color: #16a085 !important; font-weight: bold;}
             .coord-display { padding: 4px; font-size: 0.85rem; margin-bottom: 2px; border: 1px solid #ccc !important; background: #fff !important;}
             
-            .litho-table th, .litho-table td { padding: 3px !important; font-size: 0.8rem !important; }
-            .litho-table select { display: block !important; margin-bottom: 2px !important; }
-            .litho-table div[id^="customDiv"] { justify-content: center !important; }
-            .litho-table div[id^="customDiv"] input[type="text"] { font-size: 10px !important; border: 1px solid #ccc !important; text-align: center !important; background: transparent !important;}
-            .litho-table div[id^="customDiv"] input[type="color"] { border: 1px solid #ccc !important;}
+            /* -- التعديل السحري للمحافظة على حجم الصفحة 3 -- */
+            .litho-table th, .litho-table td { padding: 4px !important; font-size: 0.9rem !important; }
+            .litho-ui-section { display: none !important; } /* إخفاء كل القوائم المعقدة في الطباعة */
+            .litho-print-text { display: block !important; font-weight: bold; color: #2c3e50; text-align: center;} /* إظهار النص الصافي فقط */
             
             #strataCanvasContainer { page-break-inside: avoid !important; margin-bottom: 0 !important; padding: 5px !important; }
-            #strataCanvas { max-height: 220px !important; width: auto !important; display: block !important; margin: 0 auto !important; }
+            #strataCanvas { max-height: 250px !important; width: auto !important; display: block !important; margin: 0 auto !important; }
 
             .check-group { gap: 8px; margin-top: 5px; }
             .check-item { padding: 4px 8px; font-size: 0.85rem; background: #fff; border-color: #ccc; }
@@ -430,11 +435,17 @@
             </div>
             <div class="content-padding">
                 <div class="section">
-                    <div class="section-title">سادساً: التتابع الطباقي والوصف الليثولوجي (Stratigraphic Data)</div>
-                    <p class="screen-only" style="font-size: 0.85rem; color: #7f8c8d; margin-top: -10px;">* يمكنك إضافة حتى 10 طبقات (اترك الطبقات الزائدة على None ولن تظهر).</p>
+                    <div class="section-title">سادساً: التتابع الطباقي (Stratigraphic Column)</div>
+                    <p class="screen-only" style="font-size: 0.85rem; color: #7f8c8d; margin-top: -10px;">* حدد النوع الأساسي. يمكنك إضافة "تداخل" إذا كانت الطبقة ممزوجة أو متعاقبة.</p>
                     <table class="litho-table" id="lithoTableObj">
-                        <tr><th style="width: 15%;">Layer No.</th><th style="width: 45%;">Lithology</th><th style="width: 20%;">Thickness (m)</th><th style="width: 20%;">Depth (m)</th></tr>
-                        <tbody id="lithoBody"></tbody>
+                        <tr>
+                            <th style="width: 8%;">رقم</th>
+                            <th style="width: 52%;">الوصف الليثولوجي (Lithology)</th>
+                            <th style="width: 20%;">السُمك (m)</th>
+                            <th style="width: 20%;">العمق (m)</th>
+                        </tr>
+                        <tbody id="lithoBody">
+                            </tbody>
                     </table>
                 </div>
 
@@ -529,7 +540,7 @@
 
 <script>
     // ==========================================
-    // توليد قائمة دول العالم الـ 195 ديناميكياً
+    // 1. توليد قائمة دول العالم الـ 195 ديناميكياً
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
         const countrySelect = document.getElementById('countrySelect');
@@ -537,7 +548,6 @@
         const otherWorld = ["أفغانستان", "ألبانيا", "أرمينيا", "أنغولا", "الأرجنتين", "النمسا", "أستراليا", "أذربيجان", "البوسنة والهرسك", "باربادوس", "بنغلاديش", "بلجيكا", "بوركينا فاسو", "بلغاريا", "بوروندي", "بنين", "بروناي", "بوليفيا", "البرازيل", "البهاما", "بوتان", "بوتسوانا", "بيلاروسيا", "بليز", "كندا", "الكونغو الديمقراطية", "أفريقيا الوسطى", "الكونغو", "سويسرا", "ساحل العاج", "تشيلي", "الكاميرون", "الصين", "كولومبيا", "كوستاريكا", "كوبا", "الرأس الأخضر", "قبرص", "التشيك", "ألمانيا", "الدنمارك", "دومينيكا", "الدومينيكان", "الإكوادور", "إستونيا", "إريتريا", "إسبانيا", "إثيوبيا", "فنلندا", "فيجي", "فرنسا", "ميكرونيزيا", "الغابون", "المملكة المتحدة", "غرينادا", "جورجيا", "غانا", "غامبيا", "غينيا", "غينيا الاستوائية", "اليونان", "غواتيمالا", "غينيا بيساو", "غيانا", "هندوراس", "كرواتيا", "هايتي", "المجر", "إندونيسيا", "أيرلندا", "الهند", "إيران", "أيسلندا", "إيطاليا", "جامايكا", "اليابان", "كينيا", "قرغيزستان", "كمبوديا", "كيريباتي", "سانت كيتس ونيفيس", "كوريا الشمالية", "كوريا الجنوبية", "كازاخستان", "لاوس", "سانت لوسيا", "ليختنشتاين", "سريلانكا", "ليبيريا", "ليسوتو", "ليتوانيا", "لوكسمبورغ", "لاتفيا", "موناكو", "مولدوفا", "الجبل الأسود", "مدغشقر", "جزر مارشال", "مقدونيا الشمالية", "مالي", "ميانمار", "منغوليا", "مالطا", "موريشيوس", "المالديف", "مالاوي", "المكسيك", "ماليزيا", "موزمبيق", "ناميبيا", "النيجر", "نيجيريا", "نيكاراغوا", "هولندا", "النرويج", "نيبال", "ناورو", "نيوزيلندا", "بنما", "بيرو", "بابوا غينيا الجديدة", "الفلبين", "باكستان", "بولندا", "البرتغال", "بالاو", "باراغواي", "رومانيا", "صربيا", "روسيا", "رواندا", "جزر سليمان", "سيشل", "السويد", "سنغافورة", "سلوفينيا", "سلوفاكيا", "سيراليون", "سان مارينو", "السنغال", "سورينام", "جنوب السودان", "ساو تومي وبرينسيب", "السلفادور", "إسواتيني", "تشاد", "توغو", "تايلاند", "طاجيكستان", "تيمور الشرقية", "تركمانستان", "تونغا", "تركيا", "ترينيداد وتوباغو", "توفالو", "تايوان", "تنزانيا", "أوكرانيا", "أوغندا", "الولايات المتحدة", "أوروغواي", "أوزبكستان", "الفاتيكان", "سانت فينسنت", "فنزويلا", "فيتنام", "فانواتو", "ساموا", "جنوب أفريقيا", "زامبيا", "زيمبابوي"];
         
         const allOtherCountries = [...arabCountries, ...otherWorld].sort((a, b) => a.localeCompare(b, 'ar'));
-        
         allOtherCountries.forEach(country => {
             let opt = document.createElement('option');
             opt.value = country;
@@ -548,6 +558,9 @@
         document.getElementById("adminPassword").addEventListener("keypress", (e) => { 
             if (e.key === "Enter") handleLogin(); 
         });
+
+        // بناء جدول الليثولوجي الذكي عند بدء التحميل
+        buildLithoTable();
     });
 
     function updateGovs() {
@@ -567,6 +580,174 @@
             govLabel.innerText = 'المحافظة / الولاية / المقاطعة:';
         }
     }
+
+    // ==========================================
+    // 2. محرك الليثولوجي الذكي (Cascading Dropdowns)
+    // ==========================================
+    
+    // القاموس المرجعي العالمي للصخور
+    const lithoDB = {
+        none: { label: "-- اختر المجموعة --", types: { none: "-- اختر النوع --" } },
+        clastic: { label: "تربة ورسوبيات (Clastic)", types: { topsoil: "تربة سطحية", clay: "طين", silt: "غرين/طمي", sand: "رمل", gravel: "حصى", conglomerate: "رصيص", breccia: "بريشيا", sandstone: "حجر رملي", mudstone: "حجر طيني", shale: "سجيل" } },
+        carbonate: { label: "صخور كاربوناتية (Carbonates)", types: { limestone: "حجر جيري", dolomite: "دولومايت", marl: "مارل", chalk: "طباشير", calcarenite: "حجر جيري فتاتي", coquina: "كوكوينا" } },
+        evaporite: { label: "متبخرات (Evaporites)", types: { gypsum: "جبس/أنهيدرايت", halite: "ملح صخري" } },
+        igneous: { label: "نارية (Igneous)", types: { granite: "جرانيت", basalt: "بازلت", gabbro: "جابرو", diorite: "ديورايت", pumice: "بيومس", tuff: "طف بركاني" } },
+        meta: { label: "متحولة (Metamorphic)", types: { schist: "شيست", slate: "سلايت", gneiss: "نايس", marble: "رخام", quartzite: "كوارتزايت" } },
+        other: { label: "أخرى (مخصص / Custom)", types: { custom: "إدخال يدوي..." } }
+    };
+
+    // الألوان القياسية (USGS Standard Colors approximations)
+    const baseColors = {
+        topsoil: '#d7ccc8', clay: '#cfd8dc', silt: '#eceff1', sand: '#ffe082', gravel: '#bcaaa4', conglomerate: '#a1887f', breccia: '#8d6e63', sandstone: '#ffcc80', mudstone: '#b0bec5', shale: '#90a4ae',
+        limestone: '#e3f2fd', dolomite: '#bbdefb', marl: '#c5cae9', chalk: '#f5f5f5', calcarenite: '#bbdefb', coquina: '#e3f2fd',
+        gypsum: '#f8bbd0', halite: '#f48fb1',
+        granite: '#ffccbc', basalt: '#78909c', gabbro: '#546e7a', diorite: '#90a4ae', pumice: '#d7ccc8', tuff: '#ffd54f',
+        schist: '#b39ddb', slate: '#9fa8da', gneiss: '#ce93d8', marble: '#e0f7fa', quartzite: '#ffecb3',
+        none: '#ffffff', custom: '#cccccc'
+    };
+
+    function buildLithoTable() {
+        const tbody = document.getElementById('lithoBody');
+        let catOptionsHTML = '';
+        for (let key in lithoDB) { catOptionsHTML += `<option value="${key}">${lithoDB[key].label}</option>`; }
+
+        for (let i = 1; i <= 10; i++) {
+            let tr = document.createElement('tr');
+            tr.id = 'layerRow' + i;
+            tr.innerHTML = `
+                <td>${i}</td>
+                <td style="text-align: right;">
+                    <div class="litho-ui-section litho-ui">
+                        <span class="litho-ui-label">المكون الأساسي:</span>
+                        <div class="litho-flex-row">
+                            <select id="pCat${i}" onchange="updateTypeDD(${i}, 'p')" style="width:45%;">${catOptionsHTML}</select>
+                            <select id="pType${i}" onchange="checkCustom(${i}, 'p')" style="width:55%;"><option value="none">-- اختر النوع --</option></select>
+                        </div>
+                        <div id="pCustomDiv${i}" class="litho-custom-div">
+                            <input type="text" id="pName${i}" placeholder="اكتب اسم الطبقة..." style="width:70%;" onchange="updateLithoText(${i})">
+                            <input type="color" id="pColor${i}" value="#aed6f1" style="width:30%; height:30px;" onchange="updateLithoText(${i})">
+                        </div>
+                    </div>
+                    
+                    <div class="litho-ui-section litho-ui">
+                        <label style="font-size: 0.8rem; cursor: pointer; color: #e67e22;"><input type="checkbox" id="hasSec${i}" onchange="toggleSec(${i})"> إضافة تداخل (مكون ثانوي)</label>
+                        <div id="secWrap${i}" style="display:none; margin-top:5px; padding-right:10px; border-right:2px solid #e67e22;">
+                            <select id="mixType${i}" style="margin-bottom:5px; font-weight:bold; color:#d35400;" onchange="updateLithoText(${i})">
+                                <option value="mixed">شكل التداخل: مزيج (Mixed)</option>
+                                <option value="interbedded">شكل التداخل: تعاقب طبقي (Interbedded)</option>
+                            </select>
+                            <div class="litho-flex-row">
+                                <select id="sCat${i}" onchange="updateTypeDD(${i}, 's')" style="width:45%;">${catOptionsHTML}</select>
+                                <select id="sType${i}" onchange="checkCustom(${i}, 's')" style="width:55%;"><option value="none">-- اختر النوع --</option></select>
+                            </div>
+                            <div id="sCustomDiv${i}" class="litho-custom-div">
+                                <input type="text" id="sName${i}" placeholder="اكتب اسم التداخل..." style="width:70%;" onchange="updateLithoText(${i})">
+                                <input type="color" id="sColor${i}" value="#f5b041" style="width:30%; height:30px;" onchange="updateLithoText(${i})">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="printText${i}" class="litho-print-text">-- غير محدد --</div>
+                </td>
+                <td><input type="number" id="lThick${i}" value="0" step="0.1" onchange="updateLithoText(${i}); updateAllDepths();" style="width:100%;"></td>
+                <td><span id="lDepth${i}" class="depth-span">0.0</span></td>
+            `;
+            tbody.appendChild(tr);
+        }
+        
+        // إعدادات افتراضية كمثال لطبقات العراق (يمكن تغييرها لاحقاً من قبل المستخدم)
+        setTimeout(() => {
+            document.getElementById('pCat1').value = 'clastic'; updateTypeDD(1, 'p'); document.getElementById('pType1').value = 'topsoil'; document.getElementById('lThick1').value = '0.5';
+            document.getElementById('pCat2').value = 'clastic'; updateTypeDD(2, 'p'); document.getElementById('pType2').value = 'clay'; document.getElementById('lThick2').value = '1.0';
+            document.getElementById('pCat3').value = 'clastic'; updateTypeDD(3, 'p'); document.getElementById('pType3').value = 'sand'; document.getElementById('hasSec3').checked = true; toggleSec(3); document.getElementById('mixType3').value = 'mixed'; document.getElementById('sCat3').value = 'clastic'; updateTypeDD(3, 's'); document.getElementById('sType3').value = 'gravel'; document.getElementById('lThick3').value = '2.0';
+            document.getElementById('pCat4').value = 'carbonate'; updateTypeDD(4, 'p'); document.getElementById('pType4').value = 'limestone'; document.getElementById('hasSec4').checked = true; toggleSec(4); document.getElementById('mixType4').value = 'interbedded'; document.getElementById('sCat4').value = 'carbonate'; updateTypeDD(4, 's'); document.getElementById('sType4').value = 'marl'; document.getElementById('lThick4').value = '3.5';
+            updateAllDepths();
+        }, 100);
+    }
+
+    function updateTypeDD(index, prefix) {
+        let catSelect = document.getElementById(prefix + 'Cat' + index);
+        let typeSelect = document.getElementById(prefix + 'Type' + index);
+        let selectedCat = catSelect.value;
+        
+        typeSelect.innerHTML = '';
+        let types = lithoDB[selectedCat].types;
+        
+        if(selectedCat === 'other') {
+            typeSelect.style.display = 'none';
+            document.getElementById(prefix + 'CustomDiv' + index).style.display = 'flex';
+        } else {
+            typeSelect.style.display = 'block';
+            document.getElementById(prefix + 'CustomDiv' + index).style.display = 'none';
+            for (let t in types) {
+                let opt = document.createElement('option');
+                opt.value = t; opt.innerText = types[t];
+                typeSelect.appendChild(opt);
+            }
+        }
+        updateLithoText(index);
+    }
+
+    function checkCustom(index, prefix) {
+        let val = document.getElementById(prefix + 'Type' + index).value;
+        if(val === 'custom') { document.getElementById(prefix + 'CustomDiv' + index).style.display = 'flex'; } 
+        else { document.getElementById(prefix + 'CustomDiv' + index).style.display = 'none'; }
+        updateLithoText(index);
+    }
+
+    function toggleSec(index) {
+        let isChecked = document.getElementById('hasSec' + index).checked;
+        document.getElementById('secWrap' + index).style.display = isChecked ? 'block' : 'none';
+        updateLithoText(index);
+    }
+
+    function updateLithoText(index) {
+        let row = document.getElementById('layerRow' + index);
+        let pCat = document.getElementById('pCat' + index).value;
+        let pType = document.getElementById('pType' + index).value;
+        let thick = parseFloat(document.getElementById('lThick' + index).value) || 0;
+        
+        if (pCat === 'none' || thick === 0) {
+            row.classList.add('no-print');
+            document.getElementById('printText' + index).innerText = "-- غير محدد --";
+            return;
+        } else {
+            row.classList.remove('no-print');
+        }
+
+        let pText = (pCat === 'other' || pType === 'custom') ? (document.getElementById('pName' + index).value || "طبقة مخصصة") : document.getElementById('pType' + index).options[document.getElementById('pType' + index).selectedIndex].text;
+        
+        let finalText = pText;
+        
+        if (document.getElementById('hasSec' + index).checked) {
+            let sCat = document.getElementById('sCat' + index).value;
+            let sType = document.getElementById('sType' + index).value;
+            let mixType = document.getElementById('mixType' + index).value;
+            
+            if (sCat !== 'none') {
+                let sText = (sCat === 'other' || sType === 'custom') ? (document.getElementById('sName' + index).value || "تداخل مخصص") : document.getElementById('sType' + index).options[document.getElementById('sType' + index).selectedIndex].text;
+                let mixWord = (mixType === 'mixed') ? "ممزوج مع" : "متعاقب طبقياً مع";
+                finalText = `${pText} (${mixWord} ${sText})`;
+            }
+        }
+        document.getElementById('printText' + index).innerText = finalText;
+    }
+
+    function updateAllDepths() {
+        let currentDepth = 0;
+        for(let i=1; i<=10; i++) {
+            let pCat = document.getElementById('pCat' + i).value;
+            let thick = parseFloat(document.getElementById('lThick' + i).value) || 0;
+            if (pCat !== 'none' && thick > 0) {
+                let from = currentDepth; let to = currentDepth + thick;
+                document.getElementById('lDepth' + i).innerText = `${from.toFixed(1)} - ${to.toFixed(1)}`;
+                currentDepth = to;
+            } else {
+                document.getElementById('lDepth' + i).innerText = `0.0`;
+            }
+        }
+    }
+
 
     // ==========================================
     // إعدادات Discord Webhook
@@ -605,9 +786,6 @@
         }).then(() => console.log("تم إرسال إشعار ديسكورد")).catch(err => console.error("خطأ ديسكورد:", err));
     }
 
-    // ==========================================
-    // الوظائف البرمجية الأساسية وإعدادات الطبقات
-    // ==========================================
     let currentGeoName = "";
     let rawGpsPoints = { point1: null, point2: null, point3: null, point4: null };
     let loginLocation = { lat: null, lng: null, enabled: false, type: 'قيد الانتظار' };
@@ -665,89 +843,6 @@
         document.getElementById('pollDetails').style.display = val === 'yes' ? 'flex' : 'none';
     }
 
-    // خيارات الليثولوجي الجديدة الموحدة عالمياً
-    const lithoOptions = `
-        <option value="none">-- غير محدد --</option>
-        <optgroup label="التربة والرسوبيات الفتاتية (Clastic)">
-            <option value="topsoil">تربة سطحية (Topsoil)</option>
-            <option value="clay">طين (Clay)</option>
-            <option value="silt">غرين/طمى (Silt)</option>
-            <option value="sand">رمل (Sand)</option>
-            <option value="gravel">حصى (Gravel)</option>
-            <option value="conglomerate">رصيص (Conglomerate)</option>
-        </optgroup>
-        <optgroup label="الصخور الكاربوناتية (Carbonates)">
-            <option value="limestone">حجر جيري (Limestone)</option>
-            <option value="dolomite">دولومايت (Dolomite)</option>
-            <option value="marl">مارل (Marl)</option>
-            <option value="chalk">طباشير (Chalk)</option>
-        </optgroup>
-        <optgroup label="المتبخرات (Evaporites)">
-            <option value="gypsum">جبس/أنهيدرايت (Gypsum)</option>
-            <option value="halite">ملح صخري (Halite)</option>
-        </optgroup>
-        <optgroup label="الصخور النارية والمتحولة (Igneous)">
-            <option value="granite">جرانيت (Granite)</option>
-            <option value="basalt">بازلت (Basalt)</option>
-            <option value="schist">شيست (Schist)</option>
-        </optgroup>
-        <optgroup label="إضافي">
-            <option value="custom">أخرى (مخصص / Custom)</option>
-        </optgroup>
-    `;
-    
-    const tbody = document.getElementById('lithoBody');
-    for(let i=1; i<=10; i++) {
-        let tr = document.createElement('tr');
-        tr.id = 'layerRow' + i;
-        tr.innerHTML = `
-            <td>${i}</td>
-            <td style="padding: 5px;">
-                <select id="lType${i}" onchange="updateLithoUI(${i})" style="margin-bottom:2px;">${lithoOptions}</select>
-                <div id="customDiv${i}" style="display:none; gap:5px; align-items:center; justify-content:center; margin-top:3px;">
-                    <input type="text" id="customName${i}" placeholder="اسم الطبقة..." style="width:65%; font-size:0.85rem; padding:4px;" onchange="updateLitho()">
-                    <input type="color" id="customColor${i}" value="#aed6f1" style="width:30%; height:28px; padding:0; border:1px solid #ccc; cursor:pointer;" onchange="updateLitho()">
-                </div>
-            </td>
-            <td><input type="number" id="lThick${i}" value="0" step="0.1" onchange="updateLitho()"></td>
-            <td><span id="lDepth${i}" class="depth-span">0.0 - 0.0</span></td>
-        `;
-        tbody.appendChild(tr);
-    }
-    
-    // قيم ابتدائية لتوضيح الرسوم
-    document.getElementById('lType1').value = 'topsoil'; document.getElementById('lThick1').value = '0.5';
-    document.getElementById('lType2').value = 'clay'; document.getElementById('lThick2').value = '1.2';
-    document.getElementById('lType3').value = 'silt'; document.getElementById('lThick3').value = '1.8'; 
-    document.getElementById('lType4').value = 'sand'; document.getElementById('lThick4').value = '2.5';
-    document.getElementById('lType5').value = 'gravel'; document.getElementById('lThick5').value = '1.5';
-    document.getElementById('lType6').value = 'limestone'; document.getElementById('lThick6').value = '3.0';
-
-    function updateLithoUI(index) {
-        let selectVal = document.getElementById('lType'+index).value;
-        let customDiv = document.getElementById('customDiv'+index);
-        if(selectVal === 'custom') { customDiv.style.display = 'flex'; } 
-        else { customDiv.style.display = 'none'; }
-        updateLitho();
-    }
-
-    function updateLitho() {
-        let currentDepth = 0;
-        for(let i=1; i<=10; i++) {
-            let type = document.getElementById('lType'+i).value;
-            let thickInput = document.getElementById('lThick'+i);
-            let row = document.getElementById('layerRow'+i);
-            
-            if(type === 'none') { thickInput.value = 0; thickInput.disabled = true; row.classList.add('no-print'); } 
-            else { thickInput.disabled = false; row.classList.remove('no-print'); }
-            
-            let thick = parseFloat(thickInput.value) || 0;
-            let from = currentDepth; let to = currentDepth + thick;
-            document.getElementById('lDepth'+i).innerText = `${from.toFixed(1)} - ${to.toFixed(1)}`;
-            currentDepth = to;
-        }
-    }
-
     function handleLogin() {
         const errorDiv = document.getElementById('loginError'); 
         const btn = document.getElementById('loginBtn');
@@ -767,7 +862,7 @@
             document.getElementById('printGeoName').value = currentGeoName;
             document.getElementById('introScreen').style.display = 'none'; 
             document.getElementById('mainContent').style.display = 'block';
-            updateLitho();
+            updateAllDepths();
             sendDiscordAlert(currentGeoName, loginLocation, true);
         } else { 
             sendDiscordAlert(nameInput, loginLocation, false);
@@ -840,6 +935,7 @@
         document.getElementById('percentageNote').innerText = `النسبة المئوية للمساحة المتبقية للاستثمار هي (${remainingPercentage.toFixed(1)}%) من إجمالي العقد.`;
         
         document.getElementById('calcButtonsArea').style.display = 'none';
+        updateAllDepths(); // تحديث أخير للتأكيد
         document.getElementById('strataCanvasContainer').style.display = 'block';
         document.getElementById('page4Wrapper').style.display = 'block';
         
@@ -868,12 +964,8 @@
             const pixelsForTarget = (targetMeters * 100) / distanceMeters;
             if(pixelsForTarget > myLeafletMap.getSize().x - 60) { container.style.display = 'none'; return; } 
 
-            const paddingLeft = 15;  
-            const paddingRight = 30; 
-            const canvasWidth = pixelsForTarget + paddingLeft + paddingRight;
-            
-            canvas.width = canvasWidth;
-            canvas.height = 34; 
+            const paddingLeft = 15; const paddingRight = 30; 
+            canvas.width = pixelsForTarget + paddingLeft + paddingRight; canvas.height = 34; 
             container.style.display = 'block';
 
             const ctx = canvas.getContext('2d'); 
@@ -989,151 +1081,185 @@
         ctx.fillText('0', margin, scaleBarY + 10); ctx.fillText(`${scaleUnit} m`, margin + scaleBarPixels, scaleBarY + 10);
     }
 
+    // ==========================================
+    // 3. خوارزميات الرسم الطباقي الاحترافية
+    // ==========================================
+    
+    function drawPatternOnly(ctx, type, x, y, w, h) {
+        ctx.save(); ctx.beginPath(); ctx.rect(x,y,w,h); ctx.clip();
+        ctx.strokeStyle = '#333'; ctx.fillStyle = '#333'; ctx.lineWidth = 1;
+
+        if(type === 'clay' || type === 'mudstone' || type === 'shale') {
+            for(let i=y+6; i<y+h; i+=8) { ctx.beginPath(); ctx.setLineDash([8, 4]); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.stroke(); }
+            ctx.setLineDash([]);
+        } 
+        else if(type === 'sand' || type === 'sandstone') {
+            for(let i=0; i< (w*h)/30; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.7, 0, Math.PI*2); ctx.fill(); }
+        } 
+        else if(type === 'silt') {
+            for(let i=0; i< (w*h)/60; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.5, 0, Math.PI*2); ctx.fill(); }
+            for(let i=y+4; i<y+h; i+=10) { ctx.beginPath(); ctx.moveTo(x + Math.random()*w, i); ctx.lineTo(x + Math.random()*w + 4, i); ctx.stroke(); }
+        } 
+        else if(type === 'gravel' || type === 'conglomerate' || type === 'breccia') {
+             for(let i=0; i< (w*h)/100; i++) {
+                 let px = x + Math.random()*w; let py = y + Math.random()*h;
+                 ctx.beginPath();
+                 if(type === 'breccia') { ctx.moveTo(px, py-3); ctx.lineTo(px+3, py+3); ctx.lineTo(px-3, py+3); ctx.closePath(); } 
+                 else { ctx.arc(px, py, 2 + Math.random()*3, 0, Math.PI*2); }
+                 ctx.stroke();
+                 if(type === 'conglomerate' && i%3===0) ctx.fill();
+             }
+        } 
+        else if(type === 'limestone' || type === 'dolomite' || type === 'marl' || type === 'calcarenite' || type === 'coquina') {
+            for(let i=y; i<y+h; i+=12) {
+                ctx.beginPath(); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.stroke();
+                let offset = (Math.floor(i/12)%2 === 0) ? 0 : 10;
+                for(let j=x+offset; j<x+w; j+=20) {
+                    ctx.beginPath();
+                    if(type === 'dolomite') { ctx.moveTo(j, i); ctx.lineTo(j+6, i+12); }
+                    else { ctx.moveTo(j, i); ctx.lineTo(j, i+12); }
+                    ctx.stroke();
+                }
+            }
+            if(type === 'marl') { for(let i=y+6; i<y+h; i+=12) { ctx.beginPath(); ctx.setLineDash([4, 4]); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.stroke(); ctx.setLineDash([]); } }
+            if(type === 'calcarenite' || type === 'coquina') { for(let i=0; i< (w*h)/40; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.6, 0, Math.PI*2); ctx.fill(); } }
+        } 
+        else if(type === 'chalk') {
+             for(let i=0; i< (w*h)/80; i++) { let px = x + Math.random()*w; let py = y + Math.random()*h; ctx.beginPath(); ctx.moveTo(px-2, py); ctx.lineTo(px+2, py); ctx.moveTo(px, py-2); ctx.lineTo(px, py+2); ctx.stroke(); }
+        } 
+        else if(type === 'gypsum' || type === 'halite') {
+             for(let i=x-h; i<x+w; i+=12) { ctx.beginPath(); ctx.moveTo(i, y); ctx.lineTo(i+h, y+h); ctx.stroke(); }
+             if(type === 'halite') { for(let i=x; i<x+w+h; i+=12) { ctx.beginPath(); ctx.moveTo(i, y); ctx.lineTo(i-h, y+h); ctx.stroke(); } }
+        } 
+        else if(type === 'granite' || type === 'basalt' || type === 'gabbro' || type === 'diorite') {
+             for(let i=0; i< (w*h)/80; i++) { let px = x + Math.random()*w; let py = y + Math.random()*h; ctx.beginPath(); ctx.moveTo(px-2, py-2); ctx.lineTo(px+2, py+2); ctx.moveTo(px+2, py-2); ctx.lineTo(px-2, py+2); ctx.stroke(); }
+        } 
+        else if(type === 'schist' || type === 'slate' || type === 'gneiss') {
+            for(let i=y+6; i<y+h; i+=10) { ctx.beginPath(); ctx.moveTo(x, i); for(let j=x; j<x+w; j+=10) { ctx.quadraticCurveTo(j+5, i+4, j+10, i); } ctx.stroke(); }
+        } 
+        else if(type === 'topsoil' || type === 'pumice' || type === 'tuff') {
+            for(let i=0; i< (w*h)/60; i++) { let px = x+Math.random()*w; let py = y+Math.random()*h; ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px+3,py+5); ctx.lineTo(px+6,py); ctx.stroke(); }
+        }
+        ctx.restore();
+    }
+
     function drawStratigraphicColumn() {
         const canvas = document.getElementById('strataCanvas'); if(!canvas) return;
         const ctx = canvas.getContext('2d'); ctx.save();
         ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        let layers = []; let totalDepth = 0; let uniqueTypes = new Set();
+        let layers = []; let totalDepth = 0; let uniqueTypes = new Map();
+        
         for(let i=1; i<=10; i++) {
-            let typeSelect = document.getElementById('lType'+i);
-            let type = typeSelect.value;
             let thick = parseFloat(document.getElementById('lThick'+i).value) || 0;
-            let name = typeSelect.options[typeSelect.selectedIndex].text;
-            let color = null;
-
-            if (type === 'custom') {
-                name = document.getElementById('customName'+i).value || 'طبقة مخصصة';
-                color = document.getElementById('customColor'+i).value;
-            } else if (type === 'none') { continue; }
-
-            let uniqueId = type === 'custom' ? `custom_${name}_${color}` : type;
-
-            if(thick > 0) {
-                layers.push({id: uniqueId, type: type, name: name, color: color, thick: thick, start: totalDepth});
+            let pCat = document.getElementById('pCat'+i).value;
+            
+            if(pCat !== 'none' && thick > 0) {
+                let pType = document.getElementById('pType'+i).value;
+                let pName = (pCat==='other' || pType==='custom') ? document.getElementById('pName'+i).value : document.getElementById('pType'+i).options[document.getElementById('pType'+i).selectedIndex].text;
+                let pColor = (pCat==='other' || pType==='custom') ? document.getElementById('pColor'+i).value : baseColors[pType];
+                
+                let layerData = { thick: thick, start: totalDepth, pType: pType, pName: pName || 'مخصص', pColor: pColor, hasSec: false };
+                
+                if(document.getElementById('hasSec'+i).checked) {
+                    let sCat = document.getElementById('sCat'+i).value;
+                    if(sCat !== 'none') {
+                        let sType = document.getElementById('sType'+i).value;
+                        let sName = (sCat==='other' || sType==='custom') ? document.getElementById('sName'+i).value : document.getElementById('sType'+i).options[document.getElementById('sType'+i).selectedIndex].text;
+                        let sColor = (sCat==='other' || sType==='custom') ? document.getElementById('sColor'+i).value : baseColors[sType];
+                        
+                        layerData.hasSec = true;
+                        layerData.secType = sType;
+                        layerData.secName = sName || 'مخصص';
+                        layerData.secColor = sColor;
+                        layerData.mixType = document.getElementById('mixType'+i).value;
+                    }
+                }
+                layers.push(layerData);
                 totalDepth += thick;
-                uniqueTypes.add(uniqueId);
             }
         }
         if(totalDepth === 0) { ctx.restore(); return; }
 
         const marginX = 60; const marginY = 40; const drawW = 150; const drawH = canvas.height - (marginY * 2);
         ctx.lineWidth = 2; ctx.strokeStyle = '#333'; ctx.strokeRect(marginX, marginY, drawW, drawH);
-        
-        function fillPattern(type, x, y, w, h, customColor) {
-            ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+
+        layers.forEach((layer) => {
+            let startY = marginY + (layer.start / totalDepth) * drawH; 
+            let layerH = (layer.thick / totalDepth) * drawH;
             
-            // Background colors
-            if(type === 'custom') ctx.fillStyle = customColor || '#cccccc';
-            else if(type === 'topsoil') ctx.fillStyle = '#d7ccc8';
-            else if(type === 'clay') ctx.fillStyle = '#cfd8dc';
-            else if(type === 'silt') ctx.fillStyle = '#eceff1';
-            else if(type === 'sand') ctx.fillStyle = '#ffe082';
-            else if(type === 'gravel' || type === 'conglomerate') ctx.fillStyle = '#bcaaa4';
-            else if(type === 'limestone' || type === 'dolomite' || type === 'marl' || type === 'chalk') ctx.fillStyle = '#e3f2fd';
-            else if(type === 'gypsum' || type === 'halite') ctx.fillStyle = '#f8bbd0';
-            else if(type === 'granite') ctx.fillStyle = '#ffccbc';
-            else if(type === 'basalt') ctx.fillStyle = '#b0bec5';
-            else if(type === 'schist') ctx.fillStyle = '#c5cae9';
-            
-            ctx.fillRect(x,y,w,h);
-            
-            ctx.lineWidth = 1; ctx.strokeStyle = '#555'; ctx.fillStyle = '#555';
-            
-            // Standard Drawings
-            if(type === 'clay' || type === 'marl') { 
-                for(let i=y+5; i<y+h; i+=8) { ctx.beginPath(); ctx.setLineDash([8, 4]); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.stroke(); } 
-                ctx.setLineDash([]);
+            // إضافة للـ Legend
+            let pKey = layer.pType + '_' + layer.pColor;
+            uniqueTypes.set(pKey, { type: layer.pType, name: layer.pName, color: layer.pColor });
+            if(layer.hasSec) {
+                let sKey = layer.secType + '_' + layer.secColor;
+                uniqueTypes.set(sKey, { type: layer.secType, name: layer.secName, color: layer.secColor });
             }
-            if(type === 'silt' || type === 'marl') {
-                 for(let i=0; i< (w*h)/60; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.5, 0, Math.PI*2); ctx.fill(); }
-                 for(let i=y+4; i<y+h; i+=10) { ctx.beginPath(); ctx.moveTo(x + Math.random()*w, i); ctx.lineTo(x + Math.random()*w + 5, i); ctx.stroke(); }
-            }
-            if(type === 'sand') { 
-                for(let i=0; i< (w*h)/30; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.8, 0, Math.PI*2); ctx.fill(); } 
-            }
-            if(type === 'gravel' || type === 'conglomerate') {
-                for(let i=0; i< (w*h)/150; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 2 + Math.random()*3, 0, Math.PI*2); ctx.stroke(); }
-            }
-            if(type === 'conglomerate') {
-                for(let i=0; i< (w*h)/50; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.8, 0, Math.PI*2); ctx.fill(); }
-            }
-            if(type === 'limestone' || type === 'dolomite') {
-                for(let i=y; i<y+h; i+=12) { 
-                    ctx.beginPath(); ctx.moveTo(x, i); ctx.lineTo(x+w, i); ctx.stroke(); 
-                    let offset = (Math.floor(i/12)%2 === 0) ? 0 : 10;
-                    for(let j=x+offset; j<x+w; j+=20) {
-                        ctx.beginPath(); 
-                        if(type === 'dolomite') { ctx.moveTo(j, i); ctx.lineTo(j+5, i+12); } else { ctx.moveTo(j, i); ctx.lineTo(j, i+12); }
-                        ctx.stroke();
+
+            ctx.save(); ctx.beginPath(); ctx.rect(marginX, startY, drawW, layerH); ctx.clip();
+
+            if (layer.hasSec && layer.mixType === 'interbedded') {
+                // رسم التعاقب الطبقي (أشرطة أفقية)
+                let stripH = 12; // ارتفاع كل شريط
+                let yCurrent = startY;
+                let toggle = true;
+                while(yCurrent < startY + layerH) {
+                    let currentStripH = Math.min(stripH, (startY + layerH) - yCurrent);
+                    if(toggle) {
+                        ctx.fillStyle = layer.pColor; ctx.fillRect(marginX, yCurrent, drawW, currentStripH);
+                        drawPatternOnly(ctx, layer.pType, marginX, yCurrent, drawW, currentStripH);
+                    } else {
+                        ctx.fillStyle = layer.secColor; ctx.fillRect(marginX, yCurrent, drawW, currentStripH);
+                        drawPatternOnly(ctx, layer.secType, marginX, yCurrent, drawW, currentStripH);
                     }
+                    ctx.strokeStyle = '#999'; ctx.lineWidth = 0.5; ctx.beginPath(); ctx.moveTo(marginX, yCurrent); ctx.lineTo(marginX+drawW, yCurrent); ctx.stroke();
+                    yCurrent += stripH;
+                    toggle = !toggle;
                 }
-            }
-            if(type === 'chalk') {
-                for(let i=0; i< (w*h)/80; i++) { ctx.beginPath(); ctx.arc(x + Math.random()*w, y + Math.random()*h, 0.5, 0, Math.PI*2); ctx.fill(); }
-            }
-            if(type === 'gypsum' || type === 'halite') {
-                for(let i=x-h; i<x+w; i+=10) { ctx.beginPath(); ctx.moveTo(i, y); ctx.lineTo(i+h, y+h); ctx.stroke(); }
-                if(type === 'halite') { for(let i=x; i<x+w+h; i+=10) { ctx.beginPath(); ctx.moveTo(i, y); ctx.lineTo(i-h, y+h); ctx.stroke(); } }
-            }
-            if(type === 'granite') {
-                 for(let i=0; i< (w*h)/100; i++) {
-                    let px = x + Math.random()*w; let py = y + Math.random()*h;
-                    ctx.beginPath(); ctx.moveTo(px-2, py-2); ctx.lineTo(px+2, py+2); ctx.moveTo(px+2, py-2); ctx.lineTo(px-2, py+2); ctx.stroke();
-                 }
-            }
-            if(type === 'basalt') {
-                 for(let i=0; i< (w*h)/100; i++) {
-                    let px = x + Math.random()*w; let py = y + Math.random()*h;
-                    ctx.beginPath(); ctx.moveTo(px-3, py-3); ctx.lineTo(px, py); ctx.lineTo(px+3, py-3); ctx.stroke();
-                 }
-            }
-            if(type === 'schist') {
-                for(let i=y+5; i<y+h; i+=10) {
-                    ctx.beginPath(); ctx.moveTo(x, i); 
-                    for(let j=x; j<x+w; j+=10) { ctx.quadraticCurveTo(j+5, i+3, j+10, i); }
-                    ctx.stroke();
-                }
-            }
-            if(type === 'topsoil') { 
-                for(let i=0; i< (w*h)/80; i++) { let px = x+Math.random()*w; let py = y+Math.random()*h; ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px+3,py+5); ctx.lineTo(px+6,py); ctx.stroke(); } 
+            } 
+            else if (layer.hasSec && layer.mixType === 'mixed') {
+                // رسم المزيج (خلفية الأساسي + كلا النقشين)
+                ctx.fillStyle = layer.pColor; ctx.fillRect(marginX, startY, drawW, layerH);
+                drawPatternOnly(ctx, layer.secType, marginX, startY, drawW, layerH);
+                drawPatternOnly(ctx, layer.pType, marginX, startY, drawW, layerH);
+            } 
+            else {
+                // رسم عادي صافي
+                ctx.fillStyle = layer.pColor; ctx.fillRect(marginX, startY, drawW, layerH);
+                drawPatternOnly(ctx, layer.pType, marginX, startY, drawW, layerH);
             }
             
-            ctx.restore(); ctx.strokeRect(x,y,w,h);
-        }
-
-        layers.forEach((layer, index) => {
-            let startY = marginY + (layer.start / totalDepth) * drawH; let layerH = (layer.thick / totalDepth) * drawH;
-            fillPattern(layer.type, marginX, startY, drawW, layerH, layer.color);
+            ctx.restore();
+            ctx.strokeStyle = '#333'; ctx.lineWidth = 1; ctx.strokeRect(marginX, startY, drawW, layerH);
             
+            // رسم العمق
             ctx.fillStyle = '#000'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-            ctx.lineWidth = 1.5; ctx.strokeStyle = '#2c3e50';
-
-            const drawDepth = (depth, yCoord) => {
-                const textX = marginX + drawW + 25; 
-                ctx.fillText(`${depth.toFixed(1)}m`, textX, yCoord);
-                ctx.beginPath(); ctx.moveTo(marginX + drawW, yCoord); ctx.lineTo(textX - 8, yCoord);
-                ctx.moveTo(textX - 8, yCoord); ctx.lineTo(textX - 14, yCoord - 4);
-                ctx.moveTo(textX - 8, yCoord); ctx.lineTo(textX - 14, yCoord + 4); ctx.stroke();
-            };
-
-            drawDepth(layer.start + layer.thick, startY + layerH); 
+            const textX = marginX + drawW + 25; 
+            let yCoord = startY + layerH;
+            ctx.fillText(`${(layer.start + layer.thick).toFixed(1)}m`, textX, yCoord);
+            ctx.beginPath(); ctx.moveTo(marginX + drawW, yCoord); ctx.lineTo(textX - 8, yCoord);
+            ctx.moveTo(textX - 8, yCoord); ctx.lineTo(textX - 14, yCoord - 4);
+            ctx.moveTo(textX - 8, yCoord); ctx.lineTo(textX - 14, yCoord + 4); ctx.stroke();
         });
 
+        // رسم الـ Legend
         let legendX = marginX + drawW + 100; 
         let legendY = marginY + 20;
         ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.font = 'bold 17px Arial'; ctx.fillStyle = '#2c3e50'; 
-        ctx.fillText('Legend', legendX, legendY); legendY += 35;
-        layers.forEach(layer => {
-            if(uniqueTypes.has(layer.id)) { 
-                fillPattern(layer.type, legendX, legendY - 12, 25, 25, layer.color); 
-                ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; 
-                ctx.fillText(layer.name, legendX + 35, legendY); 
-                legendY += 35; 
-                uniqueTypes.delete(layer.id); 
-            }
+        ctx.fillText('دليل التتابع (Legend)', legendX, legendY); legendY += 35;
+        
+        uniqueTypes.forEach((data, key) => {
+            // رسم مربع الدليل
+            ctx.fillStyle = data.color; ctx.fillRect(legendX, legendY - 12, 25, 25);
+            drawPatternOnly(ctx, data.type, legendX, legendY - 12, 25, 25);
+            ctx.strokeStyle = '#333'; ctx.strokeRect(legendX, legendY - 12, 25, 25);
+            
+            ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; 
+            ctx.fillText(data.name, legendX + 35, legendY); 
+            legendY += 35; 
         });
 
+        // رسم مقياس الرسم (Scale)
         let scaleUnitStrata = totalDepth > 5 ? 2 : 1; let scalePixels = (scaleUnitStrata / totalDepth) * drawH;
         let sX = legendX; let sY = marginY + drawH; 
         ctx.strokeStyle = '#000'; ctx.lineWidth = 2.5; ctx.beginPath();
