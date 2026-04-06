@@ -145,7 +145,7 @@
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
-        /* --- هندسة الطباعة والتحكم بالصفحات السبع --- */
+        /* --- هندسة الطباعة والتحكم بالصفحات الثمانية --- */
         .print-only { display: none; }
         
         @media print {
@@ -178,15 +178,14 @@
             input[type="number"], input[type="text"], select { border: none !important; border-bottom: 1px dashed #2980b9 !important; padding: 2px 0; font-size: 0.95rem; text-align: center; width: 100%; background: transparent; appearance: none; -webkit-appearance: none; color: #16a085 !important; font-weight: bold;}
             .coord-display { padding: 4px; font-size: 0.85rem; margin-bottom: 2px; border: 1px solid #ccc !important; background: #fff !important;}
             
-            /* دمج الجدول والعمود في الصفحة 3 */
             .litho-table th, .litho-table td { padding: 4px !important; font-size: 0.85rem !important; }
             .litho-ui-section { display: none !important; } 
             .litho-print-text { display: block !important; font-weight: bold; color: #2c3e50; text-align: center;} 
-            .litho-table { margin-bottom: 5px !important; }
             
-            #strataCanvasContainer { page-break-inside: avoid !important; margin-bottom: 0 !important; padding: 2px !important; border: 1px solid #bdc3c7 !important;}
-            #strataCanvasContainer h3 { font-size: 1rem !important; margin-bottom: 5px !important; padding-bottom: 5px !important;}
-            #strataCanvas { max-height: 400px !important; width: auto !important; max-width: 100% !important; display: block !important; margin: 0 auto !important; }
+            /* تكبير العمود الطباقي وفصله في صفحة مستقلة */
+            #strataCanvasContainer { page-break-inside: avoid !important; margin-bottom: 0 !important; padding: 10px !important; border: 1px solid #bdc3c7 !important;}
+            #strataCanvasContainer h3 { font-size: 1.2rem !important; margin-bottom: 15px !important; padding-bottom: 10px !important;}
+            #strataCanvas { max-height: none !important; width: auto !important; max-width: 100% !important; display: block !important; margin: 0 auto !important; }
 
             /* ستايل المربع النصي في الطباعة (لجعله يبدو كتقرير رسمي) */
             .report-content { border: none !important; background: transparent !important; padding: 0 !important; font-size: 1.05rem !important; line-height: 1.8 !important; overflow: visible !important; min-height: 0 !important; height: auto !important; box-shadow: none !important; color: #222 !important; }
@@ -362,7 +361,7 @@
                     </div>
                 </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 1 من 7</div>
+            <div class="print-only print-bottom">الصفحة 1 من 8</div>
         </div> 
 
         <div class="print-page-wrapper">
@@ -434,7 +433,7 @@
                     </div>
                 </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 2 من 7</div>
+            <div class="print-only print-bottom">الصفحة 2 من 8</div>
         </div>
 
         <div class="print-page-wrapper" id="page3Wrapper">
@@ -458,18 +457,28 @@
                             </tbody>
                     </table>
                 </div>
-
-                <div class="section" id="strataCanvasContainer" style="display: none; border: 2px solid #2980b9; margin-bottom: 15px;">
-                    <div class="canvas-container" style="margin-bottom: 0;">
-                        <h3>العمود الطباقي لمنطقة العمل (Stratigraphic Column)</h3>
-                        <canvas id="strataCanvas" width="700" height="450"></canvas>
-                    </div>
-                </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 3 من 7</div>
+            <div class="print-only print-bottom">الصفحة 3 من 8</div>
         </div>
 
         <div class="print-page-wrapper" id="page4Wrapper" style="display: none;">
+            <div class="print-only print-header">
+                <span class="date-top-left printDateHeader"></span>
+                <h1>نظام المسح الميداني الجيولوجي (التقرير الشامل)</h1>
+                <h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
+            </div>
+            <div class="content-padding">
+                <div class="section" id="strataCanvasContainer" style="border: 2px solid #2980b9; margin-bottom: 15px;">
+                    <div class="canvas-container" style="margin-bottom: 0;">
+                        <h3>العمود الطباقي لمنطقة العمل (Stratigraphic Column)</h3>
+                        <canvas id="strataCanvas" width="700" height="750"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="print-only print-bottom">الصفحة 4 من 8</div>
+        </div>
+
+        <div class="print-page-wrapper" id="page5Wrapper" style="display: none;">
             <div class="print-only print-header">
                 <span class="date-top-left printDateHeader"></span>
                 <h1>نظام المسح الميداني الجيولوجي (التقرير الشامل)</h1>
@@ -483,10 +492,10 @@
                         </div>
                 </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 4 من 7</div>
+            <div class="print-only print-bottom">الصفحة 5 من 8</div>
         </div>
 
-        <div class="print-page-wrapper" id="page5Wrapper" style="display: none;">
+        <div class="print-page-wrapper" id="page6Wrapper" style="display: none;">
             <div class="print-only print-header">
                 <span class="date-top-left printDateHeader"></span>
                 <h1>نظام المسح الميداني الجيولوجي (التقرير الشامل)</h1>
@@ -494,11 +503,11 @@
             </div>
             <div class="content-padding">
                 <div class="section" style="min-height: 800px; border: 1px dashed #bdc3c7;">
-                    <div class="section-title" style="border-bottom-color: #f39c12; color: #f39c12;">ثامناً: ملاحظات حقلية إضافية (اسكتش حر)</div>
-                    <p style="color: #7f8c8d; font-size: 1.1rem; text-align: center; margin-top: 50px;">(هذه الصفحة مخصصة للملاحظات اليدوية الإضافية أو لرسم كروكي حقلي للظواهر الجيولوجية بالموقع)</p>
+                    <div class="section-title" style="border-bottom-color: #f39c12; color: #f39c12;">ثامناً: ملاحظات حقلية إضافية (اسكتش حر - Sketch)</div>
+                    <p style="color: #7f8c8d; font-size: 1.1rem; text-align: center; margin-top: 50px;">(هذه الصفحة مخصصة للملاحظات اليدوية الإضافية أو لرسم كروكي (Sketch) حقلي للظواهر الجيولوجية بالموقع)</p>
                 </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 5 من 7</div>
+            <div class="print-only print-bottom">الصفحة 6 من 8</div>
         </div>
 
         <div id="calcButtonsArea" class="content-padding screen-only">
@@ -512,7 +521,7 @@
             <button class="btn-calc" onclick="calculateResults()">إجراء المعالجة وتوليد المرتسمات والتقارير</button>
         </div>
 
-        <div class="print-page-wrapper" id="page6Wrapper" style="display: none;">
+        <div class="print-page-wrapper" id="page7Wrapper" style="display: none;">
             <div class="print-only print-header">
                 <span class="date-top-left printDateHeader"></span>
                 <h1>نظام المسح الميداني الجيولوجي (التقرير الشامل)</h1>
@@ -543,10 +552,10 @@
                 </div>
 
             </div>
-            <div class="print-only print-bottom">الصفحة 6 من 7</div>
+            <div class="print-only print-bottom">الصفحة 7 من 8</div>
         </div>
 
-        <div class="print-page-wrapper" id="page7Wrapper" style="display: none;">
+        <div class="print-page-wrapper" id="page8Wrapper" style="display: none;">
             <div class="print-only print-header">
                 <span class="date-top-left printDateHeader"></span>
                 <h1>نظام المسح الميداني الجيولوجي (التقرير الشامل)</h1>
@@ -573,7 +582,7 @@
                     </div>
                 </div>
             </div>
-            <div class="print-only print-bottom">الصفحة 7 من 7</div>
+            <div class="print-only print-bottom">الصفحة 8 من 8</div>
         </div>
 
         <div class="footer screen-only">جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026</div>
@@ -885,7 +894,7 @@
     }
 
     // ==========================================
-    // التقرير السردي الجيولوجي (المحسن كما طلبت)
+    // التقرير السردي الجيولوجي
     // ==========================================
     function generateGeoReport() {
         let totalDepth = 0;
@@ -960,10 +969,10 @@
         generateGeoReport();
 
         // إظهار الصفحات
-        document.getElementById('strataCanvasContainer').style.display = 'block'; 
         document.getElementById('page4Wrapper').style.display = 'block';
         document.getElementById('page5Wrapper').style.display = 'block';
         document.getElementById('page6Wrapper').style.display = 'block';
+        document.getElementById('page7Wrapper').style.display = 'block';
         
         try { drawSideBySideChart(width, contractArea, investedPercentage, remainingPercentage, colorInv, colorRem); } catch(e) {}
         try { drawStratigraphicColumn(); } catch(e) {}
@@ -1010,7 +1019,7 @@
         if(rawGpsPoints.point4) pts.push([rawGpsPoints.point4.lat, rawGpsPoints.point4.lng]);
         if(pts.length < 3) { alert("⚠️ يرجى التقاط إحداثيات لثلاث نقاط على الأقل."); return; }
 
-        document.getElementById('page7Wrapper').style.display = 'block';
+        document.getElementById('page8Wrapper').style.display = 'block';
         if(myLeafletMap !== null) { myLeafletMap.remove(); }
         myLeafletMap = L.map('satelliteMap', { zoomControl: true, maxBoundsViscosity: 1.0, background: 'white' });
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles © Esri', maxZoom: 22, maxNativeZoom: 19 }).addTo(myLeafletMap);
@@ -1021,7 +1030,7 @@
 
         const bounds = polygon.getBounds(); myLeafletMap.fitBounds(bounds, {padding: [70, 70]}); myLeafletMap.setMaxBounds(bounds.pad(1)); 
         setTimeout(() => { myLeafletMap.invalidateSize(); updateCustomMapScale(); }, 600); myLeafletMap.on('moveend zoomend', updateCustomMapScale);
-        document.getElementById('satBtn').innerText = "✅ تم التوليد (راجع الصفحة 7)"; document.getElementById('satBtn').style.background = "#27ae60";
+        document.getElementById('satBtn').innerText = "✅ تم التوليد (راجع الصفحة 8)"; document.getElementById('satBtn').style.background = "#27ae60";
     }
 
     function drawSideBySideChart(fieldWidth, totalArea, invPct, remPct, colInv, colRem) {
