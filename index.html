@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المنظومة الجيولوجية العالمية الشاملة</title>
+    <title>منصة المسح الميداني الجيولوجي العالمية</title>
     
     <meta name="description" content="منصة رسانة: أول نظام رقمي متكامل للمسوحات الميدانية الجيولوجية (مقالع، تركيبي، جيوتقني، هيدروجيولوجي، ومختبر صوتي).">
     <meta name="author" content="الجيولوجي علي شندل الجنابي">
@@ -14,7 +14,7 @@
 
     <style>
         /* ========================================================
-           1. شاشات الترحيب وتسجيل الدخول (النسخة الأصلية المعتمدة)
+           1. شاشات الترحيب وتسجيل الدخول (النسخة الأصلية 100%)
            ======================================================== */
         #introScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: right; padding: 15px; box-sizing: border-box; }
         .intro-box { background: rgba(255, 255, 255, 0.05); padding: 35px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 850px; width: 100%; max-height: 90vh; overflow-y: auto; backdrop-filter: blur(10px); margin: auto; box-sizing: border-box; }
@@ -38,13 +38,12 @@
         #step2 { display: none; text-align: center; }
 
         /* ========================================================
-           2. لوحة التحكم الرئيسية (Dashboard) - الإضافة الجديدة
+           2. لوحة التحكم الرئيسية (Dashboard)
            ======================================================== */
         #dashboardScreen { display: none; padding: 30px; background-color: #f0f3f4; min-height: 100vh; font-family: 'Arial', sans-serif; direction: rtl; text-align: right;}
         .dashboard-header-top { background: linear-gradient(135deg, #1c2833 0%, #2980b9 100%); color: white; padding: 40px 20px; text-align: center; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.15); border-bottom: 5px solid #f1c40f;}
         .dashboard-header-top h1 { margin: 0 0 10px 0; font-size: 2.2rem; }
         .dashboard-header-top h2 { margin: 0; font-size: 1.2rem; color: #f1c40f; font-weight: normal; }
-        .welcome-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 30px; margin-top: 15px; font-weight: bold; border: 1px solid rgba(255,255,255,0.3);}
         
         .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
         .module-card { background: white; border-radius: 12px; padding: 30px 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: all 0.3s ease; cursor: pointer; border-bottom: 4px solid transparent; position: relative; overflow: hidden;}
@@ -54,7 +53,6 @@
         .module-card h3 { color: #2c3e50; font-size: 1.3rem; margin: 0 0 10px 0; }
         .module-card p { color: #7f8c8d; font-size: 0.95rem; line-height: 1.6; margin: 0; }
         
-        /* ألوان البطاقات */
         .card-quarry { border-bottom-color: #27ae60; } .card-quarry:hover i { color: #27ae60; }
         .card-structural { border-bottom-color: #e67e22; } .card-structural:hover i { color: #e67e22; }
         .card-hydro { border-bottom-color: #3498db; } .card-hydro:hover i { color: #3498db; }
@@ -63,16 +61,14 @@
         .card-photo { border-bottom-color: #f1c40f; } .card-photo:hover i { color: #f39c12; }
         
         .coming-soon-badge { position: absolute; top: 15px; left: -30px; background: #e74c3c; color: white; padding: 5px 30px; font-size: 0.8rem; font-weight: bold; transform: rotate(-45deg); box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
-        .patent-badge { position: absolute; top: 15px; right: -30px; background: #f1c40f; color: #2c3e50; padding: 5px 30px; font-size: 0.8rem; font-weight: bold; transform: rotate(45deg); box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
 
         .btn-back-dash { display: block; width: 100%; max-width: 1100px; margin: 0 auto 20px auto; background: #34495e; color: white; padding: 12px; text-align: center; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.3s; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
         .btn-back-dash:hover { background: #2c3e50; transform: translateY(-2px);}
         
-        /* إخفاء كافة الموديولات افتراضياً */
         .system-module { display: none; }
 
         /* ========================================================
-           3. نظام المسح الأساسي (المقالع) - الكود الأصلي المعزول
+           3. نظام المسح الأساسي (المقالع)
            ======================================================== */
         :root { --primary: #1c2833; --secondary: #273746; --accent: #2980b9; --bg: #f8f9fa; }
         .module-wrapper-bg { font-family: 'Arial', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: right; color: #333; line-height: 1.6; }
@@ -127,7 +123,7 @@
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
-        /* هندسة الطباعة */
+        /* هندسة الطباعة وحل مشكلة الصفحات البيضاء */
         .print-only { display: none !important; }
         @media print {
             @page { margin: 0; size: A4 portrait; }
@@ -138,8 +134,11 @@
             .header, .footer, .btn-calc, .btn-satellite, .btn-convert, .gps-btn, .btn-print, #introScreen, #dashboardScreen, .btn-back-dash, #calcButtonsArea, #inputLithoSection { display: none !important; }
             .print-only { display: block !important; }
             .no-print { display: none !important; }
-            .print-page-wrapper { min-height: 29.6cm; width: 100%; box-sizing: border-box; padding: 1.2cm; page-break-after: always; position: relative; display: block !important; }
-            .print-page-wrapper:last-child { page-break-after: auto; }
+            
+            /* إزالة الارتفاع الثابت لمنع الصفحات البيضاء */
+            .print-page-wrapper { width: 100%; box-sizing: border-box; padding: 1.0cm; page-break-after: always; position: relative; display: block !important; }
+            #pageMap { page-break-after: auto !important; } /* تمنع الصفحة البيضاء الأخيرة */
+            
             .print-bottom { position: absolute; bottom: 0.5cm; left: 0; width: 100%; text-align: center; font-weight: bold; font-size: 14px; color: #333; }
             .print-header { text-align: center; border: 2px solid #2980b9; background-color: #f4f9fc; padding: 10px; margin-bottom: 15px; border-radius: 6px; position: relative; }
             .print-header h1 { font-size: 18px; color: #1c2833; margin: 0 0 3px 0; } .print-header h2 { font-size: 13px; color: #e67e22; margin: 0; font-weight: bold; } .date-top-left { position: absolute; top: 8px; left: 12px; font-size: 10px; color: #555; font-weight: bold; }
@@ -165,29 +164,50 @@
 <div id="introScreen">
     <div class="intro-box">
         <div id="step1">
-            <h1>أهلاً وسهلاً بكم في المنظومة الجيولوجية العالمية</h1>
+            <h1>أهلاً وسهلاً بكم في منصة نظام المسح الميداني الجيولوجي</h1>
             <h2>بإشراف الجيولوجي: علي شندل الجنابي</h2>
+            
             <div class="official-text">
                 <h3><i class="fas fa-landmark"></i> نبذة تعريفية عن المنصة:</h3>
-                <p>أُسست هذه المنصة الرقمية الرائدة في عام <b>2026</b>، كطفرة نوعية في إدارة الثروات المعدنية والمسوحات الهندسية، على يد الجيولوجي <b>علي شندل الجنابي</b>. لقد وُلدت هذه المنصة من رَحِم المعاناة الميدانية؛ لتكون الأداة الرسمية والحل الجذري الموثوق، الذي ينقل العمل الجيولوجي الرقابي من حقبة القياسات الورقية التقليدية إلى عصر الأتمتة والرقمنة الفضائية.</p>
-                <p>تاريخياً، كان التفتيش الجيولوجي يتطلب جهداً استثنائياً. أما اليوم، فقد صُممت هذه المنظومة بوحداتها المتعددة لتتولى كافة هذه المهام نيابة عن الجيولوجي بدقة تصل إلى 100% وفي كافة التخصصات.</p>
+                <p>أُسست هذه المنصة الرقمية الرائدة في عام <b>2026</b>، كطفرة نوعية في إدارة الثروات المعدنية، على يد الجيولوجي <b>علي شندل الجنابي</b>. لقد وُلدت هذه المنصة من رَحِم المعاناة الميدانية؛ لتكون الأداة الرسمية والحل الجذري الموثوق، الذي ينقل العمل الجيولوجي الرقابي من حقبة القياسات الورقية التقليدية إلى عصر الأتمتة والرقمنة الفضائية.</p>
+                <p>تاريخياً، كان التفتيش الجيولوجي يتطلب جهداً استثنائياً؛ بدءاً من أخذ الإحداثيات بالأجهزة اليدوية، مروراً بالحسابات الرياضية المعقدة، وصولاً إلى الاستعانة ببرامج حاسوبية خارجية (Software) لرسم الأعمدة الطباقية. أما اليوم، فقد صُممت هذه المنصة لتتولى كافة هذه المهام نيابة عن الجيولوجي بدقة تصل إلى 100%.</p>
+                <b>أبرز ما تُقدمه المنصة فنياً وهندسياً:</b>
+                <ul>
+                    <li><b>المعالجة الرياضية الفورية:</b> حساب المساحات (تحويل الدونم إلى متر مربع)، والكميات المستخرجة والمتبقية، وتحديد أقصى عمق استثماري مسموح.</li>
+                    <li><b>النمذجة ثنائية الأبعاد والطباقية:</b> توليد مرتسم هندسي للمساحات، ورسم "العمود الطباقي" (Stratigraphic Column) باحترافية قياسية مع تحديد الطبقات وسُمكها.</li>
+                    <li><b>الرفع الطوبوغرافي الفضائي:</b> اتصال مباشر بالأقمار الصناعية لتحديد الأركان (A,B,C,D) بنظام (UTM)، مع عرض دقة إشارة الـ GPS لحظياً لإعادة الرصد إن لزم الأمر.</li>
+                    <li><b>التوثيق البيئي والسلامة:</b> إتاحة توثيق المتغيرات الجيولوجية، مراقبة مستويات المياه الجوفية، ورصد التزام المستثمر بتعليمات السلامة المهنية.</li>
+                </ul>
             </div>
+
             <div class="instruction-section">
                 <h3><i class="fas fa-exclamation-triangle"></i> تعليمات وإرشادات حقلية هامة جداً:</h3>
                 <ul class="instruction-list">
-                    <li><i class="fas fa-location-arrow" style="color: #e74c3c;"></i> <strong>تفعيل الموقع (GPS):</strong> يجب تفعيل خدمة الموقع الجغرافي (Location) لضمان قدرة النظام على التقاط إشارات الأقمار الصناعية بدقة.</li>
-                    <li><i class="fas fa-wifi" style="color: #3498db;"></i> <strong>الاتصال بالإنترنت:</strong> يُشترط وجود اتصال بالإنترنت فقط لتسجيل الدخول الأول وتوليد الخرائط. بعدها يعمل النظام (أوفلاين).</li>
-                    <li><i class="fas fa-hard-hat" style="color: #f1c40f;"></i> <strong>الاستعداد الحقلي:</strong> الالتزام التام بمعدات السلامة المهنية (PPE) داخل موقع العمل.</li>
+                    <li><i class="fas fa-location-arrow" style="color: #e74c3c;"></i> <strong>تفعيل الموقع (GPS):</strong> يجب تفعيل خدمة الموقع الجغرافي (Location) في هاتفك أو متصفحك <b>فور الدخول للمنصة</b>. هذا الإجراء إلزامي لضمان قدرة النظام على التقاط إشارات الأقمار الصناعية بدقة، وبدونه لن تتمكن من رفع الإحداثيات الميدانية (UTM).</li>
+                    <li><i class="fas fa-wifi" style="color: #3498db;"></i> <strong>الاتصال بالإنترنت:</strong> يُشترط وجود اتصال بالإنترنت <b>فقط</b> عند تسجيل الدخول الأول وتوليد الخريطة الفضائية. بعد تسجيل الدخول، يمكنك التوجه إلى المواقع النائية وسيعمل النظام وتسجيل الإحداثيات والطباعة (أوفلاين) بالكامل.</li>
+                    <li><i class="fas fa-hard-hat" style="color: #f1c40f;"></i> <strong>الاستعداد الحقلي:</strong> لا غنى للجيولوجي عن معداته؛ يُرجى اصطحاب شريط القياس الميداني (الفيتا) للمطابقة، وتأمين مصدر طاقة احتياطي للهاتف (Power Bank/شاحن)، مع الالتزام التام بمعدات السلامة المهنية (PPE) داخل الموقع.</li>
+                    <li><i class="fas fa-user-check" style="color: #2ecc71;"></i> <strong>الاشتراك والتسجيل:</strong> النظام محمي ومخصص للمشتركين فقط. يتطلب الدخول "رمزاً سرياً" مسبقاً. في حال عدم امتلاكك للرمز، يُرجى التواصل المباشر مع مؤسس المنصة عبر الأزرار أدناه.</li>
                 </ul>
             </div>
+
+            <div class="social-container">
+                <p>لطلب الرمز السري أو الدعم الفني، تواصل مع مؤسس المنصة عبر الروابط الرسمية:</p>
+                <div class="social-links">
+                    <a href="https://wa.me/9647814993629" target="_blank" class="social-btn btn-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>
+                    <a href="https://www.facebook.com/share/1a8sii4wcf/" target="_blank" class="social-btn btn-facebook"><i class="fab fa-facebook-f"></i> فيسبوك</a>
+                    <a href="https://www.instagram.com/ash2oo1?igsh=MWR5Zng0dGkybmV1Zw==" target="_blank" class="social-btn btn-instagram"><i class="fab fa-instagram"></i> إنستجرام</a>
+                </div>
+            </div>
+
             <button onclick="goToStep2()" class="btn-action" id="btnNextStep1">فهمت التعليمات.. انتقل لتسجيل الدخول</button>
         </div>
+
         <div id="step2">
             <h1 style="color: #2ecc71; border-bottom: 2px solid #2ecc71; padding-bottom: 10px; display: inline-block; margin-top: 0;">صفحة تسجيل الدخول</h1>
             <div class="warning-box">
                 <h3>⚠️ قم بإدخال المعلومات التالية بحذر وبصورة صحيحة جداً:</h3>
                 <p><b style="color: #f1c40f;">أولاً:</b> اسم الجيولوجي الثلاثي.</p>
-                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري.</p>
+                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري (من مؤسس المنصة <b>علي شندل الجنابي</b>).</p>
             </div>
             <input type="text" id="geoNameInput" placeholder="أدخل اسم الجيولوجي (الثلاثي) هنا..." required autocomplete="off">
             <input type="password" id="adminPassword" placeholder="أدخل رمز الدخول السري هنا...">
@@ -199,13 +219,12 @@
 
 <div id="dashboardScreen" class="screen-only">
     <div class="dashboard-header-top">
-        <h1>المنظومة الجيولوجية العالمية الشاملة</h1>
+        <h1>منصة المسح الميداني الجيولوجي العالمية</h1>
         <h2>الإصدار الشامل لكافة المسوحات الميدانية | بإشراف الجيولوجي: علي شندل الجنابي</h2>
-        <div class="welcome-badge" id="welcomeUserText">أهلاً بك مهندس ...</div>
     </div>
 
     <div style="text-align: center; margin-bottom: 30px;">
-        <h3 style="color: #34495e; font-size: 1.5rem; border-bottom: 2px solid #bdc3c7; display: inline-block; padding-bottom: 10px;">اختر نظام المسح الميداني لهذا اليوم:</h3>
+        <h3 style="color: #34495e; font-size: 1.5rem; border-bottom: 2px solid #bdc3c7; display: inline-block; padding-bottom: 10px;">اختر نظام المسح الميداني المطلوب إجراؤه:</h3>
     </div>
 
     <div class="modules-grid">
@@ -215,7 +234,7 @@
             <p>حساب الكميات الهندسية، المساحات، التقييم البيئي، ورسم العمود الطباقي أوتوماتيكياً للمقالع.</p>
         </div>
 
-        <div class="module-card card-structural" onclick="alert('موديول المسح التركيبي والجيوتقني قيد البرمجة في المرحلة القادمة. سيتم إضافة البوصلة الرقمية ومحرك ستيريونت هنا قريباً!')">
+        <div class="module-card card-structural" onclick="alert('موديول المسح التركيبي والجيوتقني قيد البرمجة في المرحلة القادمة. سيتم إضافة البوصلة الرقمية ومحرك ستيريونت هنا قريباً.')">
             <div class="coming-soon-badge">قريباً</div>
             <i class="fas fa-compass"></i>
             <h3>المسح التركيبي والجيوتقني</h3>
@@ -236,15 +255,13 @@
             <p>تحليل الأشكال الأرضية، تحديد مسارات السيول، وتقييم مخاطر الانهيارات والانزلاقات.</p>
         </div>
 
-        <div class="module-card card-acoustic" onclick="alert('ميزة براءة الاختراع: المختبر الصوتي. سيتم تفعيلها لاحقاً لربط تحليل الترددات الصوتية بصلابة الصخور!')">
-            <div class="patent-badge">براءة اختراع</div>
+        <div class="module-card card-acoustic" onclick="alert('المختبر الصوتي الجيولوجي قيد التطوير. سيتم تفعيله لاحقاً لتحليل ترددات صدى الصخور.')">
             <i class="fas fa-wave-square"></i>
             <h3>المختبر الصوتي الجيولوجي</h3>
             <p>تحليل تردد صوت المطرقة الجيولوجية باستخدام مستشعرات الهاتف لتخمين صلابة الصخر فورياً (UCS).</p>
         </div>
 
-        <div class="module-card card-photo" onclick="alert('ميزة براءة الاختراع: النمذجة الآلية. سيتم تفعيل الكاميرا الذكية هنا قريباً!')">
-            <div class="patent-badge">براءة اختراع</div>
+        <div class="module-card card-photo" onclick="alert('نمذجة المكاشف الآلية قيد التطوير. سيتم تفعيل الكاميرا الذكية هنا قريباً.')">
             <i class="fas fa-camera-retro"></i>
             <h3>نمذجة المكاشف الآلية</h3>
             <p>التقاط صورة للمكشف الصخري لتقوم المنصة بتحليلها لونياً ورسم العمود الطباقي منها تلقائياً.</p>
@@ -475,25 +492,18 @@
 
 <script>
     // ==========================================
-    // التحكم بالتنقل (الجديد)
+    // التحكم بالتنقل (لوحة التحكم)
     // ==========================================
     function openModule(moduleId) {
         document.getElementById('dashboardScreen').style.display = 'none';
-        
-        // إخفاء جميع الموديولات أولاً (للمستقبل)
         let modules = document.querySelectorAll('.system-module');
         modules.forEach(m => m.style.display = 'none');
-        
-        // إظهار الموديول المطلوب
         document.getElementById(moduleId).style.display = 'block';
     }
 
     function backToDashboard() {
-        // إخفاء جميع الموديولات
         let modules = document.querySelectorAll('.system-module');
         modules.forEach(m => m.style.display = 'none');
-        
-        // العودة للوحة التحكم
         document.getElementById('dashboardScreen').style.display = 'block';
     }
 
@@ -597,9 +607,9 @@
         const secretCode = String.fromCharCode(97, 108, 105, 49, 50, 51);
         if (pwdInput === secretCode) {
             currentGeoName = nameInput; errorDiv.style.display = 'none'; btn.innerText = "تم الدخول..."; btn.disabled = true;
-            document.getElementById('printGeoName').value = currentGeoName; document.getElementById('welcomeUserText').innerText = "أهلاً بك مهندس " + currentGeoName.split(' ')[0];
+            document.getElementById('printGeoName').value = currentGeoName;
             
-            // التعديل: التوجه إلى لوحة التحكم بدلاً من المقالع مباشرة
+            // التوجه إلى لوحة التحكم
             document.getElementById('introScreen').style.display = 'none'; 
             document.getElementById('dashboardScreen').style.display = 'block';
             
@@ -655,7 +665,7 @@
         for(let page=0; page<tableChunks; page++) {
             let startIdx = page * LITHOLOGY_PER_PAGE; let endIdx = Math.min(startIdx + LITHOLOGY_PER_PAGE, validLayers.length); let chunk = validLayers.slice(startIdx, endIdx); let tbodyHTML = '';
             if(chunk.length === 0) { tbodyHTML = `<tr><td colspan="4">لا توجد بيانات ليثولوجية مدخلة.</td></tr>`; } else { chunk.forEach(L => { tbodyHTML += `<tr><td>${L.index}</td><td style="white-space: pre-wrap;">${L.printText}</td><td>${L.thick.toFixed(1)}</td><td dir="ltr" style="white-space: nowrap; font-weight: bold; color: #2c3e50;">${L.depthFrom.toFixed(1)} - ${L.depthTo.toFixed(1)}</td></tr>`; }); }
-            let pageHTML = `<div class="print-page-wrapper page-counter-element"><div class="print-only print-header"><span class="date-top-left printDateHeader"></span><h1>نظام المسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1><h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2></div><div class="content-padding"><div class="section" style="min-height: 800px;"><div class="section-title">سادساً: التتابع الطباقي (Stratigraphic Column) ${tableChunks > 1 ? `- (الجزء ${page+1})` : ''}</div><table class="print-litho-table"><tr><th style="width: 8%;">رقم</th><th style="width: 52%;">الوصف الليثولوجي (Lithology)</th><th style="width: 20%;">السُمك (m)</th><th style="width: 20%;">العمق (m)</th></tr><tbody>${tbodyHTML}</tbody></table></div></div><div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesText">X</span></div></div>`; tableContainer.innerHTML += pageHTML;
+            let pageHTML = `<div class="print-page-wrapper page-counter-element"><div class="print-only print-header"><span class="date-top-left printDateHeader"></span><h1>نظام المسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1><h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2></div><div class="content-padding"><div class="section"><div class="section-title">سادساً: التتابع الطباقي (Stratigraphic Column) ${tableChunks > 1 ? `- (الجزء ${page+1})` : ''}</div><table class="print-litho-table"><tr><th style="width: 8%;">رقم</th><th style="width: 52%;">الوصف الليثولوجي (Lithology)</th><th style="width: 20%;">السُمك (m)</th><th style="width: 20%;">العمق (m)</th></tr><tbody>${tbodyHTML}</tbody></table></div></div><div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesText">X</span></div></div>`; tableContainer.innerHTML += pageHTML;
         }
 
         const textContainer = document.getElementById('dynamicTextPagesContainer'); textContainer.innerHTML = ''; let textChunks = Math.ceil(validLayers.length / TEXT_PER_PAGE) || 1; const ordinals = ["الأولى", "الثانية", "الثالثة", "الرابعة", "الخامسة", "السادسة", "السابعة", "الثامنة", "التاسعة", "العاشرة", "الحادية عشر", "الثانية عشر", "الثالثة عشر", "الرابعة عشر", "الخامسة عشر", "السادسة عشر", "السابعة عشر", "الثامنة عشر", "التاسعة عشر", "العشرون", "الحادية والعشرون", "الثانية والعشرون", "الثالثة والعشرون", "الرابعة والعشرون", "الخامسة والعشرون", "السادسة والعشرون", "السابعة والعشرون", "الثامنة والعشرون", "التاسعة والعشرون", "الثلاثون", "الحادية والثلاثون", "الثانية والثلاثون", "الثالثة والثلاثون", "الرابعة والثلاثون", "الخامسة والثلاثون", "السادسة والثلاثون", "السابعة والثلاثون", "الثامنة والثلاثون", "التاسعة والثلاثون", "الأربعون", "الحادية والأربعون", "الثانية والأربعون", "الثالثة والأربعون", "الرابعة والأربعون", "الخامسة والأربعون", "السادسة والأربعون", "السابعة والأربعون", "الثامنة والأربعون", "التاسعة والأربعون", "الخمسون"];
@@ -664,7 +674,7 @@
             let startIdx = page * TEXT_PER_PAGE; let endIdx = Math.min(startIdx + TEXT_PER_PAGE, validLayers.length); let chunk = validLayers.slice(startIdx, endIdx); let pageReportHTML = '';
             if(page === 0) { pageReportHTML = `<p>بناءً على المشاهدات الحقلية والقياسات الميدانية، يُظهر المقطع الحقلي للموقع تتابعاً طبقياً يبدأ من السطح (العمق 0.0m) وصولاً إلى أقصى عمق مرصود وهو (${totalDepth.toFixed(1)}m). ويمكن وصف التتابع الليثولوجي والسحني <b>جيولوجياً</b> كما يلي:</p>`; }
             if(chunk.length === 0 && page === 0) { pageReportHTML += "<p>لم يتم إدخال بيانات التتابع الطباقي.</p>"; fullScreenReportHTML += "<p>لم يتم إدخال بيانات التتابع الطباقي.</p>"; } else { chunk.forEach(L => { let ordStr = ordinals[L.index-1] || `رقم ${L.index}`; let rawPText = L.printText.split('\n')[0]; let line = `<p><b>- الطبقة ${ordStr}:</b> تمتد من عمق ${L.depthFrom.toFixed(1)}m إلى عمق ${L.depthTo.toFixed(1)}m (بسُمك يبلغ ${L.thick.toFixed(1)}m). تتكون هذه الطبقة بشكل أساسي من ${rawPText}`; if(L.hasSec) { if (L.mixType === 'mixed') { line += `، وهي عبارة عن مزيج متجانس يغلب عليه (${rawPText}) كأرضية، مع وجود تداخل وتناثر لحبيبات (${L.sText}) ضمن الطبقة.`; } else { line += `، حيث يظهر (${rawPText}) متعاقباً طبقياً (Interbedded) بشكل واضح مع رقائق وأشرطة من (${L.sText}).`; } } else { line += `.`; } line += `</p>`; pageReportHTML += line; fullScreenReportHTML += line; }); }
-            let pageHTML = `<div class="print-page-wrapper page-counter-element"><div class="print-only print-header"><span class="date-top-left printDateHeader"></span><h1>نظام المسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1><h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2></div><div class="content-padding"><div class="section" style="min-height: 800px;"><div class="section-title" style="border-bottom-color: #8e44ad; color: #8e44ad;">سابعاً: التفسير الجيولوجي والوصف الليثولوجي للمقطع الحقلي ${textChunks > 1 ? `- (تكملة ${page+1})` : ''}</div><div class="report-content">${pageReportHTML}</div></div></div><div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesText">X</span></div></div>`; textContainer.innerHTML += pageHTML;
+            let pageHTML = `<div class="print-page-wrapper page-counter-element"><div class="print-only print-header"><span class="date-top-left printDateHeader"></span><h1>نظام المسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1><h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2></div><div class="content-padding"><div class="section"><div class="section-title" style="border-bottom-color: #8e44ad; color: #8e44ad;">سابعاً: التفسير الجيولوجي والوصف الليثولوجي للمقطع الحقلي ${textChunks > 1 ? `- (تكملة ${page+1})` : ''}</div><div class="report-content">${pageReportHTML}</div></div></div><div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesText">X</span></div></div>`; textContainer.innerHTML += pageHTML;
         }
 
         document.getElementById('uiReportContent').innerHTML = fullScreenReportHTML; document.getElementById('uiReportSection').style.display = 'block';
