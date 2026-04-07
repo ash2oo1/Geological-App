@@ -758,7 +758,37 @@
     function sendDiscordAlert(geoName, locData, isSuccess = true) { if(!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL === "ضع_رابط_ديسكورد_هنا") return; const now = new Date(); const timeStr = now.toLocaleTimeString('en-GB', {hour12: false}); const dateStr = now.toLocaleDateString('en-GB'); let gpsStatus = locData.enabled ? "✅ مفعل بدقة :GPS" : `❌ غير مفعل (${locData.type})`; let locLink = (locData.lat && locData.lng) ? `https://www.google.com/maps?q=${locData.lat},${locData.lng}` : "غير متوفر"; let loginStatus = isSuccess ? "✅ دخول ناجح للمنصة" : "❌ محاولة دخول فاشلة (رمز خاطئ)"; const message = { content: null, embeds: [{ title: "🚨 إشعار نظام المسح الميداني", color: isSuccess ? 3066993 : 15158332, fields: [ { name: "الحالة", value: loginStatus, inline: false }, { name: "الجيولوجي", value: geoName, inline: true }, { name: "الوقت والتاريخ", value: `${timeStr} , ${dateStr}`, inline: true }, { name: "وضع الـ GPS", value: gpsStatus, inline: false }, { name: "موقع الجيولوجي", value: `[اضغط هنا لفتح الخريطة](${locLink})`, inline: false } ], footer: { text: "منصة المسح الميداني الجيولوجي 2026" } }] }; fetch(DISCORD_WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(message) }).catch(err => console.error(err)); }
     function goToStep2() { const btn = document.getElementById('btnNextStep1'); btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> جاري تأكيد تفعيل الموقع والإنترنت..."; btn.disabled = true; if (navigator.geolocation) { navigator.geolocation.getCurrentPosition( (pos) => { loginLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude, enabled: true, type: 'موقع دقيق GPS' }; transitionToLogin(); }, (err) => { fetch('https://get.geojs.io/v1/ip/geo.json').then(res => res.json()).then(data => { loginLocation = { lat: data.latitude, lng: data.longitude, enabled: false, type: 'موقع تقريبي عبر الشبكة' }; alert("⚠️ تنبيه هام: لقد قمت برفض طلب الـ GPS.\n\nلن تتمكن من أخذ إحداثيات (UTM) داخل النظام إلا بعد تفعيل الـ GPS."); transitionToLogin(); }).catch(e => { loginLocation = { lat: 33.3152, lng: 44.3661, enabled: false, type: 'غير متوفر' }; transitionToLogin(); }); }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 } ); } else { loginLocation = { lat: 33.3152, lng: 44.3661, enabled: false, type: 'المتصفح لا يدعم' }; transitionToLogin(); } }
     function transitionToLogin() { document.getElementById('step1').style.display = 'none'; document.getElementById('step2').style.display = 'block'; }
-    function handleLogin() { const errorDiv = document.getElementById('loginError'); const btn = document.getElementById('loginBtn'); const nameInput = document.getElementById('geoNameInput').value.trim(); const pwdInput = document.getElementById('adminPassword').value; if (nameInput.split(' ').length < 2) { errorDiv.innerHTML = "❌ يرجى كتابة الاسم الثلاثي."; errorDiv.style.display = 'block'; return; } const secretCode = String.fromCharCode(97, 108, 105, 49, 50, 51); if (pwdInput === secretCode) { currentGeoName = nameInput; errorDiv.style.display = 'none'; btn.innerText = "تم الدخول..."; btn.disabled = true; document.getElementById('printGeoName').value = currentGeoName; document.getElementById('str_printGeoName').value = currentGeoName; document.getElementById('introScreen').style.display = 'none'; document.getElementById('dashboardScreen').style.display = 'block'; updateAllDepths(); sendDiscordAlert(currentGeoName, loginLocation, true); } else { sendDiscordAlert(nameInput, loginLocation, false); errorDiv.innerHTML = "❌ الرمز السري خاطئ."; errorDiv.style.display = 'block'; } }
+    function handleLogin() { 
+        const errorDiv = document.getElementById('loginError'); 
+        const btn = document.getElementById('loginBtn'); 
+        const nameInput = document.getElementById('geoNameInput').value.trim(); 
+        const pwdInput = document.getElementById('adminPassword').value; 
+        
+        if (nameInput.split(' ').length < 2) { 
+            errorDiv.innerHTML = "❌ يرجى كتابة الاسم الثلاثي."; 
+            errorDiv.style.display = 'block'; 
+            return; 
+        } 
+        
+        const secretCode = "123qweasdzxc"; 
+        
+        if (pwdInput === secretCode) { 
+            currentGeoName = nameInput; 
+            errorDiv.style.display = 'none'; 
+            btn.innerText = "تم الدخول..."; 
+            btn.disabled = true; 
+            document.getElementById('printGeoName').value = currentGeoName; 
+            document.getElementById('str_printGeoName').value = currentGeoName; 
+            document.getElementById('introScreen').style.display = 'none'; 
+            document.getElementById('dashboardScreen').style.display = 'block'; 
+            updateAllDepths(); 
+            sendDiscordAlert(currentGeoName, loginLocation, true); 
+        } else { 
+            sendDiscordAlert(nameInput, loginLocation, false); 
+            errorDiv.innerHTML = "❌ الرمز السري خاطئ."; 
+            errorDiv.style.display = 'block'; 
+        } 
+    }
     document.addEventListener('contextmenu', event => event.preventDefault()); document.onkeydown = function(e) { if(e.keyCode == 123) return false; if(e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0))) return false; if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; }; function lockSystem() { location.reload(); }
 
     let inputLayerCount = 0; const LITHOLOGY_PER_PAGE = 22; const TEXT_PER_PAGE = 8;       
