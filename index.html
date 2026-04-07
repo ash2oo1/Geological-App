@@ -123,7 +123,9 @@
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
-        /* هندسة الطباعة وحل مشكلة الصفحات البيضاء */
+        /* ========================================================
+           هندسة الطباعة المحسنة (إصلاح الأرقام والصفحات البيضاء)
+           ======================================================== */
         .print-only { display: none !important; }
         @media print {
             @page { margin: 0; size: A4 portrait; }
@@ -135,11 +137,29 @@
             .print-only { display: block !important; }
             .no-print { display: none !important; }
             
-            /* إزالة الارتفاع الثابت لمنع الصفحات البيضاء */
-            .print-page-wrapper { width: 100%; box-sizing: border-box; padding: 1.0cm; page-break-after: always; position: relative; display: block !important; }
-            #pageMap { page-break-after: auto !important; } /* تمنع الصفحة البيضاء الأخيرة */
+            /* إجبار الحاوية على أخذ طول A4 لضمان بقاء الأرقام في القاع المطلق */
+            .print-page-wrapper { 
+                width: 100%; 
+                box-sizing: border-box; 
+                padding: 1.0cm; 
+                min-height: 28.5cm; /* مقاس يحفظ الأرقام بالأسفل ويمنع تجاوز الصفحة */
+                page-break-after: always; 
+                position: relative; 
+                display: block !important; 
+            }
+            #pageMap { page-break-after: auto !important; min-height: auto; } /* لمنع أي صفحة بيضاء بعد الخريطة */
             
-            .print-bottom { position: absolute; bottom: 0.5cm; left: 0; width: 100%; text-align: center; font-weight: bold; font-size: 14px; color: #333; }
+            .print-bottom { 
+                position: absolute; 
+                bottom: 0.5cm; /* تثبيت في أسفل الحاوية */
+                left: 0; 
+                width: 100%; 
+                text-align: center; 
+                font-weight: bold; 
+                font-size: 14px; 
+                color: #333; 
+            }
+
             .print-header { text-align: center; border: 2px solid #2980b9; background-color: #f4f9fc; padding: 10px; margin-bottom: 15px; border-radius: 6px; position: relative; }
             .print-header h1 { font-size: 18px; color: #1c2833; margin: 0 0 3px 0; } .print-header h2 { font-size: 13px; color: #e67e22; margin: 0; font-weight: bold; } .date-top-left { position: absolute; top: 8px; left: 12px; font-size: 10px; color: #555; font-weight: bold; }
             .section { margin-bottom: 12px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 12px; background-color: #fafafa; box-shadow: none; }
@@ -256,12 +276,14 @@
         </div>
 
         <div class="module-card card-acoustic" onclick="alert('المختبر الصوتي الجيولوجي قيد التطوير. سيتم تفعيله لاحقاً لتحليل ترددات صدى الصخور.')">
+            <div class="coming-soon-badge">قريباً</div>
             <i class="fas fa-wave-square"></i>
             <h3>المختبر الصوتي الجيولوجي</h3>
             <p>تحليل تردد صوت المطرقة الجيولوجية باستخدام مستشعرات الهاتف لتخمين صلابة الصخر فورياً (UCS).</p>
         </div>
 
         <div class="module-card card-photo" onclick="alert('نمذجة المكاشف الآلية قيد التطوير. سيتم تفعيل الكاميرا الذكية هنا قريباً.')">
+            <div class="coming-soon-badge">قريباً</div>
             <i class="fas fa-camera-retro"></i>
             <h3>نمذجة المكاشف الآلية</h3>
             <p>التقاط صورة للمكشف الصخري لتقوم المنصة بتحليلها لونياً ورسم العمود الطباقي منها تلقائياً.</p>
@@ -507,9 +529,8 @@
         document.getElementById('dashboardScreen').style.display = 'block';
     }
 
-
     // ==========================================
-    // تهيئة المتغيرات والدول للمقالع (نفس الكود الأصلي)
+    // تهيئة المتغيرات والدول للمقالع
     // ==========================================
     let inputLayerCount = 0; 
     const LITHOLOGY_PER_PAGE = 22; 
