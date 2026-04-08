@@ -14,7 +14,7 @@
  
     <style>
         /* ========================================================
-           1. شاشات الترحيب وتسجيل الدخول (النسخة الأصلية 100%)
+           1. شاشات الترحيب وتسجيل الدخول
           ======================================================== */
         #introScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: right; padding: 15px; box-sizing: border-box; }
         .intro-box { background: rgba(255, 255, 255, 0.05); padding: 35px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 850px; width: 100%; max-height: 90vh; overflow-y: auto; backdrop-filter: blur(10px); margin: auto; box-sizing: border-box; }
@@ -124,7 +124,7 @@
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
  
         /* ========================================================
-           هندسة الطباعة المحسنة (مع إضافات التركيبي)
+           هندسة الطباعة المحسنة
           ======================================================== */
         .print-only { display: none !important; }
         @media print {
@@ -159,12 +159,13 @@
             .canvas-container { width: 100% !important; display: block !important; margin-bottom: 10px !important;} canvas { border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; background: #fff !important; }
             .leaflet-control-scale { display: none !important; } .map-wrapper { height: 800px !important; border: 2px solid #34495e !important; position: relative !important; page-break-inside: avoid; background-color: white !important;} #satelliteMap { height: 100% !important; } .leaflet-control-zoom { display: none !important; } .leaflet-control-container { background: white !important; } .content-padding { padding: 0 !important; }
             
-            /* تنسيق الموديل التركيبي الموزع للطباعة (تعديلات حديثة) */
+            /* تنسيق الموديل التركيبي الموزع للطباعة (محدث للرسومات المنفصلة) */
             .page-counter-element-str { width: 100%; box-sizing: border-box; padding: 1.0cm; min-height: 28.5cm; page-break-after: always; position: relative; display: block !important; }
-            #pageResultsStr_1, #pageResultsStr_2 { page-break-inside: avoid !important; page-break-after: always !important; max-height: 28.5cm !important; overflow: hidden !important; }
-            #kinematicCanvas, #stereonetCanvas { max-height: 400px !important; object-fit: contain !important; display: block !important; margin: 0 auto !important; page-break-inside: avoid !important;}
+            #pageResultsStr_1, #pageResultsStr_2, #pageResultsStr_3 { page-break-inside: avoid !important; page-break-after: always !important; max-height: 28.5cm !important; overflow: hidden !important; }
+            #topoCanvas, #rockCanvas, #stereonetCanvas { max-height: 400px !important; object-fit: contain !important; display: block !important; margin: 0 auto !important; page-break-inside: avoid !important;}
             .kinematic-canvas-container { display: block !important; width: 100% !important; margin-bottom: 15px !important; page-break-inside: avoid !important; border: 2px solid #bdc3c7 !important; padding: 10px !important; box-sizing: border-box !important;}
             .kinematic-legend-container { display: block !important; width: 100% !important; page-break-inside: avoid !important; }
+            .geotech-split-legend { display: flex !important; page-break-inside: avoid !important; margin-top: 10px !important; padding: 5px !important; }
             .info-icon { display: none !important; }
         }
  
@@ -175,6 +176,16 @@
         .kinematic-canvas-container h4 { color: #2c3e50; border-bottom: 2px solid #e67e22; padding-bottom: 10px; margin-top: 0; margin-bottom: 20px; width: 100%; text-align: center; font-size: 1.3rem;}
         .kinematic-legend-container { width: 100%; background: #fcfcfc; padding: 20px; border-radius: 8px; border: 1px solid #bdc3c7; box-shadow: inset 0 0 10px rgba(0,0,0,0.02); box-sizing: border-box;}
         .kinematic-legend-container h4 { margin-top: 0; color: #e67e22; border-bottom: 2px solid #e67e22; padding-bottom: 5px; font-size: 1.2rem;}
+        
+        /* تنسيقات دليل المرتسم المستقل لرسومات التضاريس والكتلة (بديل الرسم داخل Canvas) */
+        .geotech-split-legend {
+            background: #fff; border: 1px solid #888; padding: 12px; margin-top: 15px;
+            border-radius: 5px; text-align: right; direction: rtl; font-size: 14px;
+            display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; width: 100%; box-sizing: border-box;
+        }
+        .geotech-legend-item { display: flex; align-items: center; gap: 8px; color: #2c3e50; font-weight: bold;}
+        .geotech-legend-color { width: 22px; height: 22px; border-radius: 3px; border: 1px solid #000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
         .btn-sensor { background: #16a085; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.3s; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(22, 160, 133, 0.3);}
         .btn-sensor:hover { background: #117a65; transform: translateY(-2px);}
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; backdrop-filter: blur(5px); }
@@ -670,7 +681,7 @@
                </div>
  
                <div id="calcButtonsAreaStr" class="screen-only">
-                   <button class="btn-calc" style="background: #e67e22;" onclick="calculateStructuralResults()">تحليل البيانات وإجراء الإسقاط الاستيريوجرافي <i class="fas fa-globe"></i></button>
+                   <button class="btn-calc" style="background: #e67e22;" onclick="calculateStructuralResults()">تحليل البيانات وإجراء النمذجة الكينماتيكية <i class="fas fa-globe"></i></button>
                </div>
            </div>
             <div class="print-only print-bottom">الصفحة 2 من <span class="totalPagesTextStr">X</span></div>
@@ -706,15 +717,44 @@
                    <h3 style="color: #e67e22; margin-top: 0; border-bottom: 1px dashed #ccc; padding-bottom: 10px; margin-bottom: 20px;">النماذج الهندسية (Geotechnical Models)</h3>
                    
                    <div class="kinematic-canvas-container" style="margin-bottom: 0;">
-                       <h4>نموذج التضاريس والكتلة الصخرية (Topographic & Rock Mass Model)</h4>
-                       <canvas id="kinematicCanvas" width="850" height="550" style="background: #fff; width: 100%; max-width: 850px; display: block; border: 1px solid #ddd; border-radius: 6px;"></canvas>
+                       <h4>نموذج التضاريس الهندسي (Topographic Model)</h4>
+                       <canvas id="topoCanvas" width="850" height="500" style="background: #fff; width: 100%; max-width: 850px; display: block; border: 1px solid #ddd; border-radius: 6px;"></canvas>
+                       <div class="geotech-split-legend">
+                           <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: #d7ccc8;"></div><span>تضاريس السطح العلوية</span></div>
+                           <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: #ecf0f1; border-color: #2c3e50; border-width: 2px;"></div><span>الكتلة الجبلية / المنحدر</span></div>
+                           <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: transparent; border: 2px solid #2980b9; border-radius: 50%;"></div><span style="color: #2980b9;">زاوية المنحدر (Slope)</span></div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+            <div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesTextStr">X</span></div>
+        </div>
+
+        <div class="print-page-wrapper page-counter-element-str" id="pageResultsStr_2" style="display: none;">
+            <div class="print-only print-header" style="border-color: #e67e22;">
+               <span class="date-top-left printDateHeader"></span>
+               <h1>نظام المسح الميداني الجيولوجي (التركيبي والجيوتقني)</h1>
+                <h2 style="color: #d35400;">إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
+           </div>
+            <div class="content-padding">
+               <div class="section" style="border: 2px solid #e67e22; padding: 20px; box-shadow: none;">
+                   <div class="kinematic-canvas-container" style="margin-bottom: 0;">
+                       <h4>نموذج الكتلة الصخرية والتحليل التركيبي (Rock Mass Model)</h4>
+                       <canvas id="rockCanvas" width="850" height="500" style="background: #fff; width: 100%; max-width: 850px; display: block; border: 1px solid #ddd; border-radius: 6px;"></canvas>
+                       <div class="geotech-split-legend">
+                           <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: #fff; border: 1.5px solid #bdc3c7;"></div><span>مستويات الفواصل الداخلية (Joints)</span></div>
+                           <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: rgba(231, 76, 60, 0.5); border: 2px solid #c0392b;"></div><span style="color: #c0392b;">خطر الانزلاق (Failure Block)</span></div>
+                           <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: transparent; border: 2px solid #c0392b; border-radius: 50%;"></div><span style="color: #c0392b;">زاوية ميل الطبقة (Dip)</span></div>
+                           <div class="geotech-legend-item"><span><i class="fas fa-arrow-down" style="color:#27ae60;"></i> قوى الوزن والاحتكاك</span></div>
+                           <div class="geotech-legend-item"><span><i class="fas fa-arrow-left" style="color:#3498db;"></i> ضغط المياه الجوفية</span></div>
+                       </div>
                    </div>
                </div>
            </div>
             <div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesTextStr">X</span></div>
         </div>
  
-        <div class="print-page-wrapper page-counter-element-str" id="pageResultsStr_2" style="display: none;">
+        <div class="print-page-wrapper page-counter-element-str" id="pageResultsStr_3" style="display: none;">
             <div class="print-only print-header" style="border-color: #e67e22;">
                <span class="date-top-left printDateHeader"></span>
                <h1>نظام المسح الميداني الجيولوجي (التركيبي والجيوتقني)</h1>
@@ -885,7 +925,8 @@
     function latLonToUTM(lat, lon) {
         const a = 6378137.0; const eccSquared = 0.00669438; const k0 = 0.9996;
         let zoneNumber = Math.floor((lon + 180) / 6) + 1; let lonOrigin = (zoneNumber - 1) * 6 - 180 + 3; let lonOriginRad = lonOrigin * (Math.PI / 180.0); let latRad = lat * (Math.PI / 180.0); let lonRad = lon * (Math.PI / 180.0); let eccPrimeSquared = (eccSquared) / (1 - eccSquared);
-        let N = a / Math.sqrt(1 - eccSquared * Math.sin(latRad) * Math.sin(latRad)); let T = Math.tan(latRad) * Math.tan(latRad); let C = eccPrimeSquared * Math.cos(latRad) * Math.cos(latRad); let A = Math.cos(latRad) * (lonRad - lonOriginRad);
+        let N = a / Math.sqrt(1 - eccSquared * Math.sin(latRad) * Math.sin(latRad)); let T = Math.tan(latRad) * Math.tan(latRad); let C = eccPrimeSquared * Math.cos(latRad) * Math.cos(latRad); let A = Math.cos(latRad) * (lonOriginRad - lonRad); // Corrected formula
+        A = Math.cos(latRad) * (lonRad - lonOriginRad);
         let M = a * ((1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * Math.pow(eccSquared, 3) / 256) * latRad - (3 * eccSquared / 8 + 3 * eccSquared * eccSquared / 32 + 45 * Math.pow(eccSquared, 3) / 1024) * Math.sin(2 * latRad) + (15 * eccSquared * eccSquared / 256 + 45 * Math.pow(eccSquared, 3) / 1024) * Math.sin(4 * latRad) - (35 * Math.pow(eccSquared, 3) / 3072) * Math.sin(6 * latRad));
         let UTMEasting = (k0 * N * (A + (1 - T + C) * Math.pow(A, 3) / 6 + (5 - 18 * T + T * T + 72 * C - 58 * eccPrimeSquared) * Math.pow(A, 5) / 120) + 500000.0); let UTMNorthing = (k0 * (M + N * Math.tan(latRad) * (Math.pow(A, 2) / 2 + (5 - T + 9 * C + 4 * C * C) * Math.pow(A, 4) / 24 + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) * Math.pow(A, 6) / 720)));
         return { easting: parseFloat(UTMEasting.toFixed(2)), northing: parseFloat(UTMNorthing.toFixed(2)), zone: zoneNumber };
@@ -918,7 +959,7 @@
                        layerObj.printText = `${pText} \n(${mixWord} ${sText})`; layerObj.hasSec = true; layerObj.secType = sType; layerObj.secColor = (sCat==='other' || sType==='custom') ? document.getElementById('sColor'+i).value : baseColors[sType]; layerObj.mixType = mixType; layerObj.sText = sText;
                     }
                 }
-               validLayers.push(layerObj); currentD += thick; totalDepth += thick;
+                validLayers.push(layerObj); currentD += thick; totalDepth += thick;
             }
         }
  
@@ -1004,7 +1045,7 @@
     }
  
     // ==========================================
-    // دوال الدليل الجيولوجي التفاعلي (المسح التركيبي)
+    // دوال الدليل الجيولوجي التفاعلي
     // ==========================================
     const guideData = {
         'dip_strike': { title: 'دليل قياس الميل والمضرب', content: `<ul><li><b>طريقة التماس (Contact Method):</b> ضع البوصلة ملاصقة تماماً للطبقة لضبط "اتجاه الميل"، ثم ميزان الأنبوب لـ "زاوية الميل".</li><li><b>يقوم النظام آلياً:</b> بحساب المضرب (Strike) بتطبيق قاعدة اليد اليمنى (RHR) لتسريع عملك.</li></ul>` },
@@ -1028,7 +1069,7 @@
     window.onclick = function(event) { if (event.target == document.getElementById('infoModalOverlay')) { closeInfoModal(); } }
  
     // ==========================================
-    // دوال قراءة المستشعرات والتحليل الكينماتيكي المعدلة
+    // دوال قراءة المستشعرات والتحليل الكينماتيكي المفصولة
     // ==========================================
     function getSensorData(target) {
         if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -1098,135 +1139,143 @@
             if (diffDir <= 20 && slope > dip && dip > friction) { isPlanar = true; logicReason = "هندسياً: الطبقات تميل باتجاه المنحدر، وتخرج (Daylight) من القطع، وميلها يتجاوز زاوية الاحتكاك الداخلي."; }
             if (toppleDiff <= 20 && ((90 - dip) + friction < slope)) { isToppling = true; logicReason = "هندسياً: الطبقات تميل عكس وجه المنحدر بزاوية شديدة، مما يخلق كتل شبه عمودية تتقاطع مع المنحدر مهددة بالانقلاب."; }
  
-            if (isPlanar) { alertBox.innerHTML = `<div class="alert-danger"><i class="fas fa-skull-crossbones"></i> <b>خطر عالي:</b> انزلاق مستوي (Planar Sliding) مُتوقع.<br><span style="font-size:0.9rem; margin-top:8px; display:block;">${logicReason}</span></div>`; } 
-            else if (isToppling) { alertBox.innerHTML = `<div class="alert-danger"><i class="fas fa-mountain"></i> <b>خطر عالي:</b> انقلاب صخري (Toppling) مُتوقع.<br><span style="font-size:0.9rem; margin-top:8px; display:block;">${logicReason}</span></div>`; } 
+            if (isPlanar) { alertBox.innerHTML = `<div class="alert-danger" style="color:#c0392b;"><i class="fas fa-skull-crossbones"></i> <b>خطر عالي:</b> انزلاق مستوي (Planar Sliding) مُتوقع.<br><span style="font-size:0.9rem; margin-top:8px; display:block; color:#333;">${logicReason}</span></div>`; } 
+            else if (isToppling) { alertBox.innerHTML = `<div class="alert-danger" style="color:#c0392b;"><i class="fas fa-mountain"></i> <b>خطر عالي:</b> انقلاب صخري (Toppling) مُتوقع.<br><span style="font-size:0.9rem; margin-top:8px; display:block; color:#333;">${logicReason}</span></div>`; } 
             else {
                 if (diffDir > 20 && toppleDiff > 20) logicReason = "هندسياً: اتجاه الميل ينحرف بزاوية أمان عن وجه المنحدر.";
                 else if (diffDir <= 20 && dip >= slope) logicReason = "هندسياً: الطبقات لا تتكشف (No Daylighting) لأن ميلها أشد من ميل المنحدر.";
                 else if (diffDir <= 20 && dip <= friction) logicReason = "هندسياً: الطبقات تتكشف، لكن زاوية ميلها أقل من زاوية الاحتكاك الداخلي مما يمنع انزلاقها.";
-               alertBox.innerHTML = `<div class="alert-safe"><i class="fas fa-check-circle"></i> <b>آمن كينماتيكياً:</b> الطبقات مستقرة.<br><span style="font-size:0.9rem; margin-top:8px; display:block;">${logicReason}</span></div>`;
+               alertBox.innerHTML = `<div class="alert-safe" style="color:#27ae60;"><i class="fas fa-check-circle"></i> <b>آمن كينماتيكياً:</b> الطبقات مستقرة.<br><span style="font-size:0.9rem; margin-top:8px; display:block; color:#333;">${logicReason}</span></div>`;
             }
  
-           drawEnhanced2DProfile(dip, dipDir, slope, slopeDir, friction, p5, p3, isPlanar); 
+           let profileData = generateProfilePoints('topoCanvas', slope);
+           drawTopographicModel('topoCanvas', slope, slopeDir, profileData); 
+           drawRockMassModel('rockCanvas', dip, dipDir, slope, slopeDir, friction, p5, p3, isPlanar, profileData);
            drawStereonet(dip, dipDir, slope, slopeDir, friction);
         }
  
        document.getElementById('calcButtonsAreaStr').style.display = 'none'; 
        document.getElementById('pageResultsStr_1').style.display = 'block'; 
        document.getElementById('pageResultsStr_2').style.display = 'block'; 
+       document.getElementById('pageResultsStr_3').style.display = 'block'; 
        updatePageNumbers();
     }
- 
-    function drawEnhanced2DProfile(dip, dipDir, slope, slopeDir, friction, waterVal, rmrSpacingVal, isPlanar) {
-        const canvas = document.getElementById('kinematicCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // توليد هندسة المنحدر مرة واحدة ليتم تطبيقها على كلا الرسمين للتطابق التام
+    function generateProfilePoints(canvasId, slope) {
+        const canvas = document.getElementById(canvasId);
+        if(!canvas) return null;
         const margin = 50; const widthBox = canvas.width - margin * 2; const heightBox = canvas.height - margin * 2;
         const cx = margin + 200; const cy = margin + heightBox - 80; const slopeHeight = heightBox - 150; 
-        
         let slopeRad = slope * (Math.PI / 180);
         let slopeTopX = cx + (slopeHeight / Math.tan(slopeRad)); 
         let slopeTopY = cy - slopeHeight;
-        let isDippingSameWay = (Math.abs(slopeDir - dipDir) <= 90 || Math.abs(slopeDir - dipDir) >= 270);
-        let dipRad = dip * (Math.PI / 180);
- 
+        
         function createRoughLine(startX, startY, endX, endY, segments, roughness) {
             let pts = [{x: startX, y: startY}];
             let dx = (endX - startX)/segments; let dy = (endY - startY)/segments;
             for(let i=1; i<segments; i++) { pts.push({x: startX + i*dx + (Math.random()*roughness - roughness/2), y: startY + i*dy + (Math.random()*roughness - roughness/2)}); }
-           pts.push({x: endX, y: endY}); return pts;
+            pts.push({x: endX, y: endY}); return pts;
         }
- 
         let slopeFacePts = createRoughLine(cx, cy, slopeTopX, slopeTopY, 15, 12);
         let crestPts = createRoughLine(slopeTopX, slopeTopY, margin + widthBox - 30, slopeTopY - 20, 10, 15); 
- 
-        // رسم الكتلة الأساسية
-       ctx.beginPath(); ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(margin + widthBox - 30, cy); ctx.closePath();
+        
+        return { margin, widthBox, heightBox, cx, cy, slopeTopX, slopeTopY, slopeFacePts, crestPts, slopeHeight };
+    }
+
+    function drawTopographicModel(canvasId, slope, slopeDir, profileData) {
+        if(!profileData) return;
+        const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const { margin, widthBox, cx, cy, slopeFacePts, crestPts } = profileData;
+        let slopeRad = slope * (Math.PI / 180);
+
+        // رسم القاعدة الكتلية
+        ctx.beginPath(); ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(margin + widthBox - 30, cy); ctx.closePath();
         ctx.fillStyle = '#ecf0f1'; ctx.fill(); 
         
-        // رسم القشرة السطحية التضاريسية
-       ctx.beginPath(); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); for(let i = crestPts.length-1; i>=0; i--) { ctx.lineTo(crestPts[i].x, crestPts[i].y + 15 + Math.random()*10); } ctx.fillStyle = '#d7ccc8'; ctx.fill();
- 
+        // رسم قشرة التضاريس العلوية
+        ctx.beginPath(); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); for(let i = crestPts.length-1; i>=0; i--) { ctx.lineTo(crestPts[i].x, crestPts[i].y + 15 + Math.random()*10); } ctx.fillStyle = '#d7ccc8'; ctx.fill();
+
+        // إطار التضاريس الجريء
+        ctx.beginPath(); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 3;
+        ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.stroke();
+
+        // زاوية المنحدر (أزرق)
+        ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(cx + 35, cy - 35, 95, 28);
+        ctx.beginPath(); ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2.5; 
+        ctx.arc(cx, cy, 50, Math.PI, Math.PI + Math.PI - slopeRad, true); ctx.stroke();
+        ctx.fillStyle = '#2980b9'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'left'; ctx.fillText(`Slope: ${slope}°`, cx + 45, cy - 16);
+    }
+
+    function drawRockMassModel(canvasId, dip, dipDir, slope, slopeDir, friction, waterVal, rmrSpacingVal, isPlanar, profileData) {
+        if(!profileData) return;
+        const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const { margin, widthBox, heightBox, cx, cy, slopeTopX, slopeTopY, slopeFacePts, crestPts, slopeHeight } = profileData;
+        
+        let dipRad = dip * (Math.PI / 180);
+        let isDippingSameWay = (Math.abs(slopeDir - dipDir) <= 90 || Math.abs(slopeDir - dipDir) >= 270);
+
+        // رسم القاعدة البيضاء لإظهار الفواصل
+        ctx.beginPath(); ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(margin + widthBox - 30, cy); ctx.closePath();
+        ctx.fillStyle = '#fdfefe'; ctx.fill(); 
+
+        // رسم شبكة الفواصل
         let traceLen = 80; let jointSpacing = 40; 
-       if(rmrSpacingVal >= 15) { traceLen = 150; jointSpacing = 80; } else if(rmrSpacingVal <= 8) { traceLen = 40; jointSpacing = 20; }
- 
-        // الفواصل الداخلية
+        if(rmrSpacingVal >= 15) { traceLen = 150; jointSpacing = 80; } else if(rmrSpacingVal <= 8) { traceLen = 40; jointSpacing = 20; }
         ctx.save();
         ctx.beginPath(); ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(margin + widthBox, cy); ctx.clip();
-       ctx.strokeStyle = '#bdc3c7'; ctx.lineWidth = 1.5;
+        ctx.strokeStyle = '#bdc3c7'; ctx.lineWidth = 1.5;
         let dipDx = traceLen * Math.cos(dipRad); let dipDy = traceLen * Math.sin(dipRad);
-       if(!isDippingSameWay) dipDx = -dipDx; 
- 
+        if(!isDippingSameWay) dipDx = -dipDx; 
         for(let y = margin; y < margin + heightBox; y += jointSpacing * 0.8) {
             for(let x = margin; x < margin + widthBox; x += traceLen * 1.2) {
                 let sx = x + Math.random()*20; let sy = y + Math.random()*20;
-               ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx + dipDx, sy - dipDy); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx + dipDx, sy - dipDy); ctx.stroke();
             }
         }
         ctx.restore();
- 
-        // الإطار الخارجي الجريء
-       ctx.beginPath(); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 3;
-       ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.stroke();
- 
-        // الانزلاق المستوي إن وجد
+
+        // إطار الكتلة
+        ctx.beginPath(); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 3;
+        ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.stroke();
+
+        // رسم الانزلاق المستوي إن وجد
         if (isPlanar && isDippingSameWay) {
             let dipTopX = cx + (slopeHeight / Math.tan(dipRad)); 
             let crackDepth = slopeTopY + 100;
-            let crackPts = createRoughLine(dipTopX, slopeTopY, dipTopX, crackDepth, 8, 10);
+            let crackPts = [{x: dipTopX, y: slopeTopY}, {x: dipTopX + 2, y: slopeTopY + 50}, {x: dipTopX, y: crackDepth}]; 
             
             let offset = 20; 
             let dx = -offset * Math.cos(dipRad); let dy = offset * Math.sin(dipRad);
             
-           ctx.beginPath(); ctx.fillStyle = '#1c2833'; ctx.moveTo(dipTopX, slopeTopY); crackPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.closePath(); ctx.fill();
- 
-           ctx.beginPath(); ctx.moveTo(cx + dx, cy + dy); let offsetSlopePts = slopeFacePts.map(p => ({x: p.x + dx, y: p.y + dy})); offsetSlopePts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(dipTopX + dx, slopeTopY + dy); for(let i = crackPts.length-1; i >= 0; i--) { ctx.lineTo(crackPts[i].x + dx, crackPts[i].y + dy); } ctx.closePath();
-           ctx.fillStyle = '#e5e7e9'; ctx.fill(); ctx.fillStyle = 'rgba(231, 76, 60, 0.5)'; ctx.fill(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2; ctx.stroke();
- 
+            // حفرة الانهيار
+            ctx.beginPath(); ctx.fillStyle = '#1c2833'; ctx.moveTo(dipTopX, slopeTopY); crackPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.closePath(); ctx.fill();
+
+            // الكتلة المنزلقة الحمراء
+            ctx.beginPath(); ctx.moveTo(cx + dx, cy + dy); let offsetSlopePts = slopeFacePts.map(p => ({x: p.x + dx, y: p.y + dy})); offsetSlopePts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(dipTopX + dx, slopeTopY + dy); for(let i = crackPts.length-1; i >= 0; i--) { ctx.lineTo(crackPts[i].x + dx, crackPts[i].y + dy); } ctx.closePath();
+            ctx.fillStyle = '#e5e7e9'; ctx.fill(); ctx.fillStyle = 'rgba(231, 76, 60, 0.5)'; ctx.fill(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2; ctx.stroke();
+
+            // القوى
             let cgX = (cx + slopeTopX + dipTopX) / 3 + dx; let cgY = (cy + slopeTopY + slopeTopY) / 3 + dy + 30;
-           drawArrow(ctx, cgX, cgY, cgX, cgY + 70, '#27ae60', 3, 'W (الوزن)');
+            drawArrow(ctx, cgX, cgY, cgX, cgY + 70, '#27ae60', 3, 'W (الوزن)');
             
             let rEndX = cgX + 60 * Math.cos(dipRad); let rEndY = cgY - 60 * Math.sin(dipRad);
-           drawArrow(ctx, cgX, cgY, rEndX, rEndY, '#f39c12', 3, 'R (الاحتكاك)');
- 
+            drawArrow(ctx, cgX, cgY, rEndX, rEndY, '#f39c12', 3, 'R (الاحتكاك)');
+
             if (waterVal <= 10) { 
                 let vStart = {x: dipTopX + dx - 10, y: (slopeTopY + crackDepth)/2 + dy};
-               drawArrow(ctx, vStart.x, vStart.y, vStart.x - 50, vStart.y, '#3498db', 3, 'V (دفع الماء)');
+                drawArrow(ctx, vStart.x, vStart.y, vStart.x - 50, vStart.y, '#3498db', 3, 'V (دفع الماء)');
                 let uStart = {x: (cx + dipTopX)/2 + dx, y: (cy + crackDepth)/2 + dy + 10};
-               drawArrow(ctx, uStart.x, uStart.y, uStart.x - 40 * Math.sin(dipRad), uStart.y - 40 * Math.cos(dipRad), '#3498db', 3, 'U (رفع الماء)');
+                drawArrow(ctx, uStart.x, uStart.y, uStart.x - 40 * Math.sin(dipRad), uStart.y - 40 * Math.cos(dipRad), '#3498db', 3, 'U (رفع الماء)');
             }
         }
- 
-        // ==========================================
-        // 1. إضافة دليل الرسم الهندسي (Legend Box)
-        // ==========================================
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-        ctx.fillRect(20, 20, 220, 130);
-        ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 1.5;
-        ctx.strokeRect(20, 20, 220, 130);
-        
-        ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 14px Arial';
-        ctx.fillText('دليل النموذج (Legend):', 30, 45);
-        
-        ctx.font = '13px Arial';
-        ctx.fillStyle = '#2c3e50'; ctx.fillText('▬  تضاريس السطح', 40, 70);
-        ctx.fillStyle = '#bdc3c7'; ctx.fillText('▬  شبكة الفواصل الداخلية', 40, 90);
-        ctx.fillStyle = '#c0392b'; ctx.fillText('▬  مستوى الانزلاق / الطبقة', 40, 110);
-        ctx.fillStyle = '#27ae60'; ctx.fillText('↓  قوى محركة ومقاومة', 40, 130);
 
-        // ==========================================
-        // 2. فصل الزوايا بصرياً (Slope باللون الأزرق / Dip باللون الأحمر)
-        // ==========================================
-        // زاوية المنحدر (Slope Angle) - أزرق غامق
-        ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(cx + 35, cy - 35, 95, 28);
-        ctx.beginPath(); ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2.5; 
-        ctx.arc(cx, cy, 50, Math.PI, Math.PI + Math.PI - slopeRad, true); ctx.stroke();
-        ctx.fillStyle = '#2980b9'; ctx.font = 'bold 15px Arial'; ctx.fillText(`Slope: ${slope}°`, cx + 45, cy - 16);
-
-        // زاوية الطبقة (Dip Angle) - أحمر
+        // زاوية الطبقة (أحمر)
         let dipTextX = margin + 25; let dipTextY = cy - 75;
         ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(dipTextX - 10, dipTextY - 20, 85, 28);
         ctx.beginPath(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2.5;
         ctx.arc(margin + 50, cy, 70, 0, -dipRad, true); ctx.stroke();
-        ctx.fillStyle = '#c0392b'; ctx.font = 'bold 15px Arial'; ctx.fillText(`Dip: ${dip}°`, dipTextX, dipTextY);
+        ctx.fillStyle = '#c0392b'; ctx.font = 'bold 15px Arial'; ctx.textAlign='left'; ctx.fillText(`Dip: ${dip}°`, dipTextX, dipTextY);
     }
  
     function drawArrow(ctx, fromx, fromy, tox, toy, color, width, text) {
@@ -1262,10 +1311,10 @@
  
         const legendDiv = document.getElementById('kinematicLegend'); let riskState = ""; let isPlanar = false; let diffDir = Math.abs(slopeDir - dipDir); if (diffDir > 180) diffDir = 360 - diffDir; if (diffDir <= 20 && slope > dip && dip > friction) isPlanar = true;
  
-        if (isPlanar) riskState = "<span style='color:#c0392b; font-size:1.1rem;'>⚠️ النموذج البصري يظهر بوضوح انفصال الكتلة عن الجبل. قوى المياه (إن وجدت) تسرع الانزلاق.</span>";
-        else riskState = "<span style='color:#27ae60; font-size:1.1rem;'>✅ الجبل متماسك وتضاريسه مستقرة حسب شبكة الفواصل الظاهرة.</span>";
+        if (isPlanar) riskState = "<span style='color:#c0392b; font-size:1.1rem;'>⚠️ قراءات الاستيريوجرافي تؤكد وجود انزلاق مستوي محتمل للكتلة الصخرية.</span>";
+        else riskState = "<span style='color:#27ae60; font-size:1.1rem;'>✅ قراءات الاستيريوجرافي تظهر أن المنحدر الجبلي مستقر كينماتيكياً.</span>";
  
-       legendDiv.innerHTML = `<h4>دليل المخرجات الهندسية (Engineering Legend):</h4><div style="display:flex; flex-wrap:wrap; gap:20px; font-size: 1.1rem;"><div style="flex:1;"><b>نموذج التضاريس 2D:</b><br><span style="color:#2c3e50; font-weight:bold;">▬</span> التضاريس الخارجية والقمة<br><span style="color:#bdc3c7; font-weight:bold;">▬</span> شبكة الفواصل الجيولوجية الداخلية<br><span style="color:#e74c3c; font-weight:bold;">█</span> الكتلة الحرجة المنزلقة<br><span style="color:#27ae60; font-weight:bold;">↓</span> (W) الوزن | <span style="color:#f39c12; font-weight:bold;">↓</span> (R) الاحتكاك<br><span style="color:#3498db; font-weight:bold;">←</span> (V/U) قوى المياه الجوفية</div><div style="flex:1;"><b>المسقط الفراغي (Stereonet):</b><br><span style="color:#2c3e50; font-weight:bold;">◡</span> الدائرة العظمى للمنحدر (Slope)<br><span style="color:#c0392b; font-weight:bold;">◡</span> الدائرة العظمى للطبقة (Plane)<br><span style="color:#2980b9; font-weight:bold;">◌</span> مخروط الاحتكاك الداخلي<br><span style="color:#e74c3c;">●</span> قطب الطبقة (Pole)</div></div><hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">${riskState}`;
+       legendDiv.innerHTML = `<h4>دليل المسقط (Stereonet Legend):</h4><div style="display:flex; flex-wrap:wrap; gap:20px; font-size: 1.1rem;"><div style="flex:1;"><span style="color:#2c3e50; font-weight:bold;">◡</span> الدائرة العظمى للمنحدر (Slope)<br><span style="color:#c0392b; font-weight:bold;">◡</span> الدائرة العظمى للطبقة (Plane)</div><div style="flex:1;"><span style="color:#2980b9; font-weight:bold;">◌</span> مخروط الاحتكاك الداخلي<br><span style="color:#e74c3c;">●</span> قطب الطبقة (Pole)</div></div><hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">${riskState}`;
     }
  
     function prepareAndPrintStr() { try { const now = new Date(); const dateString = now.toLocaleDateString('en-GB') + ' - ' + now.toLocaleTimeString('en-GB', {hour: '2-digit', minute:'2-digit'}); document.querySelectorAll('.printDateHeader').forEach(h => h.innerText = dateString); updatePageNumbers(); window.print(); } catch (error) { alert("حدث خطأ أثناء التجهيز."); } }
