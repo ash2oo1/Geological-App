@@ -177,7 +177,7 @@
         .kinematic-legend-container { width: 100%; background: #fcfcfc; padding: 20px; border-radius: 8px; border: 1px solid #bdc3c7; box-shadow: inset 0 0 10px rgba(0,0,0,0.02); box-sizing: border-box;}
         .kinematic-legend-container h4 { margin-top: 0; color: #e67e22; border-bottom: 2px solid #e67e22; padding-bottom: 5px; font-size: 1.2rem;}
         
-        /* تنسيقات دليل المرتسم المستقل لرسومات التضاريس والكتلة (بديل الرسم داخل Canvas) */
+        /* تنسيقات دليل المرتسم المستقل لرسومات التضاريس والكتلة */
         .geotech-split-legend {
             background: #fff; border: 1px solid #888; padding: 12px; margin-top: 15px;
             border-radius: 5px; text-align: right; direction: rtl; font-size: 14px;
@@ -205,6 +205,12 @@
         .table-guide { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; font-size: 0.95rem; }
         .table-guide th, .table-guide td { border: 1px solid #ddd; padding: 10px; text-align: center; }
         .table-guide th { background: #eaf2f8; color: #2c3e50; }
+
+        /* إضافات العملية الجراحية (التوضيحات الآلية والبوصلة) */
+        .geological-explanation-box { border: 2px solid #e67e22; padding: 15px; margin-top: 15px; width: 100%; background-color: #fdf2e9; border-radius: 8px; page-break-inside: avoid; font-size: 1.05rem; line-height: 1.8; color: #2c3e50; text-align: justify; box-sizing: border-box; }
+        .compass-live-box { display: none; background: #eaf2f8; border: 2px solid #3498db; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
+        .compass-live-box p { margin: 5px 0; font-size: 1.1rem; font-weight: bold; }
+        .compass-value-text { color: #e67e22; font-weight: bold; display: block; margin-top: 5px; font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -216,36 +222,36 @@
             <h2>بإشراف الجيولوجي: علي شندل الجنابي</h2>
             
             <div class="official-text">
-               <h3><i class="fas fa-landmark"></i> نبذة تعريفية عن المنصة:</h3>
-               <p>أُسست هذه المنصة الرقمية الرائدة في عام <b>2026</b>، كطفرة نوعية في إدارة الثروات المعدنية، على يد الجيولوجي <b>علي شندل الجنابي</b>. لقد وُلدت هذه المنصة من رَحِم المعاناة الميدانية؛ لتكون الأداة الرسمية والحل الجذري الموثوق، الذي ينقل العمل الجيولوجي الرقابي من حقبة القياسات الورقية التقليدية إلى عصر الأتمتة والرقمنة الفضائية.</p>
-               <p>تاريخياً، كان التفتيش الجيولوجي يتطلب جهداً استثنائياً؛ بدءاً من أخذ الإحداثيات بالأجهزة اليدوية، مروراً بالحسابات الرياضية المعقدة، وصولاً إلى الاستعانة ببرامج حاسوبية خارجية (Software) لرسم الأعمدة الطباقية. أما اليوم، فقد صُممت هذه المنصة لتتولى كافة هذه المهام نيابة عن الجيولوجي بدقة تصل إلى 100%.</p>
-               <b>أبرز ما تُقدمه المنصة فنياً وهندسياً:</b>
-               <ul>
-                   <li><b>المعالجة الرياضية الفورية:</b>حساب المساحات (تحويل الدونم إلى متر مربع)، والكميات المستخرجة والمتبقية، وتحديد أقصى عمق استثماري مسموح.</li>
-                   <li><b>النمذجة ثنائية الأبعاد والطباقية:</b>توليد مرتسم هندسي للمساحات، ورسم "العمود الطباقي" (Stratigraphic Column) باحترافية قياسية مع تحديد الطبقات وسُمكها.</li>
-                   <li><b>الرفع الطوبوغرافي الفضائي:</b>اتصال مباشر بالأقمار الصناعية لتحديد الأركان (A,B,C,D) بنظام (UTM)، مع عرض دقة إشارة الـ GPS لحظياً لإعادة الرصد إن لزم الأمر.</li>
-                   <li><b>التوثيق البيئي والسلامة:</b>إتاحة توثيق المتغيرات الجيولوجية، مراقبة مستويات المياه الجوفية، ورصد التزام المستثمر بتعليمات السلامة المهنية.</li>
-               </ul>
-           </div>
+                <h3><i class="fas fa-landmark"></i> نبذة تعريفية عن المنصة:</h3>
+                <p>أُسست هذه المنصة الرقمية الرائدة في عام <b>2026</b>، كطفرة نوعية في إدارة الثروات المعدنية، على يد الجيولوجي <b>علي شندل الجنابي</b>. لقد وُلدت هذه المنصة من رَحِم المعاناة الميدانية؛ لتكون الأداة الرسمية والحل الجذري الموثوق، الذي ينقل العمل الجيولوجي الرقابي من حقبة القياسات الورقية التقليدية إلى عصر الأتمتة والرقمنة الفضائية.</p>
+                <p>تاريخياً، كان التفتيش الجيولوجي يتطلب جهداً استثنائياً؛ بدءاً من أخذ الإحداثيات بالأجهزة اليدوية، مروراً بالحسابات الرياضية المعقدة، وصولاً إلى الاستعانة ببرامج حاسوبية خارجية (Software) لرسم الأعمدة الطباقية. أما اليوم، فقد صُممت هذه المنصة لتتولى كافة هذه المهام نيابة عن الجيولوجي بدقة تصل إلى 100%.</p>
+                <b>أبرز ما تُقدمه المنصة فنياً وهندسياً:</b>
+                <ul>
+                    <li><b>المعالجة الرياضية الفورية:</b>حساب المساحات (تحويل الدونم إلى متر مربع)، والكميات المستخرجة والمتبقية، وتحديد أقصى عمق استثماري مسموح.</li>
+                    <li><b>النمذجة ثنائية الأبعاد والطباقية:</b>توليد مرتسم هندسي للمساحات، ورسم "العمود الطباقي" (Stratigraphic Column) باحترافية قياسية مع تحديد الطبقات وسُمكها.</li>
+                    <li><b>الرفع الطوبوغرافي الفضائي:</b>اتصال مباشر بالأقمار الصناعية لتحديد الأركان (A,B,C,D) بنظام (UTM)، مع عرض دقة إشارة الـ GPS لحظياً لإعادة الرصد إن لزم الأمر.</li>
+                    <li><b>التوثيق البيئي والسلامة:</b>إتاحة توثيق المتغيرات الجيولوجية، مراقبة مستويات المياه الجوفية، ورصد التزام المستثمر بتعليمات السلامة المهنية.</li>
+                </ul>
+            </div>
  
             <div class="instruction-section">
-               <h3><i class="fas fa-exclamation-triangle"></i> تعليمات وإرشادات حقلية هامة جداً:</h3>
+                <h3><i class="fas fa-exclamation-triangle"></i> تعليمات وإرشادات حقلية هامة جداً:</h3>
                 <ul class="instruction-list">
-                   <li><i class="fas fa-location-arrow" style="color: #e74c3c;"></i> <strong>تفعيل الموقع (GPS):</strong> يجب تفعيل خدمة الموقع الجغرافي (Location) في هاتفك أو متصفحك <b>فور الدخول للمنصة</b>. هذا الإجراء إلزامي لضمان قدرة النظام على التقاط إشارات الأقمار الصناعية بدقة، وبدونه لن تتمكن من رفع الإحداثيات الميدانية (UTM).</li>
-                   <li><i class="fas fa-wifi" style="color: #3498db;"></i> <strong>الاتصال بالإنترنت:</strong> يُشترط وجود اتصال بالإنترنت <b>فقط</b> عند تسجيل الدخول الأول وتوليد الخريطة الفضائية. بعد تسجيل الدخول، يمكنك التوجه إلى المواقع النائية وسيعمل النظام وتسجيل الإحداثيات والطباعة (أوفلاين) بالكامل.</li>
-                   <li><i class="fas fa-hard-hat" style="color: #f1c40f;"></i> <strong>الاستعداد الحقلي:</strong> لا غنى للجيولوجي عن معداته؛ يُرجى اصطحاب شريط القياس الميداني (الفيتا) للمطابقة، وتأمين مصدر طاقة احتياطي للهاتف (Power Bank/شاحن)، مع الالتزام التام بمعدات السلامة المهنية (PPE) داخل الموقع.</li>
-                   <li><i class="fas fa-user-check" style="color: #2ecc71;"></i> <strong>الاشتراك والتسجيل:</strong> النظام محمي ومخصص للمشتركين فقط. يتطلب الدخول "رمزاً سرياً" مسبقاً. في حال عدم امتلاكك للرمز، يُرجى التواصل المباشر مع مؤسس المنصة عبر الأزرار أدناه.</li>
-               </ul>
-           </div>
+                    <li><i class="fas fa-location-arrow" style="color: #e74c3c;"></i> <strong>تفعيل الموقع (GPS):</strong> يجب تفعيل خدمة الموقع الجغرافي (Location) في هاتفك أو متصفحك <b>فور الدخول للمنصة</b>. هذا الإجراء إلزامي لضمان قدرة النظام على التقاط إشارات الأقمار الصناعية بدقة، وبدونه لن تتمكن من رفع الإحداثيات الميدانية (UTM).</li>
+                    <li><i class="fas fa-wifi" style="color: #3498db;"></i> <strong>الاتصال بالإنترنت:</strong> يُشترط وجود اتصال بالإنترنت <b>فقط</b> عند تسجيل الدخول الأول وتوليد الخريطة الفضائية. بعد تسجيل الدخول، يمكنك التوجه إلى المواقع النائية وسيعمل النظام وتسجيل الإحداثيات والطباعة (أوفلاين) بالكامل.</li>
+                    <li><i class="fas fa-hard-hat" style="color: #f1c40f;"></i> <strong>الاستعداد الحقلي:</strong> لا غنى للجيولوجي عن معداته؛ يُرجى اصطحاب شريط القياس الميداني (الفيتا) للمطابقة، وتأمين مصدر طاقة احتياطي للهاتف (Power Bank/شاحن)، مع الالتزام التام بمعدات السلامة المهنية (PPE) داخل الموقع.</li>
+                    <li><i class="fas fa-user-check" style="color: #2ecc71;"></i> <strong>الاشتراك والتسجيل:</strong> النظام محمي ومخصص للمشتركين فقط. يتطلب الدخول "رمزاً سرياً" مسبقاً. في حال عدم امتلاكك للرمز، يُرجى التواصل المباشر مع مؤسس المنصة عبر الأزرار أدناه.</li>
+                </ul>
+            </div>
  
             <div class="social-container">
-               <p>لطلب الرمز السري أو الدعم الفني، تواصل مع مؤسس المنصة عبر الروابط الرسمية:</p>
-               <div class="social-links">
-                   <a href="https://wa.me/9647814993629" target="_blank" class="social-btn btn-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>
-                   <a href="https://www.facebook.com/share/1a8sii4wcf/" target="_blank" class="social-btn btn-facebook"><i class="fab fa-facebook-f"></i> فيسبوك</a>
-                   <a href="https://www.instagram.com/ash2oo1?igsh=MWR5Zng0dGkybmV1Zw==" target="_blank" class="social-btn btn-instagram"><i class="fab fa-instagram"></i> إنستجرام</a>
-               </div>
-           </div>
+                <p>لطلب الرمز السري أو الدعم الفني، تواصل مع مؤسس المنصة عبر الروابط الرسمية:</p>
+                <div class="social-links">
+                    <a href="https://wa.me/9647814993629" target="_blank" class="social-btn btn-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>
+                    <a href="https://www.facebook.com/share/1a8sii4wcf/" target="_blank" class="social-btn btn-facebook"><i class="fab fa-facebook-f"></i> فيسبوك</a>
+                    <a href="https://www.instagram.com/ash2oo1?igsh=MWR5Zng0dGkybmV1Zw==" target="_blank" class="social-btn btn-instagram"><i class="fab fa-instagram"></i> إنستجرام</a>
+                </div>
+            </div>
  
             <button onclick="goToStep2()" class="btn-action" id="btnNextStep1">فهمت التعليمات.. انتقل لتسجيل الدخول</button>
         </div>
@@ -253,10 +259,10 @@
         <div id="step2">
             <h1 style="color: #2ecc71; border-bottom: 2px solid #2ecc71; padding-bottom: 10px; display: inline-block; margin-top: 0;">صفحة تسجيل الدخول</h1>
             <div class="warning-box">
-               <h3>⚠️ قم بإدخال المعلومات التالية بحذر وبصورة صحيحة جداً:</h3>
-               <p><b style="color: #f1c40f;">أولاً:</b> اسم الجيولوجي الثلاثي.</p>
-               <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري (من مؤسس المنصة <b>علي شندل الجنابي</b>).</p>
-           </div>
+                <h3>⚠️ قم بإدخال المعلومات التالية بحذر وبصورة صحيحة جداً:</h3>
+                <p><b style="color: #f1c40f;">أولاً:</b> اسم الجيولوجي الثلاثي.</p>
+                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري (من مؤسس المنصة <b>علي شندل الجنابي</b>).</p>
+            </div>
             <input type="text" id="geoNameInput" placeholder="أدخل اسم الجيولوجي (الثلاثي) هنا..." required autocomplete="off">
             <input type="password" id="adminPassword" placeholder="أدخل رمز الدخول السري هنا...">
             <button onclick="handleLogin()" class="btn-action" id="loginBtn">تسجيل الدخول</button>
@@ -332,7 +338,7 @@
                <span class="date-top-left printDateHeader"></span>
                <h1>نظام المسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1>
                <h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
-           </div>
+            </div>
             <div class="content-padding">
                <div class="section">
                    <div class="section-title">أولاً: بيانات الجيولوجي المشرف وموقع العمل</div>
@@ -378,7 +384,7 @@
                        <div class="form-group"><button class="gps-btn screen-only" onclick="getCoordinates('point4')">إحداثيات (D)</button><div id="point4" class="coord-display">E: --- | N: ---</div></div>
                    </div>
                </div>
-           </div>
+            </div>
             <div class="print-only print-bottom">الصفحة 1 من <span class="totalPagesText">X</span></div>
         </div> 
  
@@ -387,7 +393,7 @@
                <span class="date-top-left printDateHeader"></span>
                <h1>نظام المسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1>
                <h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
-           </div>
+            </div>
             <div class="content-padding">
                <div class="section">
                    <div class="section-title">رابعاً: التقييم الجيولوجي الفني ومطابقة المواصفات</div>
@@ -420,7 +426,7 @@
                    <div class="check-group"><label class="check-item"><input type="checkbox"> إزالة الغطاء الترابي (Overburden Removal)</label><label class="check-item"><input type="checkbox"> عمليات القلع والتكديس (Excavation)</label><label class="check-item"><input type="checkbox"> نقل المادة لساحات المعمل (Transportation)</label><label class="check-item"><input type="checkbox"> التخمير والفرز (Processing)</label></div>
                    <div class="check-group" style="margin-top: 5px;"><span style="font-size: 0.9rem; color: #555; align-self: center;" class="screen-only">الآليات المرصودة:</span><label class="check-item"><input type="checkbox"> حفارة (Excavator)</label><label class="check-item"><input type="checkbox"> قلابات (Dump Trucks)</label><label class="check-item"><input type="checkbox"> شفل (Loader)</label><label class="check-item"><input type="checkbox"> كاشطة (Scraper)</label></div>
                </div>
-           </div>
+            </div>
             <div class="print-only print-bottom">الصفحة 2 من <span class="totalPagesText">X</span></div>
         </div>
  
@@ -444,7 +450,7 @@
                <span class="date-top-left printDateHeader"></span>
                <h1>نظام المسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1>
                <h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
-           </div>
+            </div>
             <div class="content-padding">
                <div class="section" id="strataCanvasContainer" style="border: 2px solid #2980b9; margin-bottom: 15px;">
                    <div class="canvas-container" style="margin-bottom: 0;">
@@ -452,7 +458,7 @@
                        <canvas id="strataCanvas" width="700" height="850"></canvas>
                    </div>
                </div>
-           </div>
+            </div>
             <div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesText">X</span></div>
         </div>
  
@@ -481,7 +487,7 @@
                <span class="date-top-left printDateHeader"></span>
                <h1>نظام المسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1>
                <h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
-           </div>
+            </div>
             <div class="content-padding">
                <div class="section" id="resultsSection" style="margin-bottom: 15px;">
                    <div class="section-title" style="border-bottom-color: #27ae60; color: #27ae60; margin-bottom: 10px;">ثامناً: النتائج النهائية للكميات والمساحة والعمق</div>
@@ -502,7 +508,7 @@
                    <button class="btn-satellite" id="satBtn" onclick="generateSatelliteMap()">🌍 توليد الصورة الفضائية للموقع (يتطلب إنترنت)</button>
                    <button class="btn-print" onclick="prepareAndPrint()">📄 حفظ التقرير الشامل كملف PDF</button>
                </div>
-           </div>
+            </div>
             <div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesText">X</span></div>
         </div>
  
@@ -511,7 +517,7 @@
                <span class="date-top-left printDateHeader"></span>
                <h1>نظام المسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1>
                <h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
-           </div>
+            </div>
             <div class="content-padding">
                <div class="section" style="border: 2px solid #8e44ad; padding: 10px; box-shadow: none;">
                    <div class="canvas-container" id="mapSection" style="margin-bottom: 0;">
@@ -530,7 +536,7 @@
                        </div>
                    </div>
                </div>
-           </div>
+            </div>
             <div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesText">X</span></div>
         </div>
  
@@ -552,7 +558,7 @@
                <span class="date-top-left printDateHeader"></span>
                <h1>نظام المسح الميداني الجيولوجي (التركيبي والجيوتقني)</h1>
                 <h2 style="color: #d35400;">إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
-           </div>
+            </div>
             <div class="content-padding">
                
                <div class="section">
@@ -568,14 +574,23 @@
                    <div class="section-title" style="color: #e67e22; border-bottom-color: #e67e22;">ثانياً: القياسات الكينماتيكية للطبقات (Discontinuities)</div>
                    
                    <div class="sub-title" style="color: #d35400; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                       <span>قياسات مستويات الانقطاع (طيات، فوالق، فواصل):</span>
-                       <button class="btn-sensor screen-only" onclick="getSensorData('dip')"><i class="fas fa-mobile-alt"></i> أخذ القراءة آلياً عبر الهاتف</button>
+                       <span>البوصلة الجيولوجية الرقمية (القياس الآلي):</span>
+                       <button class="btn-sensor screen-only" style="background: #2980b9;" onclick="startSmartCompass()"><i class="fas fa-compass"></i> تفعيل البوصلة الذكية</button>
                    </div>
- 
+                   
+                   <div id="smartCompassBox" class="compass-live-box">
+                       <p style="color: #c0392b;">اتجاه الميل (Dip Dir): <span id="live_dipDir">0</span>° <span id="live_dipDir_txt">-</span></p>
+                       <p style="color: #2980b9;">زاوية الميل (Dip Angle): <span id="live_dip">0</span>°</p>
+                       <p style="color: #27ae60;">المضرب (Strike): <span id="live_strike">0</span>° <span id="live_strike_txt">-</span></p>
+                       <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">* قم بوضع الهاتف ملاصقاً للطبقة الصخرية للقياس.</p>
+                       <button class="btn-calc" style="background: #27ae60; padding: 10px; font-size: 1rem; width: auto; display: inline-block; box-shadow: none;" onclick="captureCompassData()">تثبيت القراءات الميدانية 📌</button>
+                   </div>
+
                    <div class="form-row" style="margin-top: 15px;">
                        <div class="form-group">
                            <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('dip_strike')"></i> اتجاه الميل (Dip Direction):</label>
-                           <input type="number" id="str_dipDir" placeholder="0 - 360" min="0" max="360">
+                           <input type="number" id="str_dipDir" placeholder="0 - 360" min="0" max="360" onchange="calculateStrike()">
+                           <span id="str_dipDir_text" class="compass-value-text"></span>
                        </div>
                        <div class="form-group">
                            <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('dip_strike')"></i> زاوية الميل (Dip Angle):</label>
@@ -584,9 +599,9 @@
                        <div class="form-group">
                            <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('dip_strike')"></i> اتجاه المضرب (Strike Direction):</label>
                            <input type="number" id="str_strike" placeholder="محسوب أوتوماتيكياً" readonly style="background: #eee;">
+                           <span id="str_strike_text" class="compass-value-text"></span>
                        </div>
                    </div>
-                   <button class="btn-calc screen-only" style="background: #e67e22; margin-top: 5px; width: auto; padding: 10px 20px;" onclick="calculateStrike()">استنتاج المضرب من اتجاه الميل <i class="fas fa-calculator"></i></button>
                    
                    <div class="sub-title" style="color: #d35400; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
                        <span>هندسة المنحدر الجبلي أو القطع (Slope Geometry):</span>
@@ -607,18 +622,7 @@
                        </div>
                    </div>
                </div>
- 
-           </div>
-            <div class="print-only print-bottom">الصفحة 1 من <span class="totalPagesTextStr">X</span></div>
-        </div>
- 
-        <div class="print-page-wrapper page-counter-element-str">
-            <div class="print-only print-header" style="border-color: #e67e22;">
-               <span class="date-top-left printDateHeader"></span>
-               <h1>نظام المسح الميداني الجيولوجي (التركيبي والجيوتقني)</h1>
-                <h2 style="color: #d35400;">إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
-           </div>
-            <div class="content-padding">
+               
                <div class="section">
                    <div class="section-title" style="color: #e67e22; border-bottom-color: #e67e22;">ثالثاً: التوصيف الجيوميكانيكي (Rock Mass Rating - RMR)</div>
                    <p style="font-size: 0.95rem; color: #7f8c8d; margin-top: -10px; margin-bottom: 15px;">حسب نظام (Bieniawski 1989) لتقييم الكتلة الصخرية هندسياً:</p>
@@ -679,12 +683,39 @@
                        </select>
                    </div>
                </div>
+
+               <div class="section">
+                   <div class="section-title" style="color: #e67e22; border-bottom-color: #e67e22;">رابعاً: المؤثرات الخارجية والظروف الحقلية</div>
+                   <div class="form-row">
+                       <div class="form-group">
+                           <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('undercutting')"></i> 1. التقويض السفلي بواسطة المياه (Toe Undercutting):</label>
+                           <select id="str_undercutting">
+                               <option value="none">لا يوجد</option>
+                               <option value="active">نعم، يوجد نحت مائي نشط أسفل المنحدر</option>
+                           </select>
+                       </div>
+                       <div class="form-group">
+                           <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('freezethaw')"></i> 2. دورات الانجماد والذوبان (Freeze-Thaw Cycles):</label>
+                           <select id="str_freezethaw">
+                               <option value="no">تأثير ضعيف أو معدوم</option>
+                               <option value="yes">نعم، تأثير قوي (منطقة ثلوج)</option>
+                           </select>
+                       </div>
+                       <div class="form-group">
+                           <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('vibration')"></i> 3. الأحمال والاهتزازات (Vibrations/Loads):</label>
+                           <select id="str_vibration">
+                               <option value="no">لا توجد</option>
+                               <option value="yes">نعم، توجد آليات ثقيلة أو تفجير مقالع قريب</option>
+                           </select>
+                       </div>
+                   </div>
+               </div>
  
                <div id="calcButtonsAreaStr" class="screen-only">
                    <button class="btn-calc" style="background: #e67e22;" onclick="calculateStructuralResults()">تحليل البيانات وإجراء النمذجة الكينماتيكية <i class="fas fa-globe"></i></button>
                </div>
-           </div>
-            <div class="print-only print-bottom">الصفحة 2 من <span class="totalPagesTextStr">X</span></div>
+            </div>
+            <div class="print-only print-bottom">الصفحة 1 من <span class="totalPagesTextStr">X</span></div>
         </div>
  
         <div class="print-page-wrapper page-counter-element-str" id="pageResultsStr_1" style="display: none;">
@@ -692,10 +723,10 @@
                <span class="date-top-left printDateHeader"></span>
                <h1>نظام المسح الميداني الجيولوجي (التركيبي والجيوتقني)</h1>
                 <h2 style="color: #d35400;">إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
-           </div>
+            </div>
             <div class="content-padding">
                <div class="section" id="resultsSectionStr" style="border-color: #e67e22; margin-bottom: 20px;">
-                   <div class="section-title" style="border-bottom-color: #e67e22; color: #e67e22; margin-bottom: 15px;">رابعاً: نتائج التحليل الجيوميكانيكي (RMR) واستقرارية المنحدر</div>
+                   <div class="section-title" style="border-bottom-color: #e67e22; color: #e67e22; margin-bottom: 15px;">خامساً: نتائج التحليل الجيوميكانيكي (RMR) واستقرارية المنحدر</div>
                    
                    <div style="background: #fdf2e9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-right: 4px solid #d35400;">
                        <h3 style="margin: 0 0 10px 0; color: #d35400; font-size: 1.1rem;">تقييم الكتلة الصخرية (Rock Mass Rating):</h3>
@@ -719,6 +750,7 @@
                    <div class="kinematic-canvas-container" style="margin-bottom: 0;">
                        <h4>نموذج التضاريس الهندسي (Topographic Model)</h4>
                        <canvas id="topoCanvas" width="850" height="500" style="background: #fff; width: 100%; max-width: 850px; display: block; border: 1px solid #ddd; border-radius: 6px;"></canvas>
+                       <div class="geological-explanation-box" id="topoExplanation"></div>
                        <div class="geotech-split-legend">
                            <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: #d7ccc8;"></div><span>تضاريس السطح العلوية</span></div>
                            <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: #ecf0f1; border-color: #2c3e50; border-width: 2px;"></div><span>الكتلة الجبلية / المنحدر</span></div>
@@ -726,7 +758,7 @@
                        </div>
                    </div>
                </div>
-           </div>
+            </div>
             <div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesTextStr">X</span></div>
         </div>
 
@@ -735,12 +767,13 @@
                <span class="date-top-left printDateHeader"></span>
                <h1>نظام المسح الميداني الجيولوجي (التركيبي والجيوتقني)</h1>
                 <h2 style="color: #d35400;">إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
-           </div>
+            </div>
             <div class="content-padding">
                <div class="section" style="border: 2px solid #e67e22; padding: 20px; box-shadow: none;">
                    <div class="kinematic-canvas-container" style="margin-bottom: 0;">
                        <h4>نموذج الكتلة الصخرية والتحليل التركيبي (Rock Mass Model)</h4>
                        <canvas id="rockCanvas" width="850" height="500" style="background: #fff; width: 100%; max-width: 850px; display: block; border: 1px solid #ddd; border-radius: 6px;"></canvas>
+                       <div class="geological-explanation-box" id="rockExplanation"></div>
                        <div class="geotech-split-legend">
                            <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: #fff; border: 1.5px solid #bdc3c7;"></div><span>مستويات الفواصل الداخلية (Joints)</span></div>
                            <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: rgba(231, 76, 60, 0.3); border: 2px solid #c0392b;"></div><span style="color: #c0392b;">خطر الانزلاق (Failure Block)</span></div>
@@ -750,7 +783,7 @@
                        </div>
                    </div>
                </div>
-           </div>
+            </div>
             <div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesTextStr">X</span></div>
         </div>
  
@@ -759,12 +792,13 @@
                <span class="date-top-left printDateHeader"></span>
                <h1>نظام المسح الميداني الجيولوجي (التركيبي والجيوتقني)</h1>
                 <h2 style="color: #d35400;">إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
-           </div>
+            </div>
             <div class="content-padding">
                <div class="section" style="border: 2px solid #e67e22; padding: 20px; box-shadow: none;">
                    <div class="kinematic-canvas-container" style="margin-bottom: 20px;">
                        <h4>المسقط الاستيريوجرافي (Stereonet Projection)</h4>
                        <canvas id="stereonetCanvas" width="600" height="600" style="background: #fff; width: 100%; max-width: 600px; display: block; border-radius: 50%;"></canvas>
+                       <div class="geological-explanation-box" id="stereoExplanation"></div>
                    </div>
  
                    <div class="kinematic-legend-container" id="kinematicLegend"></div>
@@ -773,7 +807,7 @@
                <div class="screen-only" style="margin-top: 20px;">
                    <button class="btn-print" style="background: #d35400; box-shadow: 0 4px 10px rgba(211, 84, 0, 0.3);" onclick="prepareAndPrintStr()">📄 حفظ التقرير الجيوتقني كملف PDF</button>
                </div>
-           </div>
+            </div>
             <div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesTextStr">X</span></div>
         </div>
  
@@ -1045,7 +1079,7 @@
     }
  
     // ==========================================
-    // دوال الدليل الجيولوجي التفاعلي
+    // دوال الدليل الجيولوجي التفاعلي والبوصلة
     // ==========================================
     const guideData = {
         'dip_strike': { title: 'دليل قياس الميل والمضرب', content: `<ul><li><b>طريقة التماس (Contact Method):</b> ضع البوصلة ملاصقة تماماً للطبقة لضبط "اتجاه الميل"، ثم ميزان الأنبوب لـ "زاوية الميل".</li><li><b>يقوم النظام آلياً:</b> بحساب المضرب (Strike) بتطبيق قاعدة اليد اليمنى (RHR) لتسريع عملك.</li></ul>` },
@@ -1055,7 +1089,10 @@
         'rqd': { title: 'حساب (RQD) حقلياً', content: `<p>إذا لم يتوفر حفر لبي، استخدم الطريقة الحجمية $J_v$ (عدد الشقوق في المتر المكعب):<br> <b>$RQD = 115 - 3.3 J_v$</b></p>` },
         'spacing': { title: 'مسافات الانقطاعات', content: `<ul><li><b>> 2 متر:</b>صخر كتلوي جداً.</li><li><b>200-600 ملم:</b> كتل متوسطة (رسوبيات شائعة).</li><li><b>< 60 ملم:</b> صخر مسحوق (خطر انهيار).</li></ul>` },
         'cond': { title: 'حالة أسطح الانقطاع', content: `<p>تعتمد على 5 عوامل: (الاستمرارية، الانفراج والفتحة، الخشونة، الحشوة الطينية، والتجوية على جدران الفاصل).</p>` },
-        'water': { title: 'المياه الجوفية', content: `<p>تزيد المياه ضغط المسامات (Pore Pressure) وتقلل الاحتكاك. صنفها كالتالي: (جاف، رطب، مبلل، تقطير، أو جريان حر).</p>` }
+        'water': { title: 'المياه الجوفية', content: `<p>تزيد المياه ضغط المسامات (Pore Pressure) وتقلل الاحتكاك. صنفها كالتالي: (جاف، رطب، مبلل، تقطير، أو جريان حر).</p>` },
+        'undercutting': { title: 'التقويض السفلي (Toe Undercutting)', content: '<p>إزالة الدعم من أسفل المنحدر بواسطة الأنهار أو السيول يقلل من الاستقرارية بشكل كبير ويجب أخذ هذا العامل بالحسبان عند التقييم.</p>' },
+        'freezethaw': { title: 'دورات الانجماد والذوبان', content: '<p>تجمد المياه داخل الشقوق يولد ضغطاً هيدروليكياً يوسع الفواصل (Ice Wedging) ويقلل قوى الاحتكاك الأساسية للصخر.</p>' },
+        'vibration': { title: 'الأحمال والاهتزازات', content: '<p>الاهتزازات (سواء زلازل أو آليات ثقيلة أو تفجير) تقلل من قوى الاحتكاك بشكل لحظي وتحفز عمليات الانزلاق المفاجئة.</p>' }
     };
  
     function openInfoModal(type) {
@@ -1069,8 +1106,65 @@
     window.onclick = function(event) { if (event.target == document.getElementById('infoModalOverlay')) { closeInfoModal(); } }
  
     // ==========================================
-    // دوال قراءة المستشعرات والتحليل الكينماتيكي المفصولة
+    // دوال البوصلة الذكية (Smart Compass) واستخراج الاتجاهات
     // ==========================================
+    function getCompassDirection(degrees) {
+        const directions = ["شمال (N)", "شمال شرقي (NE)", "شرق (E)", "جنوب شرقي (SE)", "جنوب (S)", "جنوب غربي (SW)", "غرب (W)", "شمال غربي (NW)"];
+        let index = Math.round(((degrees %= 360) < 0 ? degrees + 360 : degrees) / 45) % 8;
+        return directions[index];
+    }
+
+    let isCompassActive = false;
+    function startSmartCompass() {
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+            DeviceOrientationEvent.requestPermission().then(permissionState => {
+                if (permissionState === 'granted') { enableCompass(); } else { alert("تم رفض الصلاحية للوصول إلى مستشعرات الهاتف."); }
+            }).catch(console.error);
+        } else { enableCompass(); }
+    }
+
+    function enableCompass() {
+        document.getElementById('smartCompassBox').style.display = 'block';
+        if('ondeviceorientationabsolute' in window) {
+            window.addEventListener('deviceorientationabsolute', handleSmartOrientation);
+        } else {
+            window.addEventListener('deviceorientation', handleSmartOrientation);
+        }
+        isCompassActive = true;
+    }
+
+    function handleSmartOrientation(event) {
+        if(!isCompassActive) return;
+        let alpha = event.webkitCompassHeading || (360 - event.alpha) || 0;
+        let beta = Math.max(Math.abs(event.beta || 0), Math.abs(event.gamma || 0));
+        if (beta > 90) beta = 180 - beta;
+
+        let dipDir = Math.round(alpha);
+        let dipAngle = Math.round(beta);
+        
+        let compassDir = getCompassDirection(dipDir);
+        
+        let strike1 = (dipDir - 90 + 360) % 360;
+        let strike2 = (dipDir + 90) % 360;
+        let mainStrike = Math.round(Math.min(strike1, strike2));
+        let strikeDirTxt = getCompassDirection(mainStrike);
+
+        document.getElementById('live_dipDir').innerText = dipDir;
+        document.getElementById('live_dipDir_txt').innerText = `(${compassDir})`;
+        document.getElementById('live_dip').innerText = dipAngle;
+        document.getElementById('live_strike').innerText = mainStrike;
+        document.getElementById('live_strike_txt').innerText = `(${strikeDirTxt})`;
+    }
+
+    function captureCompassData() {
+        document.getElementById('str_dipDir').value = document.getElementById('live_dipDir').innerText;
+        document.getElementById('str_dip').value = document.getElementById('live_dip').innerText;
+        calculateStrike();
+        isCompassActive = false;
+        alert("✅ تم التقاط القراءات ونقلها بنجاح.");
+    }
+
+    // للمنحدر الجبلي (قراءة واحدة للزاوية)
     function getSensorData(target) {
         if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
            DeviceOrientationEvent.requestPermission().then(permissionState => {
@@ -1080,16 +1174,12 @@
     }
  
     function startListeningSensors(target) {
-        alert("📱قراءة المستشعرات قيد التفعيل...\nضع هاتفك بشكل مسطح على السطح واضغط موافق.");
+        alert("📱قراءة المستشعرات قيد التفعيل...\nضع هاتفك بشكل مسطح واضغط موافق.");
         const sensorHandler = function(event) {
             let dipDir = event.webkitCompassHeading || (360 - event.alpha) || 0;
             let dipAngle = Math.max(Math.abs(event.beta || 0), Math.abs(event.gamma || 0));
             if (dipAngle > 90) dipAngle = 180 - dipAngle;
-            if (target === 'dip') {
-               document.getElementById('str_dipDir').value = Math.round(dipDir);
-               document.getElementById('str_dip').value = Math.round(dipAngle);
-               calculateStrike(); alert("✅ تمت قراءة الطبقة.");
-            } else if (target === 'slope') {
+            if (target === 'slope') {
                document.getElementById('str_slopeDir').value = Math.round(dipDir);
                document.getElementById('str_slopeAngle').value = Math.round(dipAngle);
                alert("✅ تمت قراءة المنحدر.");
@@ -1104,12 +1194,20 @@
     function calculateStrike() {
         const dipDir = parseFloat(document.getElementById('str_dipDir').value);
        if(isNaN(dipDir) || dipDir < 0 || dipDir > 360) return;
-        let strike = dipDir - 90; if(strike < 0) strike += 360;
-       document.getElementById('str_strike').value = Math.round(strike);
+        let strike1 = (dipDir - 90 + 360) % 360;
+        let strike2 = (dipDir + 90) % 360;
+        let mainStrike = Math.min(strike1, strike2);
+       document.getElementById('str_strike').value = Math.round(mainStrike);
+
+       // التحديث النصي للاتجاهات الجغرافية في الحقول
+       let elDirText = document.getElementById('str_dipDir_text');
+       if(elDirText) elDirText.innerText = getCompassDirection(dipDir);
+       let elStrText = document.getElementById('str_strike_text');
+       if(elStrText) elStrText.innerText = getCompassDirection(mainStrike);
     }
  
     // ==========================================
-    // دوال الرسم الهندسية والجيوتقنية المحدثة (رياضياً)
+    // دوال الرسم الهندسية والجيوتقنية
     // ==========================================
     
     function toRad(degrees) {
@@ -1148,32 +1246,28 @@
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // إعدادات الأبعاد لتناسب حجم الكانفاس (850x500)
         const toeX = 250;
         const toeY = 400;
         const slopeHeight = 250;
         
-        // منع الأخطاء إذا كانت الزاوية 90
         let safeSlope = slope >= 90 ? 89.9 : slope;
         const slopeRad = toRad(safeSlope);
         const dx = slopeHeight / Math.tan(slopeRad);
         const crestX = toeX + dx;
         const crestY = toeY - slopeHeight;
 
-        // رسم التضاريس والكتلة الجبلية
         ctx.beginPath();
-        ctx.moveTo(toeX - 200, toeY); // امتداد الأرض
+        ctx.moveTo(toeX - 200, toeY); 
         ctx.lineTo(toeX, toeY);
-        ctx.lineTo(crestX, crestY); // وجه المنحدر
-        ctx.lineTo(crestX + 350, crestY); // قمة الجبل
-        ctx.lineTo(crestX + 350, toeY + 50); // إغلاق الكتلة من الأسفل
+        ctx.lineTo(crestX, crestY); 
+        ctx.lineTo(crestX + 350, crestY); 
+        ctx.lineTo(crestX + 350, toeY + 50); 
         ctx.lineTo(toeX - 200, toeY + 50);
         ctx.closePath();
         
         ctx.fillStyle = '#ecf0f1';
         ctx.fill();
 
-        // قشرة التضاريس العلوية
         ctx.beginPath();
         ctx.moveTo(toeX - 200, toeY);
         ctx.lineTo(toeX, toeY);
@@ -1183,7 +1277,6 @@
         ctx.strokeStyle = "#2c3e50";
         ctx.stroke();
 
-        // تلوين السطح
         ctx.beginPath();
         ctx.moveTo(crestX, crestY);
         ctx.lineTo(crestX + 350, crestY);
@@ -1192,7 +1285,6 @@
         ctx.fillStyle = '#d7ccc8';
         ctx.fill();
 
-        // رسم قوس زاوية المنحدر
         ctx.beginPath();
         ctx.arc(toeX, toeY, 50, 0, -slopeRad, true);
         ctx.strokeStyle = "#2980b9";
@@ -1228,7 +1320,6 @@
         let dipRad = toRad(dip);
         let isDippingSameWay = (Math.abs(slopeDir - dipDir) <= 90 || Math.abs(slopeDir - dipDir) >= 270);
 
-        // 1. رسم الكتلة الأساسية باللون الأبيض كخلفية
         ctx.beginPath();
         ctx.moveTo(toeX - 200, toeY);
         ctx.lineTo(toeX, toeY);
@@ -1240,7 +1331,6 @@
         ctx.fillStyle = '#fdfefe';
         ctx.fill();
 
-        // 2. رسم الفواصل
         let traceLen = 80; let jointSpacing = 40; 
         if(rmrSpacingVal >= 15) { traceLen = 150; jointSpacing = 80; } else if(rmrSpacingVal <= 8) { traceLen = 40; jointSpacing = 20; }
         
@@ -1258,18 +1348,15 @@
         }
         ctx.restore();
 
-        // حدود الكتلة
         ctx.beginPath();
         ctx.moveTo(toeX - 200, toeY); ctx.lineTo(toeX, toeY); ctx.lineTo(crestX, crestY); ctx.lineTo(crestX + 350, crestY);
         ctx.lineWidth = 3; ctx.strokeStyle = "#2c3e50"; ctx.stroke();
 
-        // 3. المحرك الفيزيائي (Planar Failure)
         let crackX = crestX + 80; 
         let crackY = crestY;
         let intersectY = toeY - Math.tan(dipRad) * (crackX - toeX);
 
         if (isPlanar && isDippingSameWay) {
-            // منطقة الخطر
             ctx.fillStyle = "rgba(231, 76, 60, 0.3)";
             ctx.beginPath();
             ctx.moveTo(toeX, toeY);
@@ -1283,7 +1370,6 @@
             ctx.lineWidth = 2;
             ctx.stroke();
 
-            // مستوى الانزلاق الممتد
             const endDipX = crackX + 150;
             const endDipY = toeY - Math.tan(dipRad) * (endDipX - toeX);
             ctx.beginPath();
@@ -1293,7 +1379,6 @@
             ctx.strokeStyle = "#c0392b"; 
             ctx.stroke();
 
-            // مركز الثقل والقوى
             const cgX = (toeX + crestX + crackX) / 3 + 15;
             const cgY = (toeY + crestY + intersectY) / 3;
             
@@ -1302,7 +1387,6 @@
             let rEndX = cgX + 50 * Math.cos(dipRad); let rEndY = cgY - 50 * Math.sin(dipRad);
             drawArrow(ctx, cgX, cgY, rEndX, rEndY, '#f39c12', 3, 'R');
 
-            // 4. قوى المياه
             let hasWater = waterVal < 15;
             if (hasWater) {
                 ctx.beginPath();
@@ -1347,7 +1431,6 @@
             ctx.stroke();
         }
 
-        // رسم قوس زاوية الميل
         ctx.beginPath();
         let dipArcRadius = 70;
         let arcStart = 0;
@@ -1406,10 +1489,42 @@
                alertBox.innerHTML = `<div class="alert-safe" style="color:#27ae60;"><i class="fas fa-check-circle"></i> <b>آمن كينماتيكياً:</b> الطبقات مستقرة.<br><span style="font-size:0.9rem; margin-top:8px; display:block; color:#333;">${logicReason}</span></div>`;
             }
  
-            // استدعاء الدوال الهندسية الدقيقة 
+            // استدعاء الدوال الهندسية
             drawTopographicModel('topoCanvas', slope, slopeDir); 
             drawRockMassModel('rockCanvas', dip, dipDir, slope, slopeDir, friction, p5, p3, isPlanar);
             drawStereonet(dip, dipDir, slope, slopeDir, friction);
+
+            // توليد الشروحات النصية الميدانية للطباعة
+            let undercut = document.getElementById('str_undercutting').value;
+            let freezethaw = document.getElementById('str_freezethaw').value;
+            let vib = document.getElementById('str_vibration').value;
+
+            // 1. شرح الطوبوغرافية
+            let topoText = `النموذج الطوبوغرافي يوضح هندسة المقلع/المنحدر الجبلي بزاوية ميل (${slope}°) باتجاه جغرافي (${slopeDir}° - ${getCompassDirection(slopeDir)}). يعتبر هذا المرتسم الأساس الهندسي الذي يتم تسليط القوى الكينماتيكية عليه لتقييم الاستقرارية بصورة دقيقة. `;
+            if(undercut === 'active') topoText += `<b>والملاحظة الميدانية تؤكد وجود نحت مائي و(تقويض سفلي)</b> عند قاعدة المنحدر، مما يعني أن المنحدر يفقد دعمه السفلي (Toe Support) تدريجياً، وهذا يزيد احتمالية الانهيارات التراجعية بغض النظر عن زاوية ميله الحالية.`;
+            document.getElementById('topoExplanation').innerHTML = `<b>التحليل الجيومورفولوجي:</b> ${topoText}`;
+
+            // 2. شرح الكتلة الصخرية
+            let rockText = `يُظهر تحليل الكتلة الصخرية تقاطع مستويات الضعف مع وجه المنحدر. الطبقة تميل بزاوية (${dip}°) نحو (${getCompassDirection(dipDir)}). `;
+            if(isPlanar) {
+                rockText += `نظراً لتجاوز زاوية ميل الطبقة لزاوية الاحتكاك الداخلي (${friction}°)، وتكشفها على وجه المنحدر المفتوح، فإن الكتلة تقع تحت <b>تأثير قوى القص والانزلاق المستوي</b>. `;
+                if(p5 < 15) rockText += `ويزداد الخطر بشدة لوجود ضغط مائي جوفي (U, V) داخل الشقوق مما يقلل الاحتكاك الفعّال. `;
+            } else if(isToppling) {
+                rockText += `ميل الطبقات المعاكس وبزاوية حادة يخلق كتل عمودية مركز ثقلها يقع خارج القاعدة، مما يهدد بـ <b>انقلاب انثنائي (Toppling)</b> للكتل الصخرية نحو الأسفل. `;
+            } else {
+                rockText += `كينماتيكياً، الكتلة تبدو مستقرة تحت ظروف الجاذبية الطبيعية. `;
+            }
+            
+            if(freezethaw === 'yes') rockText += `<br><b>تنبيه بيئي:</b> تعرض الموقع لـ (دورات الانجماد والذوبان) يؤدي لتكسير الروابط الصخرية بفعل تمدد الجليد داخل الفواصل (Ice Wedging)، مما قد يحفز انزلاقات مفاجئة خطرة. `;
+            if(vib === 'yes') rockText += `<br><b>تأثير الأحمال:</b> وجود اهتزازات/آليات ثقيلة في الموقع يضيف إجهاداً حركياً (Dynamic Loading) يتجاوز مقاومة القص للمستويات الضعيفة ويجب ترك مسافة أمان عالية من الحافة.`;
+            document.getElementById('rockExplanation').innerHTML = `<b>التحليل الحركي والديناميكي:</b> ${rockText}`;
+
+            // 3. شرح الاستيريوجرافي
+            let stereoText = `يُظهر المسقط الاستيريوجرافي توزيع أقطاب المستويات والدائرة العظمى للطبقات والمنحدر مع مخروط الاحتكاك. `;
+            if(isPlanar) stereoText += `وقوع قطب الطبقة (Pole) ضمن منطقة الخطر الحرجة يؤكد حتمية الانزلاق المستوي. يُوصى بتقليل زاوية ميل واجهة المقلع أو اتخاذ تدابير إسناد هندسية فورية.`;
+            else if(isToppling) stereoText += `توزيع المستويات يشير لخطر الانقلاب، يُنصح بشدة بمراقبة التشققات التوسعية (Tension Cracks) في أعلى المنحدر.`;
+            else stereoText += `أقطاب مستويات الانفصال تقع خارج نطاق الخطر، مما يعني استقرار المنحدر كينماتيكياً في الوقت الحالي.`;
+            document.getElementById('stereoExplanation').innerHTML = `<b>التفسير الكينماتيكي (Stereographic Projection):</b> ${stereoText}`;
         }
  
        document.getElementById('calcButtonsAreaStr').style.display = 'none'; 
