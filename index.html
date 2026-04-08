@@ -1261,16 +1261,24 @@
     function generateProfilePoints(canvasId, slope) {
         const canvas = document.getElementById(canvasId);
         if(!canvas) return null;
-        const margin = 50; const widthBox = canvas.width - margin * 2; const heightBox = canvas.height - margin * 2;
-        const cx = margin + 200; const cy = margin + heightBox - 80; const slopeHeight = heightBox - 150; 
-        let slopeRad = slope * (Math.PI / 180);
+        const margin = 50; 
+        const widthBox = canvas.width - margin * 2; 
+        const heightBox = canvas.height - margin * 2;
+        const cx = margin + 200; // نقطة القاعدة (Toe X)
+        const cy = margin + heightBox - 80; // نقطة القاعدة (Toe Y)
+        const slopeHeight = heightBox - 150; 
+        
+        let safeSlope = slope >= 90 ? 89.9 : slope;
+        let slopeRad = safeSlope * (Math.PI / 180);
         let slopeTopX = cx + (slopeHeight / Math.tan(slopeRad)); 
         let slopeTopY = cy - slopeHeight;
         
         function createRoughLine(startX, startY, endX, endY, segments, roughness) {
             let pts = [{x: startX, y: startY}];
             let dx = (endX - startX)/segments; let dy = (endY - startY)/segments;
-            for(let i=1; i<segments; i++) { pts.push({x: startX + i*dx + (Math.random()*roughness - roughness/2), y: startY + i*dy + (Math.random()*roughness - roughness/2)}); }
+            for(let i=1; i<segments; i++) { 
+                pts.push({x: startX + i*dx + (Math.random()*roughness - roughness/2), y: startY + i*dy + (Math.random()*roughness - roughness/2)}); 
+            }
             pts.push({x: endX, y: endY}); return pts;
         }
         let slopeFacePts = createRoughLine(cx, cy, slopeTopX, slopeTopY, 15, 12);
@@ -1281,50 +1289,102 @@
 
     function drawTopographicModel(canvasId, slope, slopeDir, profileData) {
         if(!profileData) return;
-        const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const canvas = document.getElementById(canvasId); 
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d'); 
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
         const { margin, widthBox, cx, cy, slopeFacePts, crestPts } = profileData;
-        let slopeRad = slope * (Math.PI / 180);
+        let safeSlope = slope >= 90 ? 89.9 : slope;
+        let slopeRad = safeSlope * (Math.PI / 180);
 
         // رسم القاعدة الكتلية
-        ctx.beginPath(); ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(margin + widthBox - 30, cy); ctx.closePath();
-        ctx.fillStyle = '#ecf0f1'; ctx.fill(); 
+        ctx.beginPath(); 
+        ctx.moveTo(margin, cy); 
+        ctx.lineTo(cx, cy); 
+        slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); 
+        crestPts.forEach(p => ctx.lineTo(p.x, p.y)); 
+        ctx.lineTo(margin + widthBox - 30, cy); 
+        ctx.closePath();
+        ctx.fillStyle = '#ecf0f1'; 
+        ctx.fill(); 
         
         // رسم قشرة التضاريس العلوية
-        ctx.beginPath(); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); for(let i = crestPts.length-1; i>=0; i--) { ctx.lineTo(crestPts[i].x, crestPts[i].y + 15 + Math.random()*10); } ctx.fillStyle = '#d7ccc8'; ctx.fill();
+        ctx.beginPath(); 
+        crestPts.forEach(p => ctx.lineTo(p.x, p.y)); 
+        for(let i = crestPts.length-1; i>=0; i--) { 
+            ctx.lineTo(crestPts[i].x, crestPts[i].y + 15 + Math.random()*10); 
+        } 
+        ctx.fillStyle = '#d7ccc8'; 
+        ctx.fill();
 
         // إطار التضاريس الجريء
-        ctx.beginPath(); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 3;
-        ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.stroke();
+        ctx.beginPath(); 
+        ctx.strokeStyle = '#2c3e50'; 
+        ctx.lineWidth = 3;
+        ctx.moveTo(margin, cy); 
+        ctx.lineTo(cx, cy); 
+        slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); 
+        crestPts.forEach(p => ctx.lineTo(p.x, p.y)); 
+        ctx.stroke();
 
         // زاوية المنحدر (أزرق)
-        ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(cx + 35, cy - 35, 95, 28);
-        ctx.beginPath(); ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2.5; 
-        ctx.arc(cx, cy, 50, Math.PI, Math.PI + Math.PI - slopeRad, true); ctx.stroke();
-        ctx.fillStyle = '#2980b9'; ctx.font = "bold 15px Arial"; ctx.textAlign = "left"; ctx.fillText(`Slope: ${slope}°`, cx + 45, cy - 16);
+        ctx.fillStyle = 'rgba(255,255,255,0.85)'; 
+        ctx.fillRect(cx + 35, cy - 35, 95, 28);
+        ctx.beginPath(); 
+        ctx.strokeStyle = '#2980b9'; 
+        ctx.lineWidth = 2.5; 
+        ctx.arc(cx, cy, 50, Math.PI, Math.PI + Math.PI - slopeRad, true); 
+        ctx.stroke();
+        ctx.fillStyle = '#2980b9'; 
+        ctx.font = "bold 15px Arial"; 
+        ctx.textAlign = "left"; 
+        ctx.fillText(`Slope: ${slope}°`, cx + 45, cy - 16);
     }
 
-    function drawRockMassModel(canvasId, dip, dipDir, slope, slopeDir, friction, waterVal, rmrSpacingVal, isPlanar, profileData) {
+    function drawRockMassModel(canvasId, dip, dipDir, slope, slopeDir, friction, waterVal, rmrSpacingVal, isPlanar, isToppling, profileData) {
         if(!profileData) return;
-        const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const canvas = document.getElementById(canvasId); 
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d'); 
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
         const { margin, widthBox, heightBox, cx, cy, slopeTopX, slopeTopY, slopeFacePts, crestPts, slopeHeight } = profileData;
         
-        let dipRad = toRad(dip);
+        let dipRad = dip * (Math.PI / 180);
         let isDippingSameWay = (Math.abs(slopeDir - dipDir) <= 90 || Math.abs(slopeDir - dipDir) >= 270);
 
         // رسم القاعدة البيضاء لإظهار الفواصل
-        ctx.beginPath(); ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(margin + widthBox - 30, cy); ctx.closePath();
-        ctx.fillStyle = '#fdfefe'; ctx.fill(); 
+        ctx.beginPath(); 
+        ctx.moveTo(margin, cy); 
+        ctx.lineTo(cx, cy); 
+        slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); 
+        crestPts.forEach(p => ctx.lineTo(p.x, p.y)); 
+        ctx.lineTo(margin + widthBox - 30, cy); 
+        ctx.closePath();
+        ctx.fillStyle = '#fdfefe'; 
+        ctx.fill(); 
 
         // رسم شبكة الفواصل
         let traceLen = 80; let jointSpacing = 40; 
         if(rmrSpacingVal >= 15) { traceLen = 150; jointSpacing = 80; } else if(rmrSpacingVal <= 8) { traceLen = 40; jointSpacing = 20; }
         ctx.save();
-        ctx.beginPath(); ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(margin + widthBox, cy); ctx.clip();
-        ctx.strokeStyle = '#bdc3c7'; ctx.lineWidth = 1.5;
-        let dipDx = traceLen * Math.cos(dipRad); let dipDy = traceLen * Math.sin(dipRad);
+        ctx.beginPath(); 
+        ctx.moveTo(margin, cy); 
+        ctx.lineTo(cx, cy); 
+        slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); 
+        crestPts.forEach(p => ctx.lineTo(p.x, p.y)); 
+        ctx.lineTo(margin + widthBox, cy); 
+        ctx.clip();
+        
+        ctx.strokeStyle = '#bdc3c7'; 
+        ctx.lineWidth = 1.5;
+        let dipDx = traceLen * Math.cos(dipRad); 
+        let dipDy = traceLen * Math.sin(dipRad);
         if(!isDippingSameWay) dipDx = -dipDx; 
+        
         for(let y = margin; y < margin + heightBox; y += jointSpacing * 0.8) {
-            for(let x = margin; x < margin + widthBox; x += traceLen * 1.2) {
+            for(let x = margin - 100; x < margin + widthBox + 100; x += traceLen * 1.2) {
                 let sx = x + Math.random()*20; let sy = y + Math.random()*20;
                 ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx + dipDx, sy - dipDy); ctx.stroke();
             }
@@ -1332,10 +1392,20 @@
         ctx.restore();
 
         // إطار الكتلة
-        ctx.beginPath(); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 3;
-        ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.stroke();
+        ctx.beginPath(); 
+        ctx.strokeStyle = '#2c3e50'; 
+        ctx.lineWidth = 3;
+        ctx.moveTo(margin, cy); 
+        ctx.lineTo(cx, cy); 
+        slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); 
+        crestPts.forEach(p => ctx.lineTo(p.x, p.y)); 
+        ctx.stroke();
 
         // رسم الانزلاق المستوي إن وجد
+        let crackX = crestX + 80; 
+        let crackY = crestY;
+        let intersectY = cy - Math.tan(dipRad) * (crackX - cx);
+
         if (isPlanar && isDippingSameWay) {
             let dipTopX = cx + (slopeHeight / Math.tan(dipRad)); 
             let crackDepth = slopeTopY + 100;
@@ -1345,14 +1415,32 @@
             let dx = -offset * Math.cos(dipRad); let dy = offset * Math.sin(dipRad);
             
             // حفرة الانهيار
-            ctx.beginPath(); ctx.fillStyle = '#1c2833'; ctx.moveTo(dipTopX, slopeTopY); crackPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.closePath(); ctx.fill();
+            ctx.beginPath(); 
+            ctx.fillStyle = '#1c2833'; 
+            ctx.moveTo(dipTopX, slopeTopY); 
+            crackPts.forEach(p => ctx.lineTo(p.x, p.y)); 
+            ctx.lineTo(cx, cy); 
+            slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); 
+            ctx.closePath(); 
+            ctx.fill();
 
             // الكتلة المنزلقة الحمراء
-            ctx.beginPath(); ctx.moveTo(cx + dx, cy + dy); let offsetSlopePts = slopeFacePts.map(p => ({x: p.x + dx, y: p.y + dy})); offsetSlopePts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(dipTopX + dx, slopeTopY + dy); for(let i = crackPts.length-1; i >= 0; i--) { ctx.lineTo(crackPts[i].x + dx, crackPts[i].y + dy); } ctx.closePath();
-            ctx.fillStyle = '#e5e7e9'; ctx.fill(); ctx.fillStyle = 'rgba(231, 76, 60, 0.5)'; ctx.fill(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2; ctx.stroke();
+            ctx.beginPath(); 
+            ctx.moveTo(cx + dx, cy + dy); 
+            let offsetSlopePts = slopeFacePts.map(p => ({x: p.x + dx, y: p.y + dy})); 
+            offsetSlopePts.forEach(p => ctx.lineTo(p.x, p.y)); 
+            ctx.lineTo(dipTopX + dx, slopeTopY + dy); 
+            for(let i = crackPts.length-1; i >= 0; i--) { 
+                ctx.lineTo(crackPts[i].x + dx, crackPts[i].y + dy); 
+            } 
+            ctx.closePath();
+            ctx.fillStyle = '#e5e7e9'; ctx.fill(); 
+            ctx.fillStyle = 'rgba(231, 76, 60, 0.5)'; ctx.fill(); 
+            ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2; ctx.stroke();
 
             // القوى
-            let cgX = (cx + slopeTopX + dipTopX) / 3 + dx; let cgY = (cy + slopeTopY + slopeTopY) / 3 + dy + 30;
+            let cgX = (cx + slopeTopX + dipTopX) / 3 + dx; 
+            let cgY = (cy + slopeTopY + slopeTopY) / 3 + dy + 30;
             drawArrow(ctx, cgX, cgY, cgX, cgY + 70, '#27ae60', 3, 'W');
             
             let rEndX = cgX + 60 * Math.cos(dipRad); let rEndY = cgY - 60 * Math.sin(dipRad);
@@ -1367,9 +1455,9 @@
         } else {
             const endDipX = crestX + 150;
             let currentDipRad = isDippingSameWay ? dipRad : -dipRad;
-            const endDipY = toeY - Math.tan(currentDipRad) * (endDipX - toeX);
+            const endDipY = cy - Math.tan(currentDipRad) * (endDipX - cx);
             ctx.beginPath();
-            ctx.moveTo(toeX, toeY);
+            ctx.moveTo(cx, cy);
             ctx.lineTo(endDipX, endDipY);
             ctx.lineWidth = 2;
             ctx.strokeStyle = "#c0392b";
@@ -1378,10 +1466,17 @@
 
         // زاوية الطبقة (أحمر)
         let dipTextX = margin + 25; let dipTextY = cy - 75;
-        ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(dipTextX - 10, dipTextY - 20, 85, 28);
-        ctx.beginPath(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2.5;
-        ctx.arc(margin + 50, cy, 70, 0, -dipRad, true); ctx.stroke();
-        ctx.fillStyle = '#c0392b'; ctx.font = 'bold 15px Arial'; ctx.textAlign='left'; ctx.fillText(`Dip: ${dip}°`, dipTextX, dipTextY);
+        ctx.fillStyle = 'rgba(255,255,255,0.85)'; 
+        ctx.fillRect(dipTextX - 10, dipTextY - 20, 85, 28);
+        ctx.beginPath(); 
+        ctx.strokeStyle = '#c0392b'; 
+        ctx.lineWidth = 2.5;
+        ctx.arc(cx, cy, 70, 0, isDippingSameWay ? -dipRad : dipRad, isDippingSameWay); 
+        ctx.stroke();
+        ctx.fillStyle = '#c0392b'; 
+        ctx.font = 'bold 15px Arial'; 
+        ctx.textAlign='left'; 
+        ctx.fillText(`Dip: ${dip}°`, dipTextX, dipTextY);
     }
 
     function calculateStructuralResults() {
@@ -1404,64 +1499,67 @@
         const friction = parseFloat(document.getElementById('str_friction').value);
         
         const alertBox = document.getElementById('res_kinematicAlert'); alertBox.innerHTML = "";
-        let logicReason = ""; let isPlanar = false; let isToppling = false; let diffDir = 0;
- 
+        
         if (isNaN(dip) || isNaN(dipDir) || isNaN(slope) || isNaN(slopeDir)) {
            alertBox.innerHTML = `<div class="alert-warning"><i class="fas fa-exclamation-triangle"></i> أدخل بيانات الميل والمنحدر للحصول على التحليل.</div>`;
-        } else {
-            diffDir = Math.abs(slopeDir - dipDir); if (diffDir > 180) diffDir = 360 - diffDir;
-            let toppleDiff = Math.abs(slopeDir - ((dipDir + 180) % 360)); if (toppleDiff > 180) toppleDiff = 360 - toppleDiff;
- 
-            if (diffDir <= 20 && slope > dip && dip > friction) { isPlanar = true; logicReason = "هندسياً: الطبقات تميل باتجاه المنحدر، وتخرج (Daylight) من القطع، وميلها يتجاوز زاوية الاحتكاك الداخلي."; }
-            if (toppleDiff <= 20 && ((90 - dip) + friction < slope)) { isToppling = true; logicReason = "هندسياً: الطبقات تميل عكس وجه المنحدر بزاوية شديدة، مما يخلق كتل شبه عمودية تتقاطع مع المنحدر مهددة بالانقلاب."; }
- 
-            if (isPlanar) { alertBox.innerHTML = `<div class="alert-danger" style="color:#c0392b;"><i class="fas fa-skull-crossbones"></i> <b>خطر عالي:</b> انزلاق مستوي (Planar Sliding) مُتوقع.<br><span style="font-size:0.9rem; margin-top:8px; display:block; color:#333;">${logicReason}</span></div>`; } 
-            else if (isToppling) { alertBox.innerHTML = `<div class="alert-danger" style="color:#c0392b;"><i class="fas fa-mountain"></i> <b>خطر عالي:</b> انقلاب صخري (Toppling) مُتوقع.<br><span style="font-size:0.9rem; margin-top:8px; display:block; color:#333;">${logicReason}</span></div>`; } 
-            else {
-                if (diffDir > 20 && toppleDiff > 20) logicReason = "هندسياً: اتجاه الميل ينحرف بزاوية أمان عن وجه المنحدر.";
-                else if (diffDir <= 20 && dip >= slope) logicReason = "هندسياً: الطبقات لا تتكشف (No Daylighting) لأن ميلها أشد من ميل المنحدر.";
-                else if (diffDir <= 20 && dip <= friction) logicReason = "هندسياً: الطبقات تتكشف، لكن زاوية ميلها أقل من زاوية الاحتكاك الداخلي مما يمنع انزلاقها.";
-               alertBox.innerHTML = `<div class="alert-safe" style="color:#27ae60;"><i class="fas fa-check-circle"></i> <b>آمن كينماتيكياً:</b> الطبقات مستقرة.<br><span style="font-size:0.9rem; margin-top:8px; display:block; color:#333;">${logicReason}</span></div>`;
-            }
- 
-            // استدعاء الدوال الهندسية الدقيقة 
-            let profileData = generateProfilePoints('topoCanvas', slope);
-            drawTopographicModel('topoCanvas', slope, slopeDir, profileData); 
-            drawRockMassModel('rockCanvas', dip, dipDir, slope, slopeDir, friction, p5, p3, isPlanar, profileData);
-            drawStereonet(dip, dipDir, slope, slopeDir, friction);
+           return; // منع الإكمال إذا لم تكن هناك بيانات
+        } 
+        
+        let logicReason = ""; let isPlanar = false; let isToppling = false; let diffDir = 0;
 
-            // توليد الشروحات النصية الميدانية للطباعة
-            let undercut = document.getElementById('str_undercutting').value;
-            let freezethaw = document.getElementById('str_freezethaw').value;
-            let vib = document.getElementById('str_vibration').value;
+        diffDir = Math.abs(slopeDir - dipDir); if (diffDir > 180) diffDir = 360 - diffDir;
+        let toppleDiff = Math.abs(slopeDir - ((dipDir + 180) % 360)); if (toppleDiff > 180) toppleDiff = 360 - toppleDiff;
 
-            // 1. شرح الطوبوغرافية
-            let topoText = `النموذج الطوبوغرافي يوضح هندسة المنحدر الصخري / الواجهة المكشوفة بزاوية ميل (${slope}°) باتجاه جغرافي (${slopeDir}° - ${getCompassDirection(slopeDir)}). يُعد هذا المرتسم الأساس الهندسي الذي يتم تسليط القوى الكينماتيكية عليه لتقييم الاستقرارية بصورة دقيقة. `;
-            if(undercut === 'active') topoText += `<b>والملاحظة الميدانية تؤكد وجود نحت مائي و(تقويض سفلي)</b> عند قاعدة المنحدر (Toe)، مما يعني أن الكتلة الجبلية تفقد دعمها السفلي تدريجياً، وهذا يزيد احتمالية الانهيارات التراجعية بغض النظر عن زاوية ميلها الحالية.`;
-            document.getElementById('topoExplanation').innerHTML = `<b>التحليل الجيومورفولوجي:</b> ${topoText}`;
+        if (diffDir <= 20 && slope > dip && dip > friction) { isPlanar = true; logicReason = "هندسياً: الطبقات تميل باتجاه المنحدر، وتخرج (Daylight) من القطع، وميلها يتجاوز زاوية الاحتكاك الداخلي."; }
+        if (toppleDiff <= 20 && ((90 - dip) + friction < slope)) { isToppling = true; logicReason = "هندسياً: الطبقات تميل عكس وجه المنحدر بزاوية شديدة، مما يخلق كتل شبه عمودية تتقاطع مع المنحدر مهددة بالانقلاب."; }
 
-            // 2. شرح الكتلة الصخرية
-            let rockText = `يُظهر تحليل الكتلة الصخرية تقاطع مستويات الضعف مع وجه المنحدر. الطبقات تميل بزاوية (${dip}°) نحو (${getCompassDirection(dipDir)}). `;
-            if(isPlanar) {
-                rockText += `نظراً لتجاوز زاوية ميل الطبقة لزاوية الاحتكاك الداخلي (${friction}°)، وتكشفها (Daylighting) على الواجهة الصخرية، فإن الكتلة تقع تحت <b>تأثير قوى القص وخطر الانزلاق المستوي المباشر</b>. `;
-                if(p5 < 15) rockText += `ويزداد الخطر بشدة لوجود ضغط مائي جوفي (U, V) داخل الشقوق مما يقلل الاحتكاك الفعّال. `;
-            } else if(isToppling) {
-                rockText += `ميل الطبقات المعاكس للمنحدر وبزاوية حادة يخلق كتلاً عمودية يقع مركز ثقلها خارج قاعدة ارتكازها، مما يهدد بـ <b>انقلاب انثنائي (Toppling)</b> للكتل الصخرية نحو الأسفل. `;
-            } else {
-                rockText += `كينماتيكياً، الكتلة الصخرية تبدو مستقرة تحت ظروف الجاذبية الطبيعية الحالية، حيث تمنع زوايا الاحتكاك والهندسة العامة حدوث انزلاقات. `;
-            }
-            
-            if(freezethaw === 'yes') rockText += `<br><b>تنبيه بيئي:</b> تعرض الموقع لـ (دورات الانجماد والذوبان) يؤدي لتكسير الروابط الصخرية بفعل تمدد الجليد داخل الفواصل (Ice Wedging)، مما قد يحفز انزلاقات مفاجئة في المواسم الباردة. `;
-            if(vib === 'yes') rockText += `<br><b>تأثير الأحمال:</b> وجود اهتزازات (زلزالية أو آليات ثقيلة/تفجير) يضيف إجهاداً حركياً (Dynamic Loading) يتجاوز مقاومة القص للمستويات الضعيفة ويجب اتخاذ تدابير هندسية صارمة.`;
-            document.getElementById('rockExplanation').innerHTML = `<b>التحليل الحركي والديناميكي:</b> ${rockText}`;
-
-            // 3. شرح الاستيريوجرافي
-            let stereoText = `يُظهر المسقط الاستيريوجرافي توزيع أقطاب المستويات والدائرة العظمى للطبقات والمنحدر الجبلي مع مخروط الاحتكاك. `;
-            if(isPlanar) stereoText += `وقوع قطب الطبقة (Pole) ضمن منطقة الخطر الحرجة يؤكد حتمية عدم الاستقرارية الكينماتيكية. يُوصى هندسياً بتقليل زاوية ميل الواجهة الصخرية أو اتخاذ تدابير إسناد فورية للكتلة.`;
-            else if(isToppling) stereoText += `توزيع المستويات يشير لخطر الانقلاب، يُنصح بشدة بمراقبة التشققات التوسعية (Tension Cracks) في التضاريس العلوية للمنحدر.`;
-            else stereoText += `أقطاب مستويات الانفصال تقع خارج النطاقات الحرجة، مما يثبت استقرار المنحدر الجبلي كينماتيكياً تجاه الانزلاق المستوي والانقلاب.`;
-            document.getElementById('stereoExplanation').innerHTML = `<b>التفسير الكينماتيكي (Stereographic Projection):</b> ${stereoText}`;
+        if (isPlanar) { alertBox.innerHTML = `<div class="alert-danger" style="color:#c0392b;"><i class="fas fa-skull-crossbones"></i> <b>خطر عالي:</b> انزلاق مستوي (Planar Sliding) مُتوقع.<br><span style="font-size:0.9rem; margin-top:8px; display:block; color:#333;">${logicReason}</span></div>`; } 
+        else if (isToppling) { alertBox.innerHTML = `<div class="alert-danger" style="color:#c0392b;"><i class="fas fa-mountain"></i> <b>خطر عالي:</b> انقلاب صخري (Toppling) مُتوقع.<br><span style="font-size:0.9rem; margin-top:8px; display:block; color:#333;">${logicReason}</span></div>`; } 
+        else {
+            if (diffDir > 20 && toppleDiff > 20) logicReason = "هندسياً: اتجاه الميل ينحرف بزاوية أمان عن وجه المنحدر.";
+            else if (diffDir <= 20 && dip >= slope) logicReason = "هندسياً: الطبقات لا تتكشف (No Daylighting) لأن ميلها أشد من ميل المنحدر.";
+            else if (diffDir <= 20 && dip <= friction) logicReason = "هندسياً: الطبقات تتكشف، لكن زاوية ميلها أقل من زاوية الاحتكاك الداخلي مما يمنع انزلاقها.";
+           alertBox.innerHTML = `<div class="alert-safe" style="color:#27ae60;"><i class="fas fa-check-circle"></i> <b>آمن كينماتيكياً:</b> الطبقات مستقرة.<br><span style="font-size:0.9rem; margin-top:8px; display:block; color:#333;">${logicReason}</span></div>`;
         }
+
+        // استدعاء الدوال الهندسية الدقيقة 
+        let profileData = generateProfilePoints('topoCanvas', slope);
+        drawTopographicModel('topoCanvas', slope, slopeDir, profileData); 
+        drawRockMassModel('rockCanvas', dip, dipDir, slope, slopeDir, friction, p5, p3, isPlanar, isToppling, profileData);
+        drawStereonet(dip, dipDir, slope, slopeDir, friction);
+
+        // توليد الشروحات النصية الميدانية للطباعة
+        let undercut = document.getElementById('str_undercutting').value;
+        let freezethaw = document.getElementById('str_freezethaw').value;
+        let vib = document.getElementById('str_vibration').value;
+
+        // 1. شرح الطوبوغرافية
+        let topoText = `النموذج الطوبوغرافي يوضح هندسة المنحدر الصخري / الواجهة المكشوفة بزاوية ميل (${slope}°) باتجاه جغرافي (${slopeDir}° - ${getCompassDirection(slopeDir)}). يُعد هذا المرتسم الأساس الهندسي الذي يتم تسليط القوى الكينماتيكية عليه لتقييم الاستقرارية بصورة دقيقة. `;
+        if(undercut === 'active') topoText += `<b>والملاحظة الميدانية تؤكد وجود نحت مائي و(تقويض سفلي)</b> عند قاعدة المنحدر (Toe)، مما يعني أن الكتلة الجبلية تفقد دعمها السفلي تدريجياً، وهذا يزيد احتمالية الانهيارات التراجعية بغض النظر عن زاوية ميلها الحالية.`;
+        document.getElementById('topoExplanation').innerHTML = `<b>التحليل الجيومورفولوجي:</b> ${topoText}`;
+
+        // 2. شرح الكتلة الصخرية
+        let rockText = `يُظهر تحليل الكتلة الصخرية تقاطع مستويات الضعف مع وجه المنحدر. الطبقات تميل بزاوية (${dip}°) نحو (${getCompassDirection(dipDir)}). `;
+        if(isPlanar) {
+            rockText += `نظراً لتجاوز زاوية ميل الطبقة لزاوية الاحتكاك الداخلي (${friction}°)، وتكشفها (Daylighting) على الواجهة الصخرية، فإن الكتلة تقع تحت <b>تأثير قوى القص وخطر الانزلاق المستوي المباشر</b>. `;
+            if(p5 < 15) rockText += `ويزداد الخطر بشدة لوجود ضغط مائي جوفي (U, V) داخل الشقوق مما يقلل الاحتكاك الفعّال. `;
+        } else if(isToppling) {
+            rockText += `ميل الطبقات المعاكس للمنحدر وبزاوية حادة يخلق كتلاً عمودية يقع مركز ثقلها خارج قاعدة ارتكازها، مما يهدد بـ <b>انقلاب انثنائي (Toppling)</b> للكتل الصخرية نحو الأسفل. `;
+        } else {
+            rockText += `كينماتيكياً، الكتلة الصخرية تبدو مستقرة تحت ظروف الجاذبية الطبيعية الحالية، حيث تمنع زوايا الاحتكاك والهندسة العامة حدوث انزلاقات. `;
+        }
+        
+        if(freezethaw === 'yes') rockText += `<br><b>تنبيه بيئي:</b> تعرض الموقع لـ (دورات الانجماد والذوبان) يؤدي لتكسير الروابط الصخرية بفعل تمدد الجليد داخل الفواصل (Ice Wedging)، مما قد يحفز انزلاقات مفاجئة في المواسم الباردة. `;
+        if(vib === 'yes') rockText += `<br><b>تأثير الأحمال:</b> وجود اهتزازات (زلزالية أو آليات ثقيلة/تفجير) يضيف إجهاداً حركياً (Dynamic Loading) يتجاوز مقاومة القص للمستويات الضعيفة ويجب اتخاذ تدابير هندسية صارمة.`;
+        document.getElementById('rockExplanation').innerHTML = `<b>التحليل الحركي والديناميكي:</b> ${rockText}`;
+
+        // 3. شرح الاستيريوجرافي
+        let stereoText = `يُظهر المسقط الاستيريوجرافي توزيع أقطاب المستويات والدائرة العظمى للطبقات والمنحدر الجبلي مع مخروط الاحتكاك. `;
+        if(isPlanar) stereoText += `وقوع قطب الطبقة (Pole) ضمن منطقة الخطر الحرجة يؤكد حتمية عدم الاستقرارية الكينماتيكية. يُوصى هندسياً بتقليل زاوية ميل الواجهة الصخرية أو اتخاذ تدابير إسناد فورية للكتلة.`;
+        else if(isToppling) stereoText += `توزيع المستويات يشير لخطر الانقلاب، يُنصح بشدة بمراقبة التشققات التوسعية (Tension Cracks) في التضاريس العلوية للمنحدر.`;
+        else stereoText += `أقطاب مستويات الانفصال تقع خارج النطاقات الحرجة، مما يثبت استقرار المنحدر الجبلي كينماتيكياً تجاه الانزلاق المستوي والانقلاب.`;
+        document.getElementById('stereoExplanation').innerHTML = `<b>التفسير الكينماتيكي (Stereographic Projection):</b> ${stereoText}`;
+
  
        document.getElementById('calcButtonsAreaStr').style.display = 'none'; 
        document.getElementById('pageResultsStr_1').style.display = 'block'; 
@@ -1493,24 +1591,4 @@
         let poleTrend = (dipDir + 180) % 360; let dRad = dip * Math.PI / 180; let distPole = R * Math.tan(dRad / 2); let tRad = poleTrend * Math.PI / 180; let pX = cx + distPole * Math.sin(tRad); let pY = cy - distPole * Math.cos(tRad);
        ctx.beginPath(); ctx.fillStyle = '#e74c3c'; ctx.arc(pX, pY, 7, 0, 2*Math.PI); ctx.fill(); ctx.fillStyle = '#c0392b'; ctx.font = 'bold 16px Arial'; ctx.fillText('Pole', pX + 25, pY - 5);
  
-        const legendDiv = document.getElementById('kinematicLegend'); let riskState = ""; let isPlanar = false; let diffDir = Math.abs(slopeDir - dipDir); if (diffDir > 180) diffDir = 360 - diffDir; if (diffDir <= 20 && slope > dip && dip > friction) isPlanar = true;
- 
-        if (isPlanar) riskState = "<span style='color:#c0392b; font-size:1.1rem;'>⚠️ قراءات الاستيريوجرافي تؤكد وجود انزلاق مستوي محتمل للكتلة الصخرية.</span>";
-        else riskState = "<span style='color:#27ae60; font-size:1.1rem;'>✅ قراءات الاستيريوجرافي تظهر أن المنحدر الجبلي مستقر كينماتيكياً.</span>";
- 
-       legendDiv.innerHTML = `<h4>دليل المسقط (Stereonet Legend):</h4><div style="display:flex; flex-wrap:wrap; gap:20px; font-size: 1.1rem;"><div style="flex:1;"><span style="color:#2c3e50; font-weight:bold;">◡</span> الدائرة العظمى للمنحدر (Slope)<br><span style="color:#c0392b; font-weight:bold;">◡</span> الدائرة العظمى للطبقة (Plane)</div><div style="flex:1;"><span style="color:#2980b9; font-weight:bold;">◌</span> مخروط الاحتكاك الداخلي<br><span style="color:#e74c3c;">●</span> قطب الطبقة (Pole)</div></div><hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">${riskState}`;
-    }
- 
-    function prepareAndPrintStr() { try { const now = new Date(); const dateString = now.toLocaleDateString('en-GB') + ' - ' + now.toLocaleTimeString('en-GB', {hour: '2-digit', minute:'2-digit'}); document.querySelectorAll('.printDateHeader').forEach(h => h.innerText = dateString); updatePageNumbers(); window.print(); } catch (error) { alert("حدث خطأ أثناء التجهيز."); } }
- 
-    // ==========================================
-    // دالة تحديث أرقام الصفحات المدمجة
-    // ==========================================
-    function updatePageNumbers() { 
-        const pages = document.querySelectorAll('.page-counter-element'); const total = pages.length; pages.forEach((page, index) => { let currSpans = page.querySelectorAll('.currPageNum'); currSpans.forEach(s => s.innerText = index + 1); }); document.querySelectorAll('.totalPagesText').forEach(el => el.innerText = total); 
-        const pagesStr = document.querySelectorAll('.page-counter-element-str'); const totalStr = pagesStr.length; pagesStr.forEach((page, index) => { let currSpans = page.querySelectorAll('.currPageNum'); currSpans.forEach(s => s.innerText = index + 1); }); document.querySelectorAll('.totalPagesTextStr').forEach(el => el.innerText = totalStr); 
-    }
-</script>
- 
-</body>
-</html>
+        const legendDiv = document.getElementById('kinematicLegend'); let
