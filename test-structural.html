@@ -385,6 +385,7 @@
 </div>
 
 <script>
+<script>
     // ==========================================
     // دوال الدليل الجيولوجي التفاعلي
     // ==========================================
@@ -511,7 +512,7 @@
     }
  
     // ==========================================
-    // دوال الرسم الهندسية (المصححة جذرياً)
+    // دوال الرسم الهندسية (المصححة)
     // ==========================================
     function toRad(degrees) { return degrees * (Math.PI / 180); }
 
@@ -529,7 +530,7 @@
         }
     }
 
-    // 1. المقطع الطوبوغرافي (تعديل القوس الأزرق)
+    // 1. المقطع الطوبوغرافي
     function drawTopographicModel(canvasId, slope, slopeDir) {
         const canvas = document.getElementById(canvasId); if(!canvas) return;
         const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -548,18 +549,17 @@
         let slopeFacePts = createRoughLine(cx, cy, slopeTopX, slopeTopY, 15, 12);
         let crestPts = createRoughLine(slopeTopX, slopeTopY, margin + widthBox - 30, slopeTopY - 20, 10, 15); 
 
-        // رسم التضاريس والكتلة
         ctx.beginPath(); ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(margin + widthBox - 30, cy); ctx.closePath();
         ctx.fillStyle = '#ecf0f1'; ctx.fill(); 
+        
         ctx.beginPath(); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); for(let i = crestPts.length-1; i>=0; i--) { ctx.lineTo(crestPts[i].x, crestPts[i].y + 15 + Math.random()*10); } 
         ctx.fillStyle = '#d7ccc8'; ctx.fill();
+
         ctx.beginPath(); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 3;
         ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.stroke();
 
-        // التعديل: رسم قوس الزاوية ليقف عند الواجهة تماماً
         ctx.beginPath(); 
         ctx.moveTo(cx - 60, cy);
-        // القوس يبدأ من زاوية 180 (يسار) وينتهي عند زاوية المنحدر (2PI - slopeRad)
         ctx.arc(cx, cy, 60, Math.PI, 2 * Math.PI - slopeRad, false); 
         ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2.5; ctx.stroke();
         
@@ -573,16 +573,15 @@
         const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         let dipRad = dip * (Math.PI / 180);
-        let slopeRad = slope * (Math.PI / 180);
         const cx = canvas.width / 2;
-        const cy = canvas.height / 2 + 100; // نقطة التقاطع المركزية
+        const cy = canvas.height / 2 + 100; 
 
-        // 1. خط أفقي وهمي (مرجعي)
+        // خط مرجعي
         ctx.beginPath();
         ctx.strokeStyle = '#95a5a6'; ctx.setLineDash([5, 5]); ctx.lineWidth = 1.5;
         ctx.moveTo(cx - 300, cy); ctx.lineTo(cx + 300, cy); ctx.stroke(); ctx.setLineDash([]);
 
-        // 2. رسم مستوى الانزلاق (الخط الأحمر الثابت)
+        // مستوى الانزلاق
         ctx.beginPath();
         ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 4;
         let planeLen = 350;
@@ -590,85 +589,74 @@
         let px2 = cx + planeLen * Math.cos(dipRad); let py2 = cy - planeLen * Math.sin(dipRad);
         ctx.moveTo(px1, py1); ctx.lineTo(px2, py2); ctx.stroke();
 
-        // 3. رسم زاوية الميل الحقيقية
+        // زاوية الميل
         ctx.beginPath();
         ctx.arc(cx, cy, 100, Math.PI, 2*Math.PI - dipRad, false);
         ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2; ctx.stroke();
         ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(cx - 95, cy - 35, 75, 25);
         ctx.fillStyle = '#c0392b'; ctx.font = 'bold 15px Arial'; ctx.fillText(`Dip: ${dip}°`, cx - 90, cy - 18);
 
-        // 4. رسم الكتلة المنزلقة على المستوى المائل (بدون اختراق للأرض)
+        // الكتلة المنزلقة
         ctx.save();
-        ctx.translate(cx, cy); // ننقل نقطة الأصل لمركز المستوى
-        ctx.rotate(-dipRad); // نقوم بتدوير الورقة لترسم بشكل مريح
+        ctx.translate(cx, cy); 
+        ctx.rotate(-dipRad); 
         
-        let bw = 160; // عرض الكتلة
-        let bh = 100; // ارتفاع الكتلة
-        // نرسم الكتلة تبدأ من نقطة الأصل وتتجه للجهة اليمنى العليا
+        let bw = 160; let bh = 100; 
         ctx.beginPath();
         ctx.rect(30, -bh, bw, bh);
         ctx.fillStyle = 'rgba(231, 76, 60, 0.4)'; ctx.fill();
         ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2.5; ctx.stroke();
 
-        // رسم مركز الثقل (CG)
         let cgLocalX = 30 + bw / 2;
         let cgLocalY = -bh / 2;
         ctx.beginPath(); ctx.arc(cgLocalX, cgLocalY, 5, 0, Math.PI*2);
         ctx.fillStyle = '#2c3e50'; ctx.fill();
-        ctx.restore(); // نعود للإحداثيات الأصلية لنرسم القوى بشكل مستقيم
+        ctx.restore(); 
 
-        // 5. حساب إحداثيات مركز الثقل الحقيقية على الشاشة (Geometry Transformation)
+        // متجهات القوى
         let trueCgX = cx + cgLocalX * Math.cos(-dipRad) - cgLocalY * Math.sin(-dipRad);
         let trueCgY = cy + cgLocalX * Math.sin(-dipRad) + cgLocalY * Math.cos(-dipRad);
 
-        // 6. رسم المتجهات الهندسية بدقة تامة من مركز الثقل
-        // الوزن (W) لأسفل تماماً
         drawArrow(ctx, trueCgX, trueCgY, trueCgX, trueCgY + 120, '#27ae60', 3, 'W');
         
-        // القوة العمودية (N) للأعلى عمودياً على المستوى
         let nEndX = trueCgX - 80 * Math.sin(dipRad);
         let nEndY = trueCgY - 80 * Math.cos(dipRad);
         drawArrow(ctx, trueCgX, trueCgY, nEndX, nEndY, '#8e44ad', 3, 'N');
         
-        // قوة الاحتكاك المقاومة (R) موازية للمستوى نحو الأعلى
         let rEndX = trueCgX - 80 * Math.cos(dipRad);
         let rEndY = trueCgY + 80 * Math.sin(dipRad);
         drawArrow(ctx, trueCgX, trueCgY, rEndX, rEndY, '#f39c12', 3, 'R');
 
-        // إذا كان هناك مياه نرسم ضغط المياه
         if (waterVal <= 10) {
             let uEndX = trueCgX + 60 * Math.sin(dipRad);
             let uEndY = trueCgY + 60 * Math.cos(dipRad);
-            drawArrow(ctx, trueCgX, trueCgY, uEndX, uEndY, '#3498db', 3, 'U'); // قوة الرفع المائي
+            drawArrow(ctx, trueCgX, trueCgY, uEndX, uEndY, '#3498db', 3, 'U'); 
             
             let vStartX = trueCgX - 70 * Math.cos(dipRad); let vStartY = trueCgY + 70 * Math.sin(dipRad);
             let vEndX = vStartX + 50 * Math.cos(dipRad); let vEndY = vStartY - 50 * Math.sin(dipRad);
-            drawArrow(ctx, vStartX, vStartY, vEndX, vEndY, '#3498db', 3, 'V'); // قوة دفع الشقوق
+            drawArrow(ctx, vStartX, vStartY, vEndX, vEndY, '#3498db', 3, 'V'); 
         }
     }
 
-    // 3. المسقط الاستيريوجرافي (إضافة شبكة Grid احترافية وتعديل الألوان)
+    // 3. المسقط الاستيريوجرافي 
     function drawStereonet(dip, dipDir, slope, slopeDir, friction) {
         const canvas = document.getElementById('stereonetCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         const cx = canvas.width / 2; const cy = canvas.height / 2; const R = 250; 
  
-        // رسم شبكة قطبية (Polar Grid) كخلفية
         ctx.lineWidth = 0.5; ctx.strokeStyle = '#d5dbdb';
-        for(let i=0; i<36; i++) { // الخطوط الشعاعية
+        for(let i=0; i<36; i++) { 
             ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + R * Math.cos(i * 10 * Math.PI/180), cy + R * Math.sin(i * 10 * Math.PI/180)); ctx.stroke();
         }
-        for(let i=1; i<=9; i++) { // الدوائر المتراكزة
+        for(let i=1; i<=9; i++) { 
             ctx.beginPath(); ctx.arc(cx, cy, R * (i/9), 0, 2*Math.PI); ctx.stroke();
         }
 
-        // الإطار الخارجي والمحاور
         ctx.beginPath(); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2.5; ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.stroke();
         ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center';
         ctx.fillText('N', cx, cy - R - 15); ctx.fillText('S', cx, cy + R + 30);
         ctx.fillText('E', cx + R + 25, cy + 7); ctx.fillText('W', cx - R - 25, cy + 7);
         ctx.beginPath(); ctx.moveTo(cx, cy-10); ctx.lineTo(cx, cy+10); ctx.moveTo(cx-10, cy); ctx.lineTo(cx+10, cy); ctx.stroke();
  
-        // دالة رسم الدوائر العظمى
         function drawGreatCircle(d, dDir, color, width, isDashed = false) {
             if (d < 0.5) return; ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = width;
             if(isDashed) ctx.setLineDash([5, 5]); else ctx.setLineDash([]);
@@ -676,7 +664,6 @@
             else { ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.clip(); let dRad = d * Math.PI / 180; let dDirRad = dDir * Math.PI / 180; let rArc = R / Math.cos(dRad); let dist = R * Math.tan(dRad); let arcCx = cx + dist * Math.sin(dDirRad); let arcCy = cy - dist * Math.cos(dDirRad); ctx.beginPath(); ctx.arc(arcCx, arcCy, rArc, 0, 2*Math.PI); ctx.stroke(); ctx.restore(); }
         }
  
-        // التعديل: تلوين المنحدر بالرمادي الباهت، والطبقة بالأحمر الصارخ
         drawGreatCircle(slope, slopeDir, '#95a5a6', 3); 
         drawGreatCircle(dip, dipDir, '#e74c3c', 4);
  
@@ -738,17 +725,17 @@
            alertBox.innerHTML = `<div class="alert-safe" style="color:#27ae60;"><i class="fas fa-check-circle"></i> <b>آمن كينماتيكياً:</b> الطبقات مستقرة.<br><span style="font-size:0.9rem; margin-top:8px; display:block; color:#333;">${logicReason}</span></div>`;
         }
 
-        let profileData = generateProfilePoints('topoCanvas', slope);
-        drawTopographicModel('topoCanvas', slope, slopeDir, profileData); 
-        // استدعاء مخطط الكتلة الحرة المحدث
+        // ================= التعديل الذي قمنا بإصلاحه =================
+        drawTopographicModel('topoCanvas', slope, slopeDir); 
         drawRockMassModel('rockCanvas', dip, slope, isPlanar, p5);
         drawStereonet(dip, dipDir, slope, slopeDir, friction);
+        // ==============================================================
 
         let undercut = document.getElementById('str_undercutting').value;
         let freezethaw = document.getElementById('str_freezethaw').value;
         let vib = document.getElementById('str_vibration').value;
 
-        let topoText = `المقطع الهندسي يوضح الكتلة الصخرية / الواجهة المكشوفة بزاوية ميل (${slope}°) باتجاه جغرافي (${slopeDir}° - ${getCompassDirection(slopeDir)}). يُعد هذا المرتسم الأساس الهندسي الذي يتم تسليط القوى الكينماتيكية عليه لتقييم الاستقرارية بصورة دقيقة. `;
+        let topoText = `النموذج الطوبوغرافي يوضح هندسة المنحدر الصخري / الواجهة المكشوفة بزاوية ميل (${slope}°) باتجاه جغرافي (${slopeDir}° - ${getCompassDirection(slopeDir)}). يُعد هذا المرتسم الأساس الهندسي الذي يتم تسليط القوى الكينماتيكية عليه لتقييم الاستقرارية بصورة دقيقة. `;
         if(undercut === 'active') topoText += `<b>والملاحظة الميدانية تؤكد وجود نحت مائي و(تقويض سفلي)</b> عند قاعدة المنحدر (Toe)، مما يعني أن الكتلة الجبلية تفقد دعمها السفلي تدريجياً، وهذا يزيد احتمالية الانهيارات التراجعية بغض النظر عن زاوية ميلها الحالية.`;
         document.getElementById('topoExplanation').innerHTML = `<b>التحليل الجيومورفولوجي:</b> ${topoText}`;
 
@@ -801,6 +788,5 @@
         document.querySelectorAll('.totalPagesTextStr').forEach(el => el.innerText = totalStr); 
     }
 </script>
- 
 </body>
 </html>
