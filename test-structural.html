@@ -40,32 +40,6 @@
         .btn-sensor:hover { background: #1f618d; transform: translateY(-2px);}
         
         /* ========================================================
-           تنسيقات زر الرجوع الذكي للوحة التحكم (خاص بالملف المستقل)
-          ======================================================== */
-        .btn-back-dash { 
-            display: block; 
-            width: calc(100% - 40px); 
-            max-width: 1100px; 
-            margin: 0 auto 20px auto; 
-            background: #34495e; 
-            color: white !important; 
-            padding: 12px; 
-            text-align: center; 
-            text-decoration: none !important; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            font-size: 1.1rem; 
-            cursor: pointer; 
-            transition: 0.3s ease; 
-            border: none; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .btn-back-dash:hover { 
-            background: #2c3e50; 
-            transform: translateY(-2px); 
-        }
-
-        /* ========================================================
            تنسيقات النماذج الهندسية والمؤثرات والدليل
           ======================================================== */
         .compass-live-box { display: none; background: #eaf2f8; border: 2px solid #3498db; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
@@ -121,7 +95,6 @@
             .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
             .screen-only { display: none !important; }
             .print-only { display: block !important; }
-            .btn-back-dash { display: none !important; } /* إخفاء زر الرجوع عند الطباعة */
             
             .page-counter-element-str { 
                 width: 100%; height: 29.7cm; padding: 1.5cm; box-sizing: border-box; 
@@ -169,10 +142,6 @@
     </style>
 </head>
 <body>
-
-<a href="https://ash2oo1.github.io/Geological-App/index.html?skipLogin=true" class="btn-back-dash screen-only">
-    <i class="fas fa-arrow-right"></i> رجوع إلى لوحة التحكم الرئيسية
-</a>
  
 <div class="container">
     <div class="header screen-only">
@@ -203,7 +172,7 @@
                 <p style="color: #c0392b;">اتجاه الميل (Dip Dir): <span id="live_dipDir">0</span>° <span id="live_dipDir_txt">-</span></p>
                 <p style="color: #2980b9;">زاوية الميل (Dip Angle): <span id="live_dip">0</span>°</p>
                 <p style="color: #27ae60;">المضرب (Strike): <span id="live_strike">0</span>° <span id="live_strike_txt">-</span></p>
-                <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">*قم بوضع الهاتف ملاصقاً للطبقة الصخرية للقياس.</p>
+                <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">* قم بوضع الهاتف ملاصقاً للطبقة الصخرية للقياس.</p>
                 <button class="btn-calc" style="background: #27ae60; padding: 10px; font-size: 1rem; width: auto; display: inline-block; box-shadow: none;" onclick="captureCompassData()">تثبيت القراءات الميدانية 📌</button>
             </div>
 
@@ -226,7 +195,7 @@
             
             <div class="sub-title" style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
                 <span>هندسة المنحدر الصخري أو القطع (Slope Geometry):</span>
-                <button class="btn-sensor" style="background: #d35400; box-shadow: 0 4px 6px rgba(211, 84, 0, 0.3);" onclick="getSensorData('slope')"><i class="fas fa-mobile-alt"></i>أخذ قراءة المنحدر آلياً</button>
+                <button class="btn-sensor" style="background: #d35400; box-shadow: 0 4px 6px rgba(211, 84, 0, 0.3);" onclick="getSensorData('slope')"><i class="fas fa-mobile-alt"></i> أخذ قراءة المنحدر آلياً</button>
             </div>
             <div class="form-row" style="margin-top: 15px;">
                 <div class="form-group">
@@ -374,7 +343,7 @@
                 <tr><th>اتجاه الميل (Dip Dir) / المضرب:</th><td><span id="res_dipStrike">--</span></td></tr>
                 <tr><th>زاوية الميل الحقيقية (Dip Angle):</th><td><span id="res_dipAngle">--</span> درجة</td></tr>
                 <tr><th>هندسة المنحدر الصخري:</th><td><span id="res_slopeGeom">--</span></td></tr>
-                <tr><th>زاوية الاحتكاك الداخلي (φ):</th><td><span id="res_fricVal">--</span>درجة</td></tr>
+                <tr><th>زاوية الاحتكاك الداخلي (φ):</th><td><span id="res_fricVal">--</span> درجة</td></tr>
             </table>
 
             <div class="table-title">ثالثاً: تفاصيل التوصيف الجيوميكانيكي للكتلة (RMR)</div>
@@ -576,7 +545,7 @@
     </div>
 
 </div>
- 
+
 <div id="infoModalOverlay" class="modal-overlay">
     <div class="modal-box">
         <div class="modal-header">
@@ -586,7 +555,7 @@
         <div class="modal-body" id="modalContent"></div>
     </div>
 </div>
- 
+
 <script>
     // ==========================================
     // دوال الدليل الذكي والمستشعرات 
@@ -597,24 +566,24 @@
         'friction': { title: 'تقدير زاوية الاحتكاك', content: `<p>φ لأسطح الفواصل. جيري (27-31°)، رملي (30-35°).</p>` },
         'ucs': { title: 'مقاومة الانضغاط', content: `<table class="table-guide"><tr><th>الاختبار</th><th>MPa</th></tr><tr><td>ينكسر بضربة مطرقة قوية</td><td>50-100</td></tr></table>` },
         'rqd': { title: 'حساب RQD حقلياً', content: `<p>استخدم الطريقة الحجمية: $RQD = 115 - 3.3 J_v$</p>` },
-        'spacing': { title: 'مسافات الانقطاعات', content: `<ul><li><b>> 2 متر:</b>صخر كتلوي جداً.</li><li><b>< 60 ملم:</b> صخر مسحوق.</li></ul>` },
+        'spacing': { title: 'مسافات الانقطاعات', content: `<ul><li><b>> 2 متر:</b> صخر كتلوي جداً.</li><li><b>< 60 ملم:</b> صخر مسحوق.</li></ul>` },
         'cond': { title: 'حالة الأسطح', content: `<p>تعتمد على الفتحة، الخشونة، التجوية، والحشوة.</p>` },
         'water': { title: 'المياه الجوفية', content: `<p>المياه تقلل الاحتكاك وتزيد الضغط.</p>` },
         'undercutting': { title: 'التقويض السفلي', content: '<p>إزالة الدعم من أسفل المنحدر يقلل الاستقرارية.</p>' },
         'freezethaw': { title: 'دورات الانجماد', content: '<p>تجمد المياه داخل الشقوق يوسع الفواصل.</p>' },
         'vibration': { title: 'الاهتزازات', content: '<p>الاهتزازات تقلل من قوى الاحتكاك بشكل لحظي.</p>' }
     };
- 
+
     function openInfoModal(type) { if(guideData[type]) { document.getElementById('modalTitle').innerHTML = guideData[type].title; document.getElementById('modalContent').innerHTML = guideData[type].content; document.getElementById('infoModalOverlay').style.display = 'flex'; } }
     function closeInfoModal() { document.getElementById('infoModalOverlay').style.display = 'none'; }
     window.onclick = function(event) { if (event.target == document.getElementById('infoModalOverlay')) { closeInfoModal(); } }
- 
+
     function getCompassDirection(degrees) {
         const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
         let index = Math.round(((degrees %= 360) < 0 ? degrees + 360 : degrees) / 45) % 8;
         return directions[index];
     }
- 
+
     let isCompassActive = false;
     function startSmartCompass() {
         if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -623,14 +592,14 @@
             }).catch(console.error);
         } else { enableCompass(); }
     }
- 
+
     function enableCompass() {
         document.getElementById('smartCompassBox').style.display = 'block';
         if('ondeviceorientationabsolute' in window) { window.addEventListener('deviceorientationabsolute', handleSmartOrientation); }
         else { window.addEventListener('deviceorientation', handleSmartOrientation); }
         isCompassActive = true;
     }
- 
+
     function handleSmartOrientation(event) {
         if(!isCompassActive) return;
         let alpha = event.webkitCompassHeading || (360 - event.alpha) || 0;
@@ -647,36 +616,36 @@
         document.getElementById('live_strike').innerText = mainStrike;
         document.getElementById('live_strike_txt').innerText = `(${getCompassDirection(mainStrike)})`;
     }
- 
+
     function captureCompassData() {
         document.getElementById('str_dipDir').value = document.getElementById('live_dipDir').innerText;
         document.getElementById('str_dip').value = document.getElementById('live_dip').innerText;
         calculateStrike();
         isCompassActive = false;
-        alert("✅تم التقاط القراءات.");
+        alert("✅ تم التقاط القراءات.");
     }
- 
+
     function getSensorData(target) {
         if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-          DeviceOrientationEvent.requestPermission().then(permissionState => {
-               if (permissionState === 'granted') { startListeningSensors(target); }
-          }).catch(console.error);
+           DeviceOrientationEvent.requestPermission().then(permissionState => {
+                if (permissionState === 'granted') { startListeningSensors(target); }
+           }).catch(console.error);
         } else { startListeningSensors(target); }
     }
  
     function startListeningSensors(target) {
-        alert("📱ضع الهاتف بشكل مسطح واضغط موافق.");
+        alert("📱 ضع الهاتف بشكل مسطح واضغط موافق.");
         const sensorHandler = function(event) {
             let dipDir = event.webkitCompassHeading || (360 - event.alpha) || 0;
             let dipAngle = Math.max(Math.abs(event.beta || 0), Math.abs(event.gamma || 0));
             if (dipAngle > 90) dipAngle = 180 - dipAngle;
             if (target === 'slope') {
-              document.getElementById('str_slopeDir').value = Math.round(dipDir);
-              document.getElementById('str_slopeAngle').value = Math.round(dipAngle);
-              alert("✅ تمت قراءة المنحدر.");
+               document.getElementById('str_slopeDir').value = Math.round(dipDir);
+               document.getElementById('str_slopeAngle').value = Math.round(dipAngle);
+               alert("✅ تمت قراءة المنحدر.");
             }
-          window.removeEventListener('deviceorientation', sensorHandler);
-          window.removeEventListener('deviceorientationabsolute', sensorHandler);
+           window.removeEventListener('deviceorientation', sensorHandler);
+           window.removeEventListener('deviceorientationabsolute', sensorHandler);
         };
         if ('ondeviceorientationabsolute' in window) { window.addEventListener('deviceorientationabsolute', sensorHandler); } 
         else { window.addEventListener('deviceorientation', sensorHandler); }
@@ -697,7 +666,7 @@
     // دوال الرسم الهندسية
     // ==========================================
     function toRad(degrees) { return degrees * (Math.PI / 180); }
- 
+
     function drawArrow(ctx, fromX, fromY, toX, toY, color = "black", lineWidth = 2, text = "", textOffsetX = 0, textOffsetY = -10) {
         const headlen = 10; const dx = toX - fromX; const dy = toY - fromY; const angle = Math.atan2(dy, dx);
         ctx.beginPath(); ctx.moveTo(fromX, fromY); ctx.lineTo(toX, toY);
@@ -707,7 +676,7 @@
         ctx.strokeStyle = color; ctx.lineWidth = lineWidth; ctx.stroke();
         if(text) { ctx.font = 'bold 14px Arial'; ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.fillText(text, toX + textOffsetX, toY + textOffsetY); }
     }
- 
+
     function generateProfilePoints(canvasId, slope) {
         const canvas = document.getElementById(canvasId); if(!canvas) return null;
         const widthBox = canvas.width - 100; const cx = 250; const cy = canvas.height - 100; const slopeHeight = 200; 
@@ -722,7 +691,7 @@
         let crestPts = createRoughLine(slopeTopX, slopeTopY, widthBox + 20, slopeTopY - 20, 10, 15); 
         return { cx, cy, slopeFacePts, crestPts, widthBox };
     }
- 
+
     function drawTopographicModel(canvasId, slope, slopeDir, profileData) {
         if(!profileData) return;
         const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -735,7 +704,7 @@
         ctx.beginPath(); ctx.arc(cx, cy, 60, Math.PI, 2 * Math.PI - slopeRad, false); ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2.5; ctx.stroke();
         ctx.fillStyle = '#2980b9'; ctx.font = "bold 15px Arial"; ctx.fillText(`Slope: ${slope}°`, cx - 75, cy - 65);
     }
- 
+
     function drawRockMassModel(canvasId, dip, slope, isPlanar, waterVal) {
         const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         let dipRad = dip * (Math.PI / 180); const cx = canvas.width / 2; const cy = canvas.height / 2 + 50; 
@@ -761,14 +730,14 @@
         drawArrow(ctx, trueCgX, trueCgY, trueCgX, trueCgY + 130, '#27ae60', 3, 'W', 0, 15); 
         drawArrow(ctx, trueCgX, trueCgY, trueCgX - 100 * Math.sin(dipRad), trueCgY - 100 * Math.cos(dipRad), '#8e44ad', 3, 'N', -10, -10);
         drawArrow(ctx, trueCgX, trueCgY, trueCgX - 100 * Math.cos(dipRad), trueCgY + 100 * Math.sin(dipRad), '#f39c12', 3, 'R', -15, 0);
- 
+
         if (waterVal <= 7) { 
             let spaceX = cx + 150; let spaceY = cy + 100; 
             drawArrow(ctx, spaceX, spaceY, spaceX - 70 * Math.sin(dipRad), spaceY - 70 * Math.cos(dipRad), '#3498db', 3, 'U', 15, -5); 
             drawArrow(ctx, spaceX - 40 * Math.cos(dipRad), spaceY + 40 * Math.sin(dipRad), spaceX + 40 * Math.cos(dipRad), spaceY - 40 * Math.sin(dipRad), '#3498db', 3, 'V', 15, 15); 
         }
     }
- 
+
     function drawStereonet(dip, dipDir, slope, slopeDir, friction) {
         const canvas = document.getElementById('stereonetCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         const cx = 300; const cy = 300; const R = 250; 
@@ -776,11 +745,11 @@
         ctx.lineWidth = 0.5; ctx.strokeStyle = '#e5e8e8';
         for(let i=0; i<36; i++) { ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + R * Math.cos(i * 10 * Math.PI/180), cy + R * Math.sin(i * 10 * Math.PI/180)); ctx.stroke(); }
         for(let i=1; i<=9; i++) { ctx.beginPath(); ctx.arc(cx, cy, R * (i/9), 0, 2*Math.PI); ctx.stroke(); }
- 
+
         ctx.beginPath(); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2.5; ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.moveTo(cx, cy-R); ctx.lineTo(cx, cy+R); ctx.moveTo(cx-R, cy); ctx.lineTo(cx+R, cy); ctx.stroke();
         ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 18px Arial'; ctx.textAlign = 'center';
         ctx.fillText('N', cx, cy - R - 15); ctx.fillText('S', cx, cy + R + 25); ctx.fillText('E', cx + R + 20, cy + 6); ctx.fillText('W', cx - R - 20, cy + 6);
- 
+
         function drawGreatCircle(d, dDir, color, width) {
             if (d < 0.5) return; ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = width;
             ctx.save(); ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.clip();
@@ -801,21 +770,21 @@
         ctx.fillStyle = '#c0392b'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'left'; ctx.fillText('Pole', px + 12, py - 6);
  
         const legendDiv = document.getElementById('kinematicLegend'); let isPlanar = false; let diffDir = Math.abs(slopeDir - dipDir); if (diffDir > 180) diffDir = 360 - diffDir; if (diffDir <= 20 && slope > dip && dip > friction) isPlanar = true;
-        legendDiv.innerHTML = `<div class="geotech-split-legend"><h4>دليل المسقط (Stereonet Legend):</h4><div class="legend-grid"><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #34495e;"></div>◡ الدائرة العظمى للمنحدر (Slope)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #e74c3c;"></div>◡ الدائرة العظمى للطبقة (Plane)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:2px dashed #2980b9;"></div>◌مخروط الاحتكاك الداخلي</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="background:#e74c3c;"></div>● قطب الطبقة (Pole)</div></div></div>`;
+        legendDiv.innerHTML = `<div class="geotech-split-legend"><h4>دليل المسقط (Stereonet Legend):</h4><div class="legend-grid"><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #34495e;"></div>◡ الدائرة العظمى للمنحدر (Slope)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #e74c3c;"></div>◡ الدائرة العظمى للطبقة (Plane)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:2px dashed #2980b9;"></div>◌ مخروط الاحتكاك الداخلي</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="background:#e74c3c;"></div>● قطب الطبقة (Pole)</div></div></div>`;
     }
- 
+
     function drawPlanAndCrossSection(canvasId, dip) {
-        const canvas = document.getElementById(canvasId); if(!canvas) return; const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
- 
+        const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         let safeDip = dip;
         if (safeDip < 5) safeDip = 5; if (safeDip > 85) safeDip = 85;
         let dipRad = safeDip * (Math.PI / 180);
- 
+
         const mapX = 150, mapY = 40, mapW = 550, mapH = 140;
         const crossX = 150, crossY = 240, crossW = 550, crossH = 180;
         const contact1X = 300, contact2X = 550;
         const col1 = '#fdebd0', col2 = '#d3b8ae', col3 = '#fad7a1';
- 
+
         // المسقط الأفقي
         ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'left';
         ctx.fillText('Plan view (مسقط أفقي من الأعلى)', mapX, mapY - 10);
@@ -827,51 +796,51 @@
         ctx.beginPath(); ctx.moveTo(contact2X, mapY); ctx.lineTo(contact2X, mapY + mapH); ctx.stroke();
         ctx.restore();
         ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.strokeRect(mapX, mapY, mapW, mapH);
- 
+
         let midY = mapY + mapH / 2;
         ctx.beginPath(); ctx.moveTo(mapX - 20, midY); ctx.lineTo(mapX + mapW + 20, midY); ctx.strokeStyle = '#7f8c8d'; ctx.lineWidth = 1; ctx.stroke();
         ctx.fillStyle = '#2c3e50'; ctx.textAlign = 'center'; ctx.fillText("A", mapX - 30, midY + 5); ctx.fillText("A'", mapX + mapW + 30, midY + 5);
- 
+
         let symX = contact1X, symY = mapY + 30;
         ctx.beginPath(); ctx.moveTo(symX, symY - 15); ctx.lineTo(symX, symY + 15); 
         ctx.moveTo(symX, symY); ctx.lineTo(symX + 15, symY); 
         ctx.strokeStyle = '#000'; ctx.lineWidth = 3; ctx.stroke();
         ctx.fillStyle = '#000'; ctx.textAlign = 'left'; ctx.fillText(`${dip}°`, symX + 20, symY + 5);
- 
+
         // المقطع العرضي
         ctx.fillStyle = '#2c3e50'; ctx.fillText('Cross-section (مقطع عرضي للعمق)', crossX, crossY - 10);
         ctx.save(); ctx.beginPath(); ctx.rect(crossX, crossY, crossW, crossH); ctx.clip();
         let dx = 1000 / Math.tan(dipRad);
- 
+
         ctx.beginPath(); ctx.moveTo(-1000, crossY); ctx.lineTo(contact1X, crossY); ctx.lineTo(contact1X + dx, crossY + 1000); ctx.lineTo(-1000, crossY + 1000); ctx.fillStyle = col1; ctx.fill();
         ctx.beginPath(); ctx.moveTo(contact1X, crossY); ctx.lineTo(contact2X, crossY); ctx.lineTo(contact2X + dx, crossY + 1000); ctx.lineTo(contact1X + dx, crossY + 1000); ctx.fillStyle = col2; ctx.fill();
         ctx.beginPath(); ctx.moveTo(contact2X, crossY); ctx.lineTo(crossX + crossW + 1000, crossY); ctx.lineTo(crossX + crossW + 1000, crossY + 1000); ctx.lineTo(contact2X + dx, crossY + 1000); ctx.fillStyle = col3; ctx.fill();
- 
+
         ctx.beginPath(); ctx.moveTo(contact1X, crossY); ctx.lineTo(contact1X + dx, crossY + 1000); ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.stroke();
         ctx.beginPath(); ctx.moveTo(contact2X, crossY); ctx.lineTo(contact2X + dx, crossY + 1000); ctx.stroke();
- 
+
         ctx.beginPath(); ctx.arc(contact1X, crossY, 40, 0, dipRad); ctx.strokeStyle = '#c0392b'; ctx.stroke();
         ctx.fillStyle = '#c0392b'; ctx.fillText(`${dip}°`, contact1X + 50 * Math.cos(dipRad/2), crossY + 50 * Math.sin(dipRad/2) + 5);
- 
+
         let c = contact2X - contact1X; let b = c * Math.sin(dipRad); 
         let x_int = contact2X - b * Math.sin(dipRad); let y_int = crossY + b * Math.cos(dipRad);
         ctx.beginPath(); ctx.moveTo(contact2X, crossY); ctx.lineTo(x_int, y_int);
         ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 3; ctx.setLineDash([5, 5]); ctx.stroke(); ctx.setLineDash([]);
- 
+
         let pSize = 10;
         let v1x = x_int + pSize * Math.cos(dipRad); let v1y = y_int + pSize * Math.sin(dipRad);
         let v2x = v1x + pSize * Math.sin(dipRad); let v2y = v1y - pSize * Math.cos(dipRad);
         let v3x = x_int + pSize * Math.sin(dipRad); let v3y = y_int - pSize * Math.cos(dipRad);
         ctx.beginPath(); ctx.moveTo(v1x, v1y); ctx.lineTo(v2x, v2y); ctx.lineTo(v3x, v3y);
         ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 1.5; ctx.stroke();
- 
+
         ctx.restore();
         ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.strokeRect(crossX, crossY, crossW, crossH);
         ctx.beginPath(); ctx.moveTo(crossX, crossY); ctx.lineTo(crossX + crossW, crossY); ctx.strokeStyle = '#2980b9'; ctx.stroke();
     }
- 
+
     function drawHazardRadar(canvasId, slopeDir, dipDir, isPlanar) {
-        const canvas = document.getElementById(canvasId); if(!canvas) return; const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         const cx = 300; const cy = 200; const R = 150;
         
         ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.fillStyle = '#f8f9fa'; ctx.fill(); ctx.strokeStyle = '#7f8c8d'; ctx.lineWidth = 1.5; ctx.stroke();
@@ -887,9 +856,9 @@
         let textR = R + 40; 
         ctx.fillStyle = '#c0392b'; ctx.fillText(`Dip Dir: ${dipDir}°`, cx + textR * Math.cos(dRad), cy + textR * Math.sin(dRad) + 5);
     }
- 
+
     function drawRMRHeatmap(canvasId, p1, p2, p3, p4, p5) {
-        const canvas = document.getElementById(canvasId); if(!canvas) return; const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         let params = [
             {nameEN: 'UCS', nameAR: 'مقاومة الانضغاط', val: p1, max: 15}, 
@@ -900,7 +869,7 @@
         ];
         
         function getHeatColor(val, max) { let ratio = val / max; return ratio < 0.4 ? '#e74c3c' : ratio < 0.7 ? '#f39c12' : '#2ecc71'; }
- 
+
         let cx = canvas.width / 2 + 50; let startY = 30; let boxW = 150; let boxH = 80;
         
         params.forEach((p, i) => {
@@ -917,7 +886,7 @@
             ctx.fillText(`${p.val} / ${p.max}`, cx, y + boxH/2 + 7);
         });
     }
- 
+
     // ==========================================
     // دالة التحليل وبناء التقرير
     // ==========================================
@@ -934,14 +903,14 @@
         const friction = parseFloat(document.getElementById('str_friction').value);
         
         if (isNaN(dip) || isNaN(slope)) { alert("⚠️ يرجى إدخال البيانات الميدانية."); return; } 
- 
+
         const p1 = parseInt(document.getElementById('rmr_ucs').value); 
         const p2 = parseInt(document.getElementById('rmr_rqd').value);
         const p3 = parseInt(document.getElementById('rmr_spacing').value); 
         const p4 = parseInt(document.getElementById('rmr_cond').value);
         const p5 = parseInt(document.getElementById('rmr_water').value); 
         const totalRMR = p1 + p2 + p3 + p4 + p5;
- 
+
         let rockClass = ""; let classColor = "";
         if (totalRMR >= 81) { rockClass = "Class I (ممتاز)"; classColor = "#27ae60"; }
         else if (totalRMR >= 61) { rockClass = "Class II (جيد)"; classColor = "#2ecc71"; }
@@ -951,7 +920,7 @@
         let isPlanar = false; let diffDir = Math.abs(slopeDir - dipDir); if (diffDir > 180) diffDir = 360 - diffDir;
         if (diffDir <= 20 && slope > dip && dip > friction) isPlanar = true;
         let alertHTML = isPlanar ? '<span style="color:#c0392b; font-size:1.1rem; font-weight:bold;">⚠️ خطر انزلاق مستوي! الطبقات تتكشف هندسياً على المنحدر.</span>' : '<span style="color:#27ae60; font-size:1.1rem; font-weight:bold;">✅ آمن كينماتيكياً في الوقت الحالي.</span>';
- 
+
         // 1. تعبئة شاشة الخلاصة (للعرض على الشاشة فقط)
         document.getElementById('screen_rmrTotal').innerText = totalRMR;
         document.getElementById('screen_rmrTotal').style.color = classColor;
@@ -959,7 +928,7 @@
         document.getElementById('screen_rmrClass').style.color = classColor;
         document.getElementById('screen_kinematicAlert').innerHTML = alertHTML;
         document.getElementById('screenResultsSummary').style.display = 'block';
- 
+
         // 2. تعبئة الصفحة الأولى للطباعة (مخفية عن الشاشة)
         const getSelText = (id) => { const el = document.getElementById(id); return el.options[el.selectedIndex].text; };
         
@@ -983,18 +952,18 @@
         document.getElementById('res_undercutTxt').innerText = getSelText('str_undercutting');
         document.getElementById('res_freezeTxt').innerText = getSelText('str_freezethaw');
         document.getElementById('res_vibTxt').innerText = getSelText('str_vibration');
- 
+
         document.getElementById('res_rmrTotal').innerText = totalRMR;
         document.getElementById('res_rmrTotal').style.color = classColor;
         document.getElementById('res_rmrClassFinal').innerText = rockClass;
         document.getElementById('res_rmrClassFinal').style.color = classColor;
         document.getElementById('res_kinematicAlertPrint').innerHTML = alertHTML;
- 
+
         // 3. استعادة الشروحات الجيولوجية وإضافتها للمربعات (لتظهر على الشاشة والطباعة)
         document.getElementById('topoExplanation').innerHTML = `<b>التحليل الجيومورفولوجي:</b> المقطع يوضح الانكشاف الصخري للمنحدر المقطوع بزاوية هندسية (${slope}°). يُعد هذا المرتسم الأساس الهندسي لتقييم الاستقرارية.`;
         document.getElementById('rockExplanation').innerHTML = `<b>التحليل الميكانيكي (FBD):</b> يوضح المخطط عزلاً للكتلة الصخرية المعرضة للانزلاق على مستوى ضعف يميل بزاوية (${dip}°)، ويوضح اتجاهات القوى الفيزيائية المتمثلة في قوة الوزن (W)، ورد الفعل العمودي (N)، وقوى الاحتكاك المقاومة (R).`;
         document.getElementById('stereoExplanation').innerHTML = `<b>التفسير الكينماتيكي (Stereographic Projection):</b> يُظهر المسقط التوزيع الفراغي للمستويات. ` + (isPlanar ? `وقوع قطب الطبقة (النقطة الحمراء) ضمن منطقة التقاطع الحرجة يُثبت كينماتيكياً حتمية الانزلاق المستوي.` : `قطب الطبقة يقع خارج النطاق الحرج، المنحدر مستقر.`);
- 
+
         // 4. رسم المرتسمات
         let profileData = generateProfilePoints('topoCanvas', slope);
         drawTopographicModel('topoCanvas', slope, slopeDir, profileData); 
@@ -1003,7 +972,7 @@
         drawPlanAndCrossSection('canvas3DBlock', dip);
         drawHazardRadar('canvasRadar', slopeDir, dipDir, isPlanar);
         drawRMRHeatmap('canvasHeatmap', p1, p2, p3, p4, p5);
- 
+
         // 5. إظهار صفحات الطباعة وتحديث الأرقام
         document.getElementById('calcButtonsAreaStr').style.display = 'none'; 
         for(let i=1; i<=7; i++) {
@@ -1020,7 +989,7 @@
             window.print(); 
         } catch (error) {} 
     }
- 
+
     function updatePageNumbersStr() { 
         const pagesStr = document.querySelectorAll('.page-counter-element-str'); 
         const now = new Date(); 
