@@ -417,7 +417,7 @@
 
 <script>
     // ==========================================
-    // دوال الدليل الجيولوجي التفاعلي والبوصلة
+    // دوال الدليل الجيولوجي التفاعلي
     // ==========================================
     const guideData = {
         'dip_strike': { title: 'دليل قياس الميل والمضرب', content: `<ul><li><b>طريقة التماس (Contact Method):</b> ضع البوصلة ملاصقة تماماً للطبقة لضبط "اتجاه الميل"، ثم ميزان الأنبوب لـ "زاوية الميل".</li><li><b>يقوم النظام آلياً:</b> بحساب المضرب (Strike) بتطبيق قاعدة اليد اليمنى (RHR) لتسريع عملك.</li></ul>` },
@@ -542,7 +542,7 @@
     }
  
     // ==========================================
-    // دوال الرسم الهندسية والجيوتقنية 
+    // دوال الرسم الهندسية والجيوتقنية (تم تصحيحها)
     // ==========================================
     function toRad(degrees) { return degrees * (Math.PI / 180); }
 
@@ -604,6 +604,7 @@
         const canvas = document.getElementById(canvasId); if(!canvas) return;
         const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         const { margin, widthBox, heightBox, cx, cy, slopeTopX, slopeTopY, slopeFacePts, crestPts, slopeHeight } = profileData;
+        
         let dipRad = dip * (Math.PI / 180);
         let isDippingSameWay = (Math.abs(slopeDir - dipDir) <= 90 || Math.abs(slopeDir - dipDir) >= 270);
 
@@ -655,7 +656,9 @@
                 drawArrow(ctx, uStart.x, uStart.y, uStart.x - 40 * Math.sin(dipRad), uStart.y - 40 * Math.cos(dipRad), '#3498db', 3, 'U');
             }
         } else {
-            const endDipX = crestX + 150; let currentDipRad = isDippingSameWay ? dipRad : -dipRad; const endDipY = cy - Math.tan(currentDipRad) * (endDipX - cx);
+            const endDipX = slopeTopX + 150; 
+            let currentDipRad = isDippingSameWay ? dipRad : -dipRad; 
+            const endDipY = cy - Math.tan(currentDipRad) * (endDipX - cx);
             ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(endDipX, endDipY); ctx.lineWidth = 2; ctx.strokeStyle = "#c0392b"; ctx.stroke();
         }
 
@@ -743,9 +746,9 @@
 
  
        document.getElementById('calcButtonsAreaStr').style.display = 'none'; 
-       document.getElementById('pageResultsStr_1').style.display = 'flex'; 
-       document.getElementById('pageResultsStr_2').style.display = 'flex'; 
-       document.getElementById('pageResultsStr_3').style.display = 'flex'; 
+       document.getElementById('pageResultsStr_1').style.display = 'block'; 
+       document.getElementById('pageResultsStr_2').style.display = 'block'; 
+       document.getElementById('pageResultsStr_3').style.display = 'block'; 
        updatePageNumbersStr();
     }
  
@@ -802,6 +805,3 @@
         document.querySelectorAll('.totalPagesTextStr').forEach(el => el.innerText = totalStr); 
     }
 </script>
- 
-</body>
-</html>
