@@ -48,7 +48,6 @@
         .kinematic-canvas-container { width: 100%; display: flex; flex-direction: column; align-items: center; background: #fcfcfc; padding: 20px; border-radius: 8px; border: 1px solid #bdc3c7; box-shadow: inset 0 0 10px rgba(0,0,0,0.02); box-sizing: border-box; margin-bottom: 20px;}
         .kinematic-canvas-container h4 { color: #2c3e50; border-bottom: 2px solid #e67e22; padding-bottom: 10px; margin-top: 0; margin-bottom: 10px; width: 100%; text-align: center; font-size: 1.3rem;}
         
-        /* دليل أكاديمي احترافي (محدث) */
         .geotech-split-legend { background: #fff; border: 1px solid #bdc3c7; padding: 15px; margin-top: 10px; border-radius: 8px; text-align: right; direction: rtl; font-size: 14px; width: 100%; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .legend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
         .geotech-legend-item { display: flex; align-items: center; gap: 10px; color: #2c3e50; }
@@ -58,7 +57,6 @@
 
         .geological-explanation-box { border: 2px solid #e67e22; padding: 15px; margin-top: 15px; width: 100%; background-color: #fdf2e9; border-radius: 8px; font-size: 1.05rem; line-height: 1.8; color: #2c3e50; text-align: justify; box-sizing: border-box; }
         
-        /* تنسيقات عمود RMR الحراري (محدثة) */
         .heatmap-wrapper { display: flex; gap: 20px; align-items: stretch; width: 100%; justify-content: center; }
         .heatmap-scale-legend { border: 1px solid #bdc3c7; padding: 10px; border-radius: 6px; background: #fff; font-size: 12px; font-weight: bold; width: 120px; flex-shrink: 0; text-align: center; display: flex; flex-direction: column; justify-content: space-between;}
         .heatmap-scale-box { width: 20px; height: 100px; background: linear-gradient(to top, #e74c3c, #f39c12, #f1c40f, #2ecc71); border-radius: 3px; border: 1px solid #333; margin: 5px auto; }
@@ -202,59 +200,87 @@
 
         <div class="section">
             <div class="section-title">ثالثاً: التوصيف الجيوميكانيكي (Rock Mass Rating - RMR)</div>
+            <p style="font-size: 0.95rem; color: #7f8c8d; margin-top: -10px; margin-bottom: 15px;">حسب نظام (Bieniawski 1989) لتقييم الكتلة الصخرية هندسياً:</p>
+            
             <div class="form-group" style="margin-bottom: 15px;">
-                <label>1. مقاومة الانضغاط (UCS):</label>
+                <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('ucs')"></i> 1. مقاومة الانضغاط للصخر السليم (Intact Rock Strength - UCS):</label>
                 <select id="rmr_ucs">
-                    <option value="12" selected>100 - 250 MPa (صلب جداً)</option>
-                    <option value="7">50 - 100 MPa (صلب)</option>
-                    <option value="4">25 - 50 MPa (متوسط)</option>
+                    <option value="15">> 250 MPa (صلابة استثنائية - يصعب كسره بالمطرقة)</option>
+                    <option value="12" selected>100 - 250 MPa (صلب جداً - يتطلب ضربات قوية لكسره)</option>
+                    <option value="7">50 - 100 MPa (صلب - يكسر بضربة مطرقة واحدة)</option>
+                    <option value="4">25 - 50 MPa (متوسط الصلابة - يمكن خدشه بمطواة بصعوبة)</option>
+                    <option value="2">5 - 25 MPa (ضعيف - يخدش بسهولة وينكسر بضربة خفيفة)</option>
+                    <option value="1">1 - 5 MPa (ضعيف جداً - يتفتت باليد القوية)</option>
                 </select>
             </div>
+
             <div class="form-group" style="margin-bottom: 15px;">
-                <label>2. جودة الصخر (RQD):</label>
+                <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('rqd')"></i> 2. مؤشر جودة الصخر (Rock Quality Designation - RQD):</label>
                 <select id="rmr_rqd">
-                    <option value="17" selected>75% - 90% (جيد)</option>
-                    <option value="13">50% - 75% (متوسط)</option>
+                    <option value="20">90% - 100% (ممتاز - كتلة صلبة متماسكة)</option>
+                    <option value="17" selected>75% - 90% (جيد - فواصل قليلة)</option>
+                    <option value="13">50% - 75% (متوسط - كتل صخرية مجزأة جزئياً)</option>
+                    <option value="8">25% - 50% (ضعيف - صخر مهشم وكثير الانقطاعات)</option>
+                    <option value="3">< 25% (ضعيف جداً - أشبه بالركام)</option>
                 </select>
             </div>
+
             <div class="form-group" style="margin-bottom: 15px;">
-                <label>3. المسافة بين الفواصل:</label>
+                <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('spacing')"></i> 3. المسافة بين الانقطاعات / الفواصل (Spacing of Discontinuities):</label>
                 <select id="rmr_spacing">
+                    <option value="20">> 2.0 متر (كتل ضخمة جداً)</option>
                     <option value="15" selected>0.6 - 2.0 متر (كتل كبيرة)</option>
-                    <option value="10">200 - 600 ملم (متوسط)</option>
+                    <option value="10">200 - 600 ملم (كتل متوسطة الحجم)</option>
+                    <option value="8">60 - 200 ملم (كتل صغيرة / متقاربة)</option>
+                    <option value="5">< 60 ملم (صخر متكسر بشدة / صفائحي)</option>
                 </select>
             </div>
+
             <div class="form-group" style="margin-bottom: 15px;">
-                <label>4. حالة الفواصل:</label>
+                <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('cond')"></i> 4. حالة أسطح الانقطاعات والفواصل (Condition of Discontinuities):</label>
                 <select id="rmr_cond">
-                    <option value="25" selected>خشنة قليلاً، فتحة < 1 ملم</option>
-                    <option value="10">أسطح مصقولة أو حشوة طينية</option>
+                    <option value="30">خشنة جداً، أسطح متلاصقة تماماً، صخر غير متجوى (صلابة عالية للقص).</option>
+                    <option value="25" selected>خشنة قليلاً، فتحة الفاصل < 1 ملم، تجوية خفيفة على الجدران.</option>
+                    <option value="20">خشنة قليلاً، فتحة < 1 ملم، جدران متجوبة بشكل واضح.</option>
+                    <option value="10">أسطح مصقولة (Slickensided) أو حشوة طينية < 5 ملم، أو فتحة مستمرة 1-5 ملم.</option>
+                    <option value="0">حشوة طينية لينة > 5 ملم، أو فتحة > 5 ملم (خطر انزلاق عالي).</option>
                 </select>
             </div>
+
             <div class="form-group">
-                <label>5. المياه الجوفية:</label>
+                <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('water')"></i> 5. حالة المياه الجوفية في الفواصل (Groundwater Conditions):</label>
                 <select id="rmr_water">
-                    <option value="15" selected>جاف تماماً</option>
-                    <option value="7">مبلل / ترشيح</option>
+                    <option value="15" selected>جاف تماماً (Completely Dry)</option>
+                    <option value="10">رطب (Damp - لا يوجد ماء حر)</option>
+                    <option value="7">مبلل / قطرات (Wet - ترشيح مائي)</option>
+                    <option value="4">تقطير مستمر (Dripping)</option>
+                    <option value="0">جريان مائي (Flowing - ضغط مائي داخل الشقوق)</option>
                 </select>
             </div>
         </div>
 
         <div class="section">
-            <div class="section-title">رابعاً: المؤثرات الخارجية</div>
+            <div class="section-title">رابعاً: المؤثرات الخارجية والظروف الحقلية</div>
             <div class="form-row">
                 <div class="form-group">
-                    <label>التقويض السفلي:</label>
+                    <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('undercutting')"></i> 1. التقويض السفلي بواسطة المياه (Toe Undercutting):</label>
                     <select id="str_undercutting">
                         <option value="none">لا يوجد</option>
-                        <option value="active">نعم</option>
+                        <option value="active">نعم، يوجد نحت مائي نشط أسفل المنحدر</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>الانجماد:</label>
+                    <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('freezethaw')"></i> 2. دورات الانجماد والذوبان (Freeze-Thaw Cycles):</label>
                     <select id="str_freezethaw">
-                        <option value="no">تأثير ضعيف</option>
-                        <option value="yes">نعم، قوي</option>
+                        <option value="no">تأثير ضعيف أو معدوم</option>
+                        <option value="yes">نعم، تأثير قوي (منطقة ثلوج)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('vibration')"></i> 3. الأحمال والاهتزازات (Vibrations/Loads):</label>
+                    <select id="str_vibration">
+                        <option value="no">لا توجد</option>
+                        <option value="yes">نعم، توجد آليات ثقيلة أو تفجير قريباً من الموقع</option>
                     </select>
                 </div>
             </div>
@@ -269,7 +295,7 @@
         <div class="print-only print-header">
             <span class="date-top-left printDateHeader"></span>
             <h1>تقرير المسح الميداني (النماذج الهندسية)</h1>
-            <h2>علي شندل الجنابي</h2>
+            <h2>الجيولوجي المشرف: علي شندل الجنابي</h2>
         </div>
         <div class="content-padding">
             <div class="section" id="resultsSectionStr" style="border-color: #e67e22;">
@@ -306,6 +332,7 @@
         <div class="print-only print-header">
             <span class="date-top-left printDateHeader"></span>
             <h1>تقرير المسح الميداني (تحليل الكتلة)</h1>
+            <h2>الجيولوجي المشرف: علي شندل الجنابي</h2>
         </div>
         <div class="content-padding">
             <div class="section" style="border: 2px solid #e67e22; padding: 20px;">
@@ -335,6 +362,7 @@
         <div class="print-only print-header">
             <span class="date-top-left printDateHeader"></span>
             <h1>تقرير المسح الميداني (المسقط الفراغي)</h1>
+            <h2>الجيولوجي المشرف: علي شندل الجنابي</h2>
         </div>
         <div class="content-padding">
             <div class="section" style="border: 2px solid #e67e22; padding: 20px;">
@@ -353,6 +381,7 @@
         <div class="print-only print-header">
             <span class="date-top-left printDateHeader"></span>
             <h1>تقرير المسح الميداني (الابتكارات الجيوميكانيكية)</h1>
+            <h2>الجيولوجي المشرف: علي شندل الجنابي</h2>
         </div>
         <div class="content-padding">
             <div class="section" style="border: 2px solid #8e44ad; padding: 20px;">
@@ -422,12 +451,19 @@
 <script>
     // ==========================================
     // دوال الدليل الذكي والمستشعرات والحسابات 
-    // (لم تتغير لأنها ممتازة وتعمل بدقة)
     // ==========================================
     const guideData = {
         'dip_strike': { title: 'قياس الميل والمضرب', content: `<p>ضع الهاتف ملاصقاً للطبقة لقياس اتجاه الميل (Dip Direction) وزاوية الميل (Dip Angle). يقوم النظام بحساب المضرب (Strike) تلقائياً.</p>` },
         'slope_geom': { title: 'قياس هندسة المنحدر', content: `<p>ضع لوحاً مسطحاً على وجه المنحدر الجبلي لقياس متوسط اتجاه الميل وزاوية ميل المنحدر.</p>` },
         'friction': { title: 'تقدير زاوية الاحتكاك', content: `<p>φ هي زاوية الاحتكاك لأسطح الفواصل. حجر جيري (27-31°)، حجر رملي (30-35°).</p>` },
+        'ucs': { title: 'مقاومة الانضغاط بالمطرقة', content: `<table class="table-guide"><tr><th>الصنف</th><th>الاختبار</th><th>MPa</th></tr><tr><td>R5</td><td>يتطلب ضربات قوية جداً بالمطرقة لكسره</td><td>100-250</td></tr><tr><td>R4</td><td>ينكسر بضربة واحدة قوية</td><td>50-100</td></tr><tr><td>R2</td><td>يُقشر بصعوبة بالسكين</td><td>5-25</td></tr></table>` },
+        'rqd': { title: 'حساب (RQD) حقلياً', content: `<p>إذا لم يتوفر حفر لبي، استخدم الطريقة الحجمية $J_v$ (عدد الشقوق في المتر المكعب):<br> <b>$RQD = 115 - 3.3 J_v$</b></p>` },
+        'spacing': { title: 'مسافات الانقطاعات', content: `<ul><li><b>> 2 متر:</b>صخر كتلوي جداً.</li><li><b>200-600 ملم:</b> كتل متوسطة (رسوبيات شائعة).</li><li><b>< 60 ملم:</b> صخر مسحوق (خطر انهيار).</li></ul>` },
+        'cond': { title: 'حالة أسطح الانقطاع', content: `<p>تعتمد على 5 عوامل: (الاستمرارية، الانفراج والفتحة، الخشونة، الحشوة الطينية، والتجوية على جدران الفاصل).</p>` },
+        'water': { title: 'المياه الجوفية', content: `<p>تزيد المياه ضغط المسامات (Pore Pressure) وتقلل الاحتكاك. صنفها كالتالي: (جاف، رطب، مبلل، تقطير، أو جريان حر).</p>` },
+        'undercutting': { title: 'التقويض السفلي (Toe Undercutting)', content: '<p>إزالة الدعم من أسفل المنحدر بواسطة الأنهار أو السيول يقلل من الاستقرارية بشكل كبير ويجب أخذ هذا العامل بالحسبان عند التقييم.</p>' },
+        'freezethaw': { title: 'دورات الانجماد والذوبان', content: '<p>تجمد المياه داخل الشقوق يولد ضغطاً هيدروليكياً يوسع الفواصل (Ice Wedging) ويقلل قوى الاحتكاك الأساسية للصخر.</p>' },
+        'vibration': { title: 'الأحمال والاهتزازات', content: '<p>الاهتزازات (سواء زلازل أو آليات ثقيلة أو تفجير) تقلل من قوى الاحتكاك بشكل لحظي وتحفز عمليات الانزلاق المفاجئة.</p>' }
     };
 
     function openInfoModal(type) { if(guideData[type]) { document.getElementById('modalTitle').innerHTML = guideData[type].title; document.getElementById('modalContent').innerHTML = guideData[type].content; document.getElementById('infoModalOverlay').style.display = 'flex'; } }
@@ -519,7 +555,7 @@
     }
  
     // ==========================================
-    // دوال الرسم الهندسية والابتكارات (محدثة وجراحية)
+    // دوال الرسم الهندسية والابتكارات 
     // ==========================================
     function toRad(degrees) { return degrees * (Math.PI / 180); }
 
@@ -533,7 +569,6 @@
         if(text) { ctx.font = 'bold 12px Arial'; ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.fillText(text, toX, toY + textOffset); }
     }
 
-    // 1. المقطع الطوبوغرافي الأصل (لم يتغير سوى إزالة الدليل السفلي)
     function generateProfilePoints(canvasId, slope) {
         const canvas = document.getElementById(canvasId); if(!canvas) return null;
         const widthBox = canvas.width - 100; const cx = 250; const cy = canvas.height - 100; const slopeHeight = 200; 
@@ -554,41 +589,29 @@
         const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         const { cx, cy, slopeFacePts, crestPts, widthBox } = profileData;
         let slopeRad = slope * (Math.PI / 180);
-        // رسم الكتلة الصخرية
         ctx.beginPath(); ctx.moveTo(50, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(widthBox + 20, cy); ctx.closePath(); ctx.fillStyle = '#ecf0f1'; ctx.fill(); 
-        // رسم الغطاء الترابي
         ctx.beginPath(); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); for(let i = crestPts.length-1; i>=0; i--) { ctx.lineTo(crestPts[i].x, crestPts[i].y + 20); } ctx.fillStyle = '#d7ccc8'; ctx.fill();
-        // رسم الحدود
         ctx.beginPath(); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 3; ctx.moveTo(50, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.stroke();
-        // رسم قوس الزاوية (Slope: 75)
         ctx.beginPath(); ctx.arc(cx, cy, 60, Math.PI, 2 * Math.PI - slopeRad, false); ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2.5; ctx.stroke();
         ctx.fillStyle = '#2980b9'; ctx.font = "bold 15px Arial"; ctx.fillText(`Slope: ${slope}°`, cx + 10, cy - 20);
     }
 
-    // 2. تحليل الكتلة الأصل (لم يتغير سوى إزالة الدليل السفلي)
     function drawRockMassModel(canvasId, dip, slope, isPlanar, waterVal) {
         const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         let dipRad = dip * (Math.PI / 180); const cx = canvas.width / 2; const cy = canvas.height / 2 + 50; 
-        // رسم مستوى الانزلاق (الأحمر)
         ctx.beginPath(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 4; ctx.moveTo(cx - 300 * Math.cos(dipRad), cy + 300 * Math.sin(dipRad)); ctx.lineTo(cx + 300 * Math.cos(dipRad), cy - 300 * Math.sin(dipRad)); ctx.stroke();
-        // رسم زاوية الميل (Dip: 45)
         ctx.beginPath(); ctx.arc(cx, cy, 100, Math.PI, 2*Math.PI - dipRad, false); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2; ctx.stroke();
         ctx.fillStyle = '#c0392b'; ctx.font = 'bold 15px Arial'; ctx.fillText(`Dip: ${dip}°`, cx - 120, cy - 10);
-        // رسم الكتلة الحمراء
         ctx.save(); ctx.translate(cx, cy); ctx.rotate(-dipRad); ctx.rect(30, -100, 160, 100); ctx.fillStyle = 'rgba(231, 76, 60, 0.4)'; ctx.fill(); ctx.strokeStyle = '#333'; ctx.lineWidth = 2.5; ctx.stroke();
-        // رسم متجهات القوى W, N, R, U
         drawArrow(ctx, 110, -50, 110, 50, '#27ae60', 3, 'W', 20); drawArrow(ctx, 110, -50, 110, -130, '#8e44ad', 3, 'N'); drawArrow(ctx, 110, -50, 30, -50, '#f39c12', 3, 'R');
         if (waterVal <= 7) { drawArrow(ctx, 110, -50, 110, 30, '#3498db', 3, 'U', 15); drawArrow(ctx, 30, 0, 80, 0, '#3498db', 3, 'V', 15); }
         ctx.restore(); 
     }
 
-    // 3. المسقط الاستيريوجرافي الأصل (لم يتغير)
     function drawStereonet(dip, dipDir, slope, slopeDir, friction) {
         const canvas = document.getElementById('stereonetCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         const cx = 300; const cy = 300; const R = 250; 
-        // المحاور والإطار
         ctx.beginPath(); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2.5; ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.moveTo(cx, cy-R); ctx.lineTo(cx, cy+R); ctx.moveTo(cx-R, cy); ctx.lineTo(cx+R, cy); ctx.stroke();
-        // الدوائر العظمى (لم تتغير)
         function drawGreatCircle(d, dDir, color) {
             if (d < 0.5) return; ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 3;
             ctx.save(); ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.clip();
@@ -597,7 +620,6 @@
             ctx.restore();
         }
         drawGreatCircle(slope, slopeDir, '#2c3e50'); drawGreatCircle(dip, dipDir, '#e74c3c');
-        // مخروط الاحتكاك والقطب (لم تتغير)
         ctx.beginPath(); ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]); ctx.arc(cx, cy, R * Math.tan(friction * Math.PI / 360), 0, 2*Math.PI); ctx.stroke(); ctx.setLineDash([]);
         let pRad = dip * Math.PI / 180; let distPole = R * Math.tan(pRad / 2); let poleT = (dipDir + 180) * Math.PI / 180;
         ctx.beginPath(); ctx.fillStyle = '#e74c3c'; ctx.arc(cx + distPole * Math.sin(poleT), cy - distPole * Math.cos(poleT), 8, 0, 2*Math.PI); ctx.fill(); ctx.fillText('Pole', cx + distPole * Math.sin(poleT) + 15, cy - distPole * Math.cos(poleT));
@@ -606,80 +628,62 @@
         legendDiv.innerHTML = `<div class="geotech-split-legend"><h4>دليل المسقط (Stereonet Legend):</h4><div class="legend-grid"><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #2c3e50;"></div>◡ المنحدر (Slope)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #e74c3c;"></div>◡ الطبقة (Plane)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:2px dashed #2980b9;"></div>◌ مخروط الاحتكاك</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="background:#e74c3c;"></div>● قطب الطبقة (Pole)</div></div></div><br>${isPlanar ? '<span style="color:#c0392b; font-size:1.1rem;">⚠️ خطر انزلاق مستوي!</span>' : '<span style="color:#27ae60; font-size:1.1rem;">✅ المنحدر مستقر.</span>'}`;
     }
 
-    // ==========================================
-    // تعديلات جراحية للابتكارات الحصرية (الجديدة)
-    // ==========================================
-
-    // 1. خريطة مسارات الفواصل (Presents as Join Trace Map - Planar View)
-    // (استخدام نفس الـ id 'canvas3DBlock' للحفاظ على هيكل الكود الأصلي)
+    // 1. خريطة مسارات الفواصل (Planar View)
     function draw3DBlockNetwork(canvasId, mainStrike, dip, dipDir, spacingVal) {
         const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         const cx = canvas.width / 2; const cy = canvas.height / 2; const size = 150;
-        // رسم الحدود الخارجية (مربع مسقط أفقي)
         ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.strokeRect(cx - size, cy - size, size * 2, size * 2);
         
         let safeSpacing = spacingVal <= 10 ? spacingVal : 10;
-        let spacingRad = (100 - (safeSpacing * 8)); // كثافة الشقوق
+        let spacingRad = (100 - (safeSpacing * 8)); 
 
         ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 1.5;
-        // رسم خطوط المضرب (Strikes) بناءً على زاوية المضرب الحقيقية
         ctx.save(); ctx.translate(cx, cy); ctx.rotate(toRad(mainStrike - 90));
         for(let x = -size; x <= size; x += Math.max(spacingRad, 5)) { ctx.beginPath(); ctx.moveTo(x, -size); ctx.lineTo(x, size); ctx.stroke(); } ctx.restore();
         
-        // رسم متجه اتجاه ميل الطبقة (Dip Direction Arrow) عمودي على المضرب
         drawArrow(ctx, cx, cy, cx + size * 0.8 * Math.cos(toRad(dipDir - 90)), cy + size * 0.8 * Math.sin(toRad(dipDir - 90)), '#333', 2, `Dip: ${dip}°`);
     }
 
-    // 2. رادار الانهيار العلوي (Top-Down Radar) (معدل بإضافة الاتجاهات والدرجات)
+    // 2. رادار الانهيار العلوي (Top-Down Radar) 
     function drawHazardRadar(canvasId, slopeDir, dipDir, isPlanar, isToppling, dipAngle) {
         const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         const cx = 300; const cy = 200; const R = 150;
-        // رسم الإطار والاتجاهات الجغرافية الأربعة (معدل)
         ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.fillStyle = '#f8f9fa'; ctx.fill(); ctx.strokeStyle = '#7f8c8d'; ctx.lineWidth = 1; ctx.stroke();
         ctx.fillStyle = '#7f8c8d'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
         ctx.fillText('N', cx, cy - R - 10); ctx.fillText('S', cx, cy + R + 20); ctx.fillText('E', cx + R + 15, cy + 5); ctx.fillText('W', cx - R - 15, cy + 5);
         
         let sRad = toRad(slopeDir - 90); let dRad = toRad(dipDir - 90);
-        // رسم خط قمة المنحدر (Crest)
         ctx.beginPath(); ctx.moveTo(cx + R * Math.cos(sRad - Math.PI/2), cy + R * Math.sin(sRad - Math.PI/2)); ctx.lineTo(cx + R * Math.cos(sRad + Math.PI/2), cy + R * Math.sin(sRad + Math.PI/2)); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 5; ctx.stroke();
-        // رسم متجه الانزلاق (معدل بإضافة الدرجات Dip Dir: 200)
         drawArrow(ctx, cx, cy, cx + R * 0.8 * Math.cos(dRad), cy + R * 0.8 * Math.sin(dRad), '#c0392b', 3, `Dip Dir: ${dipDir}°`);
 
-        // تظليل نطاق الخطر (معدل)
         if(isPlanar) { ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, R, dRad - 0.2, dRad + 0.2, false); ctx.closePath(); ctx.fillStyle = 'rgba(231, 76, 60, 0.5)'; ctx.fill(); }
     }
 
-    // 3. عمود RMR الجيوميكانيكي (تعديل جذري ليصبح "عمودياً" وبالعربية)
+    // 3. عمود RMR الجيوميكانيكي (عمودي)
     function drawRMRHeatmap(canvasId, p1, p2, p3, p4, p5) {
         const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // المصطلحات بالعربية والإنجليزية والقيم القصوى (معدلة)
         let params = [
-            {nameEN: 'UCS', nameAR: 'مقاومة الصلابة', val: p1, max: 12}, 
-            {nameEN: 'RQD', nameAR: 'جودة الصخر', val: p2, max: 17},
-            {nameEN: 'Spacing', nameAR: 'المسافة بين الفواصل', val: p3, max: 15}, 
-            {nameEN: 'Condition', nameAR: 'حالة الفواصل', val: p4, max: 25},
+            {nameEN: 'UCS', nameAR: 'مقاومة الصلابة', val: p1, max: 15}, 
+            {nameEN: 'RQD', nameAR: 'جودة الصخر', val: p2, max: 20},
+            {nameEN: 'Spacing', nameAR: 'المسافة بين الفواصل', val: p3, max: 20}, 
+            {nameEN: 'Condition', nameAR: 'حالة الفواصل', val: p4, max: 30},
             {nameEN: 'Water', nameAR: 'المياه الجوفية', val: p5, max: 15}
         ];
         
         function getHeatColor(val, max) { let ratio = val / max; return ratio < 0.4 ? '#e74c3c' : ratio < 0.7 ? '#f39c12' : '#2ecc71'; }
 
-        // رسم رأسي (عمود) (معدل)
         let cx = canvas.width / 2; let startY = 50; let boxW = 100; let boxH = 80;
         ctx.textAlign = 'right'; ctx.fillStyle = '#2c3e50'; ctx.font = '12px Arial';
         params.forEach((p, i) => {
             let y = startY + (i * (boxH + 5));
-            // رسم الشرح (الاسم بالعربية) على اليمين (معدل)
             ctx.fillStyle = '#2c3e50'; ctx.fillText(p.nameAR, cx - boxW/2 - 10, y + boxH/2);
-            // رسم المربع الحراري
             ctx.fillStyle = getHeatColor(p.val, p.max); ctx.fillRect(cx - boxW/2, y, boxW, boxH);
             ctx.strokeStyle = '#333'; ctx.lineWidth = 1; ctx.strokeRect(cx - boxW/2, y, boxW, boxH);
-            // رسم القيمة البيضاء EN في المنتصف
             ctx.fillStyle = '#fff'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center'; ctx.fillText(`${p.nameEN}: ${p.val}/${p.max}`, cx, y + boxH/2 + 5); ctx.textAlign = 'right';
         });
     }
 
-    // دالة التحليل الرئيسية (لم تتغير سوى استدعاءات الرسم)
     function calculateStructuralResults() {
         const p1 = parseInt(document.getElementById('rmr_ucs').value); const p2 = parseInt(document.getElementById('rmr_rqd').value);
         const p3 = parseInt(document.getElementById('rmr_spacing').value); const p4 = parseInt(document.getElementById('rmr_cond').value);
@@ -704,6 +708,7 @@
         drawTopographicModel('topoCanvas', slope, slopeDir, profileData); 
         drawRockMassModel('rockCanvas', dip, slope, isPlanar, p5);
         drawStereonet(dip, dipDir, slope, slopeDir, friction);
+        
         // الابتكارات الجديدة
         let mainStrike = Math.round(Math.min((dipDir - 90 + 360) % 360, (dipDir + 90) % 360));
         draw3DBlockNetwork('canvas3DBlock', mainStrike, dip, dipDir, p3);
@@ -712,7 +717,7 @@
 
         // النصوص
         document.getElementById('topoExplanation').innerHTML = `<b>التحليل الجيومورفولوجي:</b> مقطع للواجهة المكشوفة بزاوية (${slope}°).`;
-        document.getElementById('rockExplanation').innerHTML = `<b>الميكانيكا الكينماتيكية:</b> الكتلة المعرضة للانزلاق يستقر على مستوى يميل بزاوية (${dip}°). زاوية الاحتكاك هي (${friction}°).`;
+        document.getElementById('rockExplanation').innerHTML = `<b>الميكانيكا الكينماتيكية:</b> الكتلة المعرضة للانزلاق تستقر على مستوى يميل بزاوية (${dip}°). زاوية الاحتكاك هي (${friction}°).`;
         
        // إظهار النتائج وصفحات الطباعة
        document.getElementById('calcButtonsAreaStr').style.display = 'none'; 
