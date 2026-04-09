@@ -39,7 +39,7 @@
         .btn-sensor:hover { background: #1f618d; transform: translateY(-2px);}
         
         /* ========================================================
-           تنسيقات النماذج الهندسية 
+           تنسيقات النماذج الهندسية والمؤثرات
           ======================================================== */
         .compass-live-box { display: none; background: #eaf2f8; border: 2px solid #3498db; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
         .compass-live-box p { margin: 5px 0; font-size: 1.1rem; font-weight: bold; }
@@ -88,13 +88,22 @@
             .screen-only { display: none !important; }
             .print-only { display: block !important; }
             
+            /* حاوية الورقة A4 */
             .page-counter-element-str { 
-                width: 100%; height: 27.7cm; padding: 1.5cm; box-sizing: border-box; 
-                page-break-after: always; position: relative; display: flex !important; 
-                flex-direction: column; background: white;
+                width: 100%; 
+                height: 27.7cm; /* يمنع تسرب المحتوى للصفحة التالية */
+                padding: 1.5cm; 
+                box-sizing: border-box; 
+                page-break-after: always; 
+                position: relative; 
+                display: flex !important; 
+                flex-direction: column;
+                background: white;
             }
             #pageResultsStr_1, #pageResultsStr_2, #pageResultsStr_3 { 
-                page-break-inside: avoid !important; page-break-after: always !important; overflow: hidden !important; 
+                page-break-inside: avoid !important; 
+                page-break-after: always !important; 
+                overflow: hidden !important; 
             }
             
             .print-header { text-align: center; border: 2px solid #e67e22; background-color: #fdf2e9; padding: 10px; margin-bottom: 15px; border-radius: 6px; position: relative; }
@@ -105,13 +114,26 @@
             .section { margin-bottom: 12px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 12px; background-color: #fafafa; box-shadow: none; }
             .section-title { font-size: 1.05rem; margin-bottom: 8px; padding-bottom: 3px; border-bottom: 2px solid #e67e22; color:#e67e22;}
             
+            /* تقييد ارتفاع الكانفاس لتوسيع مساحة الشرح */
             #topoCanvas, #rockCanvas { 
-                max-height: 45% !important; width: auto !important; max-width: 100%;
-                object-fit: contain !important; display: block !important; margin: 0 auto !important; page-break-inside: avoid !important;
+                max-height: 45% !important; 
+                width: auto !important; 
+                max-width: 100%;
+                object-fit: contain !important; 
+                display: block !important; 
+                margin: 0 auto !important; 
+                page-break-inside: avoid !important;
             }
+            /* الحفاظ على دائرية الاستيريوجرافي */
             #stereonetCanvas { 
-                max-width: 400px !important; max-height: 400px !important; aspect-ratio: 1 / 1 !important; 
-                width: 100% !important; height: auto !important; margin: 0 auto !important; display: block !important; object-fit: contain !important; 
+                max-width: 400px !important; 
+                max-height: 400px !important; 
+                aspect-ratio: 1 / 1 !important; 
+                width: 100% !important; 
+                height: auto !important; 
+                margin: 0 auto !important; 
+                display: block !important; 
+                object-fit: contain !important; 
             }
             
             .kinematic-canvas-container { display: block !important; width: 100% !important; margin-bottom: 15px !important; page-break-inside: avoid !important; border: 2px solid #bdc3c7 !important; padding: 10px !important; box-sizing: border-box !important;}
@@ -119,9 +141,18 @@
             .geological-explanation-box { font-size: 11pt !important; line-height: 1.6 !important; margin-top: 10px !important; padding: 10px !important; page-break-inside: avoid !important; flex-grow: 0; }
             .info-icon { display: none !important; }
             
+            /* الفوتر ورقم الصفحة ثابت أسفل الورقة تماماً */
             .print-bottom-str { 
-                position: absolute !important; bottom: 1cm !important; left: 0; width: 100%;
-                text-align: center; font-weight: bold; font-size: 14px; color: #333; border-top: 1px solid #eee; padding-top: 5px;
+                position: absolute !important; 
+                bottom: 1cm !important; 
+                left: 0;
+                width: 100%;
+                text-align: center; 
+                font-weight: bold; 
+                font-size: 14px; 
+                color: #333; 
+                border-top: 1px solid #eee;
+                padding-top: 5px;
             }
         }
     </style>
@@ -339,10 +370,10 @@
                     <div class="geotech-split-legend">
                         <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: #c0392b; border: 2px solid #c0392b;"></div><span style="color: #c0392b;">مستوى الانزلاق (Slip Surface)</span></div>
                         <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: rgba(231, 76, 60, 0.4); border: 2px solid #2c3e50;"></div><span style="color: #c0392b;">الكتلة المنزلقة (Sliding Block)</span></div>
-                        <div class="geotech-legend-item"><span><i class="fas fa-arrow-down" style="color:#27ae60;"></i> W (قوة الوزن)</span></div>
-                        <div class="geotech-legend-item"><span><i class="fas fa-arrow-up" style="color:#8e44ad;"></i> N (القوة العمودية)</span></div>
+                        <div class="geotech-legend-item"><span><i class="fas fa-arrow-down" style="color:#27ae60;"></i> W (الوزن)</span></div>
+                        <div class="geotech-legend-item"><span><i class="fas fa-arrow-up" style="color:#8e44ad;"></i> N (عمودية)</span></div>
                         <div class="geotech-legend-item"><span><i class="fas fa-arrow-up" style="color:#f39c12; transform: rotate(45deg);"></i> R (الاحتكاك)</span></div>
-                        <div class="geotech-legend-item"><span><i class="fas fa-arrow-up" style="color:#3498db;"></i> U/V (ضغط المياه)</span></div>
+                        <div class="geotech-legend-item"><span><i class="fas fa-arrow-up" style="color:#3498db;"></i> U/V (ضغط الماء)</span></div>
                     </div>
                 </div>
             </div>
@@ -384,7 +415,6 @@
     </div>
 </div>
 
-<script>
 <script>
     // ==========================================
     // دوال الدليل الجيولوجي التفاعلي
@@ -530,11 +560,9 @@
         }
     }
 
-    // 1. المقطع الطوبوغرافي
-    function drawTopographicModel(canvasId, slope, slopeDir) {
-        const canvas = document.getElementById(canvasId); if(!canvas) return;
-        const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
+    // دالة مساعدة لتوليد النقاط المشتركة للمنحدر
+    function generateProfilePoints(canvasId, slope) {
+        const canvas = document.getElementById(canvasId); if(!canvas) return null;
         const margin = 50; const widthBox = canvas.width - margin * 2; const heightBox = canvas.height - margin * 2;
         const cx = margin + 200; const cy = margin + heightBox - 80; const slopeHeight = heightBox - 150; 
         let safeSlope = slope >= 90 ? 89.9 : slope; let slopeRad = safeSlope * (Math.PI / 180);
@@ -548,6 +576,17 @@
         }
         let slopeFacePts = createRoughLine(cx, cy, slopeTopX, slopeTopY, 15, 12);
         let crestPts = createRoughLine(slopeTopX, slopeTopY, margin + widthBox - 30, slopeTopY - 20, 10, 15); 
+        return { margin, widthBox, heightBox, cx, cy, slopeTopX, slopeTopY, slopeFacePts, crestPts, slopeHeight };
+    }
+
+    // 1. المقطع الطوبوغرافي
+    function drawTopographicModel(canvasId, slope, slopeDir, profileData) {
+        if(!profileData) return;
+        const canvas = document.getElementById(canvasId); if(!canvas) return;
+        const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        const { margin, widthBox, cx, cy, slopeTopX, slopeTopY, slopeFacePts, crestPts } = profileData;
+        let safeSlope = slope >= 90 ? 89.9 : slope; let slopeRad = safeSlope * (Math.PI / 180);
 
         ctx.beginPath(); ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(margin + widthBox - 30, cy); ctx.closePath();
         ctx.fillStyle = '#ecf0f1'; ctx.fill(); 
@@ -725,11 +764,10 @@
            alertBox.innerHTML = `<div class="alert-safe" style="color:#27ae60;"><i class="fas fa-check-circle"></i> <b>آمن كينماتيكياً:</b> الطبقات مستقرة.<br><span style="font-size:0.9rem; margin-top:8px; display:block; color:#333;">${logicReason}</span></div>`;
         }
 
-        // ================= التعديل الذي قمنا بإصلاحه =================
-        drawTopographicModel('topoCanvas', slope, slopeDir); 
+        let profileData = generateProfilePoints('topoCanvas', slope);
+        drawTopographicModel('topoCanvas', slope, slopeDir, profileData); 
         drawRockMassModel('rockCanvas', dip, slope, isPlanar, p5);
         drawStereonet(dip, dipDir, slope, slopeDir, friction);
-        // ==============================================================
 
         let undercut = document.getElementById('str_undercutting').value;
         let freezethaw = document.getElementById('str_freezethaw').value;
