@@ -152,10 +152,10 @@
     <div class="content-padding screen-only" id="inputSectionStr">
         
         <div class="section">
-            <div class="section-title">أولاً: بيانات الجيولوجي والموقع الهندسي</div>
+            <div class="section-title">أولاً: بيانات الجيولوجي والموقع</div>
             <div class="form-row">
                 <div class="form-group"><label>اسم الجيولوجي المشرف:</label><input type="text" id="str_printGeoName" value="علي شندل الجنابي" style="color: #2c3e50;"></div>
-                <div class="form-group"><label>اسم المشروع / الموقع الجبلي:</label><input type="text" id="str_projectName" placeholder="مثال: طريق عقرة المار بالمنحدر..."></div>
+                <div class="form-group"><label>اسم المشروع / الموقع:</label><input type="text" id="str_projectName" placeholder="مثال: طريق عقرة المار بالمنحدر..."></div>
                 <div class="form-group"><label>وصف الليثولوجيا العام (Rock Type):</label><input type="text" id="str_rockType" placeholder="مثال: حجر جيري صلب ومتشقق..."></div>
             </div>
         </div>
@@ -305,8 +305,21 @@
             <button class="btn-calc" onclick="calculateStructuralResults()">تحليل البيانات وإصدار التقرير الشامل <i class="fas fa-file-pdf"></i></button>
         </div>
     </div>
+    
+    <div id="screenResultsSummary" class="screen-only section" style="display: none; border-color: #e67e22; max-width: 1100px; margin: auto;">
+        <div class="section-title">النتيجة النهائية للتوصيف الجيوميكانيكي (RMR)</div>
+        <div style="background: #fdf2e9; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-right: 4px solid #d35400; display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap;">
+            <span style="font-size: 1.1rem; color:#2c3e50; font-weight: bold;">مجموع نقاط RMR: <span id="screen_rmrTotal" style="font-size: 1.4rem;">0</span> / 100</span>
+            <span style="font-size: 1.1rem; color:#2c3e50; font-weight: bold;">التصنيف الهندسي: <span id="screen_rmrClass">---</span></span>
+        </div>
+        <div id="screen_kinematicAlert" style="text-align: center; margin-top:15px;"></div>
+        
+        <div style="text-align: center; margin-top: 25px;">
+            <button class="btn-print" style="width: auto; padding: 10px 30px;" onclick="prepareAndPrintStr()">📄 اضغط هنا لحفظ وطباعة التقرير الشامل (PDF)</button>
+        </div>
+    </div>
 
-    <div class="print-page-wrapper page-counter-element-str" id="pageResultsStr_1" style="display: none;">
+    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_1" style="display: none;">
         <div class="print-master-header print-only">
             <div class="header-right-blank"></div>
             <div class="header-center-info">
@@ -526,10 +539,6 @@
                     </div>
                     <p style="font-size:0.9rem; text-align:center; color:#555; margin-top:10px;">(تشخيص بصري لـ 5 معطيات RMR الأساسية لتحديد نقطة الضعف الحرجة في الصخر)</p>
                 </div>
-            </div>
-            
-            <div class="screen-only" style="margin-top: 20px;">
-                <button class="btn-print" onclick="prepareAndPrintStr()">📄 حفظ التقرير الجيوتقني كملف PDF</button>
             </div>
         </div>
         <div class="print-bottom-str print-only">الصفحة <span class="currPageNum"></span></div>
@@ -761,10 +770,9 @@
         ctx.fillStyle = '#c0392b'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'left'; ctx.fillText('Pole', px + 12, py - 6);
  
         const legendDiv = document.getElementById('kinematicLegend'); let isPlanar = false; let diffDir = Math.abs(slopeDir - dipDir); if (diffDir > 180) diffDir = 360 - diffDir; if (diffDir <= 20 && slope > dip && dip > friction) isPlanar = true;
-        legendDiv.innerHTML = `<div class="geotech-split-legend"><h4>دليل المسقط (Stereonet Legend):</h4><div class="legend-grid"><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #34495e;"></div>◡ الدائرة العظمى للمنحدر (Slope)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #e74c3c;"></div>◡ الدائرة العظمى للطبقة (Plane)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:2px dashed #2980b9;"></div>◌ مخروط الاحتكاك الداخلي</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="background:#e74c3c;"></div>● قطب الطبقة (Pole)</div></div></div><br>${isPlanar ? '<span style="color:#c0392b; font-size:1.1rem; font-weight:bold;">⚠️ خطر: وقوع قطب الطبقة ضمن منطقة التقاطع الحرجة يثبت كينماتيكياً حتمية الانزلاق المستوي.</span>' : '<span style="color:#27ae60; font-size:1.1rem; font-weight:bold;">✅ آمن: قطب الطبقة يقع خارج النطاق الحرج، المنحدر مستقر.</span>'}`;
+        legendDiv.innerHTML = `<div class="geotech-split-legend"><h4>دليل المسقط (Stereonet Legend):</h4><div class="legend-grid"><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #34495e;"></div>◡ الدائرة العظمى للمنحدر (Slope)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #e74c3c;"></div>◡ الدائرة العظمى للطبقة (Plane)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:2px dashed #2980b9;"></div>◌ مخروط الاحتكاك الداخلي</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="background:#e74c3c;"></div>● قطب الطبقة (Pole)</div></div></div>`;
     }
 
-    // 4. الابتكار الأول: المسقط الأفقي والمقطع العرضي
     function drawPlanAndCrossSection(canvasId, dip) {
         const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -880,10 +888,9 @@
     }
 
     // ==========================================
-    // دالة التحليل وبناء التقرير المطبوع (PDF)
+    // دالة التحليل وبناء التقرير
     // ==========================================
     function calculateStructuralResults() {
-        // سحب البيانات
         const geoName = document.getElementById('str_printGeoName').value || "غير محدد";
         const projName = document.getElementById('str_projectName').value || "غير محدد";
         const litho = document.getElementById('str_rockType').value || "غير محدد";
@@ -912,11 +919,19 @@
         
         let isPlanar = false; let diffDir = Math.abs(slopeDir - dipDir); if (diffDir > 180) diffDir = 360 - diffDir;
         if (diffDir <= 20 && slope > dip && dip > friction) isPlanar = true;
+        let alertHTML = isPlanar ? '<span style="color:#c0392b; font-size:1.1rem; font-weight:bold;">⚠️ خطر انزلاق مستوي! الطبقات تتكشف هندسياً على المنحدر.</span>' : '<span style="color:#27ae60; font-size:1.1rem; font-weight:bold;">✅ آمن كينماتيكياً في الوقت الحالي.</span>';
 
-        // دالة سحب نص من الـ Select
+        // 1. تعبئة شاشة الخلاصة (للعرض على الشاشة فقط)
+        document.getElementById('screen_rmrTotal').innerText = totalRMR;
+        document.getElementById('screen_rmrTotal').style.color = classColor;
+        document.getElementById('screen_rmrClass').innerText = rockClass;
+        document.getElementById('screen_rmrClass').style.color = classColor;
+        document.getElementById('screen_kinematicAlert').innerHTML = alertHTML;
+        document.getElementById('screenResultsSummary').style.display = 'block';
+
+        // 2. تعبئة الصفحة الأولى للطباعة (مخفية عن الشاشة)
         const getSelText = (id) => { const el = document.getElementById(id); return el.options[el.selectedIndex].text; };
-
-        // 1. تعبئة الصفحة الأولى (Data Page)
+        
         document.getElementById('res_geoNameHeader').innerText = geoName;
         document.querySelectorAll('.res_geoNameHeaderRep').forEach(el => el.innerText = geoName);
         document.getElementById('res_geoName').innerText = geoName;
@@ -942,11 +957,14 @@
         document.getElementById('res_rmrTotal').style.color = classColor;
         document.getElementById('res_rmrClassFinal').innerText = rockClass;
         document.getElementById('res_rmrClassFinal').style.color = classColor;
-
-        let alertHTML = isPlanar ? '<span style="color:#c0392b; font-size:1.1rem; font-weight:bold;">⚠️ خطر انزلاق مستوي! الطبقات تتكشف هندسياً على المنحدر.</span>' : '<span style="color:#27ae60; font-size:1.1rem; font-weight:bold;">✅ آمن كينماتيكياً في الوقت الحالي.</span>';
         document.getElementById('res_kinematicAlertPrint').innerHTML = alertHTML;
 
-        // 2. رسم المرتسمات
+        // 3. استعادة الشروحات الجيولوجية وإضافتها للمربعات (لتظهر على الشاشة والطباعة)
+        document.getElementById('topoExplanation').innerHTML = `<b>التحليل الجيومورفولوجي:</b> المقطع يوضح الانكشاف الصخري للمنحدر المقطوع بزاوية هندسية (${slope}°). يُعد هذا المرتسم الأساس الهندسي لتقييم الاستقرارية.`;
+        document.getElementById('rockExplanation').innerHTML = `<b>التحليل الميكانيكي (FBD):</b> يوضح المخطط عزلاً للكتلة الصخرية المعرضة للانزلاق على مستوى ضعف يميل بزاوية (${dip}°)، ويوضح اتجاهات القوى الفيزيائية المتمثلة في قوة الوزن (W)، ورد الفعل العمودي (N)، وقوى الاحتكاك المقاومة (R).`;
+        document.getElementById('stereoExplanation').innerHTML = `<b>التفسير الكينماتيكي (Stereographic Projection):</b> يُظهر المسقط التوزيع الفراغي للمستويات. ` + (isPlanar ? `وقوع قطب الطبقة (النقطة الحمراء) ضمن منطقة التقاطع الحرجة يُثبت كينماتيكياً حتمية الانزلاق المستوي.` : `قطب الطبقة يقع خارج النطاق الحرج، المنحدر مستقر.`);
+
+        // 4. رسم المرتسمات
         let profileData = generateProfilePoints('topoCanvas', slope);
         drawTopographicModel('topoCanvas', slope, slopeDir, profileData); 
         drawRockMassModel('rockCanvas', dip, slope, isPlanar, p5);
@@ -955,7 +973,7 @@
         drawHazardRadar('canvasRadar', slopeDir, dipDir, isPlanar);
         drawRMRHeatmap('canvasHeatmap', p1, p2, p3, p4, p5);
 
-        // 3. إظهار الصفحات
+        // 5. إظهار صفحات الطباعة وتحديث الأرقام
         document.getElementById('calcButtonsAreaStr').style.display = 'none'; 
         for(let i=1; i<=7; i++) {
             let page = document.getElementById(`pageResultsStr_${i}`);
