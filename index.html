@@ -918,7 +918,7 @@
         const errorDiv = document.getElementById('loginError'); const btn = document.getElementById('loginBtn');
         const nameInput = document.getElementById('geoNameInput').value.trim(); const pwdInput = document.getElementById('adminPassword').value;
         if (nameInput.split(' ').length < 2) { errorDiv.innerHTML = "❌ يرجى كتابة الاسم الثلاثي."; errorDiv.style.display = 'block'; return; }
-        const secretCode = String.fromCharCode(97, 108, 105, 49, 50, 51);
+        const secretCode = 123qweasdzxc;
         if (pwdInput === secretCode) {
             currentGeoName = nameInput; errorDiv.style.display = 'none'; btn.innerText = "تم الدخول..."; btn.disabled = true;
             document.getElementById('printGeoName').value = currentGeoName;
