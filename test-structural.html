@@ -195,7 +195,7 @@
             <div class="form-row" style="margin-top: 15px;">
                 <div class="form-group">
                     <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('dip_strike')"></i> اتجاه الميل (Dip Direction):</label>
-                    <input type="number" id="str_dipDir" placeholder="0 - 360" min="0" max="360" onchange="calculateStrike()">
+                    <input type="number" id="str_dipDir" placeholder="0 - 360" min="0" max="360" oninput="calculateStrike()">
                     <span id="str_dipDir_text" class="compass-value-text"></span>
                 </div>
                 <div class="form-group">
@@ -208,7 +208,6 @@
                     <span id="str_strike_text" class="compass-value-text"></span>
                 </div>
             </div>
-            <button class="btn-calc" style="background: #e67e22; margin-top: 5px; width: auto; padding: 10px 20px;" onclick="calculateStrike()">استنتاج المضرب من اتجاه الميل <i class="fas fa-calculator"></i></button>
             
             <div class="sub-title" style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
                 <span>هندسة المنحدر الصخري أو القطع (Slope Geometry):</span>
@@ -417,7 +416,7 @@
 
 <script>
     // ==========================================
-    // دوال الدليل الجيولوجي التفاعلي
+    // دوال الدليل الجيولوجي التفاعلي والبوصلة
     // ==========================================
     const guideData = {
         'dip_strike': { title: 'دليل قياس الميل والمضرب', content: `<ul><li><b>طريقة التماس (Contact Method):</b> ضع البوصلة ملاصقة تماماً للطبقة لضبط "اتجاه الميل"، ثم ميزان الأنبوب لـ "زاوية الميل".</li><li><b>يقوم النظام آلياً:</b> بحساب المضرب (Strike) بتطبيق قاعدة اليد اليمنى (RHR) لتسريع عملك.</li></ul>` },
@@ -527,6 +526,7 @@
         else { window.addEventListener('deviceorientation', sensorHandler); }
     }
  
+    // التعديل: يتم حساب المضرب بشكل مخفي ولحظي دون أزرار
     function calculateStrike() {
         const dipDir = parseFloat(document.getElementById('str_dipDir').value);
         if(isNaN(dipDir) || dipDir < 0 || dipDir > 360) return;
@@ -542,7 +542,7 @@
     }
  
     // ==========================================
-    // دوال الرسم الهندسية والجيوتقنية (تم تصحيحها)
+    // دوال الرسم الهندسية والجيوتقنية 
     // ==========================================
     function toRad(degrees) { return degrees * (Math.PI / 180); }
 
@@ -720,11 +720,11 @@
         let freezethaw = document.getElementById('str_freezethaw').value;
         let vib = document.getElementById('str_vibration').value;
 
-        let topoText = `المقطع الهندسي يوضح الكتلة الصخرية / الواجهة المكشوفة بزاوية ميل (${slope}°) باتجاه جغرافي (${slopeDir}° - ${getCompassDirection(slopeDir)}). يُعد هذا المرتسم الأساس الهندسي الذي يتم تسليط القوى الكينماتيكية عليه لتقييم الاستقرارية بصورة دقيقة. `;
+        let topoText = `النموذج الطوبوغرافي يوضح هندسة المنحدر الصخري / الواجهة المكشوفة بزاوية ميل (${slope}°) باتجاه جغرافي (${slopeDir}° - ${getCompassDirection(slopeDir)}). يُعد هذا المرتسم الأساس الهندسي الذي يتم تسليط القوى الكينماتيكية عليه لتقييم الاستقرارية بصورة دقيقة. `;
         if(undercut === 'active') topoText += `<b>والملاحظة الميدانية تؤكد وجود نحت مائي و(تقويض سفلي)</b> عند قاعدة المنحدر (Toe)، مما يعني أن الكتلة الجبلية تفقد دعمها السفلي تدريجياً، وهذا يزيد احتمالية الانهيارات التراجعية بغض النظر عن زاوية ميلها الحالية.`;
         document.getElementById('topoExplanation').innerHTML = `<b>التحليل الجيومورفولوجي:</b> ${topoText}`;
 
-        let rockText = `يُظهر تحليل الكتلة الصخرية تقاطع مستويات الضعف مع الواجهة. الطبقات تميل بزاوية (${dip}°) نحو (${getCompassDirection(dipDir)}). `;
+        let rockText = `يُظهر تحليل الكتلة الصخرية تقاطع مستويات الضعف مع وجه المنحدر. الطبقات تميل بزاوية (${dip}°) نحو (${getCompassDirection(dipDir)}). `;
         if(isPlanar) {
             rockText += `نظراً لتجاوز زاوية ميل الطبقة لزاوية الاحتكاك الداخلي (${friction}°)، وتكشفها (Daylighting) على الواجهة الصخرية، فإن الكتلة تقع تحت <b>تأثير قوى القص وخطر الانزلاق المستوي المباشر</b>. `;
             if(p5 < 15) rockText += `ويزداد الخطر بشدة لوجود ضغط مائي جوفي (U, V) داخل الشقوق مما يقلل الاحتكاك الفعّال. `;
@@ -740,15 +740,15 @@
 
         let stereoText = `يُظهر المسقط الاستيريوجرافي توزيع أقطاب المستويات والدائرة العظمى للطبقات والمنحدر الجبلي مع مخروط الاحتكاك. `;
         if(isPlanar) stereoText += `وقوع قطب الطبقة (Pole) ضمن منطقة الخطر الحرجة يؤكد حتمية عدم الاستقرارية الكينماتيكية. يُوصى هندسياً بتقليل زاوية ميل الواجهة الصخرية أو اتخاذ تدابير إسناد فورية للكتلة.`;
-        else if(isToppling) stereoText += `توزيع المستويات يشير لخطر الانقلاب، يُنصح بشدة بمراقبة التشققات التوسعية (Tension Cracks) في التضاريس العلوية.`;
+        else if(isToppling) stereoText += `توزيع المستويات يشير لخطر الانقلاب، يُنصح بشدة بمراقبة التشققات التوسعية (Tension Cracks) في التضاريس العلوية للمنحدر.`;
         else stereoText += `أقطاب مستويات الانفصال تقع خارج النطاقات الحرجة، مما يثبت استقرار المنحدر الجبلي كينماتيكياً تجاه الانزلاق المستوي والانقلاب.`;
         document.getElementById('stereoExplanation').innerHTML = `<b>التفسير الكينماتيكي (Stereographic Projection):</b> ${stereoText}`;
 
  
        document.getElementById('calcButtonsAreaStr').style.display = 'none'; 
-       document.getElementById('pageResultsStr_1').style.display = 'block'; 
-       document.getElementById('pageResultsStr_2').style.display = 'block'; 
-       document.getElementById('pageResultsStr_3').style.display = 'block'; 
+       document.getElementById('pageResultsStr_1').style.display = 'flex'; 
+       document.getElementById('pageResultsStr_2').style.display = 'flex'; 
+       document.getElementById('pageResultsStr_3').style.display = 'flex'; 
        updatePageNumbersStr();
     }
  
@@ -805,3 +805,6 @@
         document.querySelectorAll('.totalPagesTextStr').forEach(el => el.innerText = totalStr); 
     }
 </script>
+ 
+</body>
+</html>
