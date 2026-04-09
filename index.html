@@ -499,6 +499,20 @@
 </div>
 
 <script>
+    // نظام الذاكرة الذكية لاستقبال إشارة التخطي
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('skipLogin') === 'true') {
+            document.getElementById('introScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').style.display = 'block';
+            
+            // استرجاع اسم الجيولوجي
+            let savedName = localStorage.getItem('geoName');
+            if(savedName) {
+                document.getElementById('printGeoName').value = savedName;
+            }
+        }
+    };
     // ==========================================
     // 1. التحكم بالتنقل (لوحة التحكم)
     // ==========================================
@@ -529,7 +543,7 @@
         const allOtherCountries = [...arabCountries, ...otherWorld].sort((a, b) => a.localeCompare(b, 'ar'));
         allOtherCountries.forEach(country => { let opt = document.createElement('option'); opt.value = country; opt.innerText = country; countrySelect.appendChild(opt); });
 
-        document.getElementById("adminPassword").addEventListener("keypress", (e) => { if (e.key === "Enter") handleLogin(); });
+        document.getElementById("adminPassword").addEventListener("keypress", (e) => { if (e.key === "Enter") (); });
 
         for(let i=0; i<5; i++) addLayerRow();
         setTimeout(() => {
@@ -615,6 +629,7 @@
         if (pwdInput === secretCode) {
             currentGeoName = nameInput; errorDiv.style.display = 'none'; btn.innerText = "تم الدخول..."; btn.disabled = true;
             document.getElementById('printGeoName').value = currentGeoName;
+            localStorage.setItem('geoName', currentGeoName);
             
             document.getElementById('introScreen').style.display = 'none'; 
             document.getElementById('dashboardScreen').style.display = 'block';
