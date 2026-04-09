@@ -40,32 +40,6 @@
         .btn-sensor:hover { background: #1f618d; transform: translateY(-2px);}
         
         /* ========================================================
-           تنسيقات زر الرجوع للوحة التحكم (خاص بالملف المستقل)
-           ======================================================== */
-        .btn-back-dash { 
-            display: block; 
-            width: 100%; 
-            max-width: 1100px; 
-            margin: 0 auto 20px auto; 
-            background: #34495e; 
-            color: white !important; 
-            padding: 12px; 
-            text-align: center; 
-            text-decoration: none !important; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            font-size: 1.1rem; 
-            cursor: pointer; 
-            transition: 0.3s ease; 
-            border: none; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .btn-back-dash:hover { 
-            background: #2c3e50; 
-            transform: translateY(-2px); 
-        }
-
-        /* ========================================================
            تنسيقات النماذج الهندسية والمؤثرات والدليل
           ======================================================== */
         .compass-live-box { display: none; background: #eaf2f8; border: 2px solid #3498db; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
@@ -111,7 +85,7 @@
         .info-icon:hover { color: #e67e22; transform: scale(1.2); }
 
         /* ========================================================
-           هندسة الطباعة الصارمة (PDF)
+           هندسة الطباعة الصارمة (PDF) - الهوية المعتمدة
           ======================================================== */
         .print-only { display: none !important; }
         @media print {
@@ -121,7 +95,6 @@
             .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
             .screen-only { display: none !important; }
             .print-only { display: block !important; }
-            .btn-back-dash { display: none !important; } /* إخفاء زر الرجوع عند الطباعة */
             
             .page-counter-element-str { 
                 width: 100%; height: 29.7cm; padding: 1.5cm; box-sizing: border-box; 
@@ -129,6 +102,7 @@
                 flex-direction: column; background: white;
             }
             
+            /* الكليشة العلوية للطباعة (مطابقة لنظام المقالع) */
             .print-master-header {
                 border: 2px solid #2c3e50; border-radius: 8px; padding: 15px; margin-bottom: 20px;
                 display: flex; justify-content: space-between; align-items: center; background-color: #fdfcfc;
@@ -140,23 +114,26 @@
             .header-left-info { text-align: left; flex: 1; font-size: 11px; font-weight: bold; color: #555; }
             .header-right-blank { flex: 1; }
 
+            /* جداول البيانات للصفحة الأولى */
             .print-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; direction: rtl; }
             .print-table th { background: #fdf2e9; color: #d35400; border: 1px solid #bdc3c7; padding: 10px; text-align: right; width: 35%; font-size: 13px; }
             .print-table td { border: 1px solid #bdc3c7; padding: 10px; text-align: right; font-size: 13px; color: #2c3e50; font-weight: bold; }
             .table-title { background: #ecf0f1; color: #2c3e50; padding: 8px 15px; font-weight: bold; border-radius: 5px; margin-bottom: 10px; font-size: 14px; border-right: 4px solid #e67e22; }
 
+            /* تنسيق الرسوم */
             .section { margin-bottom: 10px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 10px; background-color: #fafafa; box-shadow: none; page-break-inside: avoid; }
             .section-title { font-size: 1.1rem; margin-bottom: 6px; padding-bottom: 2px; border-bottom: 2px solid #e67e22; color:#e67e22;}
             
             canvas { max-height: 40% !important; max-width: 100%; object-fit: contain; display: block; margin: 0 auto; page-break-inside: avoid; }
-            #stereonetCanvasPrint { max-width: 400px !important; aspect-ratio: 1 / 1; }
-            #canvasHeatmapPrint { max-width: 300px !important; height: auto !important; }
+            #stereonetCanvas { max-width: 400px !important; aspect-ratio: 1 / 1; }
+            #canvasHeatmap { max-width: 300px !important; height: auto !important; }
             
             .kinematic-canvas-container { padding: 5px !important; margin-bottom: 10px !important; border-width: 1px !important;}
             .geotech-split-legend { padding: 8px !important; margin-top: 5px !important; font-size: 11px !important; page-break-inside: avoid; }
             .legend-grid { gap: 8px !important; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important; }
             .geological-explanation-box { font-size: 10.5pt !important; line-height: 1.6 !important; margin-top: 8px !important; padding: 10px !important; }
             
+            /* الفوتر السفلي */
             .print-bottom-str { 
                 position: absolute; bottom: 1cm; left: 0; width: 100%;
                 text-align: center; font-weight: bold; font-size: 12px; color: #333; border-top: 1px solid #eee; padding-top: 5px;
@@ -165,10 +142,6 @@
     </style>
 </head>
 <body>
-
-<a href="https://ash2oo1.github.io/Geological-App/index.html" class="btn-back-dash screen-only">
-    <i class="fas fa-arrow-right"></i> رجوع إلى لوحة التحكم الرئيسية
-</a>
  
 <div class="container">
     <div class="header screen-only">
@@ -332,7 +305,7 @@
             <button class="btn-calc" onclick="calculateStructuralResults()">تحليل البيانات وإصدار التقرير الشامل <i class="fas fa-file-pdf"></i></button>
         </div>
     </div>
-
+    
     <div id="screenResultsSummary" class="screen-only section" style="display: none; border-color: #e67e22; max-width: 1100px; margin: auto;">
         <div class="section-title">النتيجة النهائية للتوصيف الجيوميكانيكي (RMR)</div>
         <div style="background: #fdf2e9; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-right: 4px solid #d35400; display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap;">
@@ -343,93 +316,6 @@
         
         <div style="text-align: center; margin-top: 25px;">
             <button class="btn-print" style="width: auto; padding: 10px 30px;" onclick="prepareAndPrintStr()">📄 اضغط هنا لحفظ وطباعة التقرير الشامل (PDF)</button>
-        </div>
-    </div>
-
-    <div class="content-padding screen-only" id="diagramsScreenView" style="display: none;">
-        <div class="section" style="border: 2px solid #e67e22; padding: 15px;">
-            <h3 style="color: #e67e22; margin: 0 0 10px 0; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">النماذج الهندسية (Geotechnical Models)</h3>
-            
-            <div class="kinematic-canvas-container">
-                <h4>1. المقطع الهندسي للتضاريس (Topographic Cross-Section)</h4>
-                <canvas id="topoCanvasScreen" width="850" height="400" style="background: #fff;"></canvas>
-                <div class="geotech-split-legend">
-                    <div class="legend-grid">
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: #ecf0f1;"></div><div class="geotech-legend-text">الكتلة الصخرية الجبلية (صخر أساس)</div></div>
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: #d7ccc8;"></div><div class="geotech-legend-text">تضاريس السطح العلوية (غطاء ترابي)</div></div>
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="border: 2px solid #2980b9; background:transparent; border-radius:50%;"></div><div class="geotech-legend-text" style="color: #2980b9;">قوس زاوية ميل المنحدر (Slope Angle)</div></div>
-                    </div>
-                </div>
-                <div class="geological-explanation-box" id="topoExplanationScreen"></div>
-            </div>
-
-            <div class="kinematic-canvas-container">
-                <h4>2. تحليل الكتلة الحرّة والقوى المؤثرة (Free Body Diagram)</h4>
-                <canvas id="rockCanvasScreen" width="850" height="400" style="background: #fff;"></canvas>
-                <div class="geotech-split-legend">
-                    <div class="legend-grid">
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: rgba(231, 76, 60, 0.4); border: 2px solid #333;"></div><div class="geotech-legend-text">الكتلة الصخرية المعرضة للانزلاق</div></div>
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol"><i class="fas fa-arrow-down" style="color:#27ae60;"></i></span><div class="geotech-legend-text">W - متجه قوة الوزن للأسفل</div></div>
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol"><i class="fas fa-arrow-up" style="color:#8e44ad; transform:rotate(-30deg);"></i></span><div class="geotech-legend-text">N - القوة العمودية على المستوى</div></div>
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol"><i class="fas fa-arrow-up" style="color:#f39c12; transform:rotate(60deg);"></i></span><div class="geotech-legend-text">R - قوة الاحتكاك المقاومة (T)</div></div>
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol"><i class="fas fa-arrow-up" style="color:#3498db; transform:rotate(120deg);"></i></span><div class="geotech-legend-text">U/V - ضغط المياه داخل الفواصل</div></div>
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="background:transparent; border-bottom: 3px solid #c0392b;"></div><div class="geotech-legend-text">مستوى الضعف / الانزلاق المستوي</div></div>
-                    </div>
-                </div>
-                <div class="geological-explanation-box" id="rockExplanationScreen"></div>
-            </div>
-
-            <div class="kinematic-canvas-container">
-                <h4>3. التحليل الكينماتيكي بالمسقط الاستيريوجرافي (Stereonet Projection)</h4>
-                <canvas id="stereonetCanvasScreen" width="600" height="600" style="background: #fff;"></canvas>
-                <div class="geotech-split-legend" id="kinematicLegendScreen"></div>
-                <div class="geological-explanation-box" id="stereoExplanationScreen"></div>
-            </div>
-        </div>
-
-        <div class="section" style="border: 2px solid #8e44ad; padding: 15px;">
-            <div class="section-title" style="color: #8e44ad; border-bottom-color: #8e44ad;">خامساً: الابتكارات الجيوميكانيكية الحديثة (حصري)</div>
-            
-            <div class="kinematic-canvas-container" style="border-color: #8e44ad;">
-                <h4 style="color: #8e44ad;">1. المسقط الأفقي والمقطع العرضي للطبقات (Plan View & Cross-Section)</h4>
-                <canvas id="canvas3DBlockScreen" width="850" height="450" style="background: #fff;"></canvas>
-                
-                <div class="geotech-split-legend" style="border-color: #8e44ad;">
-                    <div class="legend-grid">
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol" style="color:#2c3e50; font-weight:bold; font-size:1.5rem;">┣</span><div class="geotech-legend-text">رمز المضرب والميل (Strike & Dip)</div></div>
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol"><i class="fas fa-angle-right" style="color:#c0392b;"></i></span><div class="geotech-legend-text">زاوية الميل الحقيقية (True Dip)</div></div>
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol"><i class="fas fa-ruler-combined" style="color:#27ae60;"></i></span><div class="geotech-legend-text">السمك الحقيقي للطبقة (True Thickness)</div></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="kinematic-canvas-container" style="border-color: #8e44ad;">
-                <h4 style="color: #8e44ad;">2. رادار الانهيار العلوي (Top-Down Hazard Radar)</h4>
-                <canvas id="canvasRadarScreen" width="600" height="400" style="background: #fff;"></canvas>
-                
-                <div class="geotech-split-legend" style="border-color: #8e44ad;">
-                    <div class="legend-grid">
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="border: 4px solid #2c3e50; background:transparent;"></div><div class="geotech-legend-text">خط قمة المنحدر الجبلي (Crest Line)</div></div>
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol"><i class="fas fa-arrow-right" style="color:#c0392b;"></i></span><div class="geotech-legend-text">متجه اتجاه انهيار الطبقة (Dip Direction)</div></div>
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: rgba(231, 76, 60, 0.5);"></div><div class="geotech-legend-text">نطاق الخطر الكينماتيكي للانزلاق المستوي</div></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="kinematic-canvas-container" style="border-color: #8e44ad; margin-bottom: 0;">
-                <h4 style="color: #8e44ad;">3. عمود RMR الجيوميكانيكي الحراري (Heatmap Column)</h4>
-                <div class="heatmap-wrapper">
-                    <canvas id="canvasHeatmapScreen" width="400" height="500" style="background: #fff;"></canvas>
-                    
-                    <div class="heatmap-scale-legend">
-                        <span style="color:#27ae60;">ممتاز / آمن<br>(Safe)</span>
-                        <div class="heatmap-scale-box"></div>
-                        <span style="color:#c0392b;">ضعيف / خطر<br>(Hazard)</span>
-                    </div>
-                </div>
-                
-                <p style="font-size:0.9rem; text-align:center; color:#555; margin-top:10px;">(تشخيص بصري لـ 5 معطيات RMR الأساسية لتحديد نقطة الضعف الحرجة في الصخر)</p>
-            </div>
         </div>
     </div>
 
@@ -478,8 +364,8 @@
 
             <div class="section" style="border: 2px solid #e67e22; background-color: #fdfcfc; margin-top:15px; padding: 15px;">
                 <div style="display: flex; justify-content: space-around; align-items: center; border-bottom: 1px dashed #ccc; padding-bottom: 10px; margin-bottom: 10px;">
-                    <span style="font-size: 16px; color:#2c3e50;">مجموع نقاط RMR: <span id="res_rmrTotalPrint" style="font-weight: bold; font-size: 18px;">0</span> / 100</span>
-                    <span style="font-size: 16px; color:#2c3e50;">التصنيف الهندسي: <span id="res_rmrClassFinalPrint" style="font-weight: bold;">---</span></span>
+                    <span style="font-size: 16px; color:#2c3e50;">مجموع نقاط RMR: <span id="res_rmrTotal" style="font-weight: bold; font-size: 18px;">0</span> / 100</span>
+                    <span style="font-size: 16px; color:#2c3e50;">التصنيف الهندسي: <span id="res_rmrClassFinal" style="font-weight: bold;">---</span></span>
                 </div>
                 <div id="res_kinematicAlertPrint" style="text-align: center; margin-top:10px;"></div>
             </div>
@@ -487,7 +373,7 @@
         <div class="print-bottom-str print-only">الصفحة <span class="currPageNum"></span></div>
     </div>
 
-    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_2" style="display: none;">
+    <div class="print-page-wrapper page-counter-element-str" id="pageResultsStr_2" style="display: none;">
         <div class="print-master-header print-only">
             <div class="header-right-blank"></div>
             <div class="header-center-info">
@@ -502,7 +388,7 @@
                 <h3 style="color: #e67e22; margin: 0 0 10px 0; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">النماذج الهندسية (Geotechnical Models)</h3>
                 <div class="kinematic-canvas-container">
                     <h4>1. المقطع الهندسي للتضاريس (Topographic Cross-Section)</h4>
-                    <canvas id="topoCanvasPrint" width="850" height="400" style="background: #fff;"></canvas>
+                    <canvas id="topoCanvas" width="850" height="400" style="background: #fff;"></canvas>
                     <div class="geotech-split-legend">
                         <div class="legend-grid">
                             <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: #ecf0f1;"></div><div class="geotech-legend-text">الكتلة الصخرية الجبلية (صخر أساس)</div></div>
@@ -510,14 +396,14 @@
                             <div class="geotech-legend-item"><div class="geotech-legend-color" style="border: 2px solid #2980b9; background:transparent; border-radius:50%;"></div><div class="geotech-legend-text" style="color: #2980b9;">قوس زاوية ميل المنحدر (Slope Angle)</div></div>
                         </div>
                     </div>
-                    <div class="geological-explanation-box" id="topoExplanationPrint"></div>
+                    <div class="geological-explanation-box" id="topoExplanation"></div>
                 </div>
             </div>
         </div>
         <div class="print-bottom-str print-only">الصفحة <span class="currPageNum"></span></div>
     </div>
 
-    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_3" style="display: none;">
+    <div class="print-page-wrapper page-counter-element-str" id="pageResultsStr_3" style="display: none;">
         <div class="print-master-header print-only">
             <div class="header-right-blank"></div>
             <div class="header-center-info">
@@ -531,7 +417,7 @@
             <div class="section" style="border: 2px solid #e67e22; padding: 20px;">
                 <div class="kinematic-canvas-container">
                     <h4>2. تحليل الكتلة الحرّة والقوى المؤثرة (Free Body Diagram)</h4>
-                    <canvas id="rockCanvasPrint" width="850" height="400" style="background: #fff;"></canvas>
+                    <canvas id="rockCanvas" width="850" height="400" style="background: #fff;"></canvas>
                     <div class="geotech-split-legend">
                         <div class="legend-grid">
                             <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: rgba(231, 76, 60, 0.4); border: 2px solid #333;"></div><div class="geotech-legend-text">الكتلة الصخرية المعرضة للانزلاق</div></div>
@@ -542,14 +428,14 @@
                             <div class="geotech-legend-item"><div class="geotech-legend-color" style="background:transparent; border-bottom: 3px solid #c0392b;"></div><div class="geotech-legend-text">مستوى الضعف / الانزلاق المستوي</div></div>
                         </div>
                     </div>
-                    <div class="geological-explanation-box" id="rockExplanationPrint"></div>
+                    <div class="geological-explanation-box" id="rockExplanation"></div>
                 </div>
             </div>
         </div>
         <div class="print-bottom-str print-only">الصفحة <span class="currPageNum"></span></div>
     </div>
 
-    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_4" style="display: none;">
+    <div class="print-page-wrapper page-counter-element-str" id="pageResultsStr_4" style="display: none;">
         <div class="print-master-header print-only">
             <div class="header-right-blank"></div>
             <div class="header-center-info">
@@ -563,16 +449,16 @@
             <div class="section" style="border: 2px solid #e67e22; padding: 20px;">
                 <div class="kinematic-canvas-container">
                     <h4>3. التحليل الكينماتيكي بالمسقط الاستيريوجرافي (Stereonet Projection)</h4>
-                    <canvas id="stereonetCanvasPrint" width="600" height="600" style="background: #fff;"></canvas>
-                    <div class="geotech-split-legend" id="kinematicLegendPrint"></div>
-                    <div class="geological-explanation-box" id="stereoExplanationPrint"></div>
+                    <canvas id="stereonetCanvas" width="600" height="600" style="background: #fff;"></canvas>
+                    <div class="geological-explanation-box" id="stereoExplanation"></div>
                 </div>
+                <div class="kinematic-legend-container" id="kinematicLegend"></div>
             </div>
         </div>
         <div class="print-bottom-str print-only">الصفحة <span class="currPageNum"></span></div>
     </div>
 
-    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_5" style="display: none;">
+    <div class="print-page-wrapper page-counter-element-str" id="pageResultsStr_5" style="display: none;">
         <div class="print-master-header print-only">
             <div class="header-right-blank"></div>
             <div class="header-center-info">
@@ -585,11 +471,9 @@
         <div class="content-padding">
             <div class="section" style="border: 2px solid #8e44ad; padding: 20px;">
                 <div class="section-title" style="color: #8e44ad; border-bottom-color: #8e44ad;">خامساً: الابتكارات الجيوميكانيكية الحديثة (حصري)</div>
-                
                 <div class="kinematic-canvas-container" style="border-color: #8e44ad;">
                     <h4 style="color: #8e44ad;">1. المسقط الأفقي والمقطع العرضي للطبقات (Plan View & Cross-Section)</h4>
-                    <canvas id="canvas3DBlockPrint" width="850" height="450" style="background: #fff;"></canvas>
-                    
+                    <canvas id="canvas3DBlock" width="850" height="450" style="background: #fff;"></canvas>
                     <div class="geotech-split-legend" style="border-color: #8e44ad;">
                         <div class="legend-grid">
                             <div class="geotech-legend-item"><span class="geotech-legend-symbol" style="color:#2c3e50; font-weight:bold; font-size:1.5rem;">┣</span><div class="geotech-legend-text">رمز المضرب والميل (Strike & Dip)</div></div>
@@ -603,7 +487,7 @@
         <div class="print-bottom-str print-only">الصفحة <span class="currPageNum"></span></div>
     </div>
 
-    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_6" style="display: none;">
+    <div class="print-page-wrapper page-counter-element-str" id="pageResultsStr_6" style="display: none;">
         <div class="print-master-header print-only">
             <div class="header-right-blank"></div>
             <div class="header-center-info">
@@ -617,8 +501,7 @@
             <div class="section" style="border: 2px solid #8e44ad; padding: 20px;">
                 <div class="kinematic-canvas-container" style="border-color: #8e44ad;">
                     <h4 style="color: #8e44ad;">2. رادار الانهيار العلوي (Top-Down Hazard Radar)</h4>
-                    <canvas id="canvasRadarPrint" width="600" height="400" style="background: #fff;"></canvas>
-                    
+                    <canvas id="canvasRadar" width="600" height="400" style="background: #fff;"></canvas>
                     <div class="geotech-split-legend" style="border-color: #8e44ad;">
                         <div class="legend-grid">
                             <div class="geotech-legend-item"><div class="geotech-legend-color" style="border: 4px solid #2c3e50; background:transparent;"></div><div class="geotech-legend-text">خط قمة المنحدر الجبلي (Crest Line)</div></div>
@@ -632,7 +515,7 @@
         <div class="print-bottom-str print-only">الصفحة <span class="currPageNum"></span></div>
     </div>
 
-    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_7" style="display: none;">
+    <div class="print-page-wrapper page-counter-element-str" id="pageResultsStr_7" style="display: none;">
         <div class="print-master-header print-only">
             <div class="header-right-blank"></div>
             <div class="header-center-info">
@@ -647,15 +530,13 @@
                 <div class="kinematic-canvas-container" style="border-color: #8e44ad; margin-bottom: 0;">
                     <h4 style="color: #8e44ad;">3. عمود RMR الجيوميكانيكي الحراري (Heatmap Column)</h4>
                     <div class="heatmap-wrapper">
-                        <canvas id="canvasHeatmapPrint" width="400" height="500" style="background: #fff;"></canvas>
-                        
+                        <canvas id="canvasHeatmap" width="400" height="500" style="background: #fff;"></canvas>
                         <div class="heatmap-scale-legend">
                             <span style="color:#27ae60;">ممتاز / آمن<br>(Safe)</span>
                             <div class="heatmap-scale-box"></div>
                             <span style="color:#c0392b;">ضعيف / خطر<br>(Hazard)</span>
                         </div>
                     </div>
-                    
                     <p style="font-size:0.9rem; text-align:center; color:#555; margin-top:10px;">(تشخيص بصري لـ 5 معطيات RMR الأساسية لتحديد نقطة الضعف الحرجة في الصخر)</p>
                 </div>
             </div>
@@ -680,17 +561,17 @@
     // دوال الدليل الذكي والمستشعرات 
     // ==========================================
     const guideData = {
-        'dip_strike': { title: 'قياس الميل والمضرب', content: `<p>ضع الهاتف ملاصقاً للطبقة لقياس اتجاه الميل (Dip Direction) وزاوية الميل (Dip Angle). يقوم النظام بحساب المضرب (Strike) تلقائياً.</p>` },
-        'slope_geom': { title: 'قياس هندسة المنحدر', content: `<p>ضع لوحاً مسطحاً على وجه المنحدر الجبلي لقياس متوسط اتجاه الميل وزاوية ميل المنحدر.</p>` },
-        'friction': { title: 'تقدير زاوية الاحتكاك', content: `<p>φ هي زاوية الاحتكاك لأسطح الفواصل. حجر جيري (27-31°)، حجر رملي (30-35°).</p>` },
-        'ucs': { title: 'مقاومة الانضغاط بالمطرقة', content: `<table class="table-guide"><tr><th>الصنف</th><th>الاختبار</th><th>MPa</th></tr><tr><td>R5</td><td>يتطلب ضربات قوية جداً بالمطرقة لكسره</td><td>100-250</td></tr><tr><td>R4</td><td>ينكسر بضربة واحدة قوية</td><td>50-100</td></tr><tr><td>R2</td><td>يُقشر بصعوبة بالسكين</td><td>5-25</td></tr></table>` },
-        'rqd': { title: 'حساب (RQD) حقلياً', content: `<p>إذا لم يتوفر حفر لبي، استخدم الطريقة الحجمية $J_v$ (عدد الشقوق في المتر المكعب):<br> <b>$RQD = 115 - 3.3 J_v$</b></p>` },
-        'spacing': { title: 'مسافات الانقطاعات', content: `<ul><li><b>> 2 متر:</b>صخر كتلوي جداً.</li><li><b>200-600 ملم:</b> كتل متوسطة (رسوبيات شائعة).</li><li><b>< 60 ملم:</b> صخر مسحوق (خطر انهيار).</li></ul>` },
-        'cond': { title: 'حالة أسطح الانقطاع', content: `<p>تعتمد على 5 عوامل: (الاستمرارية، الانفراج والفتحة، الخشونة، الحشوة الطينية، والتجوية على جدران الفاصل).</p>` },
-        'water': { title: 'المياه الجوفية', content: `<p>تزيد المياه ضغط المسامات (Pore Pressure) وتقلل الاحتكاك. صنفها كالتالي: (جاف، رطب، مبلل، تقطير، أو جريان حر).</p>` },
-        'undercutting': { title: 'التقويض السفلي (Toe Undercutting)', content: '<p>إزالة الدعم من أسفل المنحدر بواسطة الأنهار أو السيول يقلل من الاستقرارية بشكل كبير ويجب أخذ هذا العامل بالحسبان عند التقييم.</p>' },
-        'freezethaw': { title: 'دورات الانجماد والذوبان', content: '<p>تجمد المياه داخل الشقوق يولد ضغطاً هيدروليكياً يوسع الفواصل (Ice Wedging) ويقلل قوى الاحتكاك الأساسية للصخر.</p>' },
-        'vibration': { title: 'الأحمال والاهتزازات', content: '<p>الاهتزازات (سواء زلازل أو آليات ثقيلة أو تفجير) تقلل من قوى الاحتكاك بشكل لحظي وتحفز عمليات الانزلاق المفاجئة.</p>' }
+        'dip_strike': { title: 'قياس الميل والمضرب', content: `<p>ضع الهاتف ملاصقاً للطبقة لقياس اتجاه الميل وزاوية الميل. يقوم النظام بحساب المضرب تلقائياً.</p>` },
+        'slope_geom': { title: 'قياس هندسة المنحدر', content: `<p>ضع لوحاً مسطحاً على وجه المنحدر لقياس متوسط الاتجاه والانحدار.</p>` },
+        'friction': { title: 'تقدير زاوية الاحتكاك', content: `<p>φ لأسطح الفواصل. جيري (27-31°)، رملي (30-35°).</p>` },
+        'ucs': { title: 'مقاومة الانضغاط', content: `<table class="table-guide"><tr><th>الاختبار</th><th>MPa</th></tr><tr><td>ينكسر بضربة مطرقة قوية</td><td>50-100</td></tr></table>` },
+        'rqd': { title: 'حساب RQD حقلياً', content: `<p>استخدم الطريقة الحجمية: $RQD = 115 - 3.3 J_v$</p>` },
+        'spacing': { title: 'مسافات الانقطاعات', content: `<ul><li><b>> 2 متر:</b> صخر كتلوي جداً.</li><li><b>< 60 ملم:</b> صخر مسحوق.</li></ul>` },
+        'cond': { title: 'حالة الأسطح', content: `<p>تعتمد على الفتحة، الخشونة، التجوية، والحشوة.</p>` },
+        'water': { title: 'المياه الجوفية', content: `<p>المياه تقلل الاحتكاك وتزيد الضغط.</p>` },
+        'undercutting': { title: 'التقويض السفلي', content: '<p>إزالة الدعم من أسفل المنحدر يقلل الاستقرارية.</p>' },
+        'freezethaw': { title: 'دورات الانجماد', content: '<p>تجمد المياه داخل الشقوق يوسع الفواصل.</p>' },
+        'vibration': { title: 'الاهتزازات', content: '<p>الاهتزازات تقلل من قوى الاحتكاك بشكل لحظي.</p>' }
     };
 
     function openInfoModal(type) { if(guideData[type]) { document.getElementById('modalTitle').innerHTML = guideData[type].title; document.getElementById('modalContent').innerHTML = guideData[type].content; document.getElementById('infoModalOverlay').style.display = 'flex'; } }
@@ -698,7 +579,7 @@
     window.onclick = function(event) { if (event.target == document.getElementById('infoModalOverlay')) { closeInfoModal(); } }
 
     function getCompassDirection(degrees) {
-        const directions = ["الشمال (N)", "NE", "الشرق (E)", "SE", "الجنوب (S)", "SW", "الغرب (W)", "NW"];
+        const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
         let index = Math.round(((degrees %= 360) < 0 ? degrees + 360 : degrees) / 45) % 8;
         return directions[index];
     }
@@ -707,7 +588,7 @@
     function startSmartCompass() {
         if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
             DeviceOrientationEvent.requestPermission().then(permissionState => {
-                if (permissionState === 'granted') { enableCompass(); } else { alert("تم رفض الصلاحية للوصول إلى مستشعرات الهاتف."); }
+                if (permissionState === 'granted') { enableCompass(); } else { alert("تم رفض الصلاحية."); }
             }).catch(console.error);
         } else { enableCompass(); }
     }
@@ -858,9 +739,7 @@
     }
 
     function drawStereonet(dip, dipDir, slope, slopeDir, friction) {
-        const canvas = document.getElementById('stereonetCanvasScreen') || document.getElementById('stereonetCanvasPrint'); 
-        if(!canvas) return;
-        const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const canvas = document.getElementById('stereonetCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         const cx = 300; const cy = 300; const R = 250; 
         
         ctx.lineWidth = 0.5; ctx.strokeStyle = '#e5e8e8';
@@ -890,92 +769,61 @@
         ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.fillRect(px + 10, py - 22, 45, 20);
         ctx.fillStyle = '#c0392b'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'left'; ctx.fillText('Pole', px + 12, py - 6);
  
-        let isPlanar = false; let diffDir = Math.abs(slopeDir - dipDir); if (diffDir > 180) diffDir = 360 - diffDir; if (diffDir <= 20 && slope > dip && dip > friction) isPlanar = true;
-        
-        let legendHTML = `<div class="geotech-split-legend"><h4>دليل المسقط (Stereonet Legend):</h4><div class="legend-grid"><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #34495e;"></div>◡ الدائرة العظمى للمنحدر (Slope)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #e74c3c;"></div>◡ الدائرة العظمى للطبقة (Plane)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:2px dashed #2980b9;"></div>◌ مخروط الاحتكاك الداخلي</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="background:#e74c3c;"></div>● قطب الطبقة (Pole)</div></div></div><br>${isPlanar ? '<span style="color:#c0392b; font-size:1.1rem; font-weight:bold;">⚠️ خطر: وقوع قطب الطبقة ضمن منطقة التقاطع الحرجة يثبت كينماتيكياً حتمية الانزلاق المستوي.</span>' : '<span style="color:#27ae60; font-size:1.1rem; font-weight:bold;">✅ آمن: قطب الطبقة يقع خارج النطاق الحرج، المنحدر مستقر.</span>'}`;
-        
-        const legendScreen = document.getElementById('kinematicLegendScreen');
-        const legendPrint = document.getElementById('kinematicLegendPrint');
-        if(legendScreen) legendScreen.innerHTML = legendHTML;
-        if(legendPrint) legendPrint.innerHTML = legendHTML;
+        const legendDiv = document.getElementById('kinematicLegend'); let isPlanar = false; let diffDir = Math.abs(slopeDir - dipDir); if (diffDir > 180) diffDir = 360 - diffDir; if (diffDir <= 20 && slope > dip && dip > friction) isPlanar = true;
+        legendDiv.innerHTML = `<div class="geotech-split-legend"><h4>دليل المسقط (Stereonet Legend):</h4><div class="legend-grid"><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #34495e;"></div>◡ الدائرة العظمى للمنحدر (Slope)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #e74c3c;"></div>◡ الدائرة العظمى للطبقة (Plane)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:2px dashed #2980b9;"></div>◌ مخروط الاحتكاك الداخلي</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="background:#e74c3c;"></div>● قطب الطبقة (Pole)</div></div></div>`;
     }
 
     function drawPlanAndCrossSection(canvasId, dip) {
-        const canvas = document.getElementById(canvasId); if(!canvas) return; const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         let safeDip = dip;
-        if (safeDip < 5) safeDip = 5;
-        if (safeDip > 85) safeDip = 85;
+        if (safeDip < 5) safeDip = 5; if (safeDip > 85) safeDip = 85;
         let dipRad = safeDip * (Math.PI / 180);
 
         const mapX = 150, mapY = 40, mapW = 550, mapH = 140;
         const crossX = 150, crossY = 240, crossW = 550, crossH = 180;
-        const contact1X = 300;
-        const contact2X = 550;
+        const contact1X = 300, contact2X = 550;
+        const col1 = '#fdebd0', col2 = '#d3b8ae', col3 = '#fad7a1';
 
-        const col1 = '#fdebd0';
-        const col2 = '#d3b8ae';
-        const col3 = '#fad7a1';
-
+        // المسقط الأفقي
         ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'left';
         ctx.fillText('Plan view (مسقط أفقي من الأعلى)', mapX, mapY - 10);
-
-        ctx.save();
-        ctx.beginPath(); ctx.rect(mapX, mapY, mapW, mapH); ctx.clip();
-
+        ctx.save(); ctx.beginPath(); ctx.rect(mapX, mapY, mapW, mapH); ctx.clip();
         ctx.fillStyle = col1; ctx.fillRect(mapX, mapY, contact1X - mapX, mapH);
         ctx.fillStyle = col2; ctx.fillRect(contact1X, mapY, contact2X - contact1X, mapH);
         ctx.fillStyle = col3; ctx.fillRect(contact2X, mapY, mapX + mapW - contact2X, mapH);
-
         ctx.beginPath(); ctx.moveTo(contact1X, mapY); ctx.lineTo(contact1X, mapY + mapH); ctx.strokeStyle = '#333'; ctx.lineWidth = 1.5; ctx.stroke();
         ctx.beginPath(); ctx.moveTo(contact2X, mapY); ctx.lineTo(contact2X, mapY + mapH); ctx.stroke();
-
         ctx.restore();
         ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.strokeRect(mapX, mapY, mapW, mapH);
 
         let midY = mapY + mapH / 2;
-        ctx.beginPath(); ctx.moveTo(mapX - 20, midY); ctx.lineTo(mapX + mapW + 20, midY);
-        ctx.strokeStyle = '#7f8c8d'; ctx.lineWidth = 1; ctx.stroke();
-        ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
-        ctx.fillText("A", mapX - 30, midY + 5);
-        ctx.fillText("A'", mapX + mapW + 30, midY + 5);
+        ctx.beginPath(); ctx.moveTo(mapX - 20, midY); ctx.lineTo(mapX + mapW + 20, midY); ctx.strokeStyle = '#7f8c8d'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.fillStyle = '#2c3e50'; ctx.textAlign = 'center'; ctx.fillText("A", mapX - 30, midY + 5); ctx.fillText("A'", mapX + mapW + 30, midY + 5);
 
         let symX = contact1X, symY = mapY + 30;
         ctx.beginPath(); ctx.moveTo(symX, symY - 15); ctx.lineTo(symX, symY + 15); 
         ctx.moveTo(symX, symY); ctx.lineTo(symX + 15, symY); 
         ctx.strokeStyle = '#000'; ctx.lineWidth = 3; ctx.stroke();
-        ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'left';
-        ctx.fillText(`${dip}°`, symX + 20, symY + 5);
+        ctx.fillStyle = '#000'; ctx.textAlign = 'left'; ctx.fillText(`${dip}°`, symX + 20, symY + 5);
 
-        ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'left';
-        ctx.fillText('Cross-section (مقطع عرضي للعمق)', crossX, crossY - 10);
-
-        ctx.save();
-        ctx.beginPath(); ctx.rect(crossX, crossY, crossW, crossH); ctx.clip();
-
+        // المقطع العرضي
+        ctx.fillStyle = '#2c3e50'; ctx.fillText('Cross-section (مقطع عرضي للعمق)', crossX, crossY - 10);
+        ctx.save(); ctx.beginPath(); ctx.rect(crossX, crossY, crossW, crossH); ctx.clip();
         let dx = 1000 / Math.tan(dipRad);
 
-        ctx.beginPath(); ctx.moveTo(-1000, crossY); ctx.lineTo(contact1X, crossY); ctx.lineTo(contact1X + dx, crossY + 1000); ctx.lineTo(-1000, crossY + 1000);
-        ctx.fillStyle = col1; ctx.fill();
-
-        ctx.beginPath(); ctx.moveTo(contact1X, crossY); ctx.lineTo(contact2X, crossY); ctx.lineTo(contact2X + dx, crossY + 1000); ctx.lineTo(contact1X + dx, crossY + 1000);
-        ctx.fillStyle = col2; ctx.fill();
-
-        ctx.beginPath(); ctx.moveTo(contact2X, crossY); ctx.lineTo(crossX + crossW + 1000, crossY); ctx.lineTo(crossX + crossW + 1000, crossY + 1000); ctx.lineTo(contact2X + dx, crossY + 1000);
-        ctx.fillStyle = col3; ctx.fill();
+        ctx.beginPath(); ctx.moveTo(-1000, crossY); ctx.lineTo(contact1X, crossY); ctx.lineTo(contact1X + dx, crossY + 1000); ctx.lineTo(-1000, crossY + 1000); ctx.fillStyle = col1; ctx.fill();
+        ctx.beginPath(); ctx.moveTo(contact1X, crossY); ctx.lineTo(contact2X, crossY); ctx.lineTo(contact2X + dx, crossY + 1000); ctx.lineTo(contact1X + dx, crossY + 1000); ctx.fillStyle = col2; ctx.fill();
+        ctx.beginPath(); ctx.moveTo(contact2X, crossY); ctx.lineTo(crossX + crossW + 1000, crossY); ctx.lineTo(crossX + crossW + 1000, crossY + 1000); ctx.lineTo(contact2X + dx, crossY + 1000); ctx.fillStyle = col3; ctx.fill();
 
         ctx.beginPath(); ctx.moveTo(contact1X, crossY); ctx.lineTo(contact1X + dx, crossY + 1000); ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.stroke();
         ctx.beginPath(); ctx.moveTo(contact2X, crossY); ctx.lineTo(contact2X + dx, crossY + 1000); ctx.stroke();
 
-        ctx.beginPath(); ctx.arc(contact1X, crossY, 40, 0, dipRad); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2; ctx.stroke();
-        ctx.fillStyle = '#c0392b'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'left';
-        ctx.fillText(`${dip}°`, contact1X + 50 * Math.cos(dipRad/2), crossY + 50 * Math.sin(dipRad/2) + 5);
+        ctx.beginPath(); ctx.arc(contact1X, crossY, 40, 0, dipRad); ctx.strokeStyle = '#c0392b'; ctx.stroke();
+        ctx.fillStyle = '#c0392b'; ctx.fillText(`${dip}°`, contact1X + 50 * Math.cos(dipRad/2), crossY + 50 * Math.sin(dipRad/2) + 5);
 
-        let c = contact2X - contact1X; 
-        let b = c * Math.sin(dipRad); 
-        let x_int = contact2X - b * Math.sin(dipRad);
-        let y_int = crossY + b * Math.cos(dipRad);
-
+        let c = contact2X - contact1X; let b = c * Math.sin(dipRad); 
+        let x_int = contact2X - b * Math.sin(dipRad); let y_int = crossY + b * Math.cos(dipRad);
         ctx.beginPath(); ctx.moveTo(contact2X, crossY); ctx.lineTo(x_int, y_int);
         ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 3; ctx.setLineDash([5, 5]); ctx.stroke(); ctx.setLineDash([]);
 
@@ -988,12 +836,11 @@
 
         ctx.restore();
         ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.strokeRect(crossX, crossY, crossW, crossH);
-
-        ctx.beginPath(); ctx.moveTo(crossX, crossY); ctx.lineTo(crossX + crossW, crossY); ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2; ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(crossX, crossY); ctx.lineTo(crossX + crossW, crossY); ctx.strokeStyle = '#2980b9'; ctx.stroke();
     }
 
     function drawHazardRadar(canvasId, slopeDir, dipDir, isPlanar) {
-        const canvas = document.getElementById(canvasId); if(!canvas) return; const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         const cx = 300; const cy = 200; const R = 150;
         
         ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.fillStyle = '#f8f9fa'; ctx.fill(); ctx.strokeStyle = '#7f8c8d'; ctx.lineWidth = 1.5; ctx.stroke();
@@ -1011,7 +858,7 @@
     }
 
     function drawRMRHeatmap(canvasId, p1, p2, p3, p4, p5) {
-        const canvas = document.getElementById(canvasId); if(!canvas) return; const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         let params = [
             {nameEN: 'UCS', nameAR: 'مقاومة الانضغاط', val: p1, max: 15}, 
@@ -1027,7 +874,6 @@
         
         params.forEach((p, i) => {
             let y = startY + (i * (boxH + 8));
-            
             ctx.textAlign = 'right'; ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 15px Arial';
             ctx.fillText(`${p.nameAR}`, cx - boxW/2 - 15, y + boxH/2 - 5);
             ctx.fillStyle = '#7f8c8d'; ctx.font = '13px Arial';
@@ -1042,7 +888,7 @@
     }
 
     // ==========================================
-    // دالة التحليل وبناء التقرير للمسح التركيبي
+    // دالة التحليل وبناء التقرير
     // ==========================================
     function calculateStructuralResults() {
         const geoName = document.getElementById('str_printGeoName').value || "غير محدد";
@@ -1081,10 +927,7 @@
         document.getElementById('screen_rmrClass').innerText = rockClass;
         document.getElementById('screen_rmrClass').style.color = classColor;
         document.getElementById('screen_kinematicAlert').innerHTML = alertHTML;
-        
-        document.getElementById('calcButtonsAreaStr').style.display = 'none'; 
         document.getElementById('screenResultsSummary').style.display = 'block';
-        document.getElementById('diagramsScreenView').style.display = 'block';
 
         // 2. تعبئة الصفحة الأولى للطباعة (مخفية عن الشاشة)
         const getSelText = (id) => { const el = document.getElementById(id); return el.options[el.selectedIndex].text; };
@@ -1110,68 +953,55 @@
         document.getElementById('res_freezeTxt').innerText = getSelText('str_freezethaw');
         document.getElementById('res_vibTxt').innerText = getSelText('str_vibration');
 
-        document.getElementById('res_rmrTotalPrint').innerText = totalRMR;
-        document.getElementById('res_rmrTotalPrint').style.color = classColor;
-        document.getElementById('res_rmrClassFinalPrint').innerText = rockClass;
-        document.getElementById('res_rmrClassFinalPrint').style.color = classColor;
+        document.getElementById('res_rmrTotal').innerText = totalRMR;
+        document.getElementById('res_rmrTotal').style.color = classColor;
+        document.getElementById('res_rmrClassFinal').innerText = rockClass;
+        document.getElementById('res_rmrClassFinal').style.color = classColor;
         document.getElementById('res_kinematicAlertPrint').innerHTML = alertHTML;
 
-        // 3. نصوص الشرح (تُحقن في الشاشة والطباعة)
-        let txtTopo = `<b>التحليل الجيومورفولوجي:</b> المقطع يوضح الانكشاف الصخري للمنحدر المقطوع بزاوية هندسية (${slope}°). يُعد هذا المرتسم الأساس الهندسي لتقييم الاستقرارية.`;
-        let txtFBD = `<b>التحليل الميكانيكي (FBD):</b> يوضح المخطط عزلاً للكتلة الصخرية المعرضة للانزلاق على مستوى ضعف يميل بزاوية (${dip}°)، ويوضح اتجاهات القوى الفيزيائية المتمثلة في قوة الوزن (W)، ورد الفعل العمودي (N)، وقوى الاحتكاك المقاومة (R).`;
-        let txtStereo = `<b>التفسير الكينماتيكي (Stereographic Projection):</b> يُظهر المسقط التوزيع الفراغي للمستويات. ` + (isPlanar ? `وقوع قطب الطبقة (النقطة الحمراء) ضمن منطقة التقاطع الحرجة يُثبت كينماتيكياً حتمية الانزلاق المستوي.` : `قطب الطبقة يقع خارج النطاق الحرج، المنحدر مستقر.`);
-        
-        document.getElementById('topoExplanationScreen').innerHTML = txtTopo;
-        document.getElementById('topoExplanationPrint').innerHTML = txtTopo;
-        document.getElementById('rockExplanationScreen').innerHTML = txtFBD;
-        document.getElementById('rockExplanationPrint').innerHTML = txtFBD;
-        document.getElementById('stereoExplanationScreen').innerHTML = txtStereo;
-        document.getElementById('stereoExplanationPrint').innerHTML = txtStereo;
+        // 3. استعادة الشروحات الجيولوجية وإضافتها للمربعات (لتظهر على الشاشة والطباعة)
+        document.getElementById('topoExplanation').innerHTML = `<b>التحليل الجيومورفولوجي:</b> المقطع يوضح الانكشاف الصخري للمنحدر المقطوع بزاوية هندسية (${slope}°). يُعد هذا المرتسم الأساس الهندسي لتقييم الاستقرارية.`;
+        document.getElementById('rockExplanation').innerHTML = `<b>التحليل الميكانيكي (FBD):</b> يوضح المخطط عزلاً للكتلة الصخرية المعرضة للانزلاق على مستوى ضعف يميل بزاوية (${dip}°)، ويوضح اتجاهات القوى الفيزيائية المتمثلة في قوة الوزن (W)، ورد الفعل العمودي (N)، وقوى الاحتكاك المقاومة (R).`;
+        document.getElementById('stereoExplanation').innerHTML = `<b>التفسير الكينماتيكي (Stereographic Projection):</b> يُظهر المسقط التوزيع الفراغي للمستويات. ` + (isPlanar ? `وقوع قطب الطبقة (النقطة الحمراء) ضمن منطقة التقاطع الحرجة يُثبت كينماتيكياً حتمية الانزلاق المستوي.` : `قطب الطبقة يقع خارج النطاق الحرج، المنحدر مستقر.`);
 
-        // 4. رسم المرتسمات للشاشة
-        let profileDataScreen = generateProfilePoints('topoCanvasScreen', slope);
-        drawTopographicModel('topoCanvasScreen', slope, slopeDir, profileDataScreen); 
-        drawRockMassModel('rockCanvasScreen', dip, slope, isPlanar, p5);
+        // 4. رسم المرتسمات
+        let profileData = generateProfilePoints('topoCanvas', slope);
+        drawTopographicModel('topoCanvas', slope, slopeDir, profileData); 
+        drawRockMassModel('rockCanvas', dip, slope, isPlanar, p5);
         drawStereonet(dip, dipDir, slope, slopeDir, friction);
-        drawPlanAndCrossSection('canvas3DBlockScreen', dip);
-        drawHazardRadar('canvasRadarScreen', slopeDir, dipDir, isPlanar);
-        drawRMRHeatmap('canvasHeatmapScreen', p1, p2, p3, p4, p5);
+        drawPlanAndCrossSection('canvas3DBlock', dip);
+        drawHazardRadar('canvasRadar', slopeDir, dipDir, isPlanar);
+        drawRMRHeatmap('canvasHeatmap', p1, p2, p3, p4, p5);
 
-        // 5. رسم المرتسمات للطباعة (مخفية)
-        let profileDataPrint = generateProfilePoints('topoCanvasPrint', slope);
-        drawTopographicModel('topoCanvasPrint', slope, slopeDir, profileDataPrint); 
-        drawRockMassModel('rockCanvasPrint', dip, slope, isPlanar, p5);
-        // تم استدعاء الـ stereonet من الشاشة لتوفير الموارد
-        drawPlanAndCrossSection('canvas3DBlockPrint', dip);
-        drawHazardRadar('canvasRadarPrint', slopeDir, dipDir, isPlanar);
-        drawRMRHeatmap('canvasHeatmapPrint', p1, p2, p3, p4, p5);
-        
-        // إظهار صفحات الطباعة وتحديث الأرقام
+        // 5. إظهار صفحات الطباعة وتحديث الأرقام
+        document.getElementById('calcButtonsAreaStr').style.display = 'none'; 
         for(let i=1; i<=7; i++) {
             let page = document.getElementById(`pageResultsStr_${i}`);
             if(page) page.style.display = 'block';
         }
+        
         updatePageNumbersStr();
     }
  
     function prepareAndPrintStr() { 
         try { 
-            const now = new Date(); 
-            const dateStr = now.toLocaleTimeString('en-GB', {hour: '2-digit', minute:'2-digit'}) + ' - ' + now.toLocaleDateString('en-GB');
-            document.querySelectorAll('.printDateHeader').forEach(h => h.innerText = dateStr);
-            updatePageNumbersStr();
+            updatePageNumbersStr(); 
             window.print(); 
         } catch (error) {} 
     }
 
     function updatePageNumbersStr() { 
         const pagesStr = document.querySelectorAll('.page-counter-element-str'); 
+        const now = new Date(); 
+        const dateStr = now.toLocaleTimeString('en-GB', {hour: '2-digit', minute:'2-digit'}) + ' - ' + now.toLocaleDateString('en-GB');
+        
         pagesStr.forEach((page, index) => { 
             let currSpans = page.querySelectorAll('.currPageNum'); 
-            currSpans.forEach(s => s.innerText = (index + 1)); 
+            currSpans.forEach(s => s.innerText = (index + 1) + " من 7"); 
+            let dateHeaders = page.querySelectorAll('.printDateHeader');
+            dateHeaders.forEach(h => h.innerText = dateStr);
         }); 
     }
 </script>
-
 </body>
 </html>
