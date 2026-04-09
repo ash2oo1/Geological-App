@@ -12,7 +12,7 @@
  
     <style>
         /* ========================================================
-           تنسيقات الشاشة الأساسية (متوافقة مع المنصة)
+           تنسيقات الشاشة الأساسية 
           ======================================================== */
         body { background-color: #f0f3f4; font-family: 'Arial', sans-serif; margin: 0; padding: 20px; }
         :root { --primary: #1c2833; --secondary: #273746; --accent: #2980b9; --bg: #f8f9fa; }
@@ -39,7 +39,7 @@
         .btn-sensor:hover { background: #1f618d; transform: translateY(-2px);}
         
         /* ========================================================
-           تنسيقات النماذج الهندسية والمؤثرات
+           تنسيقات النماذج الهندسية 
           ======================================================== */
         .compass-live-box { display: none; background: #eaf2f8; border: 2px solid #3498db; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
         .compass-live-box p { margin: 5px 0; font-size: 1.1rem; font-weight: bold; }
@@ -88,22 +88,13 @@
             .screen-only { display: none !important; }
             .print-only { display: block !important; }
             
-            /* حاوية الورقة A4 */
             .page-counter-element-str { 
-                width: 100%; 
-                height: 27.7cm; /* يمنع تسرب المحتوى للصفحة التالية */
-                padding: 1.5cm; 
-                box-sizing: border-box; 
-                page-break-after: always; 
-                position: relative; 
-                display: flex !important; 
-                flex-direction: column;
-                background: white;
+                width: 100%; height: 27.7cm; padding: 1.5cm; box-sizing: border-box; 
+                page-break-after: always; position: relative; display: flex !important; 
+                flex-direction: column; background: white;
             }
             #pageResultsStr_1, #pageResultsStr_2, #pageResultsStr_3 { 
-                page-break-inside: avoid !important; 
-                page-break-after: always !important; 
-                overflow: hidden !important; 
+                page-break-inside: avoid !important; page-break-after: always !important; overflow: hidden !important; 
             }
             
             .print-header { text-align: center; border: 2px solid #e67e22; background-color: #fdf2e9; padding: 10px; margin-bottom: 15px; border-radius: 6px; position: relative; }
@@ -114,26 +105,13 @@
             .section { margin-bottom: 12px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 12px; background-color: #fafafa; box-shadow: none; }
             .section-title { font-size: 1.05rem; margin-bottom: 8px; padding-bottom: 3px; border-bottom: 2px solid #e67e22; color:#e67e22;}
             
-            /* تقييد ارتفاع الكانفاس لتوسيع مساحة الشرح */
             #topoCanvas, #rockCanvas { 
-                max-height: 45% !important; 
-                width: auto !important; 
-                max-width: 100%;
-                object-fit: contain !important; 
-                display: block !important; 
-                margin: 0 auto !important; 
-                page-break-inside: avoid !important;
+                max-height: 45% !important; width: auto !important; max-width: 100%;
+                object-fit: contain !important; display: block !important; margin: 0 auto !important; page-break-inside: avoid !important;
             }
-            /* الحفاظ على دائرية الاستيريوجرافي */
             #stereonetCanvas { 
-                max-width: 400px !important; 
-                max-height: 400px !important; 
-                aspect-ratio: 1 / 1 !important; 
-                width: 100% !important; 
-                height: auto !important; 
-                margin: 0 auto !important; 
-                display: block !important; 
-                object-fit: contain !important; 
+                max-width: 400px !important; max-height: 400px !important; aspect-ratio: 1 / 1 !important; 
+                width: 100% !important; height: auto !important; margin: 0 auto !important; display: block !important; object-fit: contain !important; 
             }
             
             .kinematic-canvas-container { display: block !important; width: 100% !important; margin-bottom: 15px !important; page-break-inside: avoid !important; border: 2px solid #bdc3c7 !important; padding: 10px !important; box-sizing: border-box !important;}
@@ -141,18 +119,9 @@
             .geological-explanation-box { font-size: 11pt !important; line-height: 1.6 !important; margin-top: 10px !important; padding: 10px !important; page-break-inside: avoid !important; flex-grow: 0; }
             .info-icon { display: none !important; }
             
-            /* الفوتر ورقم الصفحة ثابت أسفل الورقة تماماً */
             .print-bottom-str { 
-                position: absolute !important; 
-                bottom: 1cm !important; 
-                left: 0;
-                width: 100%;
-                text-align: center; 
-                font-weight: bold; 
-                font-size: 14px; 
-                color: #333; 
-                border-top: 1px solid #eee;
-                padding-top: 5px;
+                position: absolute !important; bottom: 1cm !important; left: 0; width: 100%;
+                text-align: center; font-weight: bold; font-size: 14px; color: #333; border-top: 1px solid #eee; padding-top: 5px;
             }
         }
     </style>
@@ -341,7 +310,7 @@
             <div class="section" style="border: 2px solid #e67e22; padding: 15px; box-shadow: none;">
                 <h3 style="color: #e67e22; margin-top: 0; border-bottom: 1px dashed #ccc; padding-bottom: 10px; margin-bottom: 15px;">النماذج الهندسية (Geotechnical Models)</h3>
                 <div class="kinematic-canvas-container" style="margin-bottom: 0;">
-                    <h4>المقطع الهندسي للكتلة الصخرية والتضاريس (Cross-Section Model)</h4>
+                    <h4>المقطع الهندسي للتضاريس (Topographic Cross-Section)</h4>
                     <canvas id="topoCanvas" width="850" height="500" style="background: #fff;"></canvas>
                     <div class="geological-explanation-box" id="topoExplanation"></div>
                     <div class="geotech-split-legend">
@@ -364,15 +333,16 @@
         <div class="content-padding">
             <div class="section" style="border: 2px solid #e67e22; padding: 20px; box-shadow: none;">
                 <div class="kinematic-canvas-container" style="margin-bottom: 0;">
-                    <h4>تحليل مستويات الضعف والقوى المؤثرة (Rock Mass & Forces)</h4>
+                    <h4>تحليل الكتلة الحرّة ومستويات الضعف (Free Body Diagram)</h4>
                     <canvas id="rockCanvas" width="850" height="500" style="background: #fff;"></canvas>
                     <div class="geological-explanation-box" id="rockExplanation"></div>
                     <div class="geotech-split-legend">
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: #fff; border: 1.5px solid #bdc3c7;"></div><span>مستويات الفواصل الداخلية (Joints)</span></div>
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: rgba(231, 76, 60, 0.3); border: 2px solid #c0392b;"></div><span style="color: #c0392b;">الكتلة المنزلقة (Failure Block)</span></div>
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: transparent; border: 2px solid #c0392b; border-radius: 50%;"></div><span style="color: #c0392b;">زاوية ميل الطبقة (Dip)</span></div>
-                        <div class="geotech-legend-item"><span><i class="fas fa-arrow-down" style="color:#27ae60;"></i> قوى الوزن والاحتكاك</span></div>
-                        <div class="geotech-legend-item"><span><i class="fas fa-arrow-left" style="color:#3498db;"></i> ضغط المياه الجوفية</span></div>
+                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: #c0392b; border: 2px solid #c0392b;"></div><span style="color: #c0392b;">مستوى الانزلاق (Slip Surface)</span></div>
+                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: rgba(231, 76, 60, 0.4); border: 2px solid #2c3e50;"></div><span style="color: #c0392b;">الكتلة المنزلقة (Sliding Block)</span></div>
+                        <div class="geotech-legend-item"><span><i class="fas fa-arrow-down" style="color:#27ae60;"></i> W (قوة الوزن)</span></div>
+                        <div class="geotech-legend-item"><span><i class="fas fa-arrow-up" style="color:#8e44ad;"></i> N (القوة العمودية)</span></div>
+                        <div class="geotech-legend-item"><span><i class="fas fa-arrow-up" style="color:#f39c12; transform: rotate(45deg);"></i> R (الاحتكاك)</span></div>
+                        <div class="geotech-legend-item"><span><i class="fas fa-arrow-up" style="color:#3498db;"></i> U/V (ضغط المياه)</span></div>
                     </div>
                 </div>
             </div>
@@ -416,7 +386,7 @@
 
 <script>
     // ==========================================
-    // دوال الدليل الجيولوجي التفاعلي والبوصلة
+    // دوال الدليل الجيولوجي التفاعلي
     // ==========================================
     const guideData = {
         'dip_strike': { title: 'دليل قياس الميل والمضرب', content: `<ul><li><b>طريقة التماس (Contact Method):</b> ضع البوصلة ملاصقة تماماً للطبقة لضبط "اتجاه الميل"، ثم ميزان الأنبوب لـ "زاوية الميل".</li><li><b>يقوم النظام آلياً:</b> بحساب المضرب (Strike) بتطبيق قاعدة اليد اليمنى (RHR) لتسريع عملك.</li></ul>` },
@@ -526,7 +496,6 @@
         else { window.addEventListener('deviceorientation', sensorHandler); }
     }
  
-    // التعديل: يتم حساب المضرب بشكل مخفي ولحظي دون أزرار
     function calculateStrike() {
         const dipDir = parseFloat(document.getElementById('str_dipDir').value);
         if(isNaN(dipDir) || dipDir < 0 || dipDir > 360) return;
@@ -542,7 +511,7 @@
     }
  
     // ==========================================
-    // دوال الرسم الهندسية والجيوتقنية 
+    // دوال الرسم الهندسية (المصححة جذرياً)
     // ==========================================
     function toRad(degrees) { return degrees * (Math.PI / 180); }
 
@@ -555,13 +524,16 @@
         ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
         ctx.strokeStyle = color; ctx.lineWidth = lineWidth; ctx.stroke();
         if(text) {
-            ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.fillRect(toX - 15, toY - 25, ctx.measureText(text).width + 15, 20);
+            ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(toX - 15, toY - 25, ctx.measureText(text).width + 15, 20);
             ctx.font = 'bold 14px Arial'; ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.fillText(text, toX, toY - 10);
         }
     }
 
-    function generateProfilePoints(canvasId, slope) {
-        const canvas = document.getElementById(canvasId); if(!canvas) return null;
+    // 1. المقطع الطوبوغرافي (تعديل القوس الأزرق)
+    function drawTopographicModel(canvasId, slope, slopeDir) {
+        const canvas = document.getElementById(canvasId); if(!canvas) return;
+        const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
         const margin = 50; const widthBox = canvas.width - margin * 2; const heightBox = canvas.height - margin * 2;
         const cx = margin + 200; const cy = margin + heightBox - 80; const slopeHeight = heightBox - 150; 
         let safeSlope = slope >= 90 ? 89.9 : slope; let slopeRad = safeSlope * (Math.PI / 180);
@@ -575,97 +547,152 @@
         }
         let slopeFacePts = createRoughLine(cx, cy, slopeTopX, slopeTopY, 15, 12);
         let crestPts = createRoughLine(slopeTopX, slopeTopY, margin + widthBox - 30, slopeTopY - 20, 10, 15); 
-        return { margin, widthBox, heightBox, cx, cy, slopeTopX, slopeTopY, slopeFacePts, crestPts, slopeHeight };
-    }
 
-    function drawTopographicModel(canvasId, slope, slopeDir, profileData) {
-        if(!profileData) return;
-        const canvas = document.getElementById(canvasId); if(!canvas) return;
-        const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const { margin, widthBox, cx, cy, slopeFacePts, crestPts } = profileData;
-        let safeSlope = slope >= 90 ? 89.9 : slope; let slopeRad = safeSlope * (Math.PI / 180);
-
+        // رسم التضاريس والكتلة
         ctx.beginPath(); ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(margin + widthBox - 30, cy); ctx.closePath();
         ctx.fillStyle = '#ecf0f1'; ctx.fill(); 
-        
         ctx.beginPath(); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); for(let i = crestPts.length-1; i>=0; i--) { ctx.lineTo(crestPts[i].x, crestPts[i].y + 15 + Math.random()*10); } 
         ctx.fillStyle = '#d7ccc8'; ctx.fill();
-
         ctx.beginPath(); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 3;
         ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.stroke();
 
-        ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(cx + 35, cy - 35, 95, 28);
-        ctx.beginPath(); ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2.5; ctx.arc(cx, cy, 50, Math.PI, Math.PI + Math.PI - slopeRad, true); ctx.stroke();
-        ctx.fillStyle = '#2980b9'; ctx.font = "bold 15px Arial"; ctx.textAlign = "left"; ctx.fillText(`Slope: ${slope}°`, cx + 45, cy - 16);
+        // التعديل: رسم قوس الزاوية ليقف عند الواجهة تماماً
+        ctx.beginPath(); 
+        ctx.moveTo(cx - 60, cy);
+        // القوس يبدأ من زاوية 180 (يسار) وينتهي عند زاوية المنحدر (2PI - slopeRad)
+        ctx.arc(cx, cy, 60, Math.PI, 2 * Math.PI - slopeRad, false); 
+        ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2.5; ctx.stroke();
+        
+        ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(cx - 30, cy - 40, 95, 28);
+        ctx.fillStyle = '#2980b9'; ctx.font = "bold 15px Arial"; ctx.textAlign = "left"; ctx.fillText(`Slope: ${slope}°`, cx - 20, cy - 20);
     }
 
-    function drawRockMassModel(canvasId, dip, dipDir, slope, slopeDir, friction, waterVal, rmrSpacingVal, isPlanar, isToppling, profileData) {
-        if(!profileData) return;
+    // 2. مخطط الكتلة الحرة (Free Body Diagram)
+    function drawRockMassModel(canvasId, dip, slope, isPlanar, waterVal) {
         const canvas = document.getElementById(canvasId); if(!canvas) return;
         const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const { margin, widthBox, heightBox, cx, cy, slopeTopX, slopeTopY, slopeFacePts, crestPts, slopeHeight } = profileData;
         
         let dipRad = dip * (Math.PI / 180);
-        let isDippingSameWay = (Math.abs(slopeDir - dipDir) <= 90 || Math.abs(slopeDir - dipDir) >= 270);
+        let slopeRad = slope * (Math.PI / 180);
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2 + 100; // نقطة التقاطع المركزية
 
-        ctx.beginPath(); ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(margin + widthBox - 30, cy); ctx.closePath();
-        ctx.fillStyle = '#fdfefe'; ctx.fill(); 
+        // 1. خط أفقي وهمي (مرجعي)
+        ctx.beginPath();
+        ctx.strokeStyle = '#95a5a6'; ctx.setLineDash([5, 5]); ctx.lineWidth = 1.5;
+        ctx.moveTo(cx - 300, cy); ctx.lineTo(cx + 300, cy); ctx.stroke(); ctx.setLineDash([]);
 
-        let traceLen = 80; let jointSpacing = 40; 
-        if(rmrSpacingVal >= 15) { traceLen = 150; jointSpacing = 80; } else if(rmrSpacingVal <= 8) { traceLen = 40; jointSpacing = 20; }
+        // 2. رسم مستوى الانزلاق (الخط الأحمر الثابت)
+        ctx.beginPath();
+        ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 4;
+        let planeLen = 350;
+        let px1 = cx - planeLen * Math.cos(dipRad); let py1 = cy + planeLen * Math.sin(dipRad);
+        let px2 = cx + planeLen * Math.cos(dipRad); let py2 = cy - planeLen * Math.sin(dipRad);
+        ctx.moveTo(px1, py1); ctx.lineTo(px2, py2); ctx.stroke();
+
+        // 3. رسم زاوية الميل الحقيقية
+        ctx.beginPath();
+        ctx.arc(cx, cy, 100, Math.PI, 2*Math.PI - dipRad, false);
+        ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2; ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(cx - 95, cy - 35, 75, 25);
+        ctx.fillStyle = '#c0392b'; ctx.font = 'bold 15px Arial'; ctx.fillText(`Dip: ${dip}°`, cx - 90, cy - 18);
+
+        // 4. رسم الكتلة المنزلقة على المستوى المائل (بدون اختراق للأرض)
         ctx.save();
-        ctx.beginPath(); ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(margin + widthBox, cy); ctx.clip();
+        ctx.translate(cx, cy); // ننقل نقطة الأصل لمركز المستوى
+        ctx.rotate(-dipRad); // نقوم بتدوير الورقة لترسم بشكل مريح
         
-        ctx.strokeStyle = '#bdc3c7'; ctx.lineWidth = 1.5;
-        let dipDx = traceLen * Math.cos(dipRad); let dipDy = traceLen * Math.sin(dipRad);
-        if(!isDippingSameWay) dipDx = -dipDx; 
-        for(let y = margin; y < margin + heightBox; y += jointSpacing * 0.8) {
-            for(let x = margin - 100; x < margin + widthBox + 100; x += traceLen * 1.2) {
-                let sx = x + Math.random()*20; let sy = y + Math.random()*20;
-                ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx + dipDx, sy - dipDy); ctx.stroke();
-            }
-        }
-        ctx.restore();
+        let bw = 160; // عرض الكتلة
+        let bh = 100; // ارتفاع الكتلة
+        // نرسم الكتلة تبدأ من نقطة الأصل وتتجه للجهة اليمنى العليا
+        ctx.beginPath();
+        ctx.rect(30, -bh, bw, bh);
+        ctx.fillStyle = 'rgba(231, 76, 60, 0.4)'; ctx.fill();
+        ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2.5; ctx.stroke();
 
-        ctx.beginPath(); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 3;
-        ctx.moveTo(margin, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.stroke();
+        // رسم مركز الثقل (CG)
+        let cgLocalX = 30 + bw / 2;
+        let cgLocalY = -bh / 2;
+        ctx.beginPath(); ctx.arc(cgLocalX, cgLocalY, 5, 0, Math.PI*2);
+        ctx.fillStyle = '#2c3e50'; ctx.fill();
+        ctx.restore(); // نعود للإحداثيات الأصلية لنرسم القوى بشكل مستقيم
 
-        let crackX = cx + (slopeTopX - cx)/2; 
-        let crackY = slopeTopY + (cy - slopeTopY)/2;
-        let intersectY = cy - Math.tan(dipRad) * (crackX - cx);
+        // 5. حساب إحداثيات مركز الثقل الحقيقية على الشاشة (Geometry Transformation)
+        let trueCgX = cx + cgLocalX * Math.cos(-dipRad) - cgLocalY * Math.sin(-dipRad);
+        let trueCgY = cy + cgLocalX * Math.sin(-dipRad) + cgLocalY * Math.cos(-dipRad);
 
-        if (isPlanar && isDippingSameWay) {
-            let dipTopX = cx + (slopeHeight / Math.tan(dipRad)); let crackDepth = slopeTopY + 100;
-            let crackPts = [{x: dipTopX, y: slopeTopY}, {x: dipTopX + 2, y: slopeTopY + 50}, {x: dipTopX, y: crackDepth}]; 
-            let offset = 20; let dx = -offset * Math.cos(dipRad); let dy = offset * Math.sin(dipRad);
+        // 6. رسم المتجهات الهندسية بدقة تامة من مركز الثقل
+        // الوزن (W) لأسفل تماماً
+        drawArrow(ctx, trueCgX, trueCgY, trueCgX, trueCgY + 120, '#27ae60', 3, 'W');
+        
+        // القوة العمودية (N) للأعلى عمودياً على المستوى
+        let nEndX = trueCgX - 80 * Math.sin(dipRad);
+        let nEndY = trueCgY - 80 * Math.cos(dipRad);
+        drawArrow(ctx, trueCgX, trueCgY, nEndX, nEndY, '#8e44ad', 3, 'N');
+        
+        // قوة الاحتكاك المقاومة (R) موازية للمستوى نحو الأعلى
+        let rEndX = trueCgX - 80 * Math.cos(dipRad);
+        let rEndY = trueCgY + 80 * Math.sin(dipRad);
+        drawArrow(ctx, trueCgX, trueCgY, rEndX, rEndY, '#f39c12', 3, 'R');
+
+        // إذا كان هناك مياه نرسم ضغط المياه
+        if (waterVal <= 10) {
+            let uEndX = trueCgX + 60 * Math.sin(dipRad);
+            let uEndY = trueCgY + 60 * Math.cos(dipRad);
+            drawArrow(ctx, trueCgX, trueCgY, uEndX, uEndY, '#3498db', 3, 'U'); // قوة الرفع المائي
             
-            ctx.beginPath(); ctx.fillStyle = '#1c2833'; ctx.moveTo(dipTopX, slopeTopY); crackPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.closePath(); ctx.fill();
+            let vStartX = trueCgX - 70 * Math.cos(dipRad); let vStartY = trueCgY + 70 * Math.sin(dipRad);
+            let vEndX = vStartX + 50 * Math.cos(dipRad); let vEndY = vStartY - 50 * Math.sin(dipRad);
+            drawArrow(ctx, vStartX, vStartY, vEndX, vEndY, '#3498db', 3, 'V'); // قوة دفع الشقوق
+        }
+    }
 
-            ctx.beginPath(); ctx.moveTo(cx + dx, cy + dy); let offsetSlopePts = slopeFacePts.map(p => ({x: p.x + dx, y: p.y + dy})); offsetSlopePts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(dipTopX + dx, slopeTopY + dy); for(let i = crackPts.length-1; i >= 0; i--) { ctx.lineTo(crackPts[i].x + dx, crackPts[i].y + dy); } ctx.closePath();
-            ctx.fillStyle = '#e5e7e9'; ctx.fill(); ctx.fillStyle = 'rgba(231, 76, 60, 0.5)'; ctx.fill(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2; ctx.stroke();
-
-            let cgX = (cx + slopeTopX + dipTopX) / 3 + dx; let cgY = (cy + slopeTopY + slopeTopY) / 3 + dy + 30;
-            drawArrow(ctx, cgX, cgY, cgX, cgY + 70, '#27ae60', 3, 'W');
-            let rEndX = cgX + 60 * Math.cos(dipRad); let rEndY = cgY - 60 * Math.sin(dipRad);
-            drawArrow(ctx, cgX, cgY, rEndX, rEndY, '#f39c12', 3, 'R');
-
-            if (waterVal <= 10) { 
-                let vStart = {x: dipTopX + dx - 10, y: (slopeTopY + crackDepth)/2 + dy};
-                drawArrow(ctx, vStart.x, vStart.y, vStart.x - 50, vStart.y, '#3498db', 3, 'V');
-                let uStart = {x: (cx + dipTopX)/2 + dx, y: (cy + crackDepth)/2 + dy + 10};
-                drawArrow(ctx, uStart.x, uStart.y, uStart.x - 40 * Math.sin(dipRad), uStart.y - 40 * Math.cos(dipRad), '#3498db', 3, 'U');
-            }
-        } else {
-            const endDipX = slopeTopX + 150; 
-            let currentDipRad = isDippingSameWay ? dipRad : -dipRad; 
-            const endDipY = cy - Math.tan(currentDipRad) * (endDipX - cx);
-            ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(endDipX, endDipY); ctx.lineWidth = 2; ctx.strokeStyle = "#c0392b"; ctx.stroke();
+    // 3. المسقط الاستيريوجرافي (إضافة شبكة Grid احترافية وتعديل الألوان)
+    function drawStereonet(dip, dipDir, slope, slopeDir, friction) {
+        const canvas = document.getElementById('stereonetCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const cx = canvas.width / 2; const cy = canvas.height / 2; const R = 250; 
+ 
+        // رسم شبكة قطبية (Polar Grid) كخلفية
+        ctx.lineWidth = 0.5; ctx.strokeStyle = '#d5dbdb';
+        for(let i=0; i<36; i++) { // الخطوط الشعاعية
+            ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + R * Math.cos(i * 10 * Math.PI/180), cy + R * Math.sin(i * 10 * Math.PI/180)); ctx.stroke();
+        }
+        for(let i=1; i<=9; i++) { // الدوائر المتراكزة
+            ctx.beginPath(); ctx.arc(cx, cy, R * (i/9), 0, 2*Math.PI); ctx.stroke();
         }
 
-        let dipTextX = margin + 25; let dipTextY = cy - 75;
-        ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fillRect(dipTextX - 10, dipTextY - 20, 85, 28);
-        ctx.beginPath(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2.5; ctx.arc(cx, cy, 70, 0, isDippingSameWay ? -dipRad : dipRad, isDippingSameWay); ctx.stroke();
-        ctx.fillStyle = '#c0392b'; ctx.font = 'bold 15px Arial'; ctx.textAlign='left'; ctx.fillText(`Dip: ${dip}°`, dipTextX, dipTextY);
+        // الإطار الخارجي والمحاور
+        ctx.beginPath(); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2.5; ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.stroke();
+        ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center';
+        ctx.fillText('N', cx, cy - R - 15); ctx.fillText('S', cx, cy + R + 30);
+        ctx.fillText('E', cx + R + 25, cy + 7); ctx.fillText('W', cx - R - 25, cy + 7);
+        ctx.beginPath(); ctx.moveTo(cx, cy-10); ctx.lineTo(cx, cy+10); ctx.moveTo(cx-10, cy); ctx.lineTo(cx+10, cy); ctx.stroke();
+ 
+        // دالة رسم الدوائر العظمى
+        function drawGreatCircle(d, dDir, color, width, isDashed = false) {
+            if (d < 0.5) return; ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = width;
+            if(isDashed) ctx.setLineDash([5, 5]); else ctx.setLineDash([]);
+            if (d > 89.5) { let strike = (dDir - 90) * Math.PI / 180; ctx.moveTo(cx + R * Math.sin(strike), cy - R * Math.cos(strike)); ctx.lineTo(cx - R * Math.sin(strike), cy + R * Math.cos(strike)); ctx.stroke(); } 
+            else { ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.clip(); let dRad = d * Math.PI / 180; let dDirRad = dDir * Math.PI / 180; let rArc = R / Math.cos(dRad); let dist = R * Math.tan(dRad); let arcCx = cx + dist * Math.sin(dDirRad); let arcCy = cy - dist * Math.cos(dDirRad); ctx.beginPath(); ctx.arc(arcCx, arcCy, rArc, 0, 2*Math.PI); ctx.stroke(); ctx.restore(); }
+        }
+ 
+        // التعديل: تلوين المنحدر بالرمادي الباهت، والطبقة بالأحمر الصارخ
+        drawGreatCircle(slope, slopeDir, '#95a5a6', 3); 
+        drawGreatCircle(dip, dipDir, '#e74c3c', 4);
+ 
+        let fRad = friction * Math.PI / 180; let rCone = R * Math.tan(fRad / 2); ctx.beginPath(); ctx.strokeStyle = '#2980b9'; ctx.setLineDash([8, 6]); ctx.lineWidth = 3; ctx.arc(cx, cy, rCone, 0, 2*Math.PI); ctx.stroke(); ctx.setLineDash([]);
+ 
+        let poleTrend = (dipDir + 180) % 360; let dRad = dip * Math.PI / 180; let distPole = R * Math.tan(dRad / 2); let tRad = poleTrend * Math.PI / 180; let pX = cx + distPole * Math.sin(tRad); let pY = cy - distPole * Math.cos(tRad);
+        ctx.beginPath(); ctx.fillStyle = '#e74c3c'; ctx.arc(pX, pY, 8, 0, 2*Math.PI); ctx.fill(); 
+        ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.fillRect(pX + 15, pY - 15, 45, 20);
+        ctx.fillStyle = '#c0392b'; ctx.font = 'bold 16px Arial'; ctx.fillText('Pole', pX + 38, pY);
+ 
+        const legendDiv = document.getElementById('kinematicLegend'); let riskState = ""; let isPlanar = false; let diffDir = Math.abs(slopeDir - dipDir); if (diffDir > 180) diffDir = 360 - diffDir; if (diffDir <= 20 && slope > dip && dip > friction) isPlanar = true;
+ 
+        if (isPlanar) riskState = "<span style='color:#c0392b; font-size:1.1rem;'>⚠️ قراءات الاستيريوجرافي (وقوع القطب ضمن منطقة الخطر) تؤكد حتمية الانزلاق المستوي.</span>";
+        else riskState = "<span style='color:#27ae60; font-size:1.1rem;'>✅ قراءات الاستيريوجرافي تظهر أن المنحدر الجبلي مستقر كينماتيكياً في الوقت الحالي.</span>";
+ 
+       legendDiv.innerHTML = `<h4>دليل المسقط (Stereonet Legend):</h4><div style="display:flex; flex-wrap:wrap; gap:20px; font-size: 1.1rem;"><div style="flex:1;"><span style="color:#95a5a6; font-weight:bold; font-size:1.5rem;">◡</span> الدائرة العظمى للمنحدر (Slope)<br><span style="color:#e74c3c; font-weight:bold; font-size:1.5rem;">◡</span> الدائرة العظمى للطبقة (Plane)</div><div style="flex:1;"><span style="color:#2980b9; font-weight:bold; font-size:1.5rem;">◌</span> مخروط الاحتكاك الداخلي<br><span style="color:#e74c3c; font-size:1.5rem;">●</span> قطب الطبقة (Pole)</div></div><hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">${riskState}`;
     }
 
     function calculateStructuralResults() {
@@ -713,74 +740,43 @@
 
         let profileData = generateProfilePoints('topoCanvas', slope);
         drawTopographicModel('topoCanvas', slope, slopeDir, profileData); 
-        drawRockMassModel('rockCanvas', dip, dipDir, slope, slopeDir, friction, p5, p3, isPlanar, isToppling, profileData);
+        // استدعاء مخطط الكتلة الحرة المحدث
+        drawRockMassModel('rockCanvas', dip, slope, isPlanar, p5);
         drawStereonet(dip, dipDir, slope, slopeDir, friction);
 
         let undercut = document.getElementById('str_undercutting').value;
         let freezethaw = document.getElementById('str_freezethaw').value;
         let vib = document.getElementById('str_vibration').value;
 
-        let topoText = `النموذج الطوبوغرافي يوضح هندسة المنحدر الصخري / الواجهة المكشوفة بزاوية ميل (${slope}°) باتجاه جغرافي (${slopeDir}° - ${getCompassDirection(slopeDir)}). يُعد هذا المرتسم الأساس الهندسي الذي يتم تسليط القوى الكينماتيكية عليه لتقييم الاستقرارية بصورة دقيقة. `;
+        let topoText = `المقطع الهندسي يوضح الكتلة الصخرية / الواجهة المكشوفة بزاوية ميل (${slope}°) باتجاه جغرافي (${slopeDir}° - ${getCompassDirection(slopeDir)}). يُعد هذا المرتسم الأساس الهندسي الذي يتم تسليط القوى الكينماتيكية عليه لتقييم الاستقرارية بصورة دقيقة. `;
         if(undercut === 'active') topoText += `<b>والملاحظة الميدانية تؤكد وجود نحت مائي و(تقويض سفلي)</b> عند قاعدة المنحدر (Toe)، مما يعني أن الكتلة الجبلية تفقد دعمها السفلي تدريجياً، وهذا يزيد احتمالية الانهيارات التراجعية بغض النظر عن زاوية ميلها الحالية.`;
         document.getElementById('topoExplanation').innerHTML = `<b>التحليل الجيومورفولوجي:</b> ${topoText}`;
 
-        let rockText = `يُظهر تحليل الكتلة الصخرية تقاطع مستويات الضعف مع وجه المنحدر. الطبقات تميل بزاوية (${dip}°) نحو (${getCompassDirection(dipDir)}). `;
+        let rockText = `مخطط الكتلة الحرة (Free Body Diagram) يعزل الكتلة المعرضة للانهيار ويوضح ميكانيكا القوى المؤثرة عليها. الكتلة تستقر على مستوى ضعف يميل بزاوية (${dip}°). `;
         if(isPlanar) {
-            rockText += `نظراً لتجاوز زاوية ميل الطبقة لزاوية الاحتكاك الداخلي (${friction}°)، وتكشفها (Daylighting) على الواجهة الصخرية، فإن الكتلة تقع تحت <b>تأثير قوى القص وخطر الانزلاق المستوي المباشر</b>. `;
-            if(p5 < 15) rockText += `ويزداد الخطر بشدة لوجود ضغط مائي جوفي (U, V) داخل الشقوق مما يقلل الاحتكاك الفعّال. `;
+            rockText += `نظراً لتكشف المستوى على واجهة المنحدر (Daylighting) وتجاوز زاوية الميل لزاوية الاحتكاك (${friction}°)، فإن متجه قوة القص الموازية للمستوى يتغلب على قوة الاحتكاك (R) والقوة العمودية (N)، مما يحفز الانزلاق. `;
+            if(p5 < 15) rockText += `ويظهر الرسم تأثير المياه الجوفية كقوة رفع (U) تقلل الاحتكاك الفعال وقوة دفع (V) تسرع الانزلاق. `;
         } else if(isToppling) {
             rockText += `ميل الطبقات المعاكس للمنحدر وبزاوية حادة يخلق كتلاً عمودية يقع مركز ثقلها خارج قاعدة ارتكازها، مما يهدد بـ <b>انقلاب انثنائي (Toppling)</b> للكتل الصخرية نحو الأسفل. `;
         } else {
-            rockText += `كينماتيكياً، الكتلة الصخرية تبدو مستقرة تحت ظروف الجاذبية الطبيعية الحالية، حيث تمنع زوايا الاحتكاك والهندسة العامة حدوث انزلاقات. `;
+            rockText += `محصلة القوى (الوزن N والاحتكاك R) تظهر استقرار الكتلة ومنعها من الانزلاق تحت الظروف الحالية. `;
         }
         
         if(freezethaw === 'yes') rockText += `<br><b>تنبيه بيئي:</b> تعرض الموقع لـ (دورات الانجماد والذوبان) يؤدي لتكسير الروابط الصخرية بفعل تمدد الجليد داخل الفواصل (Ice Wedging)، مما قد يحفز انزلاقات مفاجئة في المواسم الباردة. `;
         if(vib === 'yes') rockText += `<br><b>تأثير الأحمال:</b> وجود اهتزازات (زلزالية أو آليات ثقيلة/تفجير) يضيف إجهاداً حركياً (Dynamic Loading) يتجاوز مقاومة القص للمستويات الضعيفة ويجب اتخاذ تدابير هندسية صارمة.`;
-        document.getElementById('rockExplanation').innerHTML = `<b>التحليل الحركي والديناميكي:</b> ${rockText}`;
+        document.getElementById('rockExplanation').innerHTML = `<b>الميكانيكا الكينماتيكية للكتلة (FBD):</b> ${rockText}`;
 
-        let stereoText = `يُظهر المسقط الاستيريوجرافي توزيع أقطاب المستويات والدائرة العظمى للطبقات والمنحدر الجبلي مع مخروط الاحتكاك. `;
-        if(isPlanar) stereoText += `وقوع قطب الطبقة (Pole) ضمن منطقة الخطر الحرجة يؤكد حتمية عدم الاستقرارية الكينماتيكية. يُوصى هندسياً بتقليل زاوية ميل الواجهة الصخرية أو اتخاذ تدابير إسناد فورية للكتلة.`;
-        else if(isToppling) stereoText += `توزيع المستويات يشير لخطر الانقلاب، يُنصح بشدة بمراقبة التشققات التوسعية (Tension Cracks) في التضاريس العلوية للمنحدر.`;
-        else stereoText += `أقطاب مستويات الانفصال تقع خارج النطاقات الحرجة، مما يثبت استقرار المنحدر الجبلي كينماتيكياً تجاه الانزلاق المستوي والانقلاب.`;
+        let stereoText = `يُظهر المسقط الاستيريوجرافي (القطبي) الإسقاط الفراغي لمستويات الضعف. تم تلوين دائرة المنحدر باللون الرمادي ودائرة مستوى الانزلاق باللون الأحمر لتمييز التراكيب. `;
+        if(isPlanar) stereoText += `وقوع قطب الطبقة (النقطة الحمراء) ضمن مساحة التقاطع الحرجة (بين دائرة المنحدر ومخروط الاحتكاك) هو إثبات كينماتيكي قاطع على حتمية الانزلاق المستوي.`;
+        else if(isToppling) stereoText += `توزيع المستويات يشير لخطر الانقلاب، يُنصح بشدة بمراقبة التشققات التوسعية (Tension Cracks) في التضاريس العلوية.`;
+        else stereoText += `القطب يقع خارج مناطق الخطر الهندسية، مما يؤكد استقرار الواجهة في الوقت الراهن وعدم توافر الشروط الكينماتيكية للانهيار.`;
         document.getElementById('stereoExplanation').innerHTML = `<b>التفسير الكينماتيكي (Stereographic Projection):</b> ${stereoText}`;
 
- 
        document.getElementById('calcButtonsAreaStr').style.display = 'none'; 
        document.getElementById('pageResultsStr_1').style.display = 'flex'; 
        document.getElementById('pageResultsStr_2').style.display = 'flex'; 
        document.getElementById('pageResultsStr_3').style.display = 'flex'; 
        updatePageNumbersStr();
-    }
- 
-    function drawStereonet(dip, dipDir, slope, slopeDir, friction) {
-        const canvas = document.getElementById('stereonetCanvas'); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const cx = canvas.width / 2; const cy = canvas.height / 2; const R = 200; 
- 
-       ctx.beginPath(); ctx.strokeStyle = '#34495e'; ctx.lineWidth = 2; ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.stroke();
-        ctx.fillStyle = '#34495e'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center';
-       ctx.fillText('N', cx, cy - R - 10); ctx.fillText('S', cx, cy + R + 25);
-       ctx.fillText('E', cx + R + 20, cy + 7); ctx.fillText('W', cx - R - 20, cy + 7);
-       ctx.beginPath(); ctx.moveTo(cx, cy-8); ctx.lineTo(cx, cy+8); ctx.moveTo(cx-8, cy); ctx.lineTo(cx+8, cy); ctx.stroke();
- 
-        function drawGreatCircle(d, dDir, color, width) {
-            if (d < 0.5) return; ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = width;
-            if (d > 89.5) { let strike = (dDir - 90) * Math.PI / 180; ctx.moveTo(cx + R * Math.sin(strike), cy - R * Math.cos(strike)); ctx.lineTo(cx - R * Math.sin(strike), cy + R * Math.cos(strike)); ctx.stroke(); } 
-            else { ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.clip(); let dRad = d * Math.PI / 180; let dDirRad = dDir * Math.PI / 180; let rArc = R / Math.cos(dRad); let dist = R * Math.tan(dRad); let arcCx = cx + dist * Math.sin(dDirRad); let arcCy = cy - dist * Math.cos(dDirRad); ctx.beginPath(); ctx.arc(arcCx, arcCy, rArc, 0, 2*Math.PI); ctx.stroke(); ctx.restore(); }
-        }
- 
-       drawGreatCircle(slope, slopeDir, '#2c3e50', 4); drawGreatCircle(dip, dipDir, '#c0392b', 3);
- 
-        let fRad = friction * Math.PI / 180; let rCone = R * Math.tan(fRad / 2); ctx.beginPath(); ctx.strokeStyle = '#2980b9'; ctx.setLineDash([8, 6]); ctx.lineWidth = 3; ctx.arc(cx, cy, rCone, 0, 2*Math.PI); ctx.stroke(); ctx.setLineDash([]);
- 
-        let poleTrend = (dipDir + 180) % 360; let dRad = dip * Math.PI / 180; let distPole = R * Math.tan(dRad / 2); let tRad = poleTrend * Math.PI / 180; let pX = cx + distPole * Math.sin(tRad); let pY = cy - distPole * Math.cos(tRad);
-       ctx.beginPath(); ctx.fillStyle = '#e74c3c'; ctx.arc(pX, pY, 7, 0, 2*Math.PI); ctx.fill(); ctx.fillStyle = '#c0392b'; ctx.font = 'bold 16px Arial'; ctx.fillText('Pole', pX + 25, pY - 5);
- 
-        const legendDiv = document.getElementById('kinematicLegend'); let riskState = ""; let isPlanar = false; let diffDir = Math.abs(slopeDir - dipDir); if (diffDir > 180) diffDir = 360 - diffDir; if (diffDir <= 20 && slope > dip && dip > friction) isPlanar = true;
- 
-        if (isPlanar) riskState = "<span style='color:#c0392b; font-size:1.1rem;'>⚠️ قراءات الاستيريوجرافي تؤكد وجود انزلاق مستوي محتمل للكتلة الصخرية.</span>";
-        else riskState = "<span style='color:#27ae60; font-size:1.1rem;'>✅ قراءات الاستيريوجرافي تظهر أن المنحدر الجبلي مستقر كينماتيكياً.</span>";
- 
-       legendDiv.innerHTML = `<h4>دليل المسقط (Stereonet Legend):</h4><div style="display:flex; flex-wrap:wrap; gap:20px; font-size: 1.1rem;"><div style="flex:1;"><span style="color:#2c3e50; font-weight:bold;">◡</span> الدائرة العظمى للمنحدر (Slope)<br><span style="color:#c0392b; font-weight:bold;">◡</span> الدائرة العظمى للطبقة (Plane)</div><div style="flex:1;"><span style="color:#2980b9; font-weight:bold;">◌</span> مخروط الاحتكاك الداخلي<br><span style="color:#e74c3c;">●</span> قطب الطبقة (Pole)</div></div><hr style="border: 0; border-top: 1px dashed #ccc; margin: 15px 0;">${riskState}`;
     }
  
     function prepareAndPrintStr() { 
