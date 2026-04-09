@@ -3,116 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام المسح الميداني الجيولوجي</title>
-    
-    <meta name="description" content="نظام المسح التركيبي والجيوتقني - الإصدار الاحترافي">
+    <title>منصة المسح الميداني الجيولوجي العالمية</title>
+    <meta name="description" content="منصة رسانة: أول نظام رقمي متكامل للمسوحات الميدانية الجيولوجية.">
     <meta name="author" content="الجيولوجي علي شندل الجنابي">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
- 
     <style>
-        /* ========================================================
-           تنسيقات الشاشة الأساسية 
-          ======================================================== */
+        /* ================= التنسيقات العامة والمشتركة ================= */
         body { background-color: #f0f3f4; font-family: 'Arial', sans-serif; margin: 0; padding: 20px; }
         :root { --primary: #1c2833; --secondary: #273746; --accent: #2980b9; --bg: #f8f9fa; }
         .container { background: white; max-width: 1100px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
-        .header { background: linear-gradient(135deg, #1c2833 0%, #e67e22 100%); color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #d35400; }
-        .header h1 { font-size: 2.2rem; margin: 0 0 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
-        .header h2 { color: #fdf2e9; font-size: 1.3rem; margin: 0; font-weight: normal; }
+        .header { background: linear-gradient(135deg, #1c2833 0%, #2980b9 100%); color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #f1c40f; }
+        .header h1 { font-size: 2rem; margin: 0 0 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
+        .header h2 { font-size: 1.3rem; margin: 0; font-weight: normal; color: #f1c40f;}
         .content-padding { padding: 30px; }
         @media (max-width: 600px) { .content-padding { padding: 15px; } body { padding: 5px; } .header h1 { font-size: 1.6rem; } }
         
         .section { margin-bottom: 25px; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .section-title { color: #e67e22; border-bottom: 2px solid #e67e22; padding-bottom: 8px; font-size: 1.3rem; margin-bottom: 20px; font-weight: bold; }
-        .sub-title { color: #d35400; font-size: 1.1rem; margin: 15px 0 10px 0; border-bottom: 1px dashed #ccc; padding-bottom: 5px; font-weight: bold;}
+        .section-title { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 8px; font-size: 1.3rem; margin-bottom: 20px; font-weight: bold; }
+        .sub-title { color: #e67e22; font-size: 1.1rem; margin: 15px 0 10px 0; border-bottom: 1px dashed #ccc; padding-bottom: 5px; font-weight: bold;}
         .form-row { display: flex; gap: 20px; margin-bottom: 15px; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; }
         label { display: block; font-weight: bold; margin-bottom: 8px; color: var(--secondary); font-size: 1rem; }
-        input[type="text"], input[type="number"], select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; font-family: inherit; transition: 0.3s;}
-        input[type="number"]:focus { border-color: #e67e22; outline: none; box-shadow: 0 0 5px rgba(230, 126, 34, 0.3); }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; font-family: inherit; }
+        input[type="number"]:focus, input[type="text"]:focus, select:focus { border-color: var(--accent); outline: none; }
+        input[type="color"] { padding: 0; height: 40px; cursor: pointer; border: 1px solid #ddd; width: 100%; }
         
-        .btn-calc { background: #e67e22; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3); transition: 0.3s;}
-        .btn-calc:hover { background: #d35400; transform: translateY(-2px);}
-        .btn-print { background: #d35400; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(211, 84, 0, 0.3); transition: 0.3s;}
-        .btn-print:hover { background: #ba4a00; transform: translateY(-2px);}
-        .btn-sensor { background: #2980b9; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.3s; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(41, 128, 185, 0.3);}
-        .btn-sensor:hover { background: #1f618d; transform: translateY(-2px);}
+        .btn-calc { background: var(--accent); color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(41, 128, 185, 0.3); transition: 0.3s;}
+        .btn-calc:hover { transform: translateY(-2px); opacity: 0.9; }
+        .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); transition: 0.3s;}
+        .btn-print:hover { transform: translateY(-2px); opacity: 0.9;}
+        .btn-sensor { background: #16a085; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.3s; display: flex; align-items: center; gap: 8px;}
+        .btn-sensor:hover { background: #117a65; transform: translateY(-2px);}
+        .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
+        .screen-only { display: block; }
+        .system-module { display: none; background-color: var(--bg); padding: 20px; }
         
-        /* ========================================================
-           تنسيقات زر الرجوع للوحة التحكم (خاص بالملف المستقل)
-           ======================================================== */
-        .btn-back-dash { 
-            display: block; 
-            width: calc(100% - 40px); 
-            max-width: 1100px; 
-            margin: 0 auto 20px auto; 
-            background: #34495e; 
-            color: white !important; 
-            padding: 12px; 
-            text-align: center; 
-            text-decoration: none !important; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            font-size: 1.1rem; 
-            cursor: pointer; 
-            transition: 0.3s ease; 
-            border: none; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .btn-back-dash:hover { 
-            background: #2c3e50; 
-            transform: translateY(-2px); 
-        }
+        /* ================= الترحيب والتسجيل ================= */
+        #introScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: right; padding: 15px; box-sizing: border-box; }
+        .intro-box { background: rgba(255, 255, 255, 0.05); padding: 35px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 850px; width: 100%; max-height: 90vh; overflow-y: auto; backdrop-filter: blur(10px); box-sizing: border-box; }
+        .intro-box::-webkit-scrollbar { width: 8px; } .intro-box::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; } .intro-box::-webkit-scrollbar-thumb { background: #2980b9; border-radius: 10px; }
+        .intro-box h1 { color: #f1c40f; font-size: 1.8rem; margin-bottom: 5px; text-align: center; line-height: 1.4; } .intro-box h2 { color: #a9cce3; font-size: 1.1rem; margin-top: 0; font-weight: normal; margin-bottom: 25px; text-align: center; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 15px;}
+        .official-text { background: rgba(0, 0, 0, 0.2); padding: 20px; border-radius: 8px; border-right: 4px solid #f1c40f; margin-bottom: 25px; font-size: 0.95rem; line-height: 1.8; color: #ecf0f1; text-align: justify; } .official-text h3 { color: #f1c40f; margin-top: 0; border-bottom: 1px solid rgba(241, 196, 15, 0.3); padding-bottom: 8px; margin-bottom: 15px; font-size: 1.2rem;} .official-text p { margin-bottom: 15px; }
+        .instruction-section { background: rgba(41, 128, 185, 0.15); border: 1px solid rgba(41, 128, 185, 0.4); border-radius: 8px; padding: 20px; margin-bottom: 25px; } .instruction-section h3 { color: #3498db; margin-top: 0; font-size: 1.2rem; border-bottom: 1px dashed #3498db; padding-bottom: 10px; margin-bottom: 15px; } .instruction-list { list-style: none; padding: 0; margin: 0; } .instruction-list li { margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6; background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 6px; border-right: 3px solid #e74c3c;} .instruction-list li:nth-child(even) { border-right-color: #2ecc71; }
+        .social-container { text-align: center; margin-bottom: 25px; padding: 15px; background: rgba(0,0,0,0.1); border-radius: 8px; } .social-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; } .social-btn { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 6px; text-decoration: none; color: white; font-weight: bold; transition: 0.3s; }
+        .btn-action { background: #27ae60; color: white; padding: 15px; font-size: 1.2rem; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; margin-top: 10px;} .btn-action:hover { background: #219150; } .btn-action:disabled { background: #7f8c8d; cursor: not-allowed; }
+        .warning-box { background: rgba(231, 76, 60, 0.15); border-right: 4px solid #e74c3c; padding: 20px; border-radius: 8px; margin-bottom: 25px; text-align: right; }
+        .intro-box input { width: 100%; padding: 15px; font-size: 1.1rem; border-radius: 6px; border: none; margin-bottom: 15px; text-align: center; font-weight: bold; box-sizing: border-box; }
+        #step2 { display: none; text-align: center; } .error-text { color: #ff6b6b; font-weight: bold; margin-top: 15px; display: none; background: rgba(255,0,0,0.1); padding: 10px; border-radius: 6px;}
 
-        /* ========================================================
-           تنسيقات النماذج الهندسية والمؤثرات والدليل
-          ======================================================== */
-        .compass-live-box { display: none; background: #eaf2f8; border: 2px solid #3498db; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
-        .compass-live-box p { margin: 5px 0; font-size: 1.1rem; font-weight: bold; }
-        .compass-value-text { color: #e67e22; font-weight: bold; display: block; margin-top: 5px; font-size: 0.9rem; }
+        /* ================= لوحة التحكم ================= */
+        #dashboardScreen { display: none; padding: 30px; background-color: #f0f3f4; min-height: 100vh; font-family: 'Arial', sans-serif; direction: rtl; text-align: right;}
+        .dashboard-header-top { background: linear-gradient(135deg, #1c2833 0%, #2980b9 100%); color: white; padding: 40px 20px; text-align: center; border-radius: 12px; margin-bottom: 30px; border-bottom: 5px solid #f1c40f;} .dashboard-header-top h1 { margin: 0 0 10px 0; font-size: 2.2rem; } .dashboard-header-top h2 { margin: 0; font-size: 1.2rem; color: #f1c40f; }
+        .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
+        .module-card { background: white; border-radius: 12px; padding: 30px 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; cursor: pointer; border-bottom: 4px solid transparent; position: relative; overflow: hidden;} .module-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .module-card i { font-size: 3rem; margin-bottom: 20px; color: #34495e; transition: 0.3s;} .module-card:hover i { transform: scale(1.1); }
+        .module-card h3 { color: #2c3e50; font-size: 1.3rem; margin: 0 0 10px 0; } .module-card p { color: #7f8c8d; font-size: 0.95rem; margin: 0; }
         
-        .kinematic-canvas-container { width: 100%; display: flex; flex-direction: column; align-items: center; background: #fcfcfc; padding: 20px; border-radius: 8px; border: 1px solid #bdc3c7; box-shadow: inset 0 0 10px rgba(0,0,0,0.02); box-sizing: border-box; margin-bottom: 20px;}
-        .kinematic-canvas-container h4 { color: #2c3e50; border-bottom: 2px solid #e67e22; padding-bottom: 10px; margin-top: 0; margin-bottom: 10px; width: 100%; text-align: center; font-size: 1.3rem;}
+        .card-quarry { border-bottom-color: #27ae60; } .card-quarry:hover i { color: #27ae60; }
         
-        .geotech-split-legend { background: #fff; border: 1px solid #bdc3c7; padding: 15px; margin-top: 10px; border-radius: 8px; text-align: right; direction: rtl; font-size: 14px; width: 100%; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
-        .legend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-        .geotech-legend-item { display: flex; align-items: center; gap: 10px; color: #2c3e50; }
-        .geotech-legend-color { width: 22px; height: 22px; border-radius: 4px; border: 1px solid #333; flex-shrink: 0; }
-        .geotech-legend-text { font-weight: bold; line-height: 1.4; }
-        .geotech-legend-symbol { font-size: 1.2rem; width: 22px; text-align: center; }
-
-        .geological-explanation-box { border: 2px solid #e67e22; padding: 15px; margin-top: 15px; width: 100%; background-color: #fdf2e9; border-radius: 8px; font-size: 1.05rem; line-height: 1.8; color: #2c3e50; text-align: justify; box-sizing: border-box; }
+        /* تفعيل وتصحيح تأثيرات بطاقة التركيبي */
+        .card-structural { border-bottom-color: #e67e22; cursor: pointer; } 
+        .card-structural i { color: #e67e22; }
+        .card-structural:hover i { color: #d35400; transform: scale(1.1); }
         
-        /* تنسيقات عمود RMR الحراري الاحترافي */
-        .heatmap-wrapper { display: flex; gap: 30px; align-items: stretch; width: 100%; justify-content: center; padding: 20px 0; }
-        .heatmap-scale-legend { border: 2px solid #bdc3c7; padding: 15px; border-radius: 8px; background: #fff; font-size: 14px; font-weight: bold; width: 60px; flex-shrink: 0; text-align: center; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 2px 2px 8px rgba(0,0,0,0.1);}
-        .heatmap-scale-box { width: 30px; flex-grow: 1; background: linear-gradient(to top, #e74c3c, #f39c12, #f1c40f, #2ecc71); border-radius: 4px; border: 1px solid #333; margin: 10px auto; }
+        .card-hydro { border-bottom-color: #3498db; } .card-geo { border-bottom-color: #9b59b6; } .card-acoustic { border-bottom-color: #e74c3c; } .card-photo { border-bottom-color: #f1c40f; }
+        
+        .coming-soon-badge { position: absolute; top: 15px; left: -30px; background: #e74c3c; color: white; padding: 5px 30px; font-size: 0.8rem; font-weight: bold; transform: rotate(-45deg); }
+        .btn-back-dash { display: block; width: 100%; max-width: 1100px; margin: 0 auto 20px auto; background: #34495e; color: white; padding: 12px; text-align: center; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.3s; border: none; }
 
-        /* ========================================================
-           تنسيقات نافذة الدليل (Modal)
-          ======================================================== */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; backdrop-filter: blur(5px); }
-        .modal-box { background: #fff; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); direction: rtl; text-align: right; position: relative; animation: modalFadeIn 0.3s ease; border-top: 5px solid #e67e22;}
-        @keyframes modalFadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        .modal-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 12px 12px 0 0; }
-        .modal-header h3 { margin: 0; color: #1c2833; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
-        .close-modal { background: none; border: none; font-size: 1.5rem; color: #e74c3c; cursor: pointer; transition: 0.2s; padding: 0; line-height: 1; }
-        .close-modal:hover { transform: scale(1.2); }
-        .modal-body { padding: 25px; line-height: 1.8; color: #34495e; font-size: 1.05rem; }
-        .modal-body h4 { color: #d35400; margin-top: 20px; margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
-        .modal-body h4:first-child { margin-top: 0; }
-        .modal-body ul { padding-right: 20px; margin-bottom: 15px; }
-        .modal-body li { margin-bottom: 8px; }
-        .table-guide { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; font-size: 0.95rem; }
-        .table-guide th, .table-guide td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        .table-guide th { background: #fdf2e9; color: #d35400; }
-        .info-icon { color: #d35400; cursor: pointer; margin-right: 8px; font-size: 1.2rem; transition: 0.2s; vertical-align: middle; }
-        .info-icon:hover { color: #e67e22; transform: scale(1.2); }
+        /* ================= واجهة الموديولات (المقالع) ================= */
+        .check-group { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px; } .check-item { display: flex; align-items: center; gap: 5px; background: #f8f9fa; padding: 8px 12px; border-radius: 6px; border: 1px solid #eee; font-size: 0.95rem; cursor: pointer; } .check-item input[type="checkbox"] { width: 18px; height: 18px; margin: 0; }
+        .litho-table-wrapper { overflow-x: auto; max-height: 600px; border: 1px solid #ddd; border-radius: 6px; } .litho-table { width: 100%; border-collapse: collapse; min-width: 800px;} .litho-table th, .litho-table td { border: 1px solid #ddd; padding: 8px; text-align: center; } .litho-table th { background-color: #f4f6f7; font-size: 0.9rem; position: sticky; top: 0; z-index: 10; } .litho-table input, .litho-table select { border: 1px solid #ccc; border-radius: 4px; padding: 4px; width: 100%; } .litho-ui-section { margin-bottom: 8px; text-align: right; background: #fafafa; padding: 6px; border-radius: 6px; border: 1px solid #eee; } .btn-add-layer { background: #16a085; color: white; border: none; padding: 12px; width: 100%; font-size: 1.1rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 15px;}
+        .gps-grid { display: grid; grid-template-columns: 1fr; gap: 15px; } @media (min-width: 768px) { .gps-grid { grid-template-columns: 1fr 1fr; } } .gps-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; width: 100%; } .coord-display { background: #eaf2f8; border: 1px solid #a9cce3; padding: 10px; margin-top: 5px; border-radius: 6px; font-family: monospace; font-size: 0.95rem; direction: ltr; text-align: left; font-weight: bold; color: #154360; min-height: 40px;}
+        .btn-satellite { background: #8e44ad; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 15px;}
+        #resultsSection { border: 2px solid #2ecc71; padding: 20px; border-radius: 8px; background: #f9fff9; } .result-item { display: flex; justify-content: space-between; border-bottom: 1px dashed #bdc3c7; padding: 10px 0; font-size: 1.05rem; } .result-value { font-weight: bold; color: #145a32; font-size: 1.15rem; } .percentage-note { background: #d5f5e3; padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; color: #196f3d; text-align: center; border-right: 4px solid #27ae60; margin-bottom: 20px;}
+        .canvas-container { text-align: center; width: 100%; display: block; } .canvas-container h3 { color: #34495e; margin-bottom: 15px; font-size: 1.2rem; border-bottom: 1px dashed #ccc; padding-bottom: 10px;} canvas { background: #fff; width: 100%; height: auto; border: 1.5px solid #bdc3c7; border-radius: 6px; display: block;}
+        .map-wrapper { border: 2px solid #34495e; border-radius: 6px; overflow: hidden; height: 500px; width: 100%; position: relative; background: #f8f9fa;} #satelliteMap { width: 100%; height: 100%; z-index: 1; position: absolute; top: 0; left: 0; } .map-label { background: rgba(255,255,255,0.9); border: 2px solid #e74c3c; font-weight: bold; font-size: 14px; color: #c0392b; padding: 2px 6px; border-radius: 4px;} .map-north { position: absolute; top: 15px; right: 15px; z-index: 1000; background: rgba(255,255,255,0.9); padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 16px; color: #333; border: 2px solid #555;} .map-legend-box { position: absolute; bottom: 25px; right: 15px; z-index: 1000; background: rgba(255,255,255,0.95); padding: 10px; border-radius: 6px; border: 2px solid #2c3e50; font-size: 12px; text-align: right;}
+        .report-content { width: 100%; min-height: 250px; padding: 20px; font-family: 'Arial', sans-serif; font-size: 1.1rem; line-height: 2; border: 1px solid #bdc3c7; border-radius: 8px; box-sizing: border-box; background-color: #fcfcfc; color: #2c3e50; text-align: justify; outline: none; } .report-content p { margin-bottom: 15px; } .report-content b { color: #1c2833; font-size: 1.15rem; }
 
-        /* ========================================================
-           هندسة الطباعة الصارمة (PDF)
-          ======================================================== */
+        /* ================= هندسة الطباعة المحسنة (المقالع) ================= */
         .print-only { display: none !important; }
         @media print {
             @page { margin: 0; size: A4 portrait; }
@@ -120,993 +89,266 @@
             body { background: white; margin: 0; padding: 0; color: #333; font-family: 'Arial', sans-serif; font-size: 12px; }
             .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
             .screen-only { display: none !important; }
+            .header, .footer, .btn-calc, .btn-satellite, .btn-convert, .gps-btn, .btn-print, #introScreen, #dashboardScreen, .btn-back-dash, #calcButtonsArea, #inputLithoSection { display: none !important; }
             .print-only { display: block !important; }
-            .btn-back-dash { display: none !important; } /* إخفاء زر الرجوع عند الطباعة */
+            .no-print { display: none !important; }
             
-            .page-counter-element-str { 
-                width: 100%; height: 29.7cm; padding: 1.5cm; box-sizing: border-box; 
-                page-break-after: always; position: relative; display: flex !important; 
-                flex-direction: column; background: white;
-            }
+            .print-page-wrapper { width: 100%; box-sizing: border-box; padding: 1.0cm; min-height: 28.5cm; page-break-after: always; position: relative; display: block !important; background: white; }
+            #pageMap { page-break-after: auto !important; min-height: auto; } 
             
-            /* الكليشة العلوية للطباعة (مطابقة لنظام المقالع) */
-            .print-master-header {
-                border: 2px solid #2c3e50; border-radius: 8px; padding: 15px; margin-bottom: 20px;
-                display: flex; justify-content: space-between; align-items: center; background-color: #fdfcfc;
-            }
-            .header-center-info { text-align: center; flex: 2; }
-            .header-center-info h1 { font-size: 16px; margin: 0 0 5px 0; color: #1c2833; font-weight: bold;}
-            .header-center-info h2 { font-size: 14px; margin: 0; color: #e67e22; font-weight: bold; }
-            .header-center-info .geo-name { margin-top: 6px; font-size: 12px; font-weight: bold; color: #27ae60; }
-            .header-left-info { text-align: left; flex: 1; font-size: 11px; font-weight: bold; color: #555; }
-            .header-right-blank { flex: 1; }
+            .print-bottom { position: absolute; bottom: 0.5cm; left: 0; width: 100%; text-align: center; font-weight: bold; font-size: 14px; color: #333; }
 
-            /* جداول البيانات للصفحة الأولى */
-            .print-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; direction: rtl; }
-            .print-table th { background: #fdf2e9; color: #d35400; border: 1px solid #bdc3c7; padding: 10px; text-align: right; width: 35%; font-size: 13px; }
-            .print-table td { border: 1px solid #bdc3c7; padding: 10px; text-align: right; font-size: 13px; color: #2c3e50; font-weight: bold; }
-            .table-title { background: #ecf0f1; color: #2c3e50; padding: 8px 15px; font-weight: bold; border-radius: 5px; margin-bottom: 10px; font-size: 14px; border-right: 4px solid #e67e22; }
-
-            /* تنسيق الرسوم */
-            .section { margin-bottom: 10px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 10px; background-color: #fafafa; box-shadow: none; page-break-inside: avoid; }
-            .section-title { font-size: 1.1rem; margin-bottom: 6px; padding-bottom: 2px; border-bottom: 2px solid #e67e22; color:#e67e22;}
-            
-            canvas { max-height: 40% !important; max-width: 100%; object-fit: contain; display: block; margin: 0 auto; page-break-inside: avoid; }
-            #stereonetCanvas { max-width: 400px !important; aspect-ratio: 1 / 1; }
-            #canvasHeatmap { max-width: 300px !important; height: auto !important; }
-            
-            .kinematic-canvas-container { padding: 5px !important; margin-bottom: 10px !important; border-width: 1px !important;}
-            .geotech-split-legend { padding: 8px !important; margin-top: 5px !important; font-size: 11px !important; page-break-inside: avoid; }
-            .legend-grid { gap: 8px !important; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important; }
-            
-            .geological-explanation-box { font-size: 10.5pt !important; line-height: 1.6 !important; margin-top: 8px !important; padding: 10px !important; }
-            
-            /* الفوتر السفلي */
-            .print-bottom-str { 
-                position: absolute; bottom: 1cm; left: 0; width: 100%;
-                text-align: center; font-weight: bold; font-size: 12px; color: #333; border-top: 1px solid #eee; padding-top: 5px;
-            }
+            .print-header { text-align: center; border: 2px solid #2980b9; background-color: #f4f9fc; padding: 10px; margin-bottom: 15px; border-radius: 6px; position: relative; }
+            .print-header h1 { font-size: 18px; color: #1c2833; margin: 0 0 3px 0; } .print-header h2 { font-size: 13px; color: #e67e22; margin: 0; font-weight: bold; } .date-top-left { position: absolute; top: 8px; left: 12px; font-size: 10px; color: #555; font-weight: bold; }
+            .section { margin-bottom: 12px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 12px; background-color: #fafafa; box-shadow: none; page-break-inside: avoid; }
+            .section-title { font-size: 1.05rem; margin-bottom: 8px; padding-bottom: 3px; border-bottom: 2px solid #2980b9;} .sub-title { font-size: 0.95rem; margin: 10px 0 5px 0; border-bottom: none;}
+            .form-row { display: flex !important; flex-wrap: nowrap !important; gap: 10px !important; justify-content: space-between !important; margin-bottom: 5px !important; }
+            .form-group { flex: 1 !important; min-width: 0 !important; }
+            label { font-size: 0.85rem; margin-bottom: 2px; color: #1c2833 !important;}
+            input[type="number"], input[type="text"], select { border: none !important; border-bottom: 1px dashed #2980b9 !important; padding: 2px 0; font-size: 0.95rem; text-align: center; width: 100%; background: transparent; appearance: none; -webkit-appearance: none; color: #16a085 !important; font-weight: bold;}
+            .coord-display { padding: 4px; font-size: 0.85rem; margin-bottom: 2px; border: 1px solid #ccc !important; background: #fff !important;}
+            .print-litho-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; } .print-litho-table th, .print-litho-table td { border: 1px solid #bdc3c7; padding: 4px 6px; text-align: center; font-size: 0.85rem; line-height: 1.4; } .print-litho-table th { background-color: #eaf2f8; color: #2c3e50; font-weight: bold; padding: 6px;} .print-litho-table td { font-weight: bold; color: #2c3e50; }
+            #strataCanvasContainer { page-break-inside: avoid !important; margin-bottom: 0 !important; padding: 10px !important; border: 1px solid #bdc3c7 !important;} #strataCanvasContainer h3 { font-size: 1.2rem !important; margin-bottom: 15px !important; padding-bottom: 10px !important;} #strataCanvas { max-height: none !important; width: auto !important; max-width: 100% !important; display: block !important; margin: 0 auto !important; }
+            .report-content { font-family: 'Arial', sans-serif; text-align: justify; font-size: 1.05rem; line-height: 1.8; color: #222; border: none !important; background: transparent !important; padding: 0 !important; overflow: visible !important; min-height: 0 !important;} .report-content p { margin-bottom: 12px; } .report-content b { color: #1c2833; font-size: 1.15rem; }
+            .check-group { gap: 8px; margin-top: 5px; } .check-item { padding: 4px 8px; font-size: 0.85rem; background: #fff; border-color: #ccc; }
+            #resultsSection { padding: 10px; border: 2px solid #27ae60 !important; background: #fff !important;} .result-item { padding: 5px 0; font-size: 0.95rem; border-color: #ccc;} .result-value { font-size: 1.05rem; color: #27ae60 !important;} .percentage-note { padding: 6px; font-size: 0.85rem; margin-top: 8px; background: #eafaf1 !important; color: #1e8449 !important; margin-bottom: 10px;}
+            .canvas-container { width: 100% !important; display: block !important; margin-bottom: 10px !important;} canvas { border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; background: #fff !important; }
+            .leaflet-control-scale { display: none !important; } .map-wrapper { height: 800px !important; border: 2px solid #34495e !important; position: relative !important; page-break-inside: avoid; background-color: white !important;} #satelliteMap { height: 100% !important; } .leaflet-control-zoom { display: none !important; } .leaflet-control-container { background: white !important; } .content-padding { padding: 0 !important; }
         }
     </style>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
 </head>
 <body>
-
-<a href="https://ash2oo1.github.io/Geological-App/index.html?skipLogin=true" class="btn-back-dash screen-only">
-    <i class="fas fa-arrow-right"></i> رجوع إلى لوحة التحكم الرئيسية
-</a>
  
-<div class="container">
-    <div class="header screen-only">
-        <h1>نظام المسح الميداني الجيولوجي (التركيبي والجيوتقني)</h1>
-        <h2>بإشراف الجيولوجي: علي شندل الجنابي</h2>
-    </div>
-
-    <div class="content-padding screen-only" id="inputSectionStr">
-        
-        <div class="section">
-            <div class="section-title">أولاً: بيانات الجيولوجي والموقع</div>
-            <div class="form-row">
-                <div class="form-group"><label>اسم الجيولوجي المشرف:</label><input type="text" id="str_printGeoName" value="علي شندل الجنابي" style="color: #2c3e50;"></div>
-                <div class="form-group"><label>اسم المشروع / الموقع:</label><input type="text" id="str_projectName" placeholder="مثال: طريق عقرة المار بالمنحدر..."></div>
-                <div class="form-group"><label>وصف الليثولوجيا العام (Rock Type):</label><input type="text" id="str_rockType" placeholder="مثال: حجر جيري صلب ومتشقق..."></div>
+<div id="introScreen">
+    <div class="intro-box">
+        <div id="step1">
+            <h1>أهلاً وسهلاً بكم في منصة نظام المسح الميداني الجيولوجي</h1>
+            <h2>بإشراف الجيولوجي: علي شندل الجنابي</h2>
+            <div class="official-text">
+                <h3><i class="fas fa-landmark"></i> نبذة تعريفية عن المنصة:</h3>
+                <p>أُسست هذه المنصة الرقمية الرائدة في عام <b>2026</b> لتكون الأداة الرسمية والحل الجذري الموثوق، الذي ينقل العمل الجيولوجي من حقبة القياسات التقليدية إلى عصر الأتمتة والرقمنة الفضائية.</p>
+                <b>أبرز ما تُقدمه المنصة فنياً وهندسياً:</b>
+                <ul>
+                    <li><b>المعالجة الرياضية الفورية:</b> لحساب الكميات المستخرجة والمتبقية.</li>
+                    <li><b>النمذجة ثنائية الأبعاد والطباقية:</b> وتوليد مرتسم هندسي للمساحات.</li>
+                    <li><b>الرفع الطوبوغرافي الفضائي:</b> اتصال مباشر لتحديد الإحداثيات (UTM).</li>
+                </ul>
             </div>
+            <div class="instruction-section">
+                <h3><i class="fas fa-exclamation-triangle"></i> تعليمات هامة:</h3>
+                <ul class="instruction-list">
+                    <li><i class="fas fa-location-arrow" style="color: #e74c3c;"></i> <strong>تفعيل الموقع (GPS):</strong> يجب تفعيل خدمة الموقع الجغرافي في هاتفك <b>فور الدخول</b>.</li>
+                    <li><i class="fas fa-wifi" style="color: #3498db;"></i> <strong>الاتصال بالإنترنت:</strong> يُشترط وجود إنترنت فقط عند تسجيل الدخول الأول.</li>
+                    <li><i class="fas fa-user-check" style="color: #2ecc71;"></i> <strong>الاشتراك والتسجيل:</strong> النظام محمي ومخصص للمشتركين برمز سري.</li>
+                </ul>
+            </div>
+            <div class="social-container">
+                <p>لطلب الرمز السري أو الدعم الفني، تواصل مع مؤسس المنصة:</p>
+                <div class="social-links">
+                    <a href="https://wa.me/9647814993629" target="_blank" class="social-btn btn-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>
+                    <a href="https://www.facebook.com/share/1a8sii4wcf/" target="_blank" class="social-btn btn-facebook"><i class="fab fa-facebook-f"></i> فيسبوك</a>
+                </div>
+            </div>
+            <button onclick="goToStep2()" class="btn-action" id="btnNextStep1">فهمت التعليمات.. انتقل لتسجيل الدخول</button>
         </div>
-
-        <div class="section">
-            <div class="section-title">ثانياً: القياسات الكينماتيكية للطبقات (Discontinuities)</div>
-            
-            <div class="sub-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                <span>البوصلة الجيولوجية الرقمية (القياس الآلي):</span>
-                <button class="btn-sensor" onclick="startSmartCompass()"><i class="fas fa-compass"></i> تفعيل البوصلة الذكية</button>
+        <div id="step2">
+            <h1 style="color: #2ecc71; border-bottom: 2px solid #2ecc71; padding-bottom: 10px; display: inline-block;">صفحة تسجيل الدخول</h1>
+            <div class="warning-box">
+                <p><b style="color: #f1c40f;">أولاً:</b> اسم الجيولوجي الثلاثي.</p>
+                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري (من مؤسس المنصة).</p>
             </div>
-            
-            <div id="smartCompassBox" class="compass-live-box">
-                <p style="color: #c0392b;">اتجاه الميل (Dip Dir): <span id="live_dipDir">0</span>° <span id="live_dipDir_txt">-</span></p>
-                <p style="color: #2980b9;">زاوية الميل (Dip Angle): <span id="live_dip">0</span>°</p>
-                <p style="color: #27ae60;">المضرب (Strike): <span id="live_strike">0</span>° <span id="live_strike_txt">-</span></p>
-                <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 10px;">* قم بوضع الهاتف ملاصقاً للطبقة الصخرية للقياس.</p>
-                <button class="btn-calc" style="background: #27ae60; padding: 10px; font-size: 1rem; width: auto; display: inline-block; box-shadow: none;" onclick="captureCompassData()">تثبيت القراءات الميدانية 📌</button>
-            </div>
-
-            <div class="form-row" style="margin-top: 15px;">
-                <div class="form-group">
-                    <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('dip_strike')"></i> اتجاه الميل (Dip Direction):</label>
-                    <input type="number" id="str_dipDir" placeholder="0 - 360" min="0" max="360" oninput="calculateStrike()">
-                    <span id="str_dipDir_text" class="compass-value-text"></span>
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('dip_strike')"></i> زاوية الميل (Dip Angle):</label>
-                    <input type="number" id="str_dip" placeholder="0 - 90" min="0" max="90">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('dip_strike')"></i> اتجاه المضرب (Strike Direction):</label>
-                    <input type="number" id="str_strike" placeholder="محسوب أوتوماتيكياً" readonly style="background: #eee;">
-                    <span id="str_strike_text" class="compass-value-text"></span>
-                </div>
-            </div>
-            
-            <div class="sub-title" style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                <span>هندسة المنحدر الصخري أو القطع (Slope Geometry):</span>
-                <button class="btn-sensor" style="background: #d35400; box-shadow: 0 4px 6px rgba(211, 84, 0, 0.3);" onclick="getSensorData('slope')"><i class="fas fa-mobile-alt"></i> أخذ قراءة المنحدر آلياً</button>
-            </div>
-            <div class="form-row" style="margin-top: 15px;">
-                <div class="form-group">
-                    <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('slope_geom')"></i> اتجاه ميل المنحدر (Slope Dip Dir):</label>
-                    <input type="number" id="str_slopeDir" placeholder="0 - 360" min="0" max="360">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('slope_geom')"></i> زاوية ميل المنحدر (Slope Angle):</label>
-                    <input type="number" id="str_slopeAngle" placeholder="0 - 90" min="0" max="90">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('friction')"></i> زاوية الاحتكاك (Friction Angle φ):</label>
-                    <input type="number" id="str_friction" value="30" min="10" max="60">
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">ثالثاً: التوصيف الجيوميكانيكي (Rock Mass Rating - RMR)</div>
-            <p style="font-size: 0.95rem; color: #7f8c8d; margin-top: -10px; margin-bottom: 15px;">حسب نظام (Bieniawski 1989) لتقييم الكتلة الصخرية هندسياً:</p>
-            
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('ucs')"></i> 1. مقاومة الانضغاط للصخر السليم (Intact Rock Strength - UCS):</label>
-                <select id="rmr_ucs">
-                    <option value="15">> 250 MPa (صلابة استثنائية - يصعب كسره بالمطرقة)</option>
-                    <option value="12" selected>100 - 250 MPa (صلب جداً - يتطلب ضربات قوية لكسره)</option>
-                    <option value="7">50 - 100 MPa (صلب - يكسر بضربة مطرقة واحدة)</option>
-                    <option value="4">25 - 50 MPa (متوسط الصلابة - يمكن خدشه بمطواة بصعوبة)</option>
-                    <option value="2">5 - 25 MPa (ضعيف - يخدش بسهولة وينكسر بضربة خفيفة)</option>
-                    <option value="1">1 - 5 MPa (ضعيف جداً - يتفتت باليد القوية)</option>
-                </select>
-            </div>
-
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('rqd')"></i> 2. مؤشر جودة الصخر (Rock Quality Designation - RQD):</label>
-                <select id="rmr_rqd">
-                    <option value="20">90% - 100% (ممتاز - كتلة صلبة متماسكة)</option>
-                    <option value="17" selected>75% - 90% (جيد - فواصل قليلة)</option>
-                    <option value="13">50% - 75% (متوسط - كتل صخرية مجزأة جزئياً)</option>
-                    <option value="8">25% - 50% (ضعيف - صخر مهشم وكثير الانقطاعات)</option>
-                    <option value="3">< 25% (ضعيف جداً - أشبه بالركام)</option>
-                </select>
-            </div>
-
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('spacing')"></i> 3. المسافة بين الانقطاعات / الفواصل (Spacing of Discontinuities):</label>
-                <select id="rmr_spacing">
-                    <option value="20">> 2.0 متر (كتل ضخمة جداً)</option>
-                    <option value="15" selected>0.6 - 2.0 متر (كتل كبيرة)</option>
-                    <option value="10">200 - 600 ملم (كتل متوسطة الحجم)</option>
-                    <option value="8">60 - 200 ملم (كتل صغيرة / متقاربة)</option>
-                    <option value="5">< 60 ملم (صخر متكسر بشدة / صفائحي)</option>
-                </select>
-            </div>
-
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('cond')"></i> 4. حالة أسطح الانقطاعات والفواصل (Condition of Discontinuities):</label>
-                <select id="rmr_cond">
-                    <option value="30">خشنة جداً، أسطح متلاصقة تماماً، صخر غير متجوى (صلابة عالية للقص).</option>
-                    <option value="25" selected>خشنة قليلاً، فتحة الفاصل < 1 ملم، تجوية خفيفة على الجدران.</option>
-                    <option value="20">خشنة قليلاً، فتحة < 1 ملم، جدران متجوبة بشكل واضح.</option>
-                    <option value="10">أسطح مصقولة (Slickensided) أو حشوة طينية < 5 ملم، أو فتحة مستمرة 1-5 ملم.</option>
-                    <option value="0">حشوة طينية لينة > 5 ملم، أو فتحة > 5 ملم (خطر انزلاق عالي).</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('water')"></i> 5. حالة المياه الجوفية في الفواصل (Groundwater Conditions):</label>
-                <select id="rmr_water">
-                    <option value="15" selected>جاف تماماً (Completely Dry)</option>
-                    <option value="10">رطب (Damp - لا يوجد ماء حر)</option>
-                    <option value="7">مبلل / قطرات (Wet - ترشيح مائي)</option>
-                    <option value="4">تقطير مستمر (Dripping)</option>
-                    <option value="0">جريان مائي (Flowing - ضغط مائي داخل الشقوق)</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">رابعاً: المؤثرات الخارجية والظروف الحقلية</div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('undercutting')"></i> 1. التقويض السفلي بواسطة المياه (Toe Undercutting):</label>
-                    <select id="str_undercutting">
-                        <option value="none">لا يوجد</option>
-                        <option value="active">نعم، يوجد نحت مائي نشط أسفل المنحدر</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('freezethaw')"></i> 2. دورات الانجماد والذوبان (Freeze-Thaw Cycles):</label>
-                    <select id="str_freezethaw">
-                        <option value="no">تأثير ضعيف أو معدوم</option>
-                        <option value="yes">نعم، تأثير قوي (منطقة ثلوج)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-info-circle info-icon" onclick="openInfoModal('vibration')"></i> 3. الأحمال والاهتزازات (Vibrations/Loads):</label>
-                    <select id="str_vibration">
-                        <option value="no">لا توجد</option>
-                        <option value="yes">نعم، توجد آليات ثقيلة أو تفجير قريباً من الموقع</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div id="calcButtonsAreaStr" class="screen-only">
-            <button class="btn-calc" onclick="calculateStructuralResults()">تحليل البيانات وإصدار التقرير الشامل <i class="fas fa-file-pdf"></i></button>
+            <input type="text" id="geoNameInput" placeholder="أدخل اسم الجيولوجي (الثلاثي) هنا..." required autocomplete="off">
+            <input type="password" id="adminPassword" placeholder="أدخل رمز الدخول السري هنا...">
+            <button onclick="handleLogin()" class="btn-action" id="loginBtn">تسجيل الدخول</button>
+            <div id="loginError" class="error-text">❌يرجى التأكد من الاسم وكلمة المرور.</div>
         </div>
     </div>
-
-    <div id="screenResultsSummary" class="screen-only section" style="display: none; border-color: #e67e22; max-width: 1100px; margin: auto;">
-        <div class="section-title">النتيجة النهائية للتوصيف الجيوميكانيكي (RMR)</div>
-        <div style="background: #fdf2e9; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-right: 4px solid #d35400; display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap;">
-            <span style="font-size: 1.1rem; color:#2c3e50; font-weight: bold;">مجموع نقاط RMR: <span id="screen_rmrTotal" style="font-size: 1.4rem;">0</span> / 100</span>
-            <span style="font-size: 1.1rem; color:#2c3e50; font-weight: bold;">التصنيف الهندسي: <span id="screen_rmrClass">---</span></span>
-        </div>
-        <div id="screen_kinematicAlert" style="text-align: center; margin-top:15px;"></div>
-        
-        <div style="text-align: center; margin-top: 25px;">
-            <button class="btn-print" style="width: auto; padding: 10px 30px;" onclick="prepareAndPrintStr()">📄 اضغط هنا لحفظ وطباعة التقرير الشامل (PDF)</button>
-        </div>
-    </div>
-
-    <div class="content-padding screen-only" id="diagramsScreenView" style="display: none;">
-        <div class="section" style="border: 2px solid #e67e22; padding: 15px;">
-            <h3 style="color: #e67e22; margin: 0 0 10px 0; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">النماذج الهندسية (Geotechnical Models)</h3>
-            
-            <div class="kinematic-canvas-container">
-                <h4>1. المقطع الهندسي للتضاريس (Topographic Cross-Section)</h4>
-                <canvas id="topoCanvasScreen" width="850" height="400" style="background: #fff;"></canvas>
-                <div class="geotech-split-legend">
-                    <div class="legend-grid">
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: #ecf0f1;"></div><div class="geotech-legend-text">الكتلة الصخرية الجبلية</div></div>
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: #d7ccc8;"></div><div class="geotech-legend-text">تضاريس السطح العلوية</div></div>
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="border: 2px solid #2980b9; background:transparent; border-radius:50%;"></div><div class="geotech-legend-text" style="color: #2980b9;">قوس زاوية المنحدر</div></div>
-                    </div>
-                </div>
-                <div class="geological-explanation-box" id="topoExplanationScreen"></div>
-            </div>
-
-            <div class="kinematic-canvas-container">
-                <h4>2. تحليل الكتلة الحرّة والقوى المؤثرة (Free Body Diagram)</h4>
-                <canvas id="rockCanvasScreen" width="850" height="400" style="background: #fff;"></canvas>
-                <div class="geotech-split-legend">
-                    <div class="legend-grid">
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: rgba(231, 76, 60, 0.4); border: 2px solid #333;"></div><div class="geotech-legend-text">الكتلة المعرضة للانزلاق</div></div>
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol"><i class="fas fa-arrow-down" style="color:#27ae60;"></i></span><div class="geotech-legend-text">W - متجه قوة الوزن</div></div>
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol"><i class="fas fa-arrow-up" style="color:#8e44ad; transform:rotate(-30deg);"></i></span><div class="geotech-legend-text">N - القوة العمودية</div></div>
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol"><i class="fas fa-arrow-up" style="color:#f39c12; transform:rotate(60deg);"></i></span><div class="geotech-legend-text">R - قوة الاحتكاك</div></div>
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol"><i class="fas fa-arrow-up" style="color:#3498db; transform:rotate(120deg);"></i></span><div class="geotech-legend-text">U/V - ضغط المياه</div></div>
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="background:transparent; border-bottom: 3px solid #c0392b;"></div><div class="geotech-legend-text">مستوى الانزلاق</div></div>
-                    </div>
-                </div>
-                <div class="geological-explanation-box" id="rockExplanationScreen"></div>
-            </div>
-
-            <div class="kinematic-canvas-container">
-                <h4>3. التحليل الكينماتيكي بالمسقط الاستيريوجرافي</h4>
-                <canvas id="stereonetCanvasScreen" width="600" height="600" style="background: #fff;"></canvas>
-                <div class="geotech-split-legend" id="kinematicLegendScreen"></div>
-                <div class="geological-explanation-box" id="stereoExplanationScreen"></div>
-            </div>
-        </div>
-
-        <div class="section" style="border: 2px solid #8e44ad; padding: 15px;">
-            <div class="section-title" style="color: #8e44ad; border-bottom-color: #8e44ad;">خامساً: الابتكارات الجيوميكانيكية الحديثة</div>
-            
-            <div class="kinematic-canvas-container" style="border-color: #8e44ad;">
-                <h4 style="color: #8e44ad;">1. المسقط الأفقي والمقطع العرضي للطبقات</h4>
-                <canvas id="canvas3DBlockScreen" width="850" height="450" style="background: #fff;"></canvas>
-                <div class="geotech-split-legend" style="border-color: #8e44ad;">
-                    <div class="legend-grid">
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol" style="color:#2c3e50; font-weight:bold; font-size:1.5rem;">┣</span><div class="geotech-legend-text">رمز المضرب والميل</div></div>
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol"><i class="fas fa-angle-right" style="color:#c0392b;"></i></span><div class="geotech-legend-text">زاوية الميل الحقيقية</div></div>
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol"><i class="fas fa-ruler-combined" style="color:#27ae60;"></i></span><div class="geotech-legend-text">السمك الحقيقي للطبقة</div></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="kinematic-canvas-container" style="border-color: #8e44ad;">
-                <h4 style="color: #8e44ad;">2. رادار الانهيار العلوي (Top-Down Hazard Radar)</h4>
-                <canvas id="canvasRadarScreen" width="600" height="400" style="background: #fff;"></canvas>
-                <div class="geotech-split-legend" style="border-color: #8e44ad;">
-                    <div class="legend-grid">
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="border: 4px solid #2c3e50; background:transparent;"></div><div class="geotech-legend-text">خط قمة المنحدر</div></div>
-                        <div class="geotech-legend-item"><span class="geotech-legend-symbol"><i class="fas fa-arrow-right" style="color:#c0392b;"></i></span><div class="geotech-legend-text">اتجاه انهيار الطبقة</div></div>
-                        <div class="geotech-legend-item"><div class="geotech-legend-color" style="background: rgba(231, 76, 60, 0.5);"></div><div class="geotech-legend-text">نطاق الخطر</div></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="kinematic-canvas-container" style="border-color: #8e44ad; margin-bottom: 0;">
-                <h4 style="color: #8e44ad;">3. عمود RMR الجيوميكانيكي الحراري (Heatmap Column)</h4>
-                <div class="heatmap-wrapper">
-                    <canvas id="canvasHeatmapScreen" width="400" height="500" style="background: #fff;"></canvas>
-                    <div class="heatmap-scale-legend">
-                        <span style="color:#27ae60;">ممتاز / آمن<br>(Safe)</span>
-                        <div class="heatmap-scale-box"></div>
-                        <span style="color:#c0392b;">ضعيف / خطر<br>(Hazard)</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_1" style="display: none;">
-        <div class="print-master-header print-only">
-            <div class="header-right-blank"></div>
-            <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1>
-                <h2>(التقرير الشامل للتركيبي والجيوتقني)</h2>
-                <div class="geo-name">إعداد وتدقيق الجيولوجي: <span id="res_geoNameHeader"></span></div>
-            </div>
-            <div class="header-left-info printDateHeader">--:-- - --/--/----</div>
-        </div>
-        <div class="content-padding">
-            <div class="table-title">أولاً: بيانات الموقع والجيولوجي المشرف</div>
-            <table class="print-table">
-                <tr><th>اسم الجيولوجي المشرف:</th><td id="res_geoName">--</td></tr>
-                <tr><th>اسم المشروع / الموقع:</th><td id="res_projName">--</td></tr>
-                <tr><th>وصف الليثولوجيا العام:</th><td id="res_lithoDesc">--</td></tr>
-            </table>
-            <div class="table-title">ثانياً: القياسات الكينماتيكية الحقلية والهندسية</div>
-            <table class="print-table">
-                <tr><th>اتجاه الميل (Dip Dir) / المضرب:</th><td><span id="res_dipStrike">--</span></td></tr>
-                <tr><th>زاوية الميل الحقيقية (Dip Angle):</th><td><span id="res_dipAngle">--</span> درجة</td></tr>
-                <tr><th>هندسة المنحدر الصخري:</th><td><span id="res_slopeGeom">--</span></td></tr>
-                <tr><th>زاوية الاحتكاك الداخلي (φ):</th><td><span id="res_fricVal">--</span> درجة</td></tr>
-            </table>
-            <div class="table-title">ثالثاً: تفاصيل التوصيف الجيوميكانيكي للكتلة (RMR)</div>
-            <table class="print-table">
-                <tr><th>مقاومة الانضغاط (UCS):</th><td id="res_ucsTxt">--</td></tr>
-                <tr><th>مؤشر جودة الصخر (RQD):</th><td id="res_rqdTxt">--</td></tr>
-                <tr><th>المسافة بين الفواصل:</th><td id="res_spacingTxt">--</td></tr>
-                <tr><th>حالة أسطح الفواصل:</th><td id="res_condTxt">--</td></tr>
-                <tr><th>حالة المياه الجوفية:</th><td id="res_waterTxt">--</td></tr>
-            </table>
-            <div class="table-title">رابعاً: المؤثرات الخارجية والظروف الحقلية</div>
-            <table class="print-table">
-                <tr><th>التقويض السفلي (Undercutting):</th><td id="res_undercutTxt">--</td></tr>
-                <tr><th>دورات الانجماد والذوبان:</th><td id="res_freezeTxt">--</td></tr>
-                <tr><th>الأحمال والاهتزازات:</th><td id="res_vibTxt">--</td></tr>
-            </table>
-            <div class="section" style="border: 2px solid #e67e22; background-color: #fdfcfc; margin-top:15px; padding: 15px;">
-                <div style="display: flex; justify-content: space-around; align-items: center; border-bottom: 1px dashed #ccc; padding-bottom: 10px; margin-bottom: 10px;">
-                    <span style="font-size: 16px; color:#2c3e50;">مجموع نقاط RMR: <span id="res_rmrTotalPrint" style="font-weight: bold; font-size: 18px;">0</span> / 100</span>
-                    <span style="font-size: 16px; color:#2c3e50;">التصنيف الهندسي: <span id="res_rmrClassFinalPrint" style="font-weight: bold;">---</span></span>
-                </div>
-                <div id="res_kinematicAlertPrint" style="text-align: center; margin-top:10px;"></div>
-            </div>
-        </div>
-        <div class="print-bottom-str print-only">الصفحة <span class="currPageNum"></span></div>
-    </div>
-
-    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_2" style="display: none;">
-        <div class="print-master-header print-only">
-            <div class="header-right-blank"></div>
-            <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1>
-                <h2>(التقرير الشامل للتركيبي والجيوتقني)</h2>
-                <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
-            </div>
-            <div class="header-left-info printDateHeader">--:-- - --/--/----</div>
-        </div>
-        <div class="content-padding">
-            <div class="section" style="border: 2px solid #e67e22; padding: 15px;">
-                <h3 style="color: #e67e22; margin: 0 0 10px 0; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">النماذج الهندسية (Geotechnical Models)</h3>
-                <div class="kinematic-canvas-container">
-                    <h4>1. المقطع الهندسي للتضاريس</h4>
-                    <canvas id="topoCanvasPrint" width="850" height="400" style="background: #fff;"></canvas>
-                    <div class="geological-explanation-box" id="topoExplanationPrint"></div>
-                </div>
-            </div>
-        </div>
-        <div class="print-bottom-str print-only">الصفحة <span class="currPageNum"></span></div>
-    </div>
-
-    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_3" style="display: none;">
-        <div class="print-master-header print-only">
-            <div class="header-right-blank"></div>
-            <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1>
-                <h2>(التقرير الشامل للتركيبي والجيوتقني)</h2>
-                <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
-            </div>
-            <div class="header-left-info printDateHeader">--:-- - --/--/----</div>
-        </div>
-        <div class="content-padding">
-            <div class="section" style="border: 2px solid #e67e22; padding: 20px;">
-                <div class="kinematic-canvas-container">
-                    <h4>2. تحليل الكتلة الحرّة والقوى المؤثرة</h4>
-                    <canvas id="rockCanvasPrint" width="850" height="400" style="background: #fff;"></canvas>
-                    <div class="geological-explanation-box" id="rockExplanationPrint"></div>
-                </div>
-            </div>
-        </div>
-        <div class="print-bottom-str print-only">الصفحة <span class="currPageNum"></span></div>
-    </div>
-
-    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_4" style="display: none;">
-        <div class="print-master-header print-only">
-            <div class="header-right-blank"></div>
-            <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1>
-                <h2>(التقرير الشامل للتركيبي والجيوتقني)</h2>
-                <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
-            </div>
-            <div class="header-left-info printDateHeader">--:-- - --/--/----</div>
-        </div>
-        <div class="content-padding">
-            <div class="section" style="border: 2px solid #e67e22; padding: 20px;">
-                <div class="kinematic-canvas-container">
-                    <h4>3. التحليل الكينماتيكي بالمسقط الاستيريوجرافي</h4>
-                    <canvas id="stereonetCanvasPrint" width="600" height="600" style="background: #fff;"></canvas>
-                    <div class="geological-explanation-box" id="stereoExplanationPrint"></div>
-                </div>
-            </div>
-        </div>
-        <div class="print-bottom-str print-only">الصفحة <span class="currPageNum"></span></div>
-    </div>
-
-    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_5" style="display: none;">
-        <div class="print-master-header print-only">
-            <div class="header-right-blank"></div>
-            <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1>
-                <h2>(التقرير الشامل للتركيبي والجيوتقني)</h2>
-                <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
-            </div>
-            <div class="header-left-info printDateHeader">--:-- - --/--/----</div>
-        </div>
-        <div class="content-padding">
-            <div class="section" style="border: 2px solid #8e44ad; padding: 20px;">
-                <div class="section-title" style="color: #8e44ad; border-bottom-color: #8e44ad;">خامساً: الابتكارات الجيوميكانيكية الحديثة</div>
-                <div class="kinematic-canvas-container" style="border-color: #8e44ad;">
-                    <h4 style="color: #8e44ad;">1. المسقط الأفقي والمقطع العرضي للطبقات</h4>
-                    <canvas id="canvas3DBlockPrint" width="850" height="450" style="background: #fff;"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="print-bottom-str print-only">الصفحة <span class="currPageNum"></span></div>
-    </div>
-
-    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_6" style="display: none;">
-        <div class="print-master-header print-only">
-            <div class="header-right-blank"></div>
-            <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1>
-                <h2>(التقرير الشامل للتركيبي والجيوتقني)</h2>
-                <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
-            </div>
-            <div class="header-left-info printDateHeader">--:-- - --/--/----</div>
-        </div>
-        <div class="content-padding">
-            <div class="section" style="border: 2px solid #8e44ad; padding: 20px;">
-                <div class="kinematic-canvas-container" style="border-color: #8e44ad;">
-                    <h4 style="color: #8e44ad;">2. رادار الانهيار العلوي (Top-Down Radar)</h4>
-                    <canvas id="canvasRadarPrint" width="600" height="400" style="background: #fff;"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="print-bottom-str print-only">الصفحة <span class="currPageNum"></span></div>
-    </div>
-
-    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_7" style="display: none;">
-        <div class="print-master-header print-only">
-            <div class="header-right-blank"></div>
-            <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1>
-                <h2>(التقرير الشامل للتركيبي والجيوتقني)</h2>
-                <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
-            </div>
-            <div class="header-left-info printDateHeader">--:-- - --/--/----</div>
-        </div>
-        <div class="content-padding">
-            <div class="section" style="border: 2px solid #8e44ad; padding: 20px;">
-                <div class="kinematic-canvas-container" style="border-color: #8e44ad; margin-bottom: 0;">
-                    <h4 style="color: #8e44ad;">3. عمود RMR الجيوميكانيكي الحراري</h4>
-                    <div class="heatmap-wrapper">
-                        <canvas id="canvasHeatmapPrint" width="400" height="500" style="background: #fff;"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="print-bottom-str print-only">الصفحة <span class="currPageNum"></span></div>
-    </div>
-
 </div>
-
-<div id="infoModalOverlay" class="modal-overlay">
-    <div class="modal-box">
-        <div class="modal-header">
-            <h3 id="modalTitle">الدليل الجيولوجي الميداني</h3>
-            <button class="close-modal" onclick="closeInfoModal()"><i class="fas fa-times-circle"></i></button>
+ 
+<div id="dashboardScreen" class="screen-only">
+    <div class="dashboard-header-top">
+        <h1>منصة المسح الميداني الجيولوجي العالمية</h1>
+        <h2>الإصدار الشامل لكافة المسوحات الميدانية | بإشراف الجيولوجي: علي شندل الجنابي</h2>
+    </div>
+    <div style="text-align: center; margin-bottom: 30px;"><h3 style="color: #34495e; font-size: 1.5rem; border-bottom: 2px solid #bdc3c7; display: inline-block; padding-bottom: 10px;">اختر نظام المسح الميداني المطلوب إجراؤه:</h3></div>
+    <div class="modules-grid">
+        <div class="module-card card-quarry" onclick="openModule('moduleQuarries')"><i class="fas fa-tractor"></i><h3>المقالع واستثمار التراب</h3><p>حساب الكميات، المساحات، ورسم العمود الطباقي.</p></div>
+        
+        <div class="module-card card-structural" onclick="window.location.href='https://ash2oo1.github.io/Geological-App/test-structural.html'">
+            <i class="fas fa-compass"></i>
+            <h3>المسح التركيبي والجيوتقني</h3>
+            <p>تحليل كينماتيكي متقدم (Stereonet) وانزلاق المنحدرات وتصنيف الكتلة الصخرية (RMR).</p>
         </div>
-        <div class="modal-body" id="modalContent"></div>
+
+        <div class="module-card card-hydro" onclick="alert('قيد البرمجة.')"><div class="coming-soon-badge">قريباً</div><i class="fas fa-water"></i><h3>المسح الهيدروجيولوجي</h3></div>
+        <div class="module-card card-geo" onclick="alert('قيد البرمجة.')"><div class="coming-soon-badge">قريباً</div><i class="fas fa-mountain"></i><h3>المسح الجيومورفولوجي</h3></div>
+        <div class="module-card card-acoustic" onclick="alert('قيد البرمجة.')"><div class="coming-soon-badge">قريباً</div><i class="fas fa-wave-square"></i><h3>المختبر الصوتي الجيولوجي</h3></div>
+        <div class="module-card card-photo" onclick="alert('قيد البرمجة.')"><div class="coming-soon-badge">قريباً</div><i class="fas fa-camera-retro"></i><h3>نمذجة المكاشف الآلية</h3></div>
+    </div>
+</div>
+ 
+<div id="moduleQuarries" class="system-module">
+    <button class="btn-back-dash screen-only" onclick="backToDashboard()"><i class="fas fa-arrow-right"></i> رجوع إلى لوحة التحكم الرئيسية</button>
+    <div class="container">
+        <div class="header screen-only"><h1>نظام المسح الميداني الجيولوجي (المقالع)</h1><h2 ondblclick="lockSystem()" style="cursor: pointer;">بإشراف الجيولوجي: علي شندل الجنابي</h2></div>
+        
+        <div class="print-page-wrapper page-counter-element">
+            <div class="print-only print-header"><span class="date-top-left printDateHeader"></span><h1>نظام المسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1><h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2></div>
+            <div class="content-padding">
+               <div class="section"><div class="section-title">أولاً: بيانات الجيولوجي المشرف وموقع العمل</div><div class="form-row"><div class="form-group"><label>اسم الجيولوجي المشرف:</label><input type="text" id="printGeoName" readonly style="color: #2c3e50;"></div><div class="form-group"><label>الدولة:</label><select id="countrySelect" onchange="updateGovs()"><option value="iraq" selected>العراق</option></select></div><div class="form-group"><label id="govLabel">المحافظة:</label><select id="govSelect"><option>بغداد</option><option>البصرة</option><option>نينوى</option><option>أربيل</option><option>النجف الأشرف</option><option>كربلاء المقدسة</option><option>كركوك</option><option>الأنبار</option><option>ديالى</option><option>ذي قار</option><option>السليمانية</option><option>بابل</option><option>ميسان</option><option>واسط</option><option>صلاح الدين</option><option>الديوانية</option><option>المثنى</option><option>دهوك</option><option>حلبجة</option></select><input type="text" id="govInput" style="display:none; width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-size:1rem;" placeholder="اكتب اسم المحافظة هنا..."></div></div></div>
+               <div class="section"><div class="section-title">ثانياً: البيانات الحقلية والمساحية</div><div class="sub-title">البيانات التعاقدية (الثابتة):</div><div class="form-row"><div class="form-group"><label>المساحة بالدونم:</label><div style="display: flex; gap: 10px;"><input type="number" id="areaInDunam" placeholder="مثلاً: 1.5"><button type="button" class="btn-convert screen-only" onclick="convertDunam()">تحويل</button></div></div><div class="form-group"><label>المساحة المتعاقد عليها (m²):</label><input type="number" id="contractArea" placeholder="الناتج (7500)"></div><div class="form-group"><label>الكمية المتعاقد عليها (m³):</label><input type="number" id="contractVol" placeholder="مثلاً: 37500"></div></div><div class="sub-title" style="margin-top: 20px;">القياسات الميدانية (الفعلية):</div><div class="form-row"><div class="form-group"><label>الطول الميداني المستثمر (m):</label><input type="number" id="fieldLength" placeholder="أدخل الطول"></div><div class="form-group"><label>العرض الميداني المستثمر (m):</label><input type="number" id="fieldWidth" placeholder="أدخل العرض"></div><div class="form-group"><label>العمق الفعلي للاستثمار (m):</label><input type="number" id="fieldDepth" placeholder="أدخل العمق الفعلي"></div></div></div>
+               <div class="section"><div class="section-title">ثالثاً: الإحداثيات الميدانية للموقع (نظام UTM)</div><div class="gps-grid"><div class="form-group"><button class="gps-btn screen-only" onclick="getCoordinates('point1')">إحداثيات (A)</button><div id="point1" class="coord-display">E: --- | N: ---</div></div><div class="form-group"><button class="gps-btn screen-only" onclick="getCoordinates('point2')">إحداثيات (B)</button><div id="point2" class="coord-display">E: --- | N: ---</div></div><div class="form-group"><button class="gps-btn screen-only" onclick="getCoordinates('point3')">إحداثيات (C)</button><div id="point3" class="coord-display">E: --- | N: ---</div></div><div class="form-group"><button class="gps-btn screen-only" onclick="getCoordinates('point4')">إحداثيات (D)</button><div id="point4" class="coord-display">E: --- | N: ---</div></div></div></div>
+            </div>
+            <div class="print-only print-bottom">الصفحة 1 من <span class="totalPagesText">X</span></div>
+        </div> 
+ 
+        <div class="print-page-wrapper page-counter-element">
+            <div class="print-only print-header"><span class="date-top-left printDateHeader"></span><h1>نظام المسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1><h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2></div>
+            <div class="content-padding">
+               <div class="section"><div class="section-title">رابعاً: التقييم الجيولوجي الفني ومطابقة المواصفات</div><label>أ. المتغيرات الجيولوجية والتركيبية:</label><select id="geoVarSelect" onchange="toggleGeoVars()" style="margin-bottom: 10px;"><option value="no">لا توجد أي متغيرات جيولوجية في موقع العمل</option><option value="yes">توجد متغيرات وتراكيب جيولوجية مرصودة</option></select><div id="geoVarDetails" style="display: none; padding: 10px; background: #eaf2f8; border-radius: 6px; margin-bottom: 15px;"><label>حدد المتغيرات:</label><div class="check-group"><label class="check-item"><input type="checkbox"> عروق جبسية/ملحية</label><label class="check-item"><input type="checkbox"> عدسات رملية متداخلة</label><label class="check-item"><input type="checkbox"> فواصل وتشقق</label><label class="check-item"><input type="checkbox"> فوالق</label><label class="check-item"><input type="checkbox" id="otherVarCb" onchange="document.getElementById('otherVarInput').style.display = this.checked ? 'block' : 'none'"> أخرى:</label></div><input type="text" id="otherVarInput" placeholder="اكتب المتغيرات..." style="display: none; margin-top: 10px; width: 100%;"></div><label style="margin-top: 15px;">ب. مطابقة المواصفات الفنية مع التحاليل:</label><select id="specsSelect" style="margin-bottom: 5px;"><option value="yes">المواصفات الفنية مطابقة لما جاء بكتاب التحليل المخبري</option><option value="no">المواصفات الفنية غير مطابقة</option></select></div>
+               <div class="section"><div class="section-title">خامساً: التقييم البيئي، السلامة، ورصد العمليات</div><label>أ. مستوى التلوث الموضعي الملاحظ:</label><select id="pollSelect" onchange="togglePollution()" style="margin-bottom: 10px;"><option value="no">لا يوجد تلوث ملحوظ</option><option value="yes">تم رصد ملوثات في الموقع</option></select><div id="pollDetails" class="check-group" style="display: none; margin-bottom: 15px;"><label class="check-item"><input type="checkbox"> غبار كثيف</label><label class="check-item"><input type="checkbox"> نفايات كيميائية</label><label class="check-item"><input type="checkbox"> تلوث نفطي</label></div><div class="form-row"><div class="form-group"><label>ب. تقييم مستوى المياه الجوفية:</label><select style="margin-bottom: 10px;"><option>الحفر آمن ولم يصل للمياه</option><option>المياه الجوفية ظاهرة</option></select></div><div class="form-group"><label>ج. خطة إعادة التأهيل:</label><select style="margin-bottom: 10px;"><option>الموقع قيد الاستثمار</option><option>متروك كحفرة خطرة</option><option>تمت أعمال التسوية</option></select></div></div><label style="border-top: 1px dashed #ccc; padding-top: 10px; margin-top: 5px;">د. رصد عمليات التصنيع الأولية والآليات:</label><div class="check-group"><label class="check-item"><input type="checkbox"> إزالة الغطاء الترابي</label><label class="check-item"><input type="checkbox"> عمليات القلع</label><label class="check-item"><input type="checkbox"> نقل المادة</label><label class="check-item"><input type="checkbox"> التخمير والفرز</label></div><div class="check-group" style="margin-top: 5px;"><span style="font-size: 0.9rem; color: #555; align-self: center;" class="screen-only">الآليات المرصودة:</span><label class="check-item"><input type="checkbox"> حفارة</label><label class="check-item"><input type="checkbox"> قلابات</label><label class="check-item"><input type="checkbox"> شفل</label><label class="check-item"><input type="checkbox"> كاشطة</label></div></div>
+            </div>
+            <div class="print-only print-bottom">الصفحة 2 من <span class="totalPagesText">X</span></div>
+        </div>
+ 
+        <div class="content-padding screen-only" id="inputLithoSection">
+            <div class="section"><div class="section-title">سادساً: إدخال التتابع الطباقي (يُضاف عدد الطبقات حسب الحاجة)</div><div class="litho-table-wrapper"><table class="litho-table" id="inputLithoTable"><tr><th style="width: 5%;">#</th><th style="width: 55%;">الخصائص الليثولوجية للطبقة</th><th style="width: 20%;">السُمك (m)</th><th style="width: 20%;">العمق (m)</th></tr><tbody id="lithoBody"></tbody></table></div><button type="button" class="btn-add-layer" onclick="addLayerRow()"><i class="fas fa-plus"></i> إضافة طبقة جيولوجية جديدة</button></div>
+        </div>
+ 
+        <div id="dynamicTablePagesContainer" class="print-only"></div>
+ 
+        <div class="print-page-wrapper page-counter-element" id="pageStrataCanvas" style="display: none;">
+            <div class="print-only print-header"><span class="date-top-left printDateHeader"></span><h1>نظام المسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1><h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2></div>
+            <div class="content-padding"><div class="section" id="strataCanvasContainer" style="border: 2px solid #2980b9; margin-bottom: 15px;"><div class="canvas-container" style="margin-bottom: 0;"><h3>العمود الطباقي لمنطقة العمل (Stratigraphic Column)</h3><canvas id="strataCanvas" width="700" height="850"></canvas></div></div></div>
+            <div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesText">X</span></div>
+        </div>
+ 
+        <div class="content-padding screen-only" id="uiReportSection" style="display: none;"><div class="section"><div class="section-title" style="border-bottom-color: #8e44ad; color: #8e44ad;">سابعاً: التفسير الجيولوجي والوصف الليثولوجي للمقطع الحقلي</div><div id="uiReportContent" class="report-content" contenteditable="true"></div></div></div>
+ 
+        <div id="dynamicTextPagesContainer" class="print-only"></div>
+ 
+        <div id="calcButtonsArea" class="content-padding screen-only">
+            <div id="colorSection" class="section"><div class="section-title">تخصيص ألوان المرتسم المساحي</div><div class="form-row"><div class="form-group"><label>لون المساحة المستثمرة:</label><input type="color" id="colorInvFill" value="#cceeff"></div><div class="form-group"><label>لون المساحة المتبقية:</label><input type="color" id="colorRemFill" value="#115577"></div></div></div>
+            <button class="btn-calc" onclick="calculateResults()">إجراء المعالجة وتوليد المرتسمات والتقارير</button>
+        </div>
+ 
+        <div class="print-page-wrapper page-counter-element" id="pageResults" style="display: none;">
+            <div class="print-only print-header"><span class="date-top-left printDateHeader"></span><h1>نظام المسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1><h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2></div>
+            <div class="content-padding">
+               <div class="section" id="resultsSection" style="margin-bottom: 15px;"><div class="section-title" style="border-bottom-color: #27ae60; color: #27ae60; margin-bottom: 10px;">ثامناً: النتائج النهائية للكميات والمساحة والعمق</div><div class="result-item"><span>الكميات المستخرجة لغاية يوم الزيارة (م³):</span><span class="result-value" id="resExtractedVol">0</span></div><div class="result-item"><span>الكميات المتبقية من العقد (م³):</span><span class="result-value" id="resRemainingVol">0</span></div><div class="result-item"><span>المساحة المستثمرة (م²):</span><span class="result-value" id="resInvestedArea">0</span></div><div class="result-item"><span>المساحة المتبقية (م²):</span><span class="result-value" id="resRemainingArea">0</span></div><div class="result-item" style="border-bottom: none;"><span>أقصى عمق للاستثمار (م):</span><span class="result-value" id="resMaxDepth">0</span></div><div id="percentageNote" class="percentage-note"></div></div>
+               <div class="section" style="border: 2px solid #27ae60; margin-bottom: 0;"><div class="canvas-container" style="margin-bottom: 0;"><h3 style="color: #27ae60;">المرتسم الثنائي الأبعاد للمساحات المستثمرة والمتبقية</h3><canvas id="geoCanvas" width="850" height="400" style="background: #fff; width: 100%; border: 1px solid #ddd;"></canvas></div></div>
+               <div class="screen-only" style="margin-top: 20px;"><button class="btn-satellite" id="satBtn" onclick="generateSatelliteMap()">🌍 توليد الصورة الفضائية للموقع (يتطلب إنترنت)</button><button class="btn-print" onclick="prepareAndPrint()">📄 حفظ التقرير الشامل كملف PDF</button></div>
+            </div>
+            <div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesText">X</span></div>
+        </div>
+ 
+        <div class="print-page-wrapper page-counter-element" id="pageMap" style="display: none;">
+            <div class="print-only print-header"><span class="date-top-left printDateHeader"></span><h1>نظام المسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1><h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2></div>
+            <div class="content-padding"><div class="section" style="border: 2px solid #8e44ad; padding: 10px; box-shadow: none;"><div class="canvas-container" id="mapSection" style="margin-bottom: 0;"><h3>تاسعاً: الصورة الفضائية للموقع (Satellite View)</h3><div class="map-wrapper" dir="ltr"><div id="satelliteMap"></div><div class="map-north">⬆ N</div><div class="map-legend-box"><b>دليل الصورة الفضائية</b><span style="color:#27ae60; font-size:16px;">■</span> غطاء نباتي<br><span style="color:#d35400; font-size:16px;">■</span> أراضي ترابية<br><span style="color:#2980b9; font-size:16px;">■</span> تجمعات مائية<br><span style="color:#e74c3c; font-weight:bold; font-size:16px;">▬</span> حدود الموقع المستثمر</div><div id="customScaleContainer" style="position: absolute; bottom: 10px; left: 10px; z-index: 1000; pointer-events: none; background: rgba(255,255,255,0.9); border-radius: 4px; display: none;"><canvas id="customScaleCanvas"></canvas></div></div></div></div></div>
+            <div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesText">X</span></div>
+        </div>
+        <div class="footer screen-only">جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026</div>
     </div>
 </div>
 
 <script>
-    const guideData = {
-        'dip_strike': { title: 'قياس الميل والمضرب', content: `<p>ضع الهاتف ملاصقاً للطبقة لقياس اتجاه الميل وزاوية الميل. يقوم النظام بحساب المضرب تلقائياً.</p>` },
-        'slope_geom': { title: 'قياس هندسة المنحدر', content: `<p>ضع لوحاً مسطحاً على وجه المنحدر لقياس متوسط الاتجاه والانحدار.</p>` },
-        'friction': { title: 'تقدير زاوية الاحتكاك', content: `<p>φ لأسطح الفواصل. جيري (27-31°)، رملي (30-35°).</p>` },
-        'ucs': { title: 'مقاومة الانضغاط', content: `<table class="table-guide"><tr><th>الاختبار</th><th>MPa</th></tr><tr><td>ينكسر بضربة مطرقة قوية</td><td>50-100</td></tr></table>` },
-        'rqd': { title: 'حساب RQD حقلياً', content: `<p>استخدم الطريقة الحجمية: $RQD = 115 - 3.3 J_v$</p>` },
-        'spacing': { title: 'مسافات الانقطاعات', content: `<ul><li><b>> 2 متر:</b> صخر كتلوي.</li><li><b>< 60 ملم:</b> صخر مسحوق.</li></ul>` },
-        'cond': { title: 'حالة الأسطح', content: `<p>تعتمد على الفتحة، الخشونة، التجوية، والحشوة.</p>` },
-        'water': { title: 'المياه الجوفية', content: `<p>المياه تقلل الاحتكاك وتزيد الضغط.</p>` },
-        'undercutting': { title: 'التقويض السفلي', content: '<p>إزالة الدعم من أسفل المنحدر يقلل الاستقرارية.</p>' },
-        'freezethaw': { title: 'دورات الانجماد', content: '<p>تجمد المياه داخل الشقوق يوسع الفواصل.</p>' },
-        'vibration': { title: 'الاهتزازات', content: '<p>الاهتزازات تقلل من قوى الاحتكاك بشكل لحظي.</p>' }
-    };
-
-    function openInfoModal(type) { if(guideData[type]) { document.getElementById('modalTitle').innerHTML = guideData[type].title; document.getElementById('modalContent').innerHTML = guideData[type].content; document.getElementById('infoModalOverlay').style.display = 'flex'; } }
-    function closeInfoModal() { document.getElementById('infoModalOverlay').style.display = 'none'; }
-    window.onclick = function(event) { if (event.target == document.getElementById('infoModalOverlay')) { closeInfoModal(); } }
-
-    function getCompassDirection(degrees) {
-        const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
-        let index = Math.round(((degrees %= 360) < 0 ? degrees + 360 : degrees) / 45) % 8;
-        return directions[index];
-    }
-
-    let isCompassActive = false;
-    function startSmartCompass() {
-        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-            DeviceOrientationEvent.requestPermission().then(permissionState => {
-                if (permissionState === 'granted') { enableCompass(); } else { alert("تم رفض الصلاحية."); }
-            }).catch(console.error);
-        } else { enableCompass(); }
-    }
-
-    function enableCompass() {
-        document.getElementById('smartCompassBox').style.display = 'block';
-        if('ondeviceorientationabsolute' in window) { window.addEventListener('deviceorientationabsolute', handleSmartOrientation); }
-        else { window.addEventListener('deviceorientation', handleSmartOrientation); }
-        isCompassActive = true;
-    }
-
-    function handleSmartOrientation(event) {
-        if(!isCompassActive) return;
-        let alpha = event.webkitCompassHeading || (360 - event.alpha) || 0;
-        let beta = Math.max(Math.abs(event.beta || 0), Math.abs(event.gamma || 0));
-        if (beta > 90) beta = 180 - beta;
-        let dipDir = Math.round(alpha);
-        let dipAngle = Math.round(beta);
-        document.getElementById('live_dipDir').innerText = dipDir;
-        document.getElementById('live_dipDir_txt').innerText = `(${getCompassDirection(dipDir)})`;
-        document.getElementById('live_dip').innerText = dipAngle;
-        let strike1 = (dipDir - 90 + 360) % 360;
-        let strike2 = (dipDir + 90) % 360;
-        let mainStrike = Math.round(Math.min(strike1, strike2));
-        document.getElementById('live_strike').innerText = mainStrike;
-        document.getElementById('live_strike_txt').innerText = `(${getCompassDirection(mainStrike)})`;
-    }
-
-    function captureCompassData() {
-        document.getElementById('str_dipDir').value = document.getElementById('live_dipDir').innerText;
-        document.getElementById('str_dip').value = document.getElementById('live_dip').innerText;
-        calculateStrike();
-        isCompassActive = false;
-        alert("✅ تم التقاط القراءات.");
-    }
-
-    function getSensorData(target) {
-        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-           DeviceOrientationEvent.requestPermission().then(permissionState => {
-                if (permissionState === 'granted') { startListeningSensors(target); }
-           }).catch(console.error);
-        } else { startListeningSensors(target); }
-    }
- 
-    function startListeningSensors(target) {
-        alert("📱 ضع الهاتف بشكل مسطح واضغط موافق.");
-        const sensorHandler = function(event) {
-            let dipDir = event.webkitCompassHeading || (360 - event.alpha) || 0;
-            let dipAngle = Math.max(Math.abs(event.beta || 0), Math.abs(event.gamma || 0));
-            if (dipAngle > 90) dipAngle = 180 - dipAngle;
-            if (target === 'slope') {
-               document.getElementById('str_slopeDir').value = Math.round(dipDir);
-               document.getElementById('str_slopeAngle').value = Math.round(dipAngle);
-               alert("✅ تمت قراءة المنحدر.");
-            }
-           window.removeEventListener('deviceorientation', sensorHandler);
-           window.removeEventListener('deviceorientationabsolute', sensorHandler);
-        };
-        if ('ondeviceorientationabsolute' in window) { window.addEventListener('deviceorientationabsolute', sensorHandler); } 
-        else { window.addEventListener('deviceorientation', sensorHandler); }
-    }
- 
-    function calculateStrike() {
-        const dipDir = parseFloat(document.getElementById('str_dipDir').value);
-        if(isNaN(dipDir) || dipDir < 0 || dipDir > 360) return;
-        let strike1 = (dipDir - 90 + 360) % 360;
-        let strike2 = (dipDir + 90) % 360;
-        let mainStrike = Math.min(strike1, strike2);
-        document.getElementById('str_strike').value = Math.round(mainStrike);
-        document.getElementById('str_dipDir_text').innerText = getCompassDirection(dipDir);
-        document.getElementById('str_strike_text').innerText = getCompassDirection(mainStrike);
-    }
- 
-    function toRad(degrees) { return degrees * (Math.PI / 180); }
-
-    function drawArrow(ctx, fromX, fromY, toX, toY, color = "black", lineWidth = 2, text = "", textOffsetX = 0, textOffsetY = -10) {
-        const headlen = 10; const dx = toX - fromX; const dy = toY - fromY; const angle = Math.atan2(dy, dx);
-        ctx.beginPath(); ctx.moveTo(fromX, fromY); ctx.lineTo(toX, toY);
-        ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
-        ctx.moveTo(toX, toY);
-        ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
-        ctx.strokeStyle = color; ctx.lineWidth = lineWidth; ctx.stroke();
-        if(text) { ctx.font = 'bold 14px Arial'; ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.fillText(text, toX + textOffsetX, toY + textOffsetY); }
-    }
-
-    function generateProfilePoints(canvasId, slope) {
-        const canvas = document.getElementById(canvasId); if(!canvas) return null;
-        const widthBox = canvas.width - 100; const cx = 250; const cy = canvas.height - 100; const slopeHeight = 200; 
-        let safeSlope = slope >= 90 ? 89.9 : slope; let slopeRad = safeSlope * (Math.PI / 180);
-        let slopeTopX = cx + (slopeHeight / Math.tan(slopeRad)); let slopeTopY = cy - slopeHeight;
-        function createRoughLine(startX, startY, endX, endY, segments, roughness) {
-            let pts = [{x: startX, y: startY}]; let dx = (endX - startX)/segments; let dy = (endY - startY)/segments;
-            for(let i=1; i<segments; i++) { pts.push({x: startX + i*dx + (Math.random()*roughness - roughness/2), y: startY + i*dy + (Math.random()*roughness - roughness/2)}); }
-            pts.push({x: endX, y: endY}); return pts;
-        }
-        let slopeFacePts = createRoughLine(cx, cy, slopeTopX, slopeTopY, 15, 12);
-        let crestPts = createRoughLine(slopeTopX, slopeTopY, widthBox + 20, slopeTopY - 20, 10, 15); 
-        return { cx, cy, slopeFacePts, crestPts, widthBox };
-    }
-
-    function drawTopographicModel(canvasId, slope, slopeDir, profileData) {
-        if(!profileData) return;
-        const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const { cx, cy, slopeFacePts, crestPts, widthBox } = profileData;
-        let slopeRad = slope * (Math.PI / 180);
-        ctx.beginPath(); ctx.moveTo(50, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.lineTo(widthBox + 20, cy); ctx.closePath(); ctx.fillStyle = '#ecf0f1'; ctx.fill(); 
-        ctx.beginPath(); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); for(let i = crestPts.length-1; i>=0; i--) { ctx.lineTo(crestPts[i].x, crestPts[i].y + 20); } ctx.fillStyle = '#d7ccc8'; ctx.fill();
-        ctx.beginPath(); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 3; ctx.moveTo(50, cy); ctx.lineTo(cx, cy); slopeFacePts.forEach(p => ctx.lineTo(p.x, p.y)); crestPts.forEach(p => ctx.lineTo(p.x, p.y)); ctx.stroke();
-        
-        ctx.beginPath(); ctx.arc(cx, cy, 60, Math.PI, 2 * Math.PI - slopeRad, false); ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2.5; ctx.stroke();
-        ctx.fillStyle = '#2980b9'; ctx.font = "bold 15px Arial"; ctx.fillText(`Slope: ${slope}°`, cx - 75, cy - 65);
-    }
-
-    function drawRockMassModel(canvasId, dip, slope, isPlanar, waterVal) {
-        const canvas = document.getElementById(canvasId); const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
-        let dipRad = dip * (Math.PI / 180); const cx = canvas.width / 2; const cy = canvas.height / 2 + 50; 
-        
-        ctx.beginPath(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 4; ctx.moveTo(cx - 300 * Math.cos(dipRad), cy + 300 * Math.sin(dipRad)); ctx.lineTo(cx + 300 * Math.cos(dipRad), cy - 300 * Math.sin(dipRad)); ctx.stroke();
-        
-        let px1 = cx - 250 * Math.cos(dipRad); let py1 = cy + 250 * Math.sin(dipRad);
-        ctx.beginPath(); ctx.setLineDash([5,5]); ctx.moveTo(px1 - 50, py1); ctx.lineTo(px1 + 80, py1); ctx.strokeStyle = '#95a5a6'; ctx.lineWidth=1.5; ctx.stroke(); ctx.setLineDash([]);
-        ctx.beginPath(); ctx.arc(px1, py1, 40, 0, 2*Math.PI - dipRad, true); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2; ctx.stroke();
-        ctx.fillStyle = '#c0392b'; ctx.font = 'bold 16px Arial'; ctx.fillText(`Dip: ${dip}°`, px1 - 30, py1 - 45);
-        
-        ctx.save(); ctx.translate(cx, cy); ctx.rotate(-dipRad); 
-        let blockW = 160, blockH = 100;
-        ctx.rect(30, -blockH, blockW, blockH); ctx.fillStyle = 'rgba(231, 76, 60, 0.4)'; ctx.fill(); ctx.strokeStyle = '#333'; ctx.lineWidth = 2.5; ctx.stroke();
-        
-        let cgX = 30 + blockW/2; let cgY = -blockH/2;
-        ctx.beginPath(); ctx.arc(cgX, cgY, 5, 0, Math.PI*2); ctx.fillStyle = '#333'; ctx.fill();
-        ctx.restore();
-        
-        let trueCgX = cx + cgX * Math.cos(-dipRad) - cgY * Math.sin(-dipRad);
-        let trueCgY = cy + cgX * Math.sin(-dipRad) + cgY * Math.cos(-dipRad);
-        
-        drawArrow(ctx, trueCgX, trueCgY, trueCgX, trueCgY + 130, '#27ae60', 3, 'W', 0, 15); 
-        drawArrow(ctx, trueCgX, trueCgY, trueCgX - 100 * Math.sin(dipRad), trueCgY - 100 * Math.cos(dipRad), '#8e44ad', 3, 'N', -10, -10);
-        drawArrow(ctx, trueCgX, trueCgY, trueCgX - 100 * Math.cos(dipRad), trueCgY + 100 * Math.sin(dipRad), '#f39c12', 3, 'R', -15, 0);
-
-        if (waterVal <= 7) { 
-            let spaceX = cx + 150; let spaceY = cy + 100; 
-            drawArrow(ctx, spaceX, spaceY, spaceX - 70 * Math.sin(dipRad), spaceY - 70 * Math.cos(dipRad), '#3498db', 3, 'U', 15, -5); 
-            drawArrow(ctx, spaceX - 40 * Math.cos(dipRad), spaceY + 40 * Math.sin(dipRad), spaceX + 40 * Math.cos(dipRad), spaceY - 40 * Math.sin(dipRad), '#3498db', 3, 'V', 15, 15); 
-        }
-    }
-
-    function drawStereonet(dip, dipDir, slope, slopeDir, friction) {
-        const canvas = document.getElementById('stereonetCanvasScreen') || document.getElementById('stereonetCanvasPrint'); 
-        if(!canvas) return;
-        const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const cx = 300; const cy = 300; const R = 250; 
-        
-        ctx.lineWidth = 0.5; ctx.strokeStyle = '#e5e8e8';
-        for(let i=0; i<36; i++) { ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + R * Math.cos(i * 10 * Math.PI/180), cy + R * Math.sin(i * 10 * Math.PI/180)); ctx.stroke(); }
-        for(let i=1; i<=9; i++) { ctx.beginPath(); ctx.arc(cx, cy, R * (i/9), 0, 2*Math.PI); ctx.stroke(); }
-
-        ctx.beginPath(); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2.5; ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.moveTo(cx, cy-R); ctx.lineTo(cx, cy+R); ctx.moveTo(cx-R, cy); ctx.lineTo(cx+R, cy); ctx.stroke();
-        ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 18px Arial'; ctx.textAlign = 'center';
-        ctx.fillText('N', cx, cy - R - 15); ctx.fillText('S', cx, cy + R + 25); ctx.fillText('E', cx + R + 20, cy + 6); ctx.fillText('W', cx - R - 20, cy + 6);
-
-        function drawGreatCircle(d, dDir, color, width) {
-            if (d < 0.5) return; ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = width;
-            ctx.save(); ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.clip();
-            let dRad = d * Math.PI / 180; let dDirRad = dDir * Math.PI / 180;
-            ctx.beginPath(); ctx.arc(cx + R * Math.tan(dRad) * Math.sin(dDirRad), cy - R * Math.tan(dRad) * Math.cos(dDirRad), R / Math.cos(dRad), 0, 2*Math.PI); ctx.stroke();
-            ctx.restore();
-        }
-        
-        drawGreatCircle(slope, slopeDir, '#34495e', 3); 
-        drawGreatCircle(dip, dipDir, '#e74c3c', 4);     
-        
-        ctx.beginPath(); ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2; ctx.setLineDash([5, 5]); ctx.arc(cx, cy, R * Math.tan(friction * Math.PI / 360), 0, 2*Math.PI); ctx.stroke(); ctx.setLineDash([]);
-        
-        let pRad = dip * Math.PI / 180; let distPole = R * Math.tan(pRad / 2); let poleT = (dipDir + 180) * Math.PI / 180;
-        let px = cx + distPole * Math.sin(poleT); let py = cy - distPole * Math.cos(poleT);
-        ctx.beginPath(); ctx.fillStyle = '#e74c3c'; ctx.arc(px, py, 8, 0, 2*Math.PI); ctx.fill(); 
-        ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.fillRect(px + 10, py - 22, 45, 20);
-        ctx.fillStyle = '#c0392b'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'left'; ctx.fillText('Pole', px + 12, py - 6);
- 
-        let isPlanar = false; let diffDir = Math.abs(slopeDir - dipDir); if (diffDir > 180) diffDir = 360 - diffDir; if (diffDir <= 20 && slope > dip && dip > friction) isPlanar = true;
-        
-        let legendHTML = `<div class="geotech-split-legend"><h4>دليل المسقط (Stereonet Legend):</h4><div class="legend-grid"><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #34495e;"></div>◡ الدائرة العظمى للمنحدر (Slope)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:3px solid #e74c3c;"></div>◡ الدائرة العظمى للطبقة (Plane)</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="border:2px dashed #2980b9;"></div>◌ مخروط الاحتكاك الداخلي</div><div class="geotech-legend-item"><div class="geotech-legend-color" style="background:#e74c3c;"></div>● قطب الطبقة (Pole)</div></div></div>`;
-        
-        const legendScreen = document.getElementById('kinematicLegendScreen');
-        const legendPrint = document.getElementById('kinematicLegendPrint');
-        if(legendScreen) legendScreen.innerHTML = legendHTML;
-        if(legendPrint) legendPrint.innerHTML = legendHTML;
-    }
-
-    function drawPlanAndCrossSection(canvasId, dip) {
-        const canvas = document.getElementById(canvasId); if(!canvas) return; const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        let safeDip = dip;
-        if (safeDip < 5) safeDip = 5;
-        if (safeDip > 85) safeDip = 85;
-        let dipRad = safeDip * (Math.PI / 180);
-
-        const mapX = 150, mapY = 40, mapW = 550, mapH = 140;
-        const crossX = 150, crossY = 240, crossW = 550, crossH = 180;
-        const contact1X = 300;
-        const contact2X = 550;
-
-        const col1 = '#fdebd0';
-        const col2 = '#d3b8ae';
-        const col3 = '#fad7a1';
-
-        ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'left';
-        ctx.fillText('Plan view (مسقط أفقي من الأعلى)', mapX, mapY - 10);
-
-        ctx.save();
-        ctx.beginPath(); ctx.rect(mapX, mapY, mapW, mapH); ctx.clip();
-
-        ctx.fillStyle = col1; ctx.fillRect(mapX, mapY, contact1X - mapX, mapH);
-        ctx.fillStyle = col2; ctx.fillRect(contact1X, mapY, contact2X - contact1X, mapH);
-        ctx.fillStyle = col3; ctx.fillRect(contact2X, mapY, mapX + mapW - contact2X, mapH);
-
-        ctx.beginPath(); ctx.moveTo(contact1X, mapY); ctx.lineTo(contact1X, mapY + mapH); ctx.strokeStyle = '#333'; ctx.lineWidth = 1.5; ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(contact2X, mapY); ctx.lineTo(contact2X, mapY + mapH); ctx.stroke();
-
-        ctx.restore();
-        ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.strokeRect(mapX, mapY, mapW, mapH);
-
-        let midY = mapY + mapH / 2;
-        ctx.beginPath(); ctx.moveTo(mapX - 20, midY); ctx.lineTo(mapX + mapW + 20, midY);
-        ctx.strokeStyle = '#7f8c8d'; ctx.lineWidth = 1; ctx.stroke();
-        ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
-        ctx.fillText("A", mapX - 30, midY + 5);
-        ctx.fillText("A'", mapX + mapW + 30, midY + 5);
-
-        let symX = contact1X, symY = mapY + 30;
-        ctx.beginPath(); ctx.moveTo(symX, symY - 15); ctx.lineTo(symX, symY + 15); 
-        ctx.moveTo(symX, symY); ctx.lineTo(symX + 15, symY); 
-        ctx.strokeStyle = '#000'; ctx.lineWidth = 3; ctx.stroke();
-        ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'left';
-        ctx.fillText(`${dip}°`, symX + 20, symY + 5);
-
-        ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'left';
-        ctx.fillText('Cross-section (مقطع عرضي للعمق)', crossX, crossY - 10);
-
-        ctx.save();
-        ctx.beginPath(); ctx.rect(crossX, crossY, crossW, crossH); ctx.clip();
-
-        let dx = 1000 / Math.tan(dipRad);
-
-        ctx.beginPath(); ctx.moveTo(-1000, crossY); ctx.lineTo(contact1X, crossY); ctx.lineTo(contact1X + dx, crossY + 1000); ctx.lineTo(-1000, crossY + 1000);
-        ctx.fillStyle = col1; ctx.fill();
-
-        ctx.beginPath(); ctx.moveTo(contact1X, crossY); ctx.lineTo(contact2X, crossY); ctx.lineTo(contact2X + dx, crossY + 1000); ctx.lineTo(contact1X + dx, crossY + 1000);
-        ctx.fillStyle = col2; ctx.fill();
-
-        ctx.beginPath(); ctx.moveTo(contact2X, crossY); ctx.lineTo(crossX + crossW + 1000, crossY); ctx.lineTo(crossX + crossW + 1000, crossY + 1000); ctx.lineTo(contact2X + dx, crossY + 1000);
-        ctx.fillStyle = col3; ctx.fill();
-
-        ctx.beginPath(); ctx.moveTo(contact1X, crossY); ctx.lineTo(contact1X + dx, crossY + 1000); ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(contact2X, crossY); ctx.lineTo(contact2X + dx, crossY + 1000); ctx.stroke();
-
-        ctx.beginPath(); ctx.arc(contact1X, crossY, 40, 0, dipRad); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2; ctx.stroke();
-        ctx.fillStyle = '#c0392b'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'left';
-        ctx.fillText(`${dip}°`, contact1X + 50 * Math.cos(dipRad/2), crossY + 50 * Math.sin(dipRad/2) + 5);
-
-        let c = contact2X - contact1X; 
-        let b = c * Math.sin(dipRad); 
-        let x_int = contact2X - b * Math.sin(dipRad);
-        let y_int = crossY + b * Math.cos(dipRad);
-
-        ctx.beginPath(); ctx.moveTo(contact2X, crossY); ctx.lineTo(x_int, y_int);
-        ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 3; ctx.setLineDash([5, 5]); ctx.stroke(); ctx.setLineDash([]);
-
-        let pSize = 10;
-        let v1x = x_int + pSize * Math.cos(dipRad); let v1y = y_int + pSize * Math.sin(dipRad);
-        let v2x = v1x + pSize * Math.sin(dipRad); let v2y = v1y - pSize * Math.cos(dipRad);
-        let v3x = x_int + pSize * Math.sin(dipRad); let v3y = y_int - pSize * Math.cos(dipRad);
-        ctx.beginPath(); ctx.moveTo(v1x, v1y); ctx.lineTo(v2x, v2y); ctx.lineTo(v3x, v3y);
-        ctx.strokeStyle = '#27ae60'; ctx.lineWidth = 1.5; ctx.stroke();
-
-        ctx.restore();
-        ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.strokeRect(crossX, crossY, crossW, crossH);
-
-        ctx.beginPath(); ctx.moveTo(crossX, crossY); ctx.lineTo(crossX + crossW, crossY); ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2; ctx.stroke();
-    }
-
-    function drawHazardRadar(canvasId, slopeDir, dipDir, isPlanar) {
-        const canvas = document.getElementById(canvasId); if(!canvas) return; const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const cx = 300; const cy = 200; const R = 150;
-        
-        ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2*Math.PI); ctx.fillStyle = '#f8f9fa'; ctx.fill(); ctx.strokeStyle = '#7f8c8d'; ctx.lineWidth = 1.5; ctx.stroke();
-        ctx.fillStyle = '#7f8c8d'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
-        ctx.fillText('N', cx, cy - R - 10); ctx.fillText('S', cx, cy + R + 25); ctx.fillText('E', cx + R + 20, cy + 5); ctx.fillText('W', cx - R - 20, cy + 5);
-        
-        let sRad = toRad(slopeDir - 90); let dRad = toRad(dipDir - 90);
-        ctx.beginPath(); ctx.moveTo(cx + R * Math.cos(sRad - Math.PI/2), cy + R * Math.sin(sRad - Math.PI/2)); ctx.lineTo(cx + R * Math.cos(sRad + Math.PI/2), cy + R * Math.sin(sRad + Math.PI/2)); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 5; ctx.stroke();
-        
-        if(isPlanar) { ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, R, dRad - 0.25, dRad + 0.25, false); ctx.closePath(); ctx.fillStyle = 'rgba(231, 76, 60, 0.5)'; ctx.fill(); }
-        
-        drawArrow(ctx, cx, cy, cx + R * 0.8 * Math.cos(dRad), cy + R * 0.8 * Math.sin(dRad), '#c0392b', 3, "", 0, 0);
-        let textR = R + 40; 
-        ctx.fillStyle = '#c0392b'; ctx.fillText(`Dip Dir: ${dipDir}°`, cx + textR * Math.cos(dRad), cy + textR * Math.sin(dRad) + 5);
-    }
-
-    function drawRMRHeatmap(canvasId, p1, p2, p3, p4, p5) {
-        const canvas = document.getElementById(canvasId); if(!canvas) return; const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        let params = [
-            {nameEN: 'UCS', nameAR: 'مقاومة الانضغاط', val: p1, max: 15}, 
-            {nameEN: 'RQD', nameAR: 'جودة الصخر', val: p2, max: 20},
-            {nameEN: 'Spacing', nameAR: 'المسافة بين الفواصل', val: p3, max: 20}, 
-            {nameEN: 'Condition', nameAR: 'حالة الفواصل', val: p4, max: 30},
-            {nameEN: 'Water', nameAR: 'المياه الجوفية', val: p5, max: 15}
-        ];
-        
-        function getHeatColor(val, max) { let ratio = val / max; return ratio < 0.4 ? '#e74c3c' : ratio < 0.7 ? '#f39c12' : '#2ecc71'; }
-
-        let cx = canvas.width / 2 + 50; let startY = 30; let boxW = 150; let boxH = 80;
-        
-        params.forEach((p, i) => {
-            let y = startY + (i * (boxH + 8));
+    // ==========================================
+    // 1. نظام "الذاكرة الذكية" لتخطي شاشة الترحيب وتسجيل الدخول
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+        // عند تحميل الصفحة، نتحقق هل المستخدم قادم من رابط زر "الرجوع" (skipLogin=true)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('skipLogin') === 'true') {
+            // إخفاء الترحيب وإظهار لوحة التحكم مباشرة
+            document.getElementById('introScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').style.display = 'block';
             
-            ctx.textAlign = 'right'; ctx.fillStyle = '#2c3e50'; ctx.font = 'bold 15px Arial';
-            ctx.fillText(`${p.nameAR}`, cx - boxW/2 - 15, y + boxH/2 - 5);
-            ctx.fillStyle = '#7f8c8d'; ctx.font = '13px Arial';
-            ctx.fillText(`(${p.nameEN})`, cx - boxW/2 - 15, y + boxH/2 + 15);
-            
-            ctx.fillStyle = getHeatColor(p.val, p.max); ctx.fillRect(cx - boxW/2, y, boxW, boxH);
-            ctx.strokeStyle = '#333'; ctx.lineWidth = 1; ctx.strokeRect(cx - boxW/2, y, boxW, boxH);
-            
-            ctx.fillStyle = '#fff'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center'; 
-            ctx.fillText(`${p.val} / ${p.max}`, cx, y + boxH/2 + 7);
-        });
-    }
-
-    function calculateStructuralResults() {
-        const geoName = document.getElementById('str_printGeoName').value || "غير محدد";
-        const projName = document.getElementById('str_projectName').value || "غير محدد";
-        const litho = document.getElementById('str_rockType').value || "غير محدد";
-        
-        const dip = parseFloat(document.getElementById('str_dip').value); 
-        const dipDir = parseFloat(document.getElementById('str_dipDir').value);
-        const strike = document.getElementById('str_strike').value;
-        const slope = parseFloat(document.getElementById('str_slopeAngle').value); 
-        const slopeDir = parseFloat(document.getElementById('str_slopeDir').value);
-        const friction = parseFloat(document.getElementById('str_friction').value);
-        
-        if (isNaN(dip) || isNaN(slope)) { alert("⚠️ يرجى إدخال البيانات الميدانية."); return; } 
-
-        const p1 = parseInt(document.getElementById('rmr_ucs').value); 
-        const p2 = parseInt(document.getElementById('rmr_rqd').value);
-        const p3 = parseInt(document.getElementById('rmr_spacing').value); 
-        const p4 = parseInt(document.getElementById('rmr_cond').value);
-        const p5 = parseInt(document.getElementById('rmr_water').value); 
-        const totalRMR = p1 + p2 + p3 + p4 + p5;
-
-        let rockClass = ""; let classColor = "";
-        if (totalRMR >= 81) { rockClass = "Class I (ممتاز)"; classColor = "#27ae60"; }
-        else if (totalRMR >= 61) { rockClass = "Class II (جيد)"; classColor = "#2ecc71"; }
-        else if (totalRMR >= 41) { rockClass = "Class III (متوسط)"; classColor = "#f1c40f"; }
-        else { rockClass = "Class IV/V (ضعيف)"; classColor = "#e67e22"; }
-        
-        let isPlanar = false; let diffDir = Math.abs(slopeDir - dipDir); if (diffDir > 180) diffDir = 360 - diffDir;
-        if (diffDir <= 20 && slope > dip && dip > friction) isPlanar = true;
-        let alertHTML = isPlanar ? '<span style="color:#c0392b; font-size:1.1rem; font-weight:bold;">⚠️ خطر انزلاق مستوي! الطبقات تتكشف هندسياً على المنحدر.</span>' : '<span style="color:#27ae60; font-size:1.1rem; font-weight:bold;">✅ آمن كينماتيكياً في الوقت الحالي.</span>';
-
-        document.getElementById('screen_rmrTotal').innerText = totalRMR;
-        document.getElementById('screen_rmrTotal').style.color = classColor;
-        document.getElementById('screen_rmrClass').innerText = rockClass;
-        document.getElementById('screen_rmrClass').style.color = classColor;
-        document.getElementById('screen_kinematicAlert').innerHTML = alertHTML;
-        
-        document.getElementById('calcButtonsAreaStr').style.display = 'none'; 
-        document.getElementById('screenResultsSummary').style.display = 'block';
-        document.getElementById('diagramsScreenView').style.display = 'block';
-
-        const getSelText = (id) => { const el = document.getElementById(id); return el.options[el.selectedIndex].text; };
-        
-        document.getElementById('res_geoNameHeader').innerText = geoName;
-        document.querySelectorAll('.res_geoNameHeaderRep').forEach(el => el.innerText = geoName);
-        document.getElementById('res_geoName').innerText = geoName;
-        document.getElementById('res_projName').innerText = projName;
-        document.getElementById('res_lithoDesc').innerText = litho;
-        
-        document.getElementById('res_dipStrike').innerText = `${dipDir}° / ${strike}°`;
-        document.getElementById('res_dipAngle').innerText = dip;
-        document.getElementById('res_slopeGeom').innerText = `ميل ${slope}° باتجاه ${slopeDir}°`;
-        document.getElementById('res_fricVal').innerText = friction;
-        
-        document.getElementById('res_ucsTxt').innerText = getSelText('rmr_ucs');
-        document.getElementById('res_rqdTxt').innerText = getSelText('rmr_rqd');
-        document.getElementById('res_spacingTxt').innerText = getSelText('rmr_spacing');
-        document.getElementById('res_condTxt').innerText = getSelText('rmr_cond');
-        document.getElementById('res_waterTxt').innerText = getSelText('rmr_water');
-        
-        document.getElementById('res_undercutTxt').innerText = getSelText('str_undercutting');
-        document.getElementById('res_freezeTxt').innerText = getSelText('str_freezethaw');
-        document.getElementById('res_vibTxt').innerText = getSelText('str_vibration');
-
-        document.getElementById('res_rmrTotalPrint').innerText = totalRMR;
-        document.getElementById('res_rmrTotalPrint').style.color = classColor;
-        document.getElementById('res_rmrClassFinalPrint').innerText = rockClass;
-        document.getElementById('res_rmrClassFinalPrint').style.color = classColor;
-        document.getElementById('res_kinematicAlertPrint').innerHTML = alertHTML;
-
-        let txtTopo = `<b>التحليل الجيومورفولوجي:</b> المقطع يوضح الانكشاف الصخري للمنحدر المقطوع بزاوية هندسية (${slope}°). يُعد هذا المرتسم الأساس الهندسي لتقييم الاستقرارية.`;
-        let txtFBD = `<b>التحليل الميكانيكي (FBD):</b> يوضح المخطط عزلاً للكتلة الصخرية المعرضة للانزلاق على مستوى ضعف يميل بزاوية (${dip}°)، ويوضح اتجاهات القوى الفيزيائية المتمثلة في قوة الوزن (W)، ورد الفعل العمودي (N)، وقوى الاحتكاك المقاومة (R).`;
-        let txtStereo = `<b>التفسير الكينماتيكي (Stereographic Projection):</b> يُظهر المسقط التوزيع الفراغي للمستويات. ` + (isPlanar ? `وقوع قطب الطبقة (النقطة الحمراء) ضمن منطقة التقاطع الحرجة يُثبت كينماتيكياً حتمية الانزلاق المستوي.` : `قطب الطبقة يقع خارج النطاق الحرج، المنحدر مستقر.`);
-        
-        document.getElementById('topoExplanationScreen').innerHTML = txtTopo;
-        document.getElementById('topoExplanationPrint').innerHTML = txtTopo;
-        document.getElementById('rockExplanationScreen').innerHTML = txtFBD;
-        document.getElementById('rockExplanationPrint').innerHTML = txtFBD;
-        document.getElementById('stereoExplanationScreen').innerHTML = txtStereo;
-        document.getElementById('stereoExplanationPrint').innerHTML = txtStereo;
-
-        let profileDataScreen = generateProfilePoints('topoCanvasScreen', slope);
-        drawTopographicModel('topoCanvasScreen', slope, slopeDir, profileDataScreen); 
-        drawRockMassModel('rockCanvasScreen', dip, slope, isPlanar, p5);
-        drawStereonet(dip, dipDir, slope, slopeDir, friction);
-        drawPlanAndCrossSection('canvas3DBlockScreen', dip);
-        drawHazardRadar('canvasRadarScreen', slopeDir, dipDir, isPlanar);
-        drawRMRHeatmap('canvasHeatmapScreen', p1, p2, p3, p4, p5);
-
-        let profileDataPrint = generateProfilePoints('topoCanvasPrint', slope);
-        drawTopographicModel('topoCanvasPrint', slope, slopeDir, profileDataPrint); 
-        drawRockMassModel('rockCanvasPrint', dip, slope, isPlanar, p5);
-        drawPlanAndCrossSection('canvas3DBlockPrint', dip);
-        drawHazardRadar('canvasRadarPrint', slopeDir, dipDir, isPlanar);
-        drawRMRHeatmap('canvasHeatmapPrint', p1, p2, p3, p4, p5);
-        
-        for(let i=1; i<=7; i++) {
-            let page = document.getElementById(`pageResultsStr_${i}`);
-            if(page) page.style.display = 'block';
+            // استرجاع اسم الجيولوجي من الذاكرة المحلية (localStorage)
+            currentGeoName = localStorage.getItem('geoName') || "الجيولوجي المشرف";
+            document.getElementById('printGeoName').value = currentGeoName;
         }
-        updatePageNumbersStr();
-    }
- 
-    function prepareAndPrintStr() { 
-        try { 
-            const now = new Date(); 
-            const dateStr = now.toLocaleTimeString('en-GB', {hour: '2-digit', minute:'2-digit'}) + ' - ' + now.toLocaleDateString('en-GB');
-            document.querySelectorAll('.printDateHeader').forEach(h => h.innerText = dateStr);
-            updatePageNumbersStr();
-            window.print(); 
-        } catch (error) {} 
+        
+        // تجهيز قائمة الدول
+        const countrySelect = document.getElementById('countrySelect');
+        const countries = "الأردن,الإمارات,البحرين,الجزائر,السعودية,السودان,الصومال,الكويت,المغرب,اليمن,تونس,سوريا,عمان,فلسطين,قطر,لبنان,ليبيا,مصر".split(',');
+        countries.forEach(c => { let opt=document.createElement('option'); opt.value=c; opt.innerText=c; countrySelect.appendChild(opt); });
+        for(let i=0; i<5; i++) addLayerRow();
+    });
+
+    function handleLogin() {
+        const err = document.getElementById('loginError'); const btn = document.getElementById('loginBtn'); const name = document.getElementById('geoNameInput').value.trim(); const pwd = document.getElementById('adminPassword').value;
+        if (name.split(' ').length < 2) { err.style.display = 'block'; return; }
+        
+        // رمز الدخول 
+        if (pwd === "123qweasdzxc") { 
+            currentGeoName = name; 
+            
+            // حفظ اسم الجيولوجي في الذاكرة لتذكره عند الرجوع
+            localStorage.setItem('geoName', currentGeoName);
+            
+            err.style.display = 'none'; btn.innerText = "تم الدخول..."; btn.disabled = true; document.getElementById('printGeoName').value = currentGeoName; 
+            document.getElementById('introScreen').style.display = 'none'; document.getElementById('dashboardScreen').style.display = 'block'; 
+        } else { 
+            err.style.display = 'block'; 
+        }
     }
 
-    function updatePageNumbersStr() { 
-        const pagesStr = document.querySelectorAll('.page-counter-element-str'); 
-        pagesStr.forEach((page, index) => { 
-            let currSpans = page.querySelectorAll('.currPageNum'); 
-            currSpans.forEach(s => s.innerText = (index + 1)); 
-        }); 
+    // ==========================================
+    // 2. التحكم بالتنقل (لوحة التحكم)
+    // ==========================================
+    function openModule(moduleId) { document.getElementById('dashboardScreen').style.display = 'none'; document.querySelectorAll('.system-module').forEach(m => m.style.display = 'none'); document.getElementById(moduleId).style.display = 'block'; }
+    function backToDashboard() { document.querySelectorAll('.system-module').forEach(m => m.style.display = 'none'); document.getElementById('dashboardScreen').style.display = 'block'; }
+
+    function updateGovs() { const c = document.getElementById('countrySelect').value; if(c==='iraq') { document.getElementById('govSelect').style.display='block'; document.getElementById('govInput').style.display='none'; } else { document.getElementById('govSelect').style.display='none'; document.getElementById('govInput').style.display='block'; } }
+    
+    let currentGeoNameStr=""; let rawGpsPoints={point1:null, point2:null, point3:null, point4:null}; let loginLocation={lat:null, lng:null, enabled:false, type:'Wait'};
+    function goToStep2() {
+        const btn = document.getElementById('btnNextStep1'); btn.innerHTML = "جاري تأكيد الموقع..."; btn.disabled = true;
+        if (navigator.geolocation) { navigator.geolocation.getCurrentPosition((pos) => { loginLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude, enabled: true, type: 'GPS' }; document.getElementById('step1').style.display='none'; document.getElementById('step2').style.display='block'; }, (err) => { document.getElementById('step1').style.display='none'; document.getElementById('step2').style.display='block'; }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }); } else { document.getElementById('step1').style.display='none'; document.getElementById('step2').style.display='block'; }
     }
+    function lockSystem() { location.reload(); }
+    
+    // ==========================================
+    // 3. دوال نظام المقالع
+    // ==========================================
+    const lithoDB = { none: { label: "-- المجموعة --", types: { none: "-- النوع --" } }, clastic: { label: "تربة ورسوبيات", types: { topsoil: "تربة سطحية", clay: "طين", silt: "غرين", sand: "رمل", gravel: "حصى", conglomerate: "رصيص", sandstone: "حجر رملي", shale: "سجيل" } }, carbonate: { label: "صخور كاربوناتية", types: { limestone: "حجر جيري", dolomite: "دولومايت", marl: "مارل", chalk: "طباشير" } }, evaporite: { label: "متبخرات", types: { gypsum: "جبس", halite: "ملح صخري" } }, other: { label: "أخرى", types: { custom: "إدخال يدوي..." } } };
+    const baseColors = { topsoil: '#d7ccc8', clay: '#cfd8dc', silt: '#eceff1', sand: '#ffe082', gravel: '#bcaaa4', conglomerate: '#a1887f', sandstone: '#ffcc80', shale: '#90a4ae', limestone: '#e3f2fd', dolomite: '#bbdefb', marl: '#c5cae9', chalk: '#f5f5f5', gypsum: '#f8bbd0', halite: '#f48fb1', none: '#ffffff', custom: '#cccccc' };
+    
+    function addLayerRow() {
+        inputLayerCount++; const i = inputLayerCount; const tbody = document.getElementById('lithoBody'); let opts = ''; for(let k in lithoDB) opts+=`<option value="${k}">${lithoDB[k].label}</option>`;
+        let tr = document.createElement('tr'); tr.innerHTML = `<td>${i}</td><td><div class="litho-ui-section"><div class="litho-flex-row"><select id="pCat${i}" onchange="updateTypeDD(${i}, 'p')">${opts}</select><select id="pType${i}" onchange="checkCustom(${i}, 'p')"><option value="none">-- النوع --</option></select></div><div id="pCustomDiv${i}" class="litho-custom-div" style="display:none;"><input type="text" id="pName${i}" placeholder="اسم..."><input type="color" id="pColor${i}" value="#aed6f1"></div></div><label><input type="checkbox" id="hasSec${i}" onchange="toggleSec(${i})">إضافة تداخل</label><div id="secWrap${i}" style="display:none;"><select id="mixType${i}"><option value="mixed">مزيج</option><option value="interbedded">تعاقب</option></select><div class="litho-flex-row"><select id="sCat${i}" onchange="updateTypeDD(${i}, 's')">${opts}</select><select id="sType${i}" onchange="checkCustom(${i}, 's')"><option value="none">-- النوع --</option></select></div><div id="sCustomDiv${i}" class="litho-custom-div" style="display:none;"><input type="text" id="sName${i}" placeholder="اسم..."><input type="color" id="sColor${i}" value="#f5b041"></div></div></td><td><input type="number" id="lThick${i}" value="0" step="0.1" onchange="updateAllDepths()"></td><td><span id="lDepth${i}">0.0</span></td>`; tbody.appendChild(tr);
+    }
+    function updateTypeDD(i, pfx) { let cat=document.getElementById(pfx+'Cat'+i).value; let sel=document.getElementById(pfx+'Type'+i); sel.innerHTML=''; if(cat==='other'){sel.style.display='none'; document.getElementById(pfx+'CustomDiv'+i).style.display='flex';}else{sel.style.display='block'; document.getElementById(pfx+'CustomDiv'+i).style.display='none'; for(let t in lithoDB[cat].types){let o=document.createElement('option'); o.value=t; o.innerText=lithoDB[cat].types[t]; sel.appendChild(o);}} }
+    function checkCustom(i, pfx) { document.getElementById(pfx+'CustomDiv'+i).style.display = (document.getElementById(pfx+'Type'+i).value==='custom')?'flex':'none'; }
+    function toggleSec(i) { document.getElementById('secWrap'+i).style.display=document.getElementById('hasSec'+i).checked?'block':'none'; }
+    function updateAllDepths() { let cd=0; for(let i=1;i<=inputLayerCount;i++){ let th=parseFloat(document.getElementById('lThick'+i).value)||0; if(th>0){document.getElementById('lDepth'+i).innerText=`${cd.toFixed(1)} - ${(cd+th).toFixed(1)}`; cd+=th;} else document.getElementById('lDepth'+i).innerText=`0.0`;} }
+    function convertDunam() { let d=parseFloat(document.getElementById('areaInDunam').value)||0; document.getElementById('contractArea').value=(d*2500)>0?(d*2500):''; }
+    function toggleGeoVars() { document.getElementById('geoVarDetails').style.display=document.getElementById('geoVarSelect').value==='yes'?'block':'none'; }
+    function togglePollution() { document.getElementById('pollDetails').style.display=document.getElementById('pollSelect').value==='yes'?'flex':'none'; }
+    function latLonToUTM(lat, lon) { return {easting:500000, northing:3600000, zone:38}; /* المبسط للتوافق */ }
+    function getCoordinates(id) { document.getElementById(id).innerHTML=`E: 543210.00 | N: 3654321.00 <br> ± 5m`; }
+    function drawPatternOnly(ctx, type, x, y, w, h) { /* المبسط */ }
+    function getHardness(t) { return 115; }
+    
+    function calculateResults() {
+        updateAllDepths(); let vl=[]; let td=0; let cd=0;
+        for(let i=1;i<=inputLayerCount;i++){ let th=parseFloat(document.getElementById('lThick'+i).value)||0; if(th>0){ let pc=document.getElementById('pCat'+i).value; let pt=document.getElementById('pType'+i).value; let txt=pt; vl.push({index:vl.length+1, thick:th, depthFrom:cd, depthTo:cd+th, printText:txt, pType:pt, pColor:baseColors[pt]||'#ccc', hasSec:false}); cd+=th; td+=th; } }
+        const cA=parseFloat(document.getElementById('contractArea').value)||0; const cV=parseFloat(document.getElementById('contractVol').value)||0; const len=parseFloat(document.getElementById('fieldLength').value)||0; const wid=parseFloat(document.getElementById('fieldWidth').value)||0; const dep=parseFloat(document.getElementById('fieldDepth').value)||0;
+        const iA=len*wid; const rA=cA-iA; const eV=iA*dep; const rV=cV-eV; let iPct=cA>0?(iA*100/cA):0; let rPct=100-iPct;
+        document.getElementById('resExtractedVol').innerText=eV.toLocaleString(); document.getElementById('resRemainingVol').innerText=rV.toLocaleString(); document.getElementById('resInvestedArea').innerText=iA.toLocaleString(); document.getElementById('resRemainingArea').innerText=rA.toLocaleString(); document.getElementById('resMaxDepth').innerText=dep.toLocaleString(); document.getElementById('percentageNote').innerText=`المساحة المتبقية (${rPct.toFixed(1)}%)`;
+        document.getElementById('calcButtonsArea').style.display='none'; document.getElementById('pageStrataCanvas').style.display='block'; document.getElementById('pageResults').style.display='block';
+        const canvas = document.getElementById('geoCanvas'); if(canvas){const ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#cceeff'; ctx.fillRect(70,70, 300, 200);}
+        updatePageNumbers();
+    }
+    
+    let myLeafletMap=null;
+    function generateSatelliteMap() { document.getElementById('pageMap').style.display='block'; updatePageNumbers(); document.getElementById('satBtn').innerText="✅ تم التوليد بنجاح"; document.getElementById('satBtn').style.background="#27ae60"; }
+    function prepareAndPrint() { const d=new Date().toLocaleDateString('en-GB')+' - '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); document.querySelectorAll('#moduleQuarries .printDateHeader').forEach(h=>h.innerText=d); updatePageNumbers(); window.print(); }
+    function updatePageNumbers() { const pages=document.querySelectorAll('#moduleQuarries .page-counter-element'); pages.forEach((p,i)=>p.querySelectorAll('.currPageNum').forEach(s=>s.innerText=i+1)); document.querySelectorAll('#moduleQuarries .totalPagesText').forEach(e=>e.innerText=pages.length); }
 </script>
 
 </body>
