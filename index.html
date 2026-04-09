@@ -9,12 +9,12 @@
     <meta name="author" content="الجيولوجي علي شندل الجنابي">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         /* ========================================================
-           1. شاشات الترحيب وتسجيل الدخول (النسخة الأصلية 100%)
+           1. شاشات الترحيب وتسجيل الدخول
            ======================================================== */
         #introScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: right; padding: 15px; box-sizing: border-box; }
         .intro-box { background: rgba(255, 255, 255, 0.05); padding: 35px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 850px; width: 100%; max-height: 90vh; overflow-y: auto; backdrop-filter: blur(10px); margin: auto; box-sizing: border-box; }
@@ -54,7 +54,12 @@
         .module-card p { color: #7f8c8d; font-size: 0.95rem; line-height: 1.6; margin: 0; }
         
         .card-quarry { border-bottom-color: #27ae60; } .card-quarry:hover i { color: #27ae60; }
-        .card-structural { border-bottom-color: #e67e22; } .card-structural:hover i { color: #e67e22; }
+        
+        /* بطاقة المسح التركيبي (مجمدة حالياً) */
+        .card-structural { border-bottom-color: #bdc3c7; cursor: not-allowed; } 
+        .card-structural:hover { transform: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); } 
+        .card-structural:hover i { transform: none; color: #bdc3c7;}
+        
         .card-hydro { border-bottom-color: #3498db; } .card-hydro:hover i { color: #3498db; }
         .card-geo { border-bottom-color: #9b59b6; } .card-geo:hover i { color: #9b59b6; }
         .card-acoustic { border-bottom-color: #e74c3c; background: linear-gradient(to bottom, #fff, #fef9f9);} .card-acoustic:hover i { color: #e74c3c; }
@@ -108,10 +113,10 @@
         .gps-btn { background: var(--secondary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: bold; width: 100%; }
         .coord-display { background: #eaf2f8; border: 1px solid #a9cce3; padding: 10px; margin-top: 5px; border-radius: 6px; font-family: monospace; font-size: 0.95rem; direction: ltr; text-align: left; font-weight: bold; color: #154360; min-height: 40px;}
         .btn-calc { background: var(--accent); color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(41, 128, 185, 0.3); transition: 0.3s;}
-        .btn-calc:hover { background: #1f618d; }
+        .btn-calc:hover { background: #1f618d; transform: translateY(-2px);}
         .btn-convert { background: #2980b9; color: white; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem; }
         .btn-satellite { background: #8e44ad; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(142, 68, 173, 0.3); transition: 0.3s;}
-        .btn-satellite:hover { background: #732d91; }
+        .btn-satellite:hover { background: #732d91; transform: translateY(-2px);}
         #resultsSection { border: 2px solid #2ecc71; padding: 20px; border-radius: 8px; background: #f9fff9; }
         .result-item { display: flex; justify-content: space-between; border-bottom: 1px dashed #bdc3c7; padding: 10px 0; font-size: 1.05rem; } .result-item:last-child { border-bottom: none; } .result-value { font-weight: bold; color: #145a32; font-size: 1.15rem; }
         .percentage-note { background: #d5f5e3; padding: 12px; border-radius: 6px; margin-top: 15px; font-weight: bold; font-size: 0.95rem; color: #196f3d; text-align: center; border-right: 4px solid #27ae60; margin-bottom: 20px;}
@@ -121,10 +126,11 @@
         .map-label { background: rgba(255, 255, 255, 0.9); border: 2px solid #e74c3c; font-weight: bold; font-size: 14px; color: #c0392b; padding: 2px 6px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);} .map-north { position: absolute; top: 15px; right: 15px; z-index: 1000; background: rgba(255,255,255,0.9); padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 16px; color: #333; border: 2px solid #555; box-shadow: 0 2px 5px rgba(0,0,0,0.3); direction: ltr; pointer-events: none;} .map-legend-box { position: absolute; bottom: 25px; right: 15px; z-index: 1000; background: rgba(255,255,255,0.95); padding: 10px; border-radius: 6px; border: 2px solid #2c3e50; font-size: 12px; text-align: right; box-shadow: 0 2px 5px rgba(0,0,0,0.3); line-height: 1.8; pointer-events: none;} .map-legend-box b { color: #2c3e50; display: block; margin-bottom: 5px; font-size: 13px; border-bottom: 1px solid #ccc; padding-bottom: 3px;}
         .report-content { width: 100%; min-height: 250px; padding: 20px; font-family: 'Arial', sans-serif; font-size: 1.1rem; line-height: 2; border: 1px solid #bdc3c7; border-radius: 8px; box-sizing: border-box; background-color: #fcfcfc; color: #2c3e50; text-align: justify; outline: none; } .report-content p { margin-bottom: 15px; } .report-content b { color: #1c2833; font-size: 1.15rem; }
         .footer { text-align: center; padding: 20px; background: #eee; color: #555; font-size: 0.9rem; font-weight: bold; border-top: 1px solid #ddd; }
-        .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
+        .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); transition: 0.3s;}
+        .btn-print:hover { background: #c0392b; transform: translateY(-2px);}
 
         /* ========================================================
-           هندسة الطباعة المحسنة (إصلاح الأرقام والصفحات البيضاء)
+           هندسة الطباعة المحسنة للـ PDF (خاص بالمقالع)
            ======================================================== */
         .print-only { display: none !important; }
         @media print {
@@ -137,32 +143,14 @@
             .print-only { display: block !important; }
             .no-print { display: none !important; }
             
-            /* إجبار الحاوية على أخذ طول A4 لضمان بقاء الأرقام في القاع المطلق */
-            .print-page-wrapper { 
-                width: 100%; 
-                box-sizing: border-box; 
-                padding: 1.0cm; 
-                min-height: 28.5cm; /* مقاس يحفظ الأرقام بالأسفل ويمنع تجاوز الصفحة */
-                page-break-after: always; 
-                position: relative; 
-                display: block !important; 
-            }
-            #pageMap { page-break-after: auto !important; min-height: auto; } /* لمنع أي صفحة بيضاء بعد الخريطة */
+            .print-page-wrapper { width: 100%; box-sizing: border-box; padding: 1.0cm; min-height: 28.5cm; page-break-after: always; position: relative; display: block !important; }
+            #pageMap { page-break-after: auto !important; min-height: auto; } 
             
-            .print-bottom { 
-                position: absolute; 
-                bottom: 0.5cm; /* تثبيت في أسفل الحاوية */
-                left: 0; 
-                width: 100%; 
-                text-align: center; 
-                font-weight: bold; 
-                font-size: 14px; 
-                color: #333; 
-            }
+            .print-bottom { position: absolute; bottom: 0.5cm; left: 0; width: 100%; text-align: center; font-weight: bold; font-size: 14px; color: #333; }
 
             .print-header { text-align: center; border: 2px solid #2980b9; background-color: #f4f9fc; padding: 10px; margin-bottom: 15px; border-radius: 6px; position: relative; }
             .print-header h1 { font-size: 18px; color: #1c2833; margin: 0 0 3px 0; } .print-header h2 { font-size: 13px; color: #e67e22; margin: 0; font-weight: bold; } .date-top-left { position: absolute; top: 8px; left: 12px; font-size: 10px; color: #555; font-weight: bold; }
-            .section { margin-bottom: 12px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 12px; background-color: #fafafa; box-shadow: none; }
+            .section { margin-bottom: 12px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 12px; background-color: #fafafa; box-shadow: none; page-break-inside: avoid; }
             .section-title { font-size: 1.05rem; margin-bottom: 8px; padding-bottom: 3px; border-bottom: 2px solid #2980b9;} .sub-title { font-size: 0.95rem; margin: 10px 0 5px 0; border-bottom: none;}
             .form-row { display: flex !important; flex-wrap: nowrap !important; gap: 10px !important; justify-content: space-between !important; margin-bottom: 5px !important; }
             .form-group { flex: 1 !important; min-width: 0 !important; }
@@ -254,11 +242,11 @@
             <p>حساب الكميات الهندسية، المساحات، التقييم البيئي، ورسم العمود الطباقي أوتوماتيكياً للمقالع.</p>
         </div>
 
-        <div class="module-card card-structural" onclick="alert('موديول المسح التركيبي والجيوتقني قيد البرمجة في المرحلة القادمة. سيتم إضافة البوصلة الرقمية ومحرك ستيريونت هنا قريباً.')">
-            <div class="coming-soon-badge">قريباً</div>
-            <i class="fas fa-compass"></i>
-            <h3>المسح التركيبي والجيوتقني</h3>
-            <p>قياس المضرب والميل بالهاتف، تحليل استقرارية المنحدرات، وتصنيف الكتلة الصخرية (RMR).</p>
+        <div class="module-card card-structural">
+            <div class="coming-soon-badge" style="background: #7f8c8d;">قيد التحديث</div>
+            <i class="fas fa-compass" style="color: #bdc3c7;"></i>
+            <h3 style="color: #7f8c8d;">المسح التركيبي والجيوتقني</h3>
+            <p style="color: #bdc3c7;">تم إزالة هذه النسخة مؤقتاً لغرض التحديث والدمج الشامل.</p>
         </div>
 
         <div class="module-card card-hydro" onclick="alert('موديول المسح الهيدروجيولوجي قيد البرمجة. سيشمل مراقبة الآبار وتحليل شبكات التصريف.')">
@@ -511,10 +499,9 @@
     </div>
 </div>
 
-
 <script>
     // ==========================================
-    // التحكم بالتنقل (لوحة التحكم)
+    // 1. التحكم بالتنقل (لوحة التحكم)
     // ==========================================
     function openModule(moduleId) {
         document.getElementById('dashboardScreen').style.display = 'none';
@@ -530,11 +517,11 @@
     }
 
     // ==========================================
-    // تهيئة المتغيرات والدول للمقالع
+    // 2. تهيئة المتغيرات والدول للمقالع
     // ==========================================
     let inputLayerCount = 0; 
     const LITHOLOGY_PER_PAGE = 22; 
-    const TEXT_PER_PAGE = 8;       
+    const TEXT_PER_PAGE = 8;        
 
     document.addEventListener('DOMContentLoaded', () => {
         const countrySelect = document.getElementById('countrySelect');
@@ -630,7 +617,6 @@
             currentGeoName = nameInput; errorDiv.style.display = 'none'; btn.innerText = "تم الدخول..."; btn.disabled = true;
             document.getElementById('printGeoName').value = currentGeoName;
             
-            // التوجه إلى لوحة التحكم
             document.getElementById('introScreen').style.display = 'none'; 
             document.getElementById('dashboardScreen').style.display = 'block';
             
