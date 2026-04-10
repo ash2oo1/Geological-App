@@ -277,7 +277,7 @@
 </div>
 
 <script>
-    // مصفوفات لحفظ النقاط
+// مصفوفات لحفظ النقاط
     let topoPoints = [];
     let riverPoints = [];
     
@@ -287,15 +287,185 @@
     }
 
     function capturePoint(type) {
-        if (!navigator.geolocation) {
-            alert("المتصفح لا يدعم تحديد الموقع.");
+        try {
+            if (!navigator.geolocation) {
+                alert("متصفحك الحالي لا يدعم ميزة تحديد الموقع (GPS).");
+                return;
+            }
+
+            const btn = document.getElementById('btn_' + type);
+            const accDiv = document.getElementById('acc_' + type);
+            
+            if (!btn || !accDiv) {
+                alert("خطأ في قراءة عناصر الصفحة، يرجى إعادة تحديث الصفحة.");
+                return;
+            }
+
+            const originalContent = btn.innerHTML;
+
+            // استجابة فورية للزر لتعرف أنه يعمل
+            btn.innerHTML = `⏳ جاري البحث عن الأقمار الصناعية...`;
+            btn.disabled = true;
+            accDiv.innerHTML = `<span style="color:#2980b9; font-weight:bold; font-size:0.9rem;">الرجاء الانتظار، جاري تحديد الدقة...</span>`;
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const accuracy = position.coords.accuracy;
+                    let alt = position.coords.altitude;
+                    
+                    const manualAlt = document.getElementById('manualElevation').value;
+                    let finalZ = 0;
+                    let zMethod = "";
+
+                    if (manualAlt && manualAlt.trim() !== "") {
+                        finalZ = parseFloat(manualAlt);
+                        zMethod = "(إدخال يدوي)";
+                    } else {
+                        finalZ = (alt !== null) ? Math.round(alt * 10) / 10 : 0;
+                        zMethod = "(تلقائي من GPS)";
+                        if (alt === null) {
+                            alert("⚠️ تنبيه: مستشعر هاتفك لا يدعم قراءة الارتفاع، تم تسجيل القيمة 0. يُرجى إدخال الارتفاع يدوياً في المربع المخصص.");
+                        }
+                    }
+                    
+                    const utm = pseudoUTM(lat, lon);
+                    const point = { x: utm.x, y: utm.y, z: finalZ };
+                    
+                    let accColor = accuracy <= 10 ? '#27ae60' : (accuracy <= 30 ? '#f39c12' : '#e74c3c');
+                    accDiv.innerHTML = `<span style="color:${accColor}; font-weight:bold; font-size:0.9rem;">✅ تمت القراءة! الدقة: ± ${accuracy.toFixed(1)} متر</span>`;
+
+                    let tableId = type === 'topo' ? 'topoTable' : 'riverTable';
+                    let array = type === 'topo' ? topoPoints : riverPoints;
+                    
+                    array.push(point);
+                    let table = document.getElementById(tableId);
+                    let row = table.insertRow(-1);
+                    row.innerHTML = `<td>${array.length}</td><td>${point.x}</td><td>${point.y}</td><td style="color:#c0392b; font-weight:bold;">${point.z} m <br><small style="color:#888;">${zMethod}</small></td>`;
+
+                    btn.innerHTML = originalContent;
+                    btn.disabled = false;
+                }, 
+                (error) => {
+                    let msg = "خطأ غير معروف.";
+                    if (error.code === 1) msg = "تم رفض الصلاحية. يرجى السماح للمتصفح بالوصول لموقعك.";
+                    else if (error.code === 2) msg = "المستشعر لا يستطيع التقاط الإشارة (أنت في مكان مغلق).";
+                    else if (error.code === 3) msg = "انتهى وقت الانتظار (تأكد من تفعيل GPS الهاتف).";
+                    
+                    alert("❌ فشل الالتقاط: " + msg);
+                    btn.innerHTML = originalContent;
+                    btn.disabled = false;
+                    accDiv.innerHTML = `<span style="color:#e74c3c; font-weight:bold; font-size:0.9rem;">❌ ${msg}</span>`;
+                }, 
+                { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+            );
+        } catch (e) {
+            alert("حدث خطأ برمجي يمنع الزر من العمل: " + e.message);
+        }
+    }
+
+    function generateContourMapAndReport() {
+        if (topoPoints.length < 3) {
+            alert("⚠️ يرجى التقاط 3 نقاط طوبوغرافية على الأقل لكي يتمكن النظام من رسم الخريطة الكنتورية.");
             return;
         }
 
-        const btn = document.getElementById('btn_' + type);
-        const accDiv = document.getElementById('acc_' + type);
-        const originalContent = btn.innerHTML;
+        const geoName = document.getElementById('geoName').value || "غير محدد";
+        document.querySelectorAll('.res_geoNameHeaderRep').forEach(el => el.innerText = geoName);
+        document.getElementById('res_geoName').innerText = geoName;
+        document.getElementById('res_regionName').innerText = document.getElementById('regionName').value || "غير محدد";
+        document.getElementById('res_topoEnv').innerText = document.getElementById('topoEnv').value;
+        
+        document.getElementById('res_drainage').innerText = document.getElementById('drainagePattern').value;
+        document.getElementById('res_valley').innerText = document.getElementById('valleyShape').value;
+        document.getElementById('res_weathering').innerText = document.getElementById('weatheringType').value;
+        document.getElementById('res_floodRisk').innerText = document.getElementById('floodRisk').value;
+        
+        document.getElementById('res_topoCount').innerText = topoPoints.length;
+        document.getElementById('res_riverCount').innerText = riverPoints.length;
+        document.getElementById('res_cInterval').innerText = document.getElementById('contourInterval').value;
 
-        // 1. تحديث شكل الزر عند الضغط
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري الاتصال بالأقمار الصناعية...`;
-        btn.disabled
+        drawMap();
+
+        document.getElementById('inputSectionGeomorph').style.display = 'none';
+        document.getElementById('screenResultsSummary').style.display = 'block';
+        document.getElementById('pageResultsStr_1').style.display = 'block';
+        document.getElementById('pageResultsStr_2').style.display = 'block';
+    }
+
+    function drawMap() {
+        const canvas = document.getElementById('contourMap');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+        let minZ = Infinity, maxZ = -Infinity;
+        
+        topoPoints.forEach(p => {
+            if(p.x < minX) minX = p.x; if(p.x > maxX) maxX = p.x;
+            if(p.y < minY) minY = p.y; if(p.y > maxY) maxY = p.y;
+            if(p.z < minZ) minZ = p.z; if(p.z > maxZ) maxZ = p.z;
+        });
+
+        const padding = 60;
+        function getScreenCoords(x, y) {
+            let sx = padding + ((x - minX) / (maxX - minX || 1)) * (canvas.width - 2 * padding);
+            let sy = canvas.height - padding - ((y - minY) / (maxY - minY || 1)) * (canvas.height - 2 * padding);
+            return { x: sx, y: sy };
+        }
+
+        topoPoints.forEach(p => {
+            let sc = getScreenCoords(p.x, p.y);
+            let normalizedZ = (p.z - minZ) / (maxZ - minZ || 1);
+            
+            let r = Math.floor(255 * normalizedZ);
+            let g = Math.floor(255 * (1 - normalizedZ));
+            
+            let gradient = ctx.createRadialGradient(sc.x, sc.y, 0, sc.x, sc.y, 180);
+            gradient.addColorStop(0, `rgba(${r}, ${g}, 50, 0.4)`);
+            gradient.addColorStop(1, `rgba(${r}, ${g}, 50, 0)`);
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(sc.x, sc.y, 180, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#2c3e50';
+            ctx.beginPath();
+            ctx.arc(sc.x, sc.y, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.font = 'bold 13px Arial';
+            ctx.fillText(`${p.z}m`, sc.x + 8, sc.y - 8);
+        });
+
+        if (riverPoints.length > 1) {
+            ctx.beginPath();
+            ctx.strokeStyle = '#2980b9'; 
+            ctx.lineWidth = 5;
+            ctx.lineJoin = 'round';
+            
+            for (let i = 0; i < riverPoints.length; i++) {
+                let p = riverPoints[i];
+                let sc = getScreenCoords(p.x, p.y);
+                if (i === 0) ctx.moveTo(sc.x, sc.y);
+                else ctx.lineTo(sc.x, sc.y);
+            }
+            ctx.stroke();
+            
+            riverPoints.forEach(p => {
+                let sc = getScreenCoords(p.x, p.y);
+                ctx.fillStyle = '#fff';
+                ctx.beginPath(); ctx.arc(sc.x, sc.y, 5, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2; ctx.stroke();
+                
+                ctx.fillStyle = '#2980b9';
+                ctx.font = 'bold 12px Arial';
+                ctx.fillText(`${p.z}m`, sc.x + 8, sc.y + 15);
+            });
+        }
+        
+        ctx.strokeStyle = '#2c3e50';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+    }
