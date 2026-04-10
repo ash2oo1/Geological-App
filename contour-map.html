@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام المسح الميداني الجيولوجي (المسح الجيومورفولوجي والكنتوري)</title>
+    <title>نظام المسح الميداني الجيولوجي (الجيومورفولوجي والكنتوري)</title>
     
     <meta name="description" content="نظام الرفع الطوبوغرافي، تتبع الأنهار، ورسم الخرائط الكنتورية">
     <meta name="author" content="الجيولوجي علي شندل الجنابي">
@@ -111,7 +111,7 @@
  
 <div class="container">
     <div class="header screen-only">
-        <h1>نظام المسح الميداني الجيولوجي (المسح الجيومورفولوجي والكنتوري)</h1>
+        <h1>نظام المسح الميداني الجيولوجي (الجيومورفولوجي والكنتوري)</h1>
         <h2>بإشراف الجيولوجي: <span id="mainTitleName">علي شندل الجنابي</span></h2>
     </div>
 
@@ -610,13 +610,12 @@
             if(p.z < minZ) minZ = p.z; if(p.z > maxZ) maxZ = p.z;
         });
 
-        // زيادة هوامش الأمان لضمان راحة العناصر خارج الإطار
         let dx = (rawMaxX - rawMinX) || 10;
         let dy = (rawMaxY - rawMinY) || 10;
-        let paddingLeft = 80;   // لليسار (Northing)
-        let paddingRight = 100; // لليمين (Northing)
-        let paddingTop = 70;    // للأعلى (سهم الشمال)
-        let paddingBottom = 80; // للأسفل (Easting + Scale)
+        let paddingLeft = 80; 
+        let paddingRight = 100; 
+        let paddingTop = 70;
+        let paddingBottom = 80;
 
         let minX = rawMinX - dx * 0.08;
         let maxX = rawMaxX + dx * 0.08;
@@ -629,7 +628,7 @@
         let endZ = Math.ceil(maxZ / interval) * interval;
         if (startZ === endZ) endZ += interval;
 
-        const mapW = canvas.width - paddingLeft - paddingRight - 80; // 80 للمقياس الملون
+        const mapW = canvas.width - paddingLeft - paddingRight;
         const mapH = canvas.height - paddingTop - paddingBottom;
 
         function getScreenX(realX) { return paddingLeft + ((realX - minX) / (maxX - minX)) * mapW; }
@@ -690,10 +689,9 @@
                 ctx.lineJoin = 'round'; 
                 
                 let isIndex = Math.abs(iso % (interval * 5)) < 0.001;
-                ctx.strokeStyle = '#000'; // جميع الخطوط سوداء واضحة
+                ctx.strokeStyle = '#000'; 
                 ctx.lineWidth = isIndex ? 1.8 : 0.8;
 
-                // جمع مسارات الخط لطباعة الرقم مرة واحدة لكل خط
                 let segments = [];
 
                 for (let i = 0; i < gridCols - 1; i++) {
@@ -735,7 +733,6 @@
                 }
                 ctx.stroke();
 
-                // تجميع الخطوط لرسم الرقم مرة واحدة لكل خط طويل
                 if (showLabels && segments.length > 0) {
                     let lines = [];
                     while(segments.length > 0) {
@@ -768,7 +765,7 @@
                         let totalLen = 0;
                         for(let s of line) totalLen += Math.hypot(s.p2.x - s.p1.x, s.p2.y - s.p1.y);
 
-                        if(totalLen > 50) { // تجاهل الزوايا القصيرة الوهمية
+                        if(totalLen > 50) { 
                             let midIdx = Math.floor(line.length / 2);
                             let buffer = 30;
                             let validPoint = null;
@@ -793,31 +790,29 @@
             });
 
             if (showLabels) {
-                // فلترة نهائية تمنع التداخل البشع بين الأرقام
-                let finalLabels = [];
+                let placedLabels = [];
                 for(let cand of labelCandidates) {
                     let tooClose = false;
-                    for(let fl of finalLabels) {
-                        if (Math.hypot(cand.x - fl.x, cand.y - fl.y) < 20) { tooClose = true; break; }
+                    for(let p of placedLabels) {
+                        if (cand.val === p.val && Math.hypot(cand.x - p.x, cand.y - p.y) < 180) { tooClose = true; break; }
+                        if (cand.val !== p.val && Math.hypot(cand.x - p.x, cand.y - p.y) < 65) { tooClose = true; break; }
                     }
-                    if(!tooClose) finalLabels.push(cand);
+                    if(!tooClose) placedLabels.push(cand);
                 }
 
                 ctx.direction = "ltr";
-                ctx.font = 'bold 10px Arial'; // خط صغير وواضح
+                ctx.font = 'bold 10px Arial'; 
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 
-                finalLabels.forEach(lp => {
+                placedLabels.forEach(lp => {
                     let txt = lp.val.toFixed(1);
                     let textW = ctx.measureText(txt).width;
                     
-                    // إخفاء الخط الأسود تحت الرقم باستخدام لون الخلفية الدقيق (بدون هالة بيضاء)
                     let bgCol = showFill ? getColorPalette(lp.val, startZ, endZ) : '#fff';
                     ctx.fillStyle = bgCol;
                     ctx.fillRect(lp.x - textW/2 - 1, lp.y - 6, textW + 2, 12);
                     
-                    // طباعة الرقم الأسود الصافي
                     ctx.fillStyle = '#000';
                     ctx.fillText(txt, lp.x, lp.y);
                 });
@@ -836,7 +831,6 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'top';
             
-            // Bottom Easting
             for (let i = 0; i <= 5; i++) {
                 let rx = minX + (i / 5) * (maxX - minX);
                 let sx = getScreenX(rx);
@@ -844,7 +838,7 @@
                 ctx.fillText(rx.toFixed(1), sx, paddingTop + mapH + 10);
             }
 
-            // Left & Right Northing
+            ctx.textAlign = 'right';
             ctx.textBaseline = 'middle';
             for (let i = 0; i <= 5; i++) {
                 let ry = minY + (i / 5) * (maxY - minY);
@@ -861,19 +855,16 @@
                 ctx.fillText(ry.toFixed(1), paddingLeft + mapW + 8, sy);
             }
             
-            // تسميات UTM للاتجاهات على الحواف
             ctx.save();
             ctx.fillStyle = '#1c2833';
             ctx.font = 'bold 14px Arial';
             ctx.textAlign = 'center';
             
-            // Left Northing
             ctx.translate(paddingLeft - 65, paddingTop + mapH / 2);
             ctx.rotate(-Math.PI / 2);
             ctx.fillText('Northing', 0, 0);
             ctx.restore();
             
-            // Right Northing
             ctx.save();
             ctx.translate(paddingLeft + mapW + 65, paddingTop + mapH / 2);
             ctx.rotate(-Math.PI / 2);
@@ -883,7 +874,6 @@
             ctx.fillText('Northing', 0, 0);
             ctx.restore();
             
-            // Bottom Easting
             ctx.fillStyle = '#1c2833';
             ctx.font = 'bold 14px Arial';
             ctx.textAlign = 'center';
@@ -891,7 +881,7 @@
             ctx.fillText('Easting', paddingLeft + mapW / 2, paddingTop + mapH + 35);
         }
 
-        // ================= خطوة 5: مقياس الرسم الجغرافي الخطي (أقصى اليسار أسفل - مفصول تماماً) =================
+        // ================= خطوة 5: مقياس الرسم الجغرافي الخطي (أقصى اليسار أسفل) =================
         if (showScale) {
             const realDistX = maxX - minX;
             let scaleValue = Math.pow(10, Math.floor(Math.log10(realDistX / 2))); 
@@ -913,23 +903,21 @@
             ctx.fillStyle = '#000';
             ctx.font = 'bold 12px Arial';
             ctx.textAlign = 'center';
-            // رفع الصفر والقيمة فوق الخط
-            ctx.fillText('0', scX, scY - 15);
-            ctx.fillText(scaleValue, scX + scalePxWidth, scY - 15); 
+            ctx.fillText('0', scX, scY - 18);
+            ctx.fillText(scaleValue + ' m', scX + scalePxWidth, scY - 18);
             ctx.direction = "rtl";
         }
 
         // ================= خطوة 6: صندوق الألوان وسهم الشمال (أقصى اليمين، مفصول تماماً) =================
         if (showFill) {
-            const legX = paddingLeft + mapW + 110; // مسافة أمان قوية من الإحداثيات اليمنى
-            const legY = paddingTop + 30; // إنزال الصندوق لترك مساحة لسهم الشمال
+            const legX = paddingLeft + mapW + 110; 
+            const legH = mapH * 0.7; 
+            const legY = paddingTop + (mapH - legH); 
             const legW = 20;
-            const legH = mapH - 30;
             
-            // سهم الشمال فوق صندوق الألوان
             if (showNorth) {
                 const nX = legX + (legW / 2); 
-                const nY = legY - 30; 
+                const nY = paddingTop + 10; 
                 ctx.beginPath();
                 ctx.moveTo(nX, nY - 15); ctx.lineTo(nX + 8, nY + 10); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10);
                 ctx.closePath();
@@ -966,9 +954,8 @@
             ctx.fillText(midZ.toFixed(1), legX + legW + offsetText, legY + legH / 2);
             ctx.direction = "rtl";
         } else if (showNorth) {
-            // سهم الشمال في حال إخفاء الألوان (في نفس الموقع اليميني)
             const nX = paddingLeft + mapW + 110; 
-            const nY = paddingTop; 
+            const nY = paddingTop + 10; 
             ctx.beginPath();
             ctx.moveTo(nX, nY - 15); ctx.lineTo(nX + 8, nY + 10); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10);
             ctx.closePath();
