@@ -260,7 +260,7 @@
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_1">
         <div class="print-master-header print-only">
             <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
+                <h1>منصة المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
                 <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
             </div>
             <div class="header-left-info printDateHeader">--/--/----</div>
@@ -295,7 +295,7 @@
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_2">
         <div class="print-master-header print-only">
             <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
+                <h1>منصة المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
                 <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
             </div>
             <div class="header-left-info printDateHeader">--/--/----</div>
@@ -322,7 +322,7 @@
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_3">
         <div class="print-master-header print-only">
             <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
+                <h1>منصة المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
                 <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
             </div>
             <div class="header-left-info printDateHeader">--/--/----</div>
@@ -342,16 +342,17 @@
 </div>
 
 <script>
-    // تعطيل القائمة المنسدلة (Right Click)
+    // ==========================================
+    // حماية المنصة (منع اليمين كليك واختصارات المطور)
+    // ==========================================
     document.addEventListener('contextmenu', event => event.preventDefault());
 
-    // تعطيل اختصارات لوحة المفاتيح الخاصة بالمطورين (F12, Ctrl+Shift+I, etc.)
     document.onkeydown = function(e) {
-        if(e.keyCode == 123) { return false; }
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; }
-        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; }
-        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; }
+        if(e.keyCode == 123) { return false; } // F12
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; } // Ctrl+Shift+I
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; } // Ctrl+Shift+C
+        if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; } // Ctrl+Shift+J
+        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; } // Ctrl+U
     }
 
     // ==========================================
@@ -622,11 +623,10 @@
             if(p.z < minZ) minZ = p.z; if(p.z > maxZ) maxZ = p.z;
         });
 
-        // زيادة هوامش الأمان لضمان راحة العناصر خارج الإطار بشكل أكبر
         let dx = (rawMaxX - rawMinX) || 10;
         let dy = (rawMaxY - rawMinY) || 10;
         let paddingLeft = 85; 
-        let paddingRight = 130; 
+        let paddingRight = 160; 
         let paddingTop = 85;    
         let paddingBottom = 85; 
 
@@ -690,7 +690,7 @@
             ctx.fillRect(paddingLeft, paddingTop, mapW, mapH);
         }
 
-        // ================= خطوة 3: خوارزمية الخطوط وتوزيع الأرقام =================
+        // ================= خطوة 3: خوارزمية الخطوط وتوزيع الأرقام الذكية والمتباعدة =================
         if (showLines) {
             let contourLevels = [];
             for(let z = startZ; z <= endZ; z += interval) contourLevels.push(z);
@@ -703,7 +703,9 @@
                 
                 let isIndex = Math.abs(iso % (interval * 5)) < 0.001;
                 ctx.strokeStyle = '#000'; 
-                ctx.lineWidth = isIndex ? 2.0 : 0.8;
+                ctx.lineWidth = isIndex ? 1.8 : 0.8;
+
+                let segments = [];
 
                 for (let i = 0; i < gridCols - 1; i++) {
                     for (let j = 0; j < gridRows - 1; j++) {
@@ -733,24 +735,71 @@
                         else if(idx===8 || idx===7) { p1 = d; p2 = c; }
                         else if(idx===3 || idx===12) { p1 = d; p2 = b; }
                         else if(idx===6 || idx===9) { p1 = a; p2 = c; }
-                        else if(idx===5) { ctx.moveTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.moveTo(b.x, b.y); ctx.lineTo(c.x, c.y); p1=a; p2=d; } 
-                        else if(idx===10) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); p1=a; p2=b; } 
+                        else if(idx===5) { ctx.moveTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.moveTo(b.x, b.y); ctx.lineTo(c.x, c.y); p1=a; p2=d; segments.push({p1:b, p2:c}); } 
+                        else if(idx===10) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); p1=a; p2=b; segments.push({p1:c, p2:d}); } 
 
                         if (p1 && p2 && idx !== 5 && idx !== 10) {
                             ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
-                            
-                            if (showLabels) {
-                                let midX = (p1.x + p2.x) / 2;
-                                let midY = (p1.y + p2.y) / 2;
-                                let buffer = 35;
-                                if (midX > paddingLeft + buffer && midX < paddingLeft + mapW - buffer && midY > paddingTop + buffer && midY < paddingTop + mapH - buffer) {
-                                    labelCandidates.push({x: midX, y: midY, val: iso});
-                                }
-                            }
+                            segments.push({p1: p1, p2: p2});
                         }
                     }
                 }
                 ctx.stroke();
+
+                if (showLabels && segments.length > 0) {
+                    let lines = [];
+                    while(segments.length > 0) {
+                        let currentLine = [segments.pop()];
+                        let added = true;
+                        let attempts = 0;
+                        while(added && attempts < 5000) {
+                            added = false;
+                            attempts++;
+                            for(let i=0; i<segments.length; i++) {
+                                let seg = segments[i];
+                                let startSeg = currentLine[0];
+                                let endSeg = currentLine[currentLine.length-1];
+                                let tol = 2.0;
+                                if (Math.hypot(seg.p1.x - endSeg.p2.x, seg.p1.y - endSeg.p2.y) <= tol) {
+                                    currentLine.push(seg); segments.splice(i, 1); added = true; break;
+                                } else if (Math.hypot(seg.p2.x - startSeg.p1.x, seg.p2.y - startSeg.p1.y) <= tol) {
+                                    currentLine.unshift(seg); segments.splice(i, 1); added = true; break;
+                                } else if (Math.hypot(seg.p2.x - endSeg.p2.x, seg.p2.y - endSeg.p2.y) <= tol) {
+                                    currentLine.push({p1: seg.p2, p2: seg.p1}); segments.splice(i, 1); added = true; break;
+                                } else if (Math.hypot(seg.p1.x - startSeg.p1.x, seg.p1.y - startSeg.p1.y) <= tol) {
+                                    currentLine.unshift({p1: seg.p2, p2: seg.p1}); segments.splice(i, 1); added = true; break;
+                                }
+                            }
+                        }
+                        lines.push(currentLine);
+                    }
+
+                    for(let line of lines) {
+                        let totalLen = 0;
+                        for(let s of line) totalLen += Math.hypot(s.p2.x - s.p1.x, s.p2.y - s.p1.y);
+
+                        if(totalLen > 50) { 
+                            let midIdx = Math.floor(line.length / 2);
+                            let buffer = 30;
+                            let validPoint = null;
+
+                            let pt = {x: (line[midIdx].p1.x + line[midIdx].p2.x)/2, y: (line[midIdx].p1.y + line[midIdx].p2.y)/2};
+                            if (pt.x > paddingLeft + buffer && pt.x < paddingLeft + mapW - buffer && pt.y > paddingTop + buffer && pt.y < paddingTop + mapH - buffer) {
+                                validPoint = pt;
+                            } else {
+                                for(let k=0; k<line.length; k+=2) {
+                                    let cpt = {x: (line[k].p1.x + line[k].p2.x)/2, y: (line[k].p1.y + line[k].p2.y)/2};
+                                    if (cpt.x > paddingLeft + buffer && cpt.x < paddingLeft + mapW - buffer && cpt.y > paddingTop + buffer && cpt.y < paddingTop + mapH - buffer) {
+                                        validPoint = cpt; break;
+                                    }
+                                }
+                            }
+                            if(validPoint) {
+                                labelCandidates.push({x: validPoint.x, y: validPoint.y, val: iso});
+                            }
+                        }
+                    }
+                }
             });
 
             if (showLabels) {
@@ -830,7 +879,7 @@
             ctx.restore();
             
             ctx.save();
-            ctx.translate(paddingLeft + mapW + 65, paddingTop + mapH / 2);
+            ctx.translate(paddingLeft + mapW + 70, paddingTop + mapH / 2);
             ctx.rotate(-Math.PI / 2);
             ctx.font = 'bold 14px Arial';
             ctx.textAlign = 'center';
@@ -853,7 +902,7 @@
             let scalePxWidth = (scaleValue / realDistX) * mapW;
 
             const scX = paddingLeft; 
-            const scY = paddingTop + mapH + 70; // إزاحة للأسفل لمنع التصاق الأرقام
+            const scY = paddingTop + mapH + 65; 
             
             ctx.beginPath();
             ctx.lineWidth = 2.5;
@@ -874,10 +923,10 @@
             ctx.direction = "rtl";
         }
 
-        // ================= خطوة 6: صندوق الألوان وسهم الشمال =================
+        // ================= خطوة 6: صندوق الألوان وسهم الشمال (أقصى اليمين) =================
         if (showFill) {
-            // إزاحة للصندوق الملون لليسار قليلاً لضمان ظهور الأرقام بوضوح
-            const legX = paddingLeft + mapW + 65; 
+            // إزاحة للصندوق الملون لليسار قليلاً لضمان ظهور الأرقام بوضوح (110)
+            const legX = paddingLeft + mapW + 110; 
             const legH = mapH * 0.70; 
             const legY = paddingTop + (mapH - legH); 
             const legW = 20;
@@ -914,7 +963,7 @@
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
             
-            // إظهار الأرقام بجانب المقياس اللوني
+            // إظهار الأرقام الثلاثة بجانب المقياس اللوني
             const offsetText = 6;
             ctx.fillText(endZ.toFixed(1), legX + legW + offsetText, legY);
             ctx.fillText(startZ.toFixed(1), legX + legW + offsetText, legY + legH);
@@ -922,7 +971,7 @@
             ctx.fillText(midZ.toFixed(1), legX + legW + offsetText, legY + legH / 2);
             ctx.direction = "rtl";
         } else if (showNorth) {
-            const nX = paddingLeft + mapW + 65; 
+            const nX = paddingLeft + mapW + 110; 
             const nY = paddingTop + 15; 
             ctx.beginPath();
             ctx.moveTo(nX, nY - 18); ctx.lineTo(nX + 8, nY + 10); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10);
