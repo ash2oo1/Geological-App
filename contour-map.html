@@ -111,7 +111,7 @@
  
 <div class="container">
     <div class="header screen-only">
-        <h1>نظام المسح الميداني الجيولوجي</h1>
+        <h1>نظام المسح الجيومورفولوجي والكنتوري</h1>
         <h2>بإشراف الجيولوجي: <span id="mainTitleName">علي شندل الجنابي</span></h2>
     </div>
 
@@ -334,7 +334,7 @@
                 <img id="printMapImage" style="width: 100%; max-height: 700px; object-fit: contain; border: 1px solid #333;" />
                 
                 <div id="printInterpretationBox" style="font-size: 1.15rem; line-height: 1.8; text-align: justify; margin-top: 20px; padding: 15px; background: #fafafa; border: 1px solid #ddd; border-radius: 8px; color: #1e8449; font-weight: bold;">
-                    </div>
+                </div>
             </div>
         </div>
         <div class="print-bottom-str print-only">الصفحة 3 من 3</div>
@@ -482,7 +482,6 @@
             return;
         }
 
-        // --- تحديث بيانات التقرير ---
         const geoName = document.getElementById('geoName').value.trim() || "علي شندل الجنابي";
         document.querySelectorAll('.res_geoNameHeaderRep').forEach(el => el.innerText = geoName);
         document.getElementById('res_geoName').innerText = geoName;
@@ -498,7 +497,6 @@
         document.getElementById('res_riverCount').innerText = processedRiver.length;
         document.getElementById('res_cInterval').innerText = cInterval;
 
-        // --- بناء جداول الطباعة الديناميكية ---
         let printTopoBody = document.getElementById('printTopoBody');
         printTopoBody.innerHTML = '';
         processedTopo.forEach((p, i) => {
@@ -612,7 +610,6 @@
             if(p.z < minZ) minZ = p.z; if(p.z > maxZ) maxZ = p.z;
         });
 
-        // زيادة الهامش لضمان عدم اقتطاع الإحداثيات اليسرى وظهور النقاط بعيداً عن الإطار
         let dx = (rawMaxX - rawMinX) || 10;
         let dy = (rawMaxY - rawMinY) || 10;
         let minX = rawMinX - dx * 0.08;
@@ -677,12 +674,12 @@
             ctx.fillRect(padding, padding, mapW, mapH);
         }
 
-        // ================= خطوة 3: خوارزمية تتبع الأرقام وخطوط الكنتور المستقلة =================
+        // ================= خطوة 3: خوارزمية تجميع الخطوط وتتبع الأرقام (Stitching) =================
         if (showLines) {
             let contourLevels = [];
             for(let z = startZ; z <= endZ; z += interval) contourLevels.push(z);
 
-            let labelCandidates = [];
+            let segmentsByIso = {}; // لتجميع كل القطع لكل قيمة كنتورية
 
             contourLevels.forEach(iso => {
                 ctx.beginPath();
@@ -691,6 +688,8 @@
                 let isIndex = Math.abs(iso % (interval * 5)) < 0.001;
                 ctx.strokeStyle = isIndex ? '#000' : 'rgba(0,0,0,0.7)';
                 ctx.lineWidth = isIndex ? 2.2 : 0.8;
+
+                if(!segmentsByIso[iso]) segmentsByIso[iso] = [];
 
                 for (let i = 0; i < gridCols - 1; i++) {
                     for (let j = 0; j < gridRows - 1; j++) {
@@ -720,38 +719,75 @@
                         else if(idx===8 || idx===7) { p1 = d; p2 = c; }
                         else if(idx===3 || idx===12) { p1 = d; p2 = b; }
                         else if(idx===6 || idx===9) { p1 = a; p2 = c; }
-                        else if(idx===5) { ctx.moveTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.moveTo(b.x, b.y); ctx.lineTo(c.x, c.y); p1=a; p2=d; } 
-                        else if(idx===10) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); p1=a; p2=b; } 
+                        else if(idx===5) { ctx.moveTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.moveTo(b.x, b.y); ctx.lineTo(c.x, c.y); p1=a; p2=d; segmentsByIso[iso].push({p1:b, p2:c}); } 
+                        else if(idx===10) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); p1=a; p2=b; segmentsByIso[iso].push({p1:c, p2:d}); } 
 
                         if (p1 && p2 && idx !== 5 && idx !== 10) {
                             ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
-                            
-                            // جمع مرشحات الأرقام لجميع الخطوط الكنتورية
-                            if (showLabels) {
-                                let midX = (p1.x + p2.x) / 2;
-                                let midY = (p1.y + p2.y) / 2;
-                                let buffer = 45;
-                                if (midX > padding + buffer && midX < padding + mapW - buffer && midY > padding + buffer && midY < padding + mapH - buffer) {
-                                    labelCandidates.push({x: midX, y: midY, val: iso});
-                                }
-                            }
+                            segmentsByIso[iso].push({p1: p1, p2: p2});
                         }
                     }
                 }
                 ctx.stroke();
             });
 
+            // خوارزمية تجميع القطع لتكوين خطوط متصلة وكتابة الرقم "مرة واحدة فقط" لكل خط
             if (showLabels) {
                 let placedLabels = [];
-                // فلترة لضمان عدم التصاق الأرقام
-                for(let cand of labelCandidates) {
-                    let tooClose = false;
-                    for(let p of placedLabels) {
-                        // مسافة تباعد مرنة تسمح بظهور الأرقام بكثافة عند الحاجة
-                        if (cand.val === p.val && Math.hypot(cand.x - p.x, cand.y - p.y) < 150) { tooClose = true; break; }
-                        if (cand.val !== p.val && Math.hypot(cand.x - p.x, cand.y - p.y) < 30) { tooClose = true; break; }
+                
+                for (let isoKey in segmentsByIso) {
+                    let segments = segmentsByIso[isoKey];
+                    let lines = [];
+                    
+                    while(segments.length > 0) {
+                        let currentLine = [segments.pop()];
+                        let added = true;
+                        let attempts = 0;
+                        while(added && attempts < 5000) {
+                            added = false;
+                            attempts++;
+                            for(let i=0; i<segments.length; i++) {
+                                let seg = segments[i];
+                                let startSeg = currentLine[0];
+                                let endSeg = currentLine[currentLine.length-1];
+                                let tol = 2.0; 
+                                
+                                if (Math.hypot(seg.p1.x - endSeg.p2.x, seg.p1.y - endSeg.p2.y) <= tol) {
+                                    currentLine.push(seg); segments.splice(i, 1); added = true; break;
+                                } else if (Math.hypot(seg.p2.x - startSeg.p1.x, seg.p2.y - startSeg.p1.y) <= tol) {
+                                    currentLine.unshift(seg); segments.splice(i, 1); added = true; break;
+                                } else if (Math.hypot(seg.p2.x - endSeg.p2.x, seg.p2.y - endSeg.p2.y) <= tol) {
+                                    currentLine.push({p1: seg.p2, p2: seg.p1}); segments.splice(i, 1); added = true; break;
+                                } else if (Math.hypot(seg.p1.x - startSeg.p1.x, seg.p1.y - startSeg.p1.y) <= tol) {
+                                    currentLine.unshift({p1: seg.p2, p2: seg.p1}); segments.splice(i, 1); added = true; break;
+                                }
+                            }
+                        }
+                        lines.push(currentLine);
                     }
-                    if(!tooClose) placedLabels.push(cand);
+
+                    // لكل خط متصل نجد نقطة آمنة واحدة فقط لطباعة الرقم
+                    for(let line of lines) {
+                        if(line.length > 15) { // لتجاهل النقاط الصغيرة جداً
+                            let buffer = 50;
+                            let validPoint = null;
+                            let midIdx = Math.floor(line.length / 2);
+                            
+                            let pt = {x: (line[midIdx].p1.x + line[midIdx].p2.x)/2, y: (line[midIdx].p1.y + line[midIdx].p2.y)/2};
+                            if (pt.x > padding + buffer && pt.x < padding + mapW - buffer && pt.y > padding + buffer && pt.y < padding + mapH - buffer) {
+                                validPoint = pt;
+                            } else {
+                                for(let k=0; k<line.length; k++) {
+                                    let cPt = {x: (line[k].p1.x + line[k].p2.x)/2, y: (line[k].p1.y + line[k].p2.y)/2};
+                                    if (cPt.x > padding + buffer && cPt.x < padding + mapW - buffer && cPt.y > padding + buffer && cPt.y < padding + mapH - buffer) {
+                                        validPoint = cPt;
+                                        if(Math.abs(k - midIdx) < line.length/4) break; 
+                                    }
+                                }
+                            }
+                            if(validPoint) placedLabels.push({x: validPoint.x, y: validPoint.y, val: parseFloat(isoKey)});
+                        }
+                    }
                 }
 
                 ctx.direction = "ltr";
