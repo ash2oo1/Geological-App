@@ -111,7 +111,7 @@
  
 <div class="container">
     <div class="header screen-only">
-        <h1>نظام المسح الجيومورفولوجي والكنتوري</h1>
+        <h1>نظام المسح الميداني الجيولوجي</h1>
         <h2>بإشراف الجيولوجي: <span id="mainTitleName">علي شندل الجنابي</span></h2>
     </div>
 
@@ -295,23 +295,23 @@
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_2">
         <div class="print-master-header print-only">
             <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(جداول الرفع المساحي - UTM)</h2>
+                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
                 <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
             </div>
             <div class="header-left-info printDateHeader">--/--/----</div>
         </div>
         
         <div class="content-padding">
-            <div class="table-title">نقاط الرفع الطوبوغرافي المعتمدة في رسم الخارطة</div>
+            <div class="table-title">جداول الرفع المساحي (UTM) - نقاط الطوبوغرافيا</div>
             <table class="print-data-table">
-                <thead><tr><th>#</th><th>Easting (X)</th><th>Northing (Y)</th><th>Elevation (Z)</th></tr></thead>
+                <thead><tr><th>No.</th><th>Easting (X)</th><th>Northing (Y)</th><th>Elevation (Z)</th></tr></thead>
                 <tbody id="printTopoBody"></tbody>
             </table>
 
             <div id="printRiverContainer" style="display: none;">
                 <div class="table-title" style="margin-top: 20px; border-right-color: #2980b9;">إحداثيات مسار المجرى المائي / الوادي</div>
                 <table class="print-data-table">
-                    <thead><tr><th>#</th><th>Easting (X)</th><th>Northing (Y)</th><th>Elevation (Z)</th></tr></thead>
+                    <thead><tr><th>No.</th><th>Easting (X)</th><th>Northing (Y)</th><th>Elevation (Z)</th></tr></thead>
                     <tbody id="printRiverBody"></tbody>
                 </table>
             </div>
@@ -322,13 +322,14 @@
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_3">
         <div class="print-master-header print-only">
             <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(الخارطة الكنتورية)</h2>
+                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
                 <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
             </div>
             <div class="header-left-info printDateHeader">--/--/----</div>
         </div>
         
         <div class="content-padding">
+            <div class="table-title">الخارطة الكنتورية والتحليل الجيومورفولوجي</div>
             <div class="section" style="border: 2px solid #8e44ad; padding: 15px; box-shadow: none;">
                 <img id="printMapImage" style="width: 100%; max-height: 700px; object-fit: contain; border: 1px solid #333;" />
                 
@@ -613,7 +614,7 @@
             if(p.z < minZ) minZ = p.z; if(p.z > maxZ) maxZ = p.z;
         });
 
-        // إضافة هامش جيولوجي لحماية النقاط من ملامسة الحدود
+        // زيادة الهامش لضمان عدم اقتطاع الإحداثيات اليسرى وظهور النقاط بعيداً عن الإطار
         let dx = (rawMaxX - rawMinX) || 10;
         let dy = (rawMaxY - rawMinY) || 10;
         let minX = rawMinX - dx * 0.08;
@@ -627,7 +628,7 @@
         let endZ = Math.ceil(maxZ / interval) * interval;
         if (startZ === endZ) endZ += interval;
 
-        const padding = 60; 
+        const padding = 85; 
         const legendWidth = 100; 
         const mapW = canvas.width - padding * 2 - legendWidth - 20;
         const mapH = canvas.height - padding * 2 - 40;
@@ -678,7 +679,7 @@
             ctx.fillRect(padding, padding, mapW, mapH);
         }
 
-        // ================= خطوة 3: خوارزمية تتبع الأرقام وخطوط الكنتور =================
+        // ================= خطوة 3: خوارزمية تتبع الأرقام وخطوط الكنتور المستقلة =================
         if (showLines) {
             let contourLevels = [];
             for(let z = startZ; z <= endZ; z += interval) contourLevels.push(z);
@@ -727,9 +728,14 @@
                         if (p1 && p2 && idx !== 5 && idx !== 10) {
                             ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
                             
-                            // جمع مرشحات الأرقام
+                            // جمع مرشحات الأرقام بدون التقيد بمضاعفات الـ Grid لضمان ظهور الأرقام دوماً
                             if (showLabels && isIndex) {
-                                labelCandidates.push({x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2, val: iso});
+                                let midX = (p1.x + p2.x) / 2;
+                                let midY = (p1.y + p2.y) / 2;
+                                let buffer = 45;
+                                if (midX > padding + buffer && midX < padding + mapW - buffer && midY > padding + buffer && midY < padding + mapH - buffer) {
+                                    labelCandidates.push({x: midX, y: midY, val: iso});
+                                }
                             }
                         }
                     }
@@ -739,17 +745,13 @@
 
             if (showLabels) {
                 let placedLabels = [];
-                // فلترة المرشحات لضمان تباعد مريح للأرقام وعدم التصاقها بالحدود
+                // فلترة المرشحات لضمان تباعد مريح للأرقام بغض النظر عن الفاصل الكنتوري
                 for(let cand of labelCandidates) {
-                    let buffer = 50;
-                    if(cand.x > padding + buffer && cand.x < padding + mapW - buffer &&
-                       cand.y > padding + buffer && cand.y < padding + mapH - buffer) {
-                        let tooClose = false;
-                        for(let p of placedLabels) {
-                            if(Math.hypot(cand.x - p.x, cand.y - p.y) < 130) { tooClose = true; break; }
-                        }
-                        if(!tooClose) placedLabels.push(cand);
+                    let tooClose = false;
+                    for(let p of placedLabels) {
+                        if(Math.hypot(cand.x - p.x, cand.y - p.y) < 150) { tooClose = true; break; }
                     }
+                    if(!tooClose) placedLabels.push(cand);
                 }
 
                 ctx.direction = "ltr";
