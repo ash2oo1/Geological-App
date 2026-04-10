@@ -188,7 +188,7 @@
                     <div class="table-wrapper">
                         <table class="points-table" id="topoTable">
                             <thead>
-                                <tr><th style="width: 10%;">#</th><th style="width: 30%;">Easting (X)</th><th style="width: 30%;">Northing (Y)</th><th style="width: 30%;">الارتفاع (Z)</th></tr>
+                                <tr><th style="width: 10%;">No.</th><th style="width: 30%;">Easting (X)</th><th style="width: 30%;">Northing (Y)</th><th style="width: 30%;">الارتفاع (Z)</th></tr>
                             </thead>
                             <tbody id="topoBody"></tbody>
                         </table>
@@ -206,7 +206,7 @@
                     <div class="table-wrapper">
                         <table class="points-table" id="riverTable">
                             <thead>
-                                <tr><th style="width: 10%;">#</th><th style="width: 30%;">Easting (X)</th><th style="width: 30%;">Northing (Y)</th><th style="width: 30%;">الارتفاع (Z)</th></tr>
+                                <tr><th style="width: 10%;">No.</th><th style="width: 30%;">Easting (X)</th><th style="width: 30%;">Northing (Y)</th><th style="width: 30%;">الارتفاع (Z)</th></tr>
                             </thead>
                             <tbody id="riverBody"></tbody>
                         </table>
@@ -353,14 +353,12 @@
         const dateStr = now.toLocaleDateString('en-GB');
         document.querySelectorAll('.printDateHeader').forEach(el => el.innerText = dateStr);
 
-        // تحديث الاسم الحي
         document.getElementById('geoName').addEventListener('input', function() {
             let name = this.value.trim() || "علي شندل الجنابي";
             document.getElementById('mainTitleName').innerText = name;
             document.querySelectorAll('.res_geoNameHeaderRep').forEach(el => el.innerText = name);
         });
         
-        // ضبط أولي للاسم
         let initialName = document.getElementById('geoName').value.trim() || "علي شندل الجنابي";
         document.getElementById('mainTitleName').innerText = initialName;
         document.querySelectorAll('.res_geoNameHeaderRep').forEach(el => el.innerText = initialName);
@@ -728,8 +726,8 @@
                         if (p1 && p2 && idx !== 5 && idx !== 10) {
                             ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
                             
-                            // جمع مرشحات الأرقام بدون التقيد بمضاعفات الـ Grid لضمان ظهور الأرقام دوماً
-                            if (showLabels && isIndex) {
+                            // جمع مرشحات الأرقام لجميع الخطوط الكنتورية
+                            if (showLabels) {
                                 let midX = (p1.x + p2.x) / 2;
                                 let midY = (p1.y + p2.y) / 2;
                                 let buffer = 45;
@@ -745,11 +743,13 @@
 
             if (showLabels) {
                 let placedLabels = [];
-                // فلترة المرشحات لضمان تباعد مريح للأرقام بغض النظر عن الفاصل الكنتوري
+                // فلترة لضمان عدم التصاق الأرقام
                 for(let cand of labelCandidates) {
                     let tooClose = false;
                     for(let p of placedLabels) {
-                        if(Math.hypot(cand.x - p.x, cand.y - p.y) < 150) { tooClose = true; break; }
+                        // مسافة تباعد مرنة تسمح بظهور الأرقام بكثافة عند الحاجة
+                        if (cand.val === p.val && Math.hypot(cand.x - p.x, cand.y - p.y) < 150) { tooClose = true; break; }
+                        if (cand.val !== p.val && Math.hypot(cand.x - p.x, cand.y - p.y) < 30) { tooClose = true; break; }
                     }
                     if(!tooClose) placedLabels.push(cand);
                 }
@@ -809,19 +809,19 @@
             }
         }
 
-        // ================= خطوة 5: سهم الشمال ومقياس الرسم =================
+        // ================= خطوة 5: سهم الشمال ومقياس الرسم خارج الخارطة =================
         if (showNorth) {
-            const nX = padding + mapW - 35;
-            const nY = padding + 40;
+            const nX = padding + mapW; 
+            const nY = padding - 35;
             ctx.beginPath();
-            ctx.moveTo(nX, nY - 25); ctx.lineTo(nX + 12, nY + 15); ctx.lineTo(nX, nY + 5); ctx.lineTo(nX - 12, nY + 15);
+            ctx.moveTo(nX, nY - 20); ctx.lineTo(nX + 10, nY + 12); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 10, nY + 12);
             ctx.closePath();
             ctx.fillStyle = '#000'; ctx.fill();
             ctx.fillStyle = '#fff';
-            ctx.beginPath(); ctx.moveTo(nX, nY - 25); ctx.lineTo(nX, nY + 5); ctx.lineTo(nX - 12, nY + 15); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(nX, nY - 20); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 10, nY + 12); ctx.fill();
             ctx.strokeStyle = '#000'; ctx.lineWidth = 1; ctx.stroke();
-            ctx.fillStyle = '#000'; ctx.font = 'bold 18px Arial'; ctx.textAlign = 'center';
-            ctx.fillText('N', nX, nY + 25);
+            ctx.fillStyle = '#000'; ctx.font = 'bold 16px Arial'; ctx.textAlign = 'center';
+            ctx.fillText('N', nX, nY + 22);
         }
 
         if (showScale) {
@@ -830,8 +830,8 @@
             if (scaleValue < 1) scaleValue = 10; 
             let scalePxWidth = (scaleValue / realDistX) * mapW;
 
-            const scX = padding + 30; 
-            const scY = padding + mapH - 30;
+            const scX = padding; 
+            const scY = padding + mapH + 40;
             
             ctx.beginPath();
             ctx.lineWidth = 2.5;
@@ -852,10 +852,10 @@
 
         // ================= خطوة 6: صندوق اللون المتدرج =================
         if (showFill) {
-            const legX = padding + mapW + 60;
-            const legY = padding + 20;
-            const legW = 25;
-            const legH = mapH - 40;
+            const legX = padding + mapW + 55;
+            const legY = padding;
+            const legW = 20;
+            const legH = mapH;
             
             let gradient = ctx.createLinearGradient(0, legY + legH, 0, legY); 
             gradient.addColorStop(0, "rgb(69, 117, 180)");
