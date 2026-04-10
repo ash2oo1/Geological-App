@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام المسح الميداني الجيولوجي (الجيومورفولوجي والكنتوري)</title>
+    <title>نظام المسح الميداني الجيولوجي (المسح الجيومورفولوجي والكنتوري)</title>
     
     <meta name="description" content="نظام الرفع الطوبوغرافي، تتبع الأنهار، ورسم الخرائط الكنتورية">
     <meta name="author" content="الجيولوجي علي شندل الجنابي">
@@ -111,7 +111,7 @@
  
 <div class="container">
     <div class="header screen-only">
-        <h1>نظام المسح الميداني الجيولوجي (الجيومورفولوجي والكنتوري)</h1>
+        <h1>نظام المسح الميداني الجيولوجي (المسح الجيومورفولوجي والكنتوري)</h1>
         <h2>بإشراف الجيولوجي: <span id="mainTitleName">علي شندل الجنابي</span></h2>
     </div>
 
@@ -610,13 +610,13 @@
             if(p.z < minZ) minZ = p.z; if(p.z > maxZ) maxZ = p.z;
         });
 
-        // هوامش أمان محسنة جداً لتفادي الإحداثيات والمقاييس خارج الإطار
+        // زيادة هوامش الأمان لضمان راحة العناصر خارج الإطار
         let dx = (rawMaxX - rawMinX) || 10;
         let dy = (rawMaxY - rawMinY) || 10;
-        let paddingLeft = 80; 
-        let paddingRight = 150; 
-        let paddingTop = 60;
-        let paddingBottom = 80;
+        let paddingLeft = 80;   // لليسار (Northing)
+        let paddingRight = 100; // لليمين (Northing)
+        let paddingTop = 70;    // للأعلى (سهم الشمال)
+        let paddingBottom = 80; // للأسفل (Easting + Scale)
 
         let minX = rawMinX - dx * 0.08;
         let maxX = rawMaxX + dx * 0.08;
@@ -629,7 +629,7 @@
         let endZ = Math.ceil(maxZ / interval) * interval;
         if (startZ === endZ) endZ += interval;
 
-        const mapW = canvas.width - paddingLeft - paddingRight;
+        const mapW = canvas.width - paddingLeft - paddingRight - 80; // 80 للمقياس الملون
         const mapH = canvas.height - paddingTop - paddingBottom;
 
         function getScreenX(realX) { return paddingLeft + ((realX - minX) / (maxX - minX)) * mapW; }
@@ -678,7 +678,7 @@
             ctx.fillRect(paddingLeft, paddingTop, mapW, mapH);
         }
 
-        // ================= خطوة 3: خوارزمية الخطوط وتوزيع الأرقام =================
+        // ================= خطوة 3: خوارزمية الخطوط وتوزيع الأرقام الذكية =================
         if (showLines) {
             let contourLevels = [];
             for(let z = startZ; z <= endZ; z += interval) contourLevels.push(z);
@@ -690,8 +690,11 @@
                 ctx.lineJoin = 'round'; 
                 
                 let isIndex = Math.abs(iso % (interval * 5)) < 0.001;
-                ctx.strokeStyle = isIndex ? '#000' : 'rgba(0,0,0,0.7)';
-                ctx.lineWidth = isIndex ? 2.0 : 0.8;
+                ctx.strokeStyle = '#000'; // جميع الخطوط سوداء واضحة
+                ctx.lineWidth = isIndex ? 1.8 : 0.8;
+
+                // جمع مسارات الخط لطباعة الرقم مرة واحدة لكل خط
+                let segments = [];
 
                 for (let i = 0; i < gridCols - 1; i++) {
                     for (let j = 0; j < gridRows - 1; j++) {
@@ -721,55 +724,100 @@
                         else if(idx===8 || idx===7) { p1 = d; p2 = c; }
                         else if(idx===3 || idx===12) { p1 = d; p2 = b; }
                         else if(idx===6 || idx===9) { p1 = a; p2 = c; }
-                        else if(idx===5) { ctx.moveTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.moveTo(b.x, b.y); ctx.lineTo(c.x, c.y); p1=a; p2=d; } 
-                        else if(idx===10) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); p1=a; p2=b; } 
+                        else if(idx===5) { ctx.moveTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.moveTo(b.x, b.y); ctx.lineTo(c.x, c.y); p1=a; p2=d; segments.push({p1:b, p2:c}); } 
+                        else if(idx===10) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); p1=a; p2=b; segments.push({p1:c, p2:d}); } 
 
                         if (p1 && p2 && idx !== 5 && idx !== 10) {
                             ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
-                            
-                            // جمع مرشحات الأرقام لجميع الخطوط الكنتورية
-                            if (showLabels) {
-                                let midX = (p1.x + p2.x) / 2;
-                                let midY = (p1.y + p2.y) / 2;
-                                let buffer = 30;
-                                if (midX > paddingLeft + buffer && midX < paddingLeft + mapW - buffer && midY > paddingTop + buffer && midY < paddingTop + mapH - buffer) {
-                                    labelCandidates.push({x: midX, y: midY, val: iso});
-                                }
-                            }
+                            segments.push({p1: p1, p2: p2});
                         }
                     }
                 }
                 ctx.stroke();
+
+                // تجميع الخطوط لرسم الرقم مرة واحدة لكل خط طويل
+                if (showLabels && segments.length > 0) {
+                    let lines = [];
+                    while(segments.length > 0) {
+                        let currentLine = [segments.pop()];
+                        let added = true;
+                        let attempts = 0;
+                        while(added && attempts < 5000) {
+                            added = false;
+                            attempts++;
+                            for(let i=0; i<segments.length; i++) {
+                                let seg = segments[i];
+                                let startSeg = currentLine[0];
+                                let endSeg = currentLine[currentLine.length-1];
+                                let tol = 2.0;
+                                if (Math.hypot(seg.p1.x - endSeg.p2.x, seg.p1.y - endSeg.p2.y) <= tol) {
+                                    currentLine.push(seg); segments.splice(i, 1); added = true; break;
+                                } else if (Math.hypot(seg.p2.x - startSeg.p1.x, seg.p2.y - startSeg.p1.y) <= tol) {
+                                    currentLine.unshift(seg); segments.splice(i, 1); added = true; break;
+                                } else if (Math.hypot(seg.p2.x - endSeg.p2.x, seg.p2.y - endSeg.p2.y) <= tol) {
+                                    currentLine.push({p1: seg.p2, p2: seg.p1}); segments.splice(i, 1); added = true; break;
+                                } else if (Math.hypot(seg.p1.x - startSeg.p1.x, seg.p1.y - startSeg.p1.y) <= tol) {
+                                    currentLine.unshift({p1: seg.p2, p2: seg.p1}); segments.splice(i, 1); added = true; break;
+                                }
+                            }
+                        }
+                        lines.push(currentLine);
+                    }
+
+                    for(let line of lines) {
+                        let totalLen = 0;
+                        for(let s of line) totalLen += Math.hypot(s.p2.x - s.p1.x, s.p2.y - s.p1.y);
+
+                        if(totalLen > 50) { // تجاهل الزوايا القصيرة الوهمية
+                            let midIdx = Math.floor(line.length / 2);
+                            let buffer = 30;
+                            let validPoint = null;
+
+                            let pt = {x: (line[midIdx].p1.x + line[midIdx].p2.x)/2, y: (line[midIdx].p1.y + line[midIdx].p2.y)/2};
+                            if (pt.x > paddingLeft + buffer && pt.x < paddingLeft + mapW - buffer && pt.y > paddingTop + buffer && pt.y < paddingTop + mapH - buffer) {
+                                validPoint = pt;
+                            } else {
+                                for(let k=0; k<line.length; k+=2) {
+                                    let cpt = {x: (line[k].p1.x + line[k].p2.x)/2, y: (line[k].p1.y + line[k].p2.y)/2};
+                                    if (cpt.x > paddingLeft + buffer && cpt.x < paddingLeft + mapW - buffer && cpt.y > paddingTop + buffer && cpt.y < paddingTop + mapH - buffer) {
+                                        validPoint = cpt; break;
+                                    }
+                                }
+                            }
+                            if(validPoint) {
+                                labelCandidates.push({x: validPoint.x, y: validPoint.y, val: iso});
+                            }
+                        }
+                    }
+                }
             });
 
             if (showLabels) {
-                let placedLabels = [];
-                // فلترة لضمان عدم التصاق الأرقام
+                // فلترة نهائية تمنع التداخل البشع بين الأرقام
+                let finalLabels = [];
                 for(let cand of labelCandidates) {
                     let tooClose = false;
-                    for(let p of placedLabels) {
-                        // مسافة تباعد مرنة تسمح بظهور الأرقام
-                        if (cand.val === p.val && Math.hypot(cand.x - p.x, cand.y - p.y) < 150) { tooClose = true; break; }
-                        if (cand.val !== p.val && Math.hypot(cand.x - p.x, cand.y - p.y) < 25) { tooClose = true; break; }
+                    for(let fl of finalLabels) {
+                        if (Math.hypot(cand.x - fl.x, cand.y - fl.y) < 20) { tooClose = true; break; }
                     }
-                    if(!tooClose) placedLabels.push(cand);
+                    if(!tooClose) finalLabels.push(cand);
                 }
 
                 ctx.direction = "ltr";
-                ctx.font = 'bold 10px Arial';
+                ctx.font = 'bold 10px Arial'; // خط صغير وواضح
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 
-                placedLabels.forEach(lp => {
+                finalLabels.forEach(lp => {
                     let txt = lp.val.toFixed(1);
                     let textW = ctx.measureText(txt).width;
                     
-                    // رسم خلفية دقيقة بنفس لون التعبئة لمسح الخط الأسود تحت الرقم فقط (بدون هالة بيضاء)
+                    // إخفاء الخط الأسود تحت الرقم باستخدام لون الخلفية الدقيق (بدون هالة بيضاء)
                     let bgCol = showFill ? getColorPalette(lp.val, startZ, endZ) : '#fff';
                     ctx.fillStyle = bgCol;
-                    ctx.fillRect(lp.x - textW/2 - 2, lp.y - 6, textW + 4, 12);
+                    ctx.fillRect(lp.x - textW/2 - 1, lp.y - 6, textW + 2, 12);
                     
-                    // رسم الرقم الأسود
+                    // طباعة الرقم الأسود الصافي
                     ctx.fillStyle = '#000';
                     ctx.fillText(txt, lp.x, lp.y);
                 });
@@ -788,37 +836,32 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'top';
             
+            // Bottom Easting
             for (let i = 0; i <= 5; i++) {
                 let rx = minX + (i / 5) * (maxX - minX);
                 let sx = getScreenX(rx);
                 ctx.beginPath(); ctx.moveTo(sx, paddingTop + mapH); ctx.lineTo(sx, paddingTop + mapH + 6); ctx.stroke();
                 ctx.fillText(rx.toFixed(1), sx, paddingTop + mapH + 10);
-                
-                ctx.beginPath(); ctx.moveTo(sx, paddingTop); ctx.lineTo(sx, paddingTop - 6); ctx.stroke();
-                ctx.textBaseline = 'bottom';
-                ctx.fillText(rx.toFixed(1), sx, paddingTop - 8);
-                ctx.textBaseline = 'top';
             }
 
-            ctx.textAlign = 'right';
+            // Left & Right Northing
             ctx.textBaseline = 'middle';
-            // الإحداثيات اليسرى (Northing)
             for (let i = 0; i <= 5; i++) {
                 let ry = minY + (i / 5) * (maxY - minY);
                 let sy = getScreenY(ry);
                 
-                // يسار
+                // Left
+                ctx.textAlign = 'right';
                 ctx.beginPath(); ctx.moveTo(paddingLeft, sy); ctx.lineTo(paddingLeft - 6, sy); ctx.stroke();
                 ctx.fillText(ry.toFixed(1), paddingLeft - 8, sy);
                 
-                // يمين
-                ctx.beginPath(); ctx.moveTo(paddingLeft + mapW, sy); ctx.lineTo(paddingLeft + mapW + 6, sy); ctx.stroke();
+                // Right
                 ctx.textAlign = 'left';
+                ctx.beginPath(); ctx.moveTo(paddingLeft + mapW, sy); ctx.lineTo(paddingLeft + mapW + 6, sy); ctx.stroke();
                 ctx.fillText(ry.toFixed(1), paddingLeft + mapW + 8, sy);
-                ctx.textAlign = 'right';
             }
             
-            // تسميات UTM للاتجاهات على حواف الإطار
+            // تسميات UTM للاتجاهات على الحواف
             ctx.save();
             ctx.fillStyle = '#1c2833';
             ctx.font = 'bold 14px Arial';
@@ -848,14 +891,13 @@
             ctx.fillText('Easting', paddingLeft + mapW / 2, paddingTop + mapH + 35);
         }
 
-        // ================= خطوة 5: مقياس الرسم الجغرافي الخطي (أقصى اليسار أسفل) =================
+        // ================= خطوة 5: مقياس الرسم الجغرافي الخطي (أقصى اليسار أسفل - مفصول تماماً) =================
         if (showScale) {
             const realDistX = maxX - minX;
             let scaleValue = Math.pow(10, Math.floor(Math.log10(realDistX / 2))); 
             if (scaleValue < 1) scaleValue = 10; 
             let scalePxWidth = (scaleValue / realDistX) * mapW;
 
-            // أقصى اليسار، تحت كلمة Easting
             const scX = paddingLeft; 
             const scY = paddingTop + mapH + 65; 
             
@@ -871,19 +913,20 @@
             ctx.fillStyle = '#000';
             ctx.font = 'bold 12px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('0', scX, scY - 12);
-            ctx.fillText(scaleValue + ' m', scX + scalePxWidth, scY - 12);
+            // رفع الصفر والقيمة فوق الخط
+            ctx.fillText('0', scX, scY - 15);
+            ctx.fillText(scaleValue, scX + scalePxWidth, scY - 15); 
             ctx.direction = "rtl";
         }
 
         // ================= خطوة 6: صندوق الألوان وسهم الشمال (أقصى اليمين، مفصول تماماً) =================
         if (showFill) {
-            const legX = paddingLeft + mapW + 90; // مسافة كبيرة لعدم تداخل الإحداثيات اليمينية
-            const legY = paddingTop;
+            const legX = paddingLeft + mapW + 110; // مسافة أمان قوية من الإحداثيات اليمنى
+            const legY = paddingTop + 30; // إنزال الصندوق لترك مساحة لسهم الشمال
             const legW = 20;
-            const legH = mapH;
+            const legH = mapH - 30;
             
-            // رسم سهم الشمال فوق الصندوق
+            // سهم الشمال فوق صندوق الألوان
             if (showNorth) {
                 const nX = legX + (legW / 2); 
                 const nY = legY - 30; 
@@ -895,7 +938,7 @@
                 ctx.beginPath(); ctx.moveTo(nX, nY - 15); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10); ctx.fill();
                 ctx.strokeStyle = '#000'; ctx.lineWidth = 1; ctx.stroke();
                 ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center';
-                ctx.fillText('N', nX, nY + 22);
+                ctx.fillText('N', nX, nY + 20);
             }
 
             let gradient = ctx.createLinearGradient(0, legY + legH, 0, legY); 
@@ -917,15 +960,15 @@
             ctx.textBaseline = 'middle';
             
             const offsetText = 6;
-            ctx.fillText(endZ.toFixed(1) + ' m', legX + legW + offsetText, legY);
-            ctx.fillText(startZ.toFixed(1) + ' m', legX + legW + offsetText, legY + legH);
+            ctx.fillText(endZ.toFixed(1), legX + legW + offsetText, legY);
+            ctx.fillText(startZ.toFixed(1), legX + legW + offsetText, legY + legH);
             const midZ = (startZ + endZ) / 2;
-            ctx.fillText(midZ.toFixed(1) + ' m', legX + legW + offsetText, legY + legH / 2);
+            ctx.fillText(midZ.toFixed(1), legX + legW + offsetText, legY + legH / 2);
             ctx.direction = "rtl";
         } else if (showNorth) {
-            // سهم الشمال في حال إخفاء الألوان
-            const nX = paddingLeft + mapW + 90; 
-            const nY = paddingTop - 30; 
+            // سهم الشمال في حال إخفاء الألوان (في نفس الموقع اليميني)
+            const nX = paddingLeft + mapW + 110; 
+            const nY = paddingTop; 
             ctx.beginPath();
             ctx.moveTo(nX, nY - 15); ctx.lineTo(nX + 8, nY + 10); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10);
             ctx.closePath();
@@ -934,7 +977,7 @@
             ctx.beginPath(); ctx.moveTo(nX, nY - 15); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10); ctx.fill();
             ctx.strokeStyle = '#000'; ctx.lineWidth = 1; ctx.stroke();
             ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center';
-            ctx.fillText('N', nX, nY + 22);
+            ctx.fillText('N', nX, nY + 20);
         }
 
         // ================= خطوة 7: إسقاط النقاط الميدانية =================
