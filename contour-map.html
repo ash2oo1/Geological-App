@@ -282,16 +282,14 @@
                 <tr><th>تقييم مخاطر السيول:</th><td id="res_floodRisk">--</td></tr>
             </table>
             
-            <div class="table-title">ثالثاً: ملخص المعالجة المساحية والاستنتاج الجيومورفولوجي</div>
+            <div class="table-title">ثالثاً: ملخص المعالجة المساحية</div>
             <table class="print-table">
                 <tr><th>عدد النقاط الطوبوغرافية المعتمدة:</th><td><span id="res_topoCount" style="color:#27ae60;">0</span> نقطة فعالة</td></tr>
                 <tr><th>عدد نقاط مسار المجرى المائي المعتمدة:</th><td><span id="res_riverCount" style="color:#2980b9;">0</span> نقطة فعالة</td></tr>
                 <tr><th>الفاصل الكنتوري المعتمد:</th><td><span id="res_cInterval">0</span> متر</td></tr>
             </table>
-            
-            <div id="printInterpretationBox" style="font-size: 1.15rem; line-height: 1.8; text-align: justify; margin-top: 20px; padding: 15px; background: #fafafa; border: 1px solid #ddd; border-radius: 8px; color: #1e8449; font-weight: bold;">
-                </div>
         </div>
+        <div class="print-bottom-str print-only">الصفحة 1 من 3</div>
     </div>
 
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_2">
@@ -318,6 +316,7 @@
                 </table>
             </div>
         </div>
+        <div class="print-bottom-str print-only">الصفحة 2 من 3</div>
     </div>
 
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_3">
@@ -331,9 +330,13 @@
         
         <div class="content-padding">
             <div class="section" style="border: 2px solid #8e44ad; padding: 15px; box-shadow: none;">
-                <img id="printMapImage" style="width: 100%; max-height: 800px; object-fit: contain; border: 1px solid #333;" />
+                <img id="printMapImage" style="width: 100%; max-height: 700px; object-fit: contain; border: 1px solid #333;" />
+                
+                <div id="printInterpretationBox" style="font-size: 1.15rem; line-height: 1.8; text-align: justify; margin-top: 20px; padding: 15px; background: #fafafa; border: 1px solid #ddd; border-radius: 8px; color: #1e8449; font-weight: bold;">
+                    </div>
             </div>
         </div>
+        <div class="print-bottom-str print-only">الصفحة 3 من 3</div>
     </div>
 </div>
 
@@ -351,8 +354,15 @@
 
         // تحديث الاسم الحي
         document.getElementById('geoName').addEventListener('input', function() {
-            document.getElementById('mainTitleName').innerText = this.value || "علي شندل الجنابي";
+            let name = this.value.trim() || "علي شندل الجنابي";
+            document.getElementById('mainTitleName').innerText = name;
+            document.querySelectorAll('.res_geoNameHeaderRep').forEach(el => el.innerText = name);
         });
+        
+        // ضبط أولي للاسم
+        let initialName = document.getElementById('geoName').value.trim() || "علي شندل الجنابي";
+        document.getElementById('mainTitleName').innerText = initialName;
+        document.querySelectorAll('.res_geoNameHeaderRep').forEach(el => el.innerText = initialName);
     });
 
     function addPointRow(type) {
@@ -474,7 +484,7 @@
         }
 
         // --- تحديث بيانات التقرير ---
-        const geoName = document.getElementById('geoName').value || "علي شندل الجنابي";
+        const geoName = document.getElementById('geoName').value.trim() || "علي شندل الجنابي";
         document.querySelectorAll('.res_geoNameHeaderRep').forEach(el => el.innerText = geoName);
         document.getElementById('res_geoName').innerText = geoName;
         document.getElementById('res_regionName').innerText = document.getElementById('regionName').value || "غير محدد";
@@ -561,7 +571,6 @@
         function getDirection(p) {
             let ns = p.y >= midY ? "الشمال" : "الجنوب";
             let ew = p.x >= midX ? "الشرقي" : "الغربي";
-            // للتأكد إذا كان في المنتصف تقريباً
             if (Math.abs(p.x - midX) < (maxX - minX) * 0.1) ew = "";
             if (Math.abs(p.y - midY) < (maxY - minY) * 0.1) ns = (ew === "") ? "الوسط" : "";
             return (ns + " " + ew).trim();
@@ -574,7 +583,7 @@
         let slope = (maxP.z - minP.z) / (dist || 1);
         let slopeDesc = slope > 0.05 ? "انحداراً شديداً وتقارباً في الخطوط الكنتورية" : "انحداراً تدريجياً (لطيفاً) وتباعداً في الخطوط الكنتورية";
 
-        let text = `تُظهر الخارطة الكنتورية المستنبطة تبايناً طوبوغرافياً واضحاً، حيث يُسجل أعلى ارتفاع في المنطقة (${maxP.z} متر) باتجاه ${maxDir}، بينما ينحدر السطح تدريجياً ليصل إلى أدنى مستوى له (${minP.z} متر) باتجاه ${minDir}. ويشير الفارق في المنسوب إلى ${slopeDesc}، مما يحدد هندسياً اتجاه الجريان السطحي المتوقع نحو المناطق المنخفضة.`;
+        let text = `تُظهر الخارطة الكنتورية المستنبطة تبايناً طوبوغرافياً واضحاً، حيث يُسجل أعلى ارتفاع في المنطقة (${maxP.z} متر) باتجاه ${maxDir}، بينما ينحدر السطح تدريجياً ليصل إلى أدنى مستوى له (${minP.z} متر) باتجاه ${minDir}. ويشير الفارق في المنسوب إلى ${slopeDesc}، مما يحدد جيولوجياً وجيومورفولوجياً اتجاه الجريان السطحي المتوقع نحو المناطق المنخفضة.`;
         
         document.getElementById('geomorphAnalysisBox').innerText = text;
         document.getElementById('geomorphAnalysisBox').style.display = 'block';
@@ -595,19 +604,24 @@
         const showNorth = document.getElementById('chk_north').checked;
         const smoothFactor = parseFloat(document.getElementById('smoothFactor').value) || 0.02;
 
-        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+        let rawMinX = Infinity, rawMaxX = -Infinity, rawMinY = Infinity, rawMaxY = -Infinity;
         let minZ = Infinity, maxZ = -Infinity;
         
         topoPts.forEach(p => {
-            if(p.x < minX) minX = p.x; if(p.x > maxX) maxX = p.x;
-            if(p.y < minY) minY = p.y; if(p.y > maxY) maxY = p.y;
+            if(p.x < rawMinX) rawMinX = p.x; if(p.x > rawMaxX) rawMaxX = p.x;
+            if(p.y < rawMinY) rawMinY = p.y; if(p.y > rawMaxY) rawMaxY = p.y;
             if(p.z < minZ) minZ = p.z; if(p.z > maxZ) maxZ = p.z;
         });
 
-        if (maxX === minX) { maxX += 100; minX -= 100; }
-        if (maxY === minY) { maxY += 100; minY -= 100; }
+        // إضافة هامش جيولوجي لحماية النقاط من ملامسة الحدود
+        let dx = (rawMaxX - rawMinX) || 10;
+        let dy = (rawMaxY - rawMinY) || 10;
+        let minX = rawMinX - dx * 0.08;
+        let maxX = rawMaxX + dx * 0.08;
+        let minY = rawMinY - dy * 0.08;
+        let maxY = rawMaxY + dy * 0.08;
 
-        generateGeomorphAnalysis(topoPts, minX, maxX, minY, maxY);
+        generateGeomorphAnalysis(topoPts, rawMinX, rawMaxX, rawMinY, rawMaxY);
 
         let startZ = Math.floor(minZ / interval) * interval;
         let endZ = Math.ceil(maxZ / interval) * interval;
@@ -669,7 +683,7 @@
             let contourLevels = [];
             for(let z = startZ; z <= endZ; z += interval) contourLevels.push(z);
 
-            let placedLabels = [];
+            let labelCandidates = [];
 
             contourLevels.forEach(iso => {
                 ctx.beginPath();
@@ -713,17 +727,9 @@
                         if (p1 && p2 && idx !== 5 && idx !== 10) {
                             ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
                             
+                            // جمع مرشحات الأرقام
                             if (showLabels && isIndex) {
-                                let midX = (p1.x + p2.x) / 2;
-                                let midY = (p1.y + p2.y) / 2;
-                                let buffer = 40;
-                                if (midX > padding + buffer && midX < padding + mapW - buffer && midY > padding + buffer && midY < padding + mapH - buffer) {
-                                    let tooClose = false;
-                                    for (let l of placedLabels) {
-                                        if (Math.hypot(midX - l.x, midY - l.y) < 100) { tooClose = true; break; }
-                                    }
-                                    if (!tooClose) placedLabels.push({x: midX, y: midY, val: iso});
-                                }
+                                labelCandidates.push({x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2, val: iso});
                             }
                         }
                     }
@@ -732,7 +738,20 @@
             });
 
             if (showLabels) {
-                // إجبار الكانفاس على اتجاه LTR لرسم الأرقام مع الوحدة بشكل صحيح 100%
+                let placedLabels = [];
+                // فلترة المرشحات لضمان تباعد مريح للأرقام وعدم التصاقها بالحدود
+                for(let cand of labelCandidates) {
+                    let buffer = 50;
+                    if(cand.x > padding + buffer && cand.x < padding + mapW - buffer &&
+                       cand.y > padding + buffer && cand.y < padding + mapH - buffer) {
+                        let tooClose = false;
+                        for(let p of placedLabels) {
+                            if(Math.hypot(cand.x - p.x, cand.y - p.y) < 130) { tooClose = true; break; }
+                        }
+                        if(!tooClose) placedLabels.push(cand);
+                    }
+                }
+
                 ctx.direction = "ltr";
                 ctx.font = 'bold 12px Arial';
                 ctx.textAlign = 'center';
@@ -746,7 +765,7 @@
                     ctx.fillStyle = '#000';
                     ctx.fillText(txt, lp.x, lp.y);
                 });
-                ctx.direction = "rtl"; // إعادة الاتجاه
+                ctx.direction = "rtl"; 
             }
         }
 
@@ -829,7 +848,7 @@
             ctx.direction = "rtl";
         }
 
-        // ================= خطوة 6: صندوق اللون المتدرج (Gradient Legend) =================
+        // ================= خطوة 6: صندوق اللون المتدرج =================
         if (showFill) {
             const legX = padding + mapW + 60;
             const legY = padding + 20;
