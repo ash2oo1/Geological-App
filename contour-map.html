@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المسح الجيومورفولوجي والكنتوري</title>
+    
+    <meta name="description" content="نظام الرفع الطوبوغرافي ورسم الخرائط الكنتورية وتتبع الأنهار">
+    <meta name="author" content="الجيولوجي علي شندل الجنابي">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ 
+    <style>
+        /* التنسيقات الأساسية المطابقة لهوية المنصة */
+        body { background-color: #f0f3f4; font-family: 'Arial', sans-serif; margin: 0; padding: 20px; }
+        :root { --primary: #1c2833; --secondary: #273746; --accent: #2980b9; --bg: #f8f9fa; }
+        .container { background: white; max-width: 1100px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #1c2833 0%, #9b59b6 100%); color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #8e44ad; }
+        .header h1 { font-size: 2.2rem; margin: 0 0 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
+        .header h2 { color: #fdf2e9; font-size: 1.3rem; margin: 0; font-weight: normal; }
+        .content-padding { padding: 30px; }
+        @media (max-width: 600px) { .content-padding { padding: 15px; } body { padding: 5px; } .header h1 { font-size: 1.6rem; } }
+        
+        .btn-back-dash { display: block; width: calc(100% - 40px); max-width: 1100px; margin: 0 auto 20px auto; background: #34495e; color: white !important; padding: 12px; text-align: center; text-decoration: none !important; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.3s ease; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-back-dash:hover { background: #2c3e50; transform: translateY(-2px); }
+        
+        .section { margin-bottom: 25px; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .section-title { color: #8e44ad; border-bottom: 2px solid #8e44ad; padding-bottom: 8px; font-size: 1.3rem; margin-bottom: 20px; font-weight: bold; }
+        .sub-title { color: #9b59b6; font-size: 1.1rem; margin: 15px 0 10px 0; border-bottom: 1px dashed #ccc; padding-bottom: 5px; font-weight: bold;}
+        
+        .form-row { display: flex; gap: 20px; margin-bottom: 15px; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 200px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: var(--secondary); font-size: 1rem; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1rem; font-family: inherit; transition: 0.3s;}
+        input[type="text"]:focus, input[type="number"]:focus, select:focus { border-color: #8e44ad; outline: none; }
+        
+        .btn-calc { background: #8e44ad; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(142, 68, 173, 0.3); transition: 0.3s;}
+        .btn-calc:hover { background: #732d91; transform: translateY(-2px);}
+        .btn-print { background: #d35400; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(211, 84, 0, 0.3); transition: 0.3s;}
+        .btn-print:hover { background: #ba4a00; transform: translateY(-2px);}
+        
+        /* تنسيقات أزرار وجداول التقاط النقاط */
+        .capture-grid { display: flex; gap: 20px; flex-wrap: wrap; }
+        .capture-col { flex: 1; min-width: 300px; background: #fdfdfd; border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
+        .btn-capture { background: #27ae60; color: white; border: none; padding: 10px; width: 100%; font-size: 1rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 8px;}
+        .btn-capture:hover { background: #219150; }
+        .btn-capture-river { background: #2980b9; } .btn-capture-river:hover { background: #1f618d; }
+        
+        .points-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 10px; text-align: center; }
+        .points-table th, .points-table td { border: 1px solid #ccc; padding: 6px; }
+        .points-table th { background: #eee; color: #333; }
+        
+        /* تنسيق خريطة الكنتور */
+        .map-canvas-container { width: 100%; display: flex; flex-direction: column; align-items: center; background: #fff; padding: 10px; border-radius: 8px; border: 2px solid #8e44ad; margin-bottom: 20px;}
+        #contourMap { background: #fafafa; border: 1px solid #ccc; max-width: 100%; height: auto; object-fit: contain; }
+
+        /* هندسة الطباعة الصارمة */
+        .print-only { display: none !important; }
+        @media print {
+            @page { margin: 0; size: A4 portrait; }
+            * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; print-color-adjust: exact !important; }
+            body { background: white; margin: 0; padding: 0; color: #333; font-family: 'Arial', sans-serif; font-size: 12px; }
+            .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; }
+            .screen-only, .btn-back-dash { display: none !important; }
+            .print-only { display: block !important; }
+            
+            .page-counter-element-str { width: 100%; height: 29.7cm; padding: 1.5cm; box-sizing: border-box; page-break-after: always; position: relative; display: flex !important; flex-direction: column; background: white; }
+            .print-master-header { border: 2px solid #2c3e50; border-radius: 8px; padding: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; background-color: #fdfcfc; }
+            .header-center-info { text-align: center; flex: 2; }
+            .header-center-info h1 { font-size: 16px; margin: 0 0 5px 0; color: #1c2833; font-weight: bold;}
+            .header-center-info h2 { font-size: 14px; margin: 0; color: #8e44ad; font-weight: bold; }
+            .header-left-info { text-align: left; flex: 1; font-size: 11px; font-weight: bold; color: #555; }
+            .header-right-blank { flex: 1; }
+            .print-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; direction: rtl; }
+            .print-table th { background: #f4ecf7; color: #8e44ad; border: 1px solid #bdc3c7; padding: 10px; text-align: right; width: 35%; font-size: 13px; }
+            .print-table td { border: 1px solid #bdc3c7; padding: 10px; text-align: right; font-size: 13px; color: #2c3e50; font-weight: bold; }
+            .table-title { background: #ecf0f1; color: #2c3e50; padding: 8px 15px; font-weight: bold; border-radius: 5px; margin-bottom: 10px; font-size: 14px; border-right: 4px solid #8e44ad; }
+            .section { margin-bottom: 10px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 10px; box-shadow: none; page-break-inside: avoid; }
+            .print-bottom-str { position: absolute; bottom: 1cm; left: 0; width: 100%; text-align: center; font-weight: bold; font-size: 12px; color: #333; border-top: 1px solid #eee; padding-top: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+<a href="https://ash2oo1.github.io/Geological-App/index.html" class="btn-back-dash screen-only">
+    <i class="fas fa-arrow-right"></i> رجوع إلى المنصة الرئيسية
+</a>
+ 
+<div class="container">
+    <div class="header screen-only">
+        <h1>نظام المسح الجيومورفولوجي والكنتوري</h1>
+        <h2>بإشراف الجيولوجي: علي شندل الجنابي</h2>
+    </div>
+
+    <div class="content-padding screen-only" id="inputSectionGeomorph">
+        
+        <div class="section">
+            <div class="section-title">أولاً: البيانات العامة والوصفية للموقع</div>
+            <div class="form-row">
+                <div class="form-group"><label>اسم الجيولوجي المشرف:</label><input type="text" id="geoName" value="علي شندل الجنابي" style="color: #2c3e50;"></div>
+                <div class="form-group"><label>اسم المشروع / المنطقة:</label><input type="text" id="regionName" placeholder="مثال: حوض وادي حوران..."></div>
+                <div class="form-group"><label>البيئة الطوبوغرافية:</label>
+                    <select id="topoEnv">
+                        <option value="جبلية معقدة">جبلية معقدة</option>
+                        <option value="هضاب وتلال">هضاب وتلال</option>
+                        <option value="سهلية منبسطة">سهلية منبسطة</option>
+                        <option value="بيئة وديان قاحلة" selected>بيئة وديان قاحلة</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">ثانياً: التقييم الجيومورفولوجي والهيدرولوجي الحقلـي</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>نمط التصريف المائي (Drainage Pattern):</label>
+                    <select id="drainagePattern">
+                        <option value="شجري (Dendritic) - صخور متجانسة">شجري (Dendritic) - صخور متجانسة</option>
+                        <option value="تعريشي (Trellis) - طيات وفوالق">تعريشي (Trellis) - طيات وفوالق</option>
+                        <option value="شعاعي (Radial) - مرتفعات مركزية">شعاعي (Radial) - مرتفعات مركزية</option>
+                        <option value="مستطيلي (Rectangular) - فواصل متعامدة">مستطيلي (Rectangular) - فواصل متعامدة</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>شكل الوادي السائد (Valley Profile):</label>
+                    <select id="valleyShape">
+                        <option value="وادي على شكل حرف (V) - نحت عمودي نشط">وادي على شكل حرف (V) - نحت عمودي نشط</option>
+                        <option value="وادي على شكل حرف (U) - نحت جانبي/ترسيب">وادي على شكل حرف (U) - نحت جانبي/ترسيب</option>
+                        <option value="أخاديد ومسيلات دقيقة (Gullies & Rills)">أخاديد ومسيلات دقيقة (Gullies & Rills)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>نوع التجوية والتعرية المؤثرة:</label>
+                    <select id="weatheringType">
+                        <option value="تعرية مائية (نشاط سيول موسمي)">تعرية مائية (نشاط سيول موسمي)</option>
+                        <option value="تعرية ريحية (تذرية وتفريغ)">تعرية ريحية (تذرية وتفريغ)</option>
+                        <option value="تجوية ميكانيكية (تفاوت حراري)">تجوية ميكانيكية (تفاوت حراري)</option>
+                        <option value="تجوية كيميائية (إذابة للكربونات/المتبخرات)">تجوية كيميائية (إذابة للكربونات/المتبخرات)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>تقييم مخاطر السيول والفيضانات (Flood Risk):</label>
+                    <select id="floodRisk">
+                        <option value="عالية جداً (منطقة مصب أو تجمع سيول)">عالية جداً (منطقة مصب أو تجمع سيول)</option>
+                        <option value="متوسطة (مجرى مسار ناقل)">متوسطة (مجرى مسار ناقل)</option>
+                        <option value="منخفضة (مناطق تقسيم المياه/قمم)">منخفضة (مناطق تقسيم المياه/قمم)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">ثالثاً: الرفع الطوبوغرافي وتتبع المسارات</div>
+            <p style="color: #555; font-size: 0.9rem; margin-top:-10px;">* تنويه: إذا كان مستشعر البارومتر في الهاتف لا يدعم قراءة الارتفاع بدقة، يمكنك إدخال الارتفاع التقريبي يدوياً في المربع أدناه قبل التقاط النقطة.</p>
+            
+            <div style="margin-bottom: 15px; max-width: 300px;">
+                <label style="color:#c0392b;">تجاوز الارتفاع يدوياً (متر) - اختياري:</label>
+                <input type="number" id="manualElevation" placeholder="أدخل الارتفاع Z (مثال: 45) ثم التقط">
+            </div>
+
+            <div class="capture-grid">
+                <div class="capture-col">
+                    <h3 style="color:#27ae60; margin-top:0; border-bottom:1px dashed #ccc; padding-bottom:5px;">نقاط الرفع الطوبوغرافي (للكنتور)</h3>
+                    <button class="btn-capture" onclick="capturePoint('topo')"><i class="fas fa-map-marker-alt"></i> التقاط نقطة تضاريس (X, Y, Z)</button>
+                    <div style="max-height: 200px; overflow-y: auto;">
+                        <table class="points-table" id="topoTable">
+                            <tr><th>#</th><th>Easting (X)</th><th>Northing (Y)</th><th>Elev (Z)</th></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="capture-col">
+                    <h3 style="color:#2980b9; margin-top:0; border-bottom:1px dashed #ccc; padding-bottom:5px;">مسار المجرى المائي / الوادي</h3>
+                    <button class="btn-capture btn-capture-river" onclick="capturePoint('river')"><i class="fas fa-water"></i> تسجيل نقطة مسار النهر (X, Y, Z)</button>
+                    <div style="max-height: 200px; overflow-y: auto;">
+                        <table class="points-table" id="riverTable">
+                            <tr><th>#</th><th>Easting (X)</th><th>Northing (Y)</th><th>Elev (Z)</th></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 15px; max-width: 300px;">
+                <label>الفاصل الكنتوري المطلوب (Contour Interval):</label>
+                <input type="number" id="contourInterval" value="5" min="1" max="100">
+            </div>
+        </div>
+
+        <div class="screen-only">
+            <button class="btn-calc" onclick="generateContourMapAndReport()">معالجة البيانات وتوليد الخريطة الكنتورية والتقرير <i class="fas fa-magic"></i></button>
+        </div>
+    </div>
+    
+    <div id="screenResultsSummary" class="screen-only section" style="display: none; border-color: #8e44ad; max-width: 1100px; margin: auto;">
+        <div class="section-title">تم إنشاء النموذج الجيومورفولوجي بنجاح</div>
+        <div style="text-align: center; margin-top: 15px;">
+            <button class="btn-print" style="width: auto; padding: 10px 30px;" onclick="window.print()">📄 حفظ التقرير والخريطة الشاملة (PDF)</button>
+        </div>
+    </div>
+
+    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_1" style="display: none;">
+        <div class="print-master-header print-only">
+            <div class="header-center-info">
+                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
+                <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
+            </div>
+        </div>
+        
+        <div class="content-padding">
+            <div class="table-title">أولاً: البيانات العامة والوصفية للموقع</div>
+            <table class="print-table">
+                <tr><th>اسم الجيولوجي:</th><td id="res_geoName">--</td></tr>
+                <tr><th>اسم المشروع / المنطقة:</th><td id="res_regionName">--</td></tr>
+                <tr><th>البيئة الطوبوغرافية:</th><td id="res_topoEnv">--</td></tr>
+            </table>
+
+            <div class="table-title">ثانياً: التقييم الجيومورفولوجي والهيدرولوجي</div>
+            <table class="print-table">
+                <tr><th>نمط التصريف المائي:</th><td id="res_drainage">--</td></tr>
+                <tr><th>شكل الوادي السائد:</th><td id="res_valley">--</td></tr>
+                <tr><th>نوع التجوية والتعرية:</th><td id="res_weathering">--</td></tr>
+                <tr><th>تقييم مخاطر السيول:</th><td id="res_floodRisk">--</td></tr>
+            </table>
+            
+            <div class="table-title">ثالثاً: ملخص النقاط المرفوعة مساحياً</div>
+            <table class="print-table">
+                <tr><th>عدد نقاط الرفع الطوبوغرافي:</th><td><span id="res_topoCount">0</span> نقطة</td></tr>
+                <tr><th>عدد نقاط المجرى المائي:</th><td><span id="res_riverCount">0</span> نقطة</td></tr>
+                <tr><th>الفاصل الكنتوري المعتمد للرسم:</th><td><span id="res_cInterval">0</span> متر</td></tr>
+            </table>
+            
+            <p style="font-size: 1.1rem; line-height: 1.8; text-align: justify; margin-top: 20px;">
+                <b>الاستنتاج الحقلي:</b> بناءً على البيانات المرفوعة، تم إعداد الخريطة الكنتورية المرفقة في الصفحة التالية باستخدام خوارزميات الاستيفاء المكاني لربط الارتفاعات المتساوية. كما تم إسقاط مسار المجرى المائي (إن وجد) لتوضيح علاقة خطوط الكنتور باتجاه الجريان وانحدار سطح الأرض، مما يشكل قاعدة بيانات دقيقة لدراسة أحواض التصريف ومخاطر السيول.
+            </p>
+        </div>
+        <div class="print-bottom-str print-only">الصفحة 1 من 2</div>
+    </div>
+
+    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_2" style="display: none;">
+        <div class="print-master-header print-only">
+            <div class="header-center-info">
+                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
+                <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
+            </div>
+        </div>
+        
+        <div class="content-padding">
+            <div class="section" style="border: 2px solid #8e44ad; padding: 15px;">
+                <h3 style="color: #8e44ad; margin: 0 0 10px 0; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">الخريطة الكنتورية والهيدرولوجية للموقع</h3>
+                <div class="map-canvas-container">
+                    <canvas id="contourMap" width="800" height="550"></canvas>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 20px; font-size: 14px; font-weight: bold; margin-top: 10px;">
+                    <span style="color: #c0392b;">■ مناطق مرتفعة</span>
+                    <span style="color: #f1c40f;">■ مناطق متوسطة الارتفاع</span>
+                    <span style="color: #27ae60;">■ مناطق منخفضة</span>
+                    <span style="color: #2980b9;">▬ مسار النهر/الوادي</span>
+                </div>
+            </div>
+        </div>
+        <div class="print-bottom-str print-only">الصفحة 2 من 2</div>
+    </div>
+</div>
+
+<script>
+    // مصفوفات لحفظ النقاط
+    let topoPoints = [];
+    let riverPoints = [];
+    
+    // دالة محاكاة لتحويل Lat/Lon إلى إحداثيات UTM مبسطة للرسم
+    function pseudoUTM(lat, lon) {
+        // معادلة مبسطة جداً لغرض الرسم على الكانفاس بمرجع محلي
+        return { x: Math.round((lon - 40) * 100000), y: Math.round((lat - 30) * 100000) };
+    }
+
+    function capturePoint(type) {
+        if (!navigator.geolocation) {
+            alert("المتصفح لا يدعم تحديد الموقع.");
+            return;
+        }
+        
+        navigator.geolocation.getCurrentPosition((position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            let alt = position.coords.altitude;
+            
+            // قراءة التجاوز اليدوي للارتفاع
+            const manualAlt = document.getElementById('manualElevation').value;
+            if (manualAlt && manualAlt.trim() !== "") {
+                alt = parseFloat(manualAlt);
+            } else if (alt === null) {
+                // إذا لم يتمكن المستشعر من القراءة ولم يدخل المستخدم رقماً
+                alt = Math.floor(Math.random() * 20) + 30; // توليد رقم عشوائي كبديل (للتجربة)
+                alert("⚠️ لم يتمكن المستشعر من قراءة الارتفاع. تم توليد ارتفاع تقريبي. يُفضل إدخال الارتفاع يدوياً.");
+            }
+            
+            const utm = pseudoUTM(lat, lon);
+   
