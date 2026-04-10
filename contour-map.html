@@ -626,7 +626,7 @@
         let dx = (rawMaxX - rawMinX) || 10;
         let dy = (rawMaxY - rawMinY) || 10;
         let paddingLeft = 85; 
-        let paddingRight = 160; 
+        let paddingRight = 130; 
         let paddingTop = 85;    
         let paddingBottom = 85; 
 
@@ -690,11 +690,12 @@
             ctx.fillRect(paddingLeft, paddingTop, mapW, mapH);
         }
 
-        // ================= خطوة 3: خوارزمية الخطوط وتوزيع الأرقام الذكية والمتباعدة =================
+        // ================= خطوة 3: خوارزمية الخطوط وتوزيع الأرقام =================
         if (showLines) {
             let contourLevels = [];
             for(let z = startZ; z <= endZ; z += interval) contourLevels.push(z);
 
+            let drawnLabelsValues = []; // تتبع القيم التي تم رسمها
             let labelCandidates = [];
 
             contourLevels.forEach(iso => {
@@ -746,7 +747,7 @@
                 }
                 ctx.stroke();
 
-                if (showLabels && segments.length > 0) {
+                if (showLabels && segments.length > 0 && !drawnLabelsValues.includes(iso)) {
                     let lines = [];
                     while(segments.length > 0) {
                         let currentLine = [segments.pop()];
@@ -774,29 +775,28 @@
                         lines.push(currentLine);
                     }
 
-                    for(let line of lines) {
-                        let totalLen = 0;
-                        for(let s of line) totalLen += Math.hypot(s.p2.x - s.p1.x, s.p2.y - s.p1.y);
+                    // العثور على أطول خط لهذه القيمة لوضع الرقم عليه مرة واحدة
+                    let longestLine = lines.reduce((prev, current) => (prev.length > current.length) ? prev : current, []);
 
-                        if(totalLen > 50) { 
-                            let midIdx = Math.floor(line.length / 2);
-                            let buffer = 30;
-                            let validPoint = null;
+                    if(longestLine.length > 50) { 
+                        let midIdx = Math.floor(longestLine.length / 2);
+                        let buffer = 30;
+                        let validPoint = null;
 
-                            let pt = {x: (line[midIdx].p1.x + line[midIdx].p2.x)/2, y: (line[midIdx].p1.y + line[midIdx].p2.y)/2};
-                            if (pt.x > paddingLeft + buffer && pt.x < paddingLeft + mapW - buffer && pt.y > paddingTop + buffer && pt.y < paddingTop + mapH - buffer) {
-                                validPoint = pt;
-                            } else {
-                                for(let k=0; k<line.length; k+=2) {
-                                    let cpt = {x: (line[k].p1.x + line[k].p2.x)/2, y: (line[k].p1.y + line[k].p2.y)/2};
-                                    if (cpt.x > paddingLeft + buffer && cpt.x < paddingLeft + mapW - buffer && cpt.y > paddingTop + buffer && cpt.y < paddingTop + mapH - buffer) {
-                                        validPoint = cpt; break;
-                                    }
+                        let pt = {x: (longestLine[midIdx].p1.x + longestLine[midIdx].p2.x)/2, y: (longestLine[midIdx].p1.y + longestLine[midIdx].p2.y)/2};
+                        if (pt.x > paddingLeft + buffer && pt.x < paddingLeft + mapW - buffer && pt.y > paddingTop + buffer && pt.y < paddingTop + mapH - buffer) {
+                            validPoint = pt;
+                        } else {
+                            for(let k=0; k<longestLine.length; k+=2) {
+                                let cpt = {x: (longestLine[k].p1.x + longestLine[k].p2.x)/2, y: (longestLine[k].p1.y + longestLine[k].p2.y)/2};
+                                if (cpt.x > paddingLeft + buffer && cpt.x < paddingLeft + mapW - buffer && cpt.y > paddingTop + buffer && cpt.y < paddingTop + mapH - buffer) {
+                                    validPoint = cpt; break;
                                 }
                             }
-                            if(validPoint) {
-                                labelCandidates.push({x: validPoint.x, y: validPoint.y, val: iso});
-                            }
+                        }
+                        if(validPoint) {
+                            labelCandidates.push({x: validPoint.x, y: validPoint.y, val: iso});
+                            drawnLabelsValues.push(iso); // تسجيل أنه تم وضع رقم لهذا الخط
                         }
                     }
                 }
@@ -807,8 +807,8 @@
                 for(let cand of labelCandidates) {
                     let tooClose = false;
                     for(let p of placedLabels) {
-                        if (cand.val === p.val && Math.hypot(cand.x - p.x, cand.y - p.y) < 180) { tooClose = true; break; }
-                        if (cand.val !== p.val && Math.hypot(cand.x - p.x, cand.y - p.y) < 65) { tooClose = true; break; }
+                        // مسافة تباعد لتجنب تراكم الأرقام المختلفة
+                        if (Math.hypot(cand.x - p.x, cand.y - p.y) < 45) { tooClose = true; break; }
                     }
                     if(!tooClose) placedLabels.push(cand);
                 }
@@ -879,7 +879,7 @@
             ctx.restore();
             
             ctx.save();
-            ctx.translate(paddingLeft + mapW + 70, paddingTop + mapH / 2);
+            ctx.translate(paddingLeft + mapW + 65, paddingTop + mapH / 2);
             ctx.rotate(-Math.PI / 2);
             ctx.font = 'bold 14px Arial';
             ctx.textAlign = 'center';
@@ -916,17 +916,14 @@
             ctx.fillStyle = '#000';
             ctx.font = 'bold 12px Arial';
             ctx.textAlign = 'center';
-            
-            // رفع الأرقام وإضافة حرف m
-            ctx.fillText('0', scX, scY - 15);
-            ctx.fillText(scaleValue + ' m', scX + scalePxWidth, scY - 15);
+            ctx.fillText('0', scX, scY - 12);
+            ctx.fillText(scaleValue + ' m', scX + scalePxWidth, scY - 12);
             ctx.direction = "rtl";
         }
 
-        // ================= خطوة 6: صندوق الألوان وسهم الشمال (أقصى اليمين) =================
+        // ================= خطوة 6: صندوق الألوان وسهم الشمال =================
         if (showFill) {
-            // إزاحة للصندوق الملون لليسار قليلاً لضمان ظهور الأرقام بوضوح (110)
-            const legX = paddingLeft + mapW + 110; 
+            const legX = paddingLeft + mapW + 80; 
             const legH = mapH * 0.70; 
             const legY = paddingTop + (mapH - legH); 
             const legW = 20;
@@ -963,7 +960,6 @@
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
             
-            // إظهار الأرقام الثلاثة بجانب المقياس اللوني
             const offsetText = 6;
             ctx.fillText(endZ.toFixed(1), legX + legW + offsetText, legY);
             ctx.fillText(startZ.toFixed(1), legX + legW + offsetText, legY + legH);
@@ -971,7 +967,7 @@
             ctx.fillText(midZ.toFixed(1), legX + legW + offsetText, legY + legH / 2);
             ctx.direction = "rtl";
         } else if (showNorth) {
-            const nX = paddingLeft + mapW + 110; 
+            const nX = paddingLeft + mapW + 80; 
             const nY = paddingTop + 15; 
             ctx.beginPath();
             ctx.moveTo(nX, nY - 18); ctx.lineTo(nX + 8, nY + 10); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10);
