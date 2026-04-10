@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام المسح الجيومورفولوجي والكنتوري</title>
     
-    <meta name="description" content="نظام الرفع الطوبوغرافي ورسم الخرائط الكنتورية وتتبع الأنهار">
+    <meta name="description" content="نظام الرفع الطوبوغرافي، تتبع الأنهار، ورسم الخرائط الكنتورية">
     <meta name="author" content="الجيولوجي علي شندل الجنابي">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
  
     <style>
-        /* التنسيقات الأساسية المطابقة لهوية المنصة */
+        /* ================= التنسيقات الأساسية ================= */
         body { background-color: #f0f3f4; font-family: 'Arial', sans-serif; margin: 0; padding: 20px; }
         :root { --primary: #1c2833; --secondary: #273746; --accent: #2980b9; --bg: #f8f9fa; }
-        .container { background: white; max-width: 1100px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
+        .container { background: white; max-width: 1200px; margin: auto; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow: hidden; }
         .header { background: linear-gradient(135deg, #1c2833 0%, #9b59b6 100%); color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #8e44ad; }
         .header h1 { font-size: 2.2rem; margin: 0 0 10px 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
         .header h2 { color: #fdf2e9; font-size: 1.3rem; margin: 0; font-weight: normal; }
@@ -39,23 +39,31 @@
         .btn-print { background: #d35400; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(211, 84, 0, 0.3); transition: 0.3s;}
         .btn-print:hover { background: #ba4a00; transform: translateY(-2px);}
         
-        /* تنسيقات أزرار وجداول التقاط النقاط */
-        .capture-grid { display: flex; gap: 20px; flex-wrap: wrap; }
-        .capture-col { flex: 1; min-width: 300px; background: #fdfdfd; border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
-        .btn-capture { background: #27ae60; color: white; border: none; padding: 10px; width: 100%; font-size: 1rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 5px; display: flex; justify-content: center; align-items: center; gap: 8px;}
+        /* ================= تنسيقات الجداول الميدانية المفتوحة ================= */
+        .capture-grid { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+        .capture-col { flex: 1; min-width: 340px; background: #fdfdfd; border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
+        
+        .btn-capture { background: #27ae60; color: white; border: none; padding: 12px; width: 100%; font-size: 1.05rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.3s;}
         .btn-capture:hover { background: #219150; }
         .btn-capture:disabled { background: #95a5a6; cursor: not-allowed; }
         .btn-capture-river { background: #2980b9; } .btn-capture-river:hover { background: #1f618d; }
         
-        .points-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 10px; text-align: center; }
-        .points-table th, .points-table td { border: 1px solid #ccc; padding: 6px; }
-        .points-table th { background: #eee; color: #333; }
-        
-        /* تنسيق خريطة الكنتور */
+        .btn-add-row { background: #f39c12; color: white; border: none; padding: 8px; width: 100%; font-size: 0.95rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 5px; transition: 0.3s;}
+        .btn-add-row:hover { background: #d68910; }
+
+        .table-wrapper { overflow-x: auto; max-height: 350px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; background: #fff;}
+        .points-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: center; min-width: 400px;}
+        .points-table th, .points-table td { border: 1px solid #ccc; padding: 4px; }
+        .points-table th { background: #eee; color: #333; position: sticky; top: 0; z-index: 10; padding: 8px;}
+        .points-table input[type="number"] { padding: 8px; font-size: 0.9rem; text-align: center; border: 1px solid #e0e0e0; background: #fafafa; border-radius: 4px; width: 100%;}
+        .points-table input[type="number"]:focus { background: #fff; border-color: #8e44ad; }
+        .row-index { font-weight: bold; color: #7f8c8d; }
+
+        /* ================= تنسيق خريطة الكنتور ================= */
         .map-canvas-container { width: 100%; display: flex; flex-direction: column; align-items: center; background: #fff; padding: 10px; border-radius: 8px; border: 2px solid #8e44ad; margin-bottom: 20px;}
         #contourMap { background: #fafafa; border: 1px solid #ccc; max-width: 100%; height: auto; object-fit: contain; }
 
-        /* هندسة الطباعة الصارمة */
+        /* ================= هندسة الطباعة الصارمة (PDF) ================= */
         .print-only { display: none !important; }
         @media print {
             @page { margin: 0; size: A4 portrait; }
@@ -98,7 +106,7 @@
         <div class="section">
             <div class="section-title">أولاً: البيانات العامة والوصفية للموقع</div>
             <div class="form-row">
-                <div class="form-group"><label>اسم الجيولوجي المشرف:</label><input type="text" id="geoName" value="علي شندل الجنابي" style="color: #2c3e50;"></div>
+                <div class="form-group"><label>اسم الجيولوجي المشرف:</label><input type="text" id="geoName" value="علي شندل الجنابي" style="color: #2c3e50; font-weight:bold;"></div>
                 <div class="form-group"><label>اسم المشروع / المنطقة:</label><input type="text" id="regionName" placeholder="مثال: حوض وادي حوران..."></div>
                 <div class="form-group"><label>البيئة الطوبوغرافية:</label>
                     <select id="topoEnv">
@@ -154,59 +162,76 @@
         </div>
 
         <div class="section">
-            <div class="section-title">ثالثاً: الرفع الطوبوغرافي وتتبع المسارات (نظام UTM)</div>
-            
-            <div style="margin-bottom: 20px; background: #f4ecf7; padding: 15px; border-radius: 8px; border-right: 5px solid #8e44ad;">
-                <label style="color:#8e44ad; display: block; margin-bottom: 10px;">
-                    <i class="fas fa-hand-pointer"></i> خيار الارتفاع اليدوي (Z):
-                </label>
-                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                    <input type="number" id="manualElevation" placeholder="أدخل الارتفاع Z يدوياً هنا..." style="max-width: 250px;">
-                    <span style="font-size: 0.85rem; color: #666;">* اترك الحقل فارغاً لاستخدام ارتفاع الهاتف التلقائي.</span>
-                </div>
-            </div>
+            <div class="section-title">ثالثاً: جداول الرفع الطوبوغرافي وتتبع المسارات (UTM)</div>
+            <p style="color: #7f8c8d; font-size: 0.95rem; margin-top:-10px; margin-bottom: 15px;">
+                * أدخل الإحداثيات والارتفاع يدوياً، أو اضغط على الزر ليقوم النظام بالتقاط القراءة ووضعها في أول حقل فارغ تلقائياً.
+            </p>
 
             <div class="capture-grid">
+                
                 <div class="capture-col">
                     <h3 style="color:#27ae60; margin-top:0; border-bottom:1px dashed #ccc; padding-bottom:5px;">نقاط الرفع الطوبوغرافي (للكنتور)</h3>
-                    <button class="btn-capture" id="btn_topo" onclick="capturePoint('topo')">
-                        <i class="fas fa-map-marker-alt"></i> التقاط نقطة تضاريس (X, Y, Z)
+                    <button class="btn-capture" id="btn_topo" onclick="captureGPSPoint('topo')">
+                        <i class="fas fa-satellite"></i> التقاط القراءة الحالية آلياً (GPS)
                     </button>
-                    <div id="acc_topo" style="margin-bottom:10px; min-height: 20px;"></div>
-                    <div style="max-height: 300px; overflow-y: auto;">
+                    <div id="acc_topo" style="margin-bottom:10px; min-height: 20px; text-align: center;"></div>
+                    
+                    <div class="table-wrapper">
                         <table class="points-table" id="topoTable">
-                            <tr><th>#</th><th>Easting (X)</th><th>Northing (Y)</th><th>Elev (Z)</th></tr>
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%;">#</th>
+                                    <th style="width: 30%;">Easting (X)</th>
+                                    <th style="width: 30%;">Northing (Y)</th>
+                                    <th style="width: 30%;">الارتفاع (Z)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="topoBody">
+                                </tbody>
                         </table>
                     </div>
+                    <button class="btn-add-row" onclick="addPointRow('topo')"><i class="fas fa-plus"></i> إضافة حقل قراءة جديد</button>
                 </div>
 
                 <div class="capture-col">
                     <h3 style="color:#2980b9; margin-top:0; border-bottom:1px dashed #ccc; padding-bottom:5px;">مسار المجرى المائي / الوادي</h3>
-                    <button class="btn-capture btn-capture-river" id="btn_river" onclick="capturePoint('river')">
-                        <i class="fas fa-water"></i> تسجيل نقطة مسار النهر (X, Y, Z)
+                    <button class="btn-capture btn-capture-river" id="btn_river" onclick="captureGPSPoint('river')">
+                        <i class="fas fa-satellite"></i> التقاط نقطة المسار آلياً (GPS)
                     </button>
-                    <div id="acc_river" style="margin-bottom:10px; min-height: 20px;"></div>
-                    <div style="max-height: 300px; overflow-y: auto;">
+                    <div id="acc_river" style="margin-bottom:10px; min-height: 20px; text-align: center;"></div>
+                    
+                    <div class="table-wrapper">
                         <table class="points-table" id="riverTable">
-                            <tr><th>#</th><th>Easting (X)</th><th>Northing (Y)</th><th>Elev (Z)</th></tr>
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%;">#</th>
+                                    <th style="width: 30%;">Easting (X)</th>
+                                    <th style="width: 30%;">Northing (Y)</th>
+                                    <th style="width: 30%;">الارتفاع (Z)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="riverBody">
+                                </tbody>
                         </table>
                     </div>
+                    <button class="btn-add-row" onclick="addPointRow('river')" style="background: #3498db;"><i class="fas fa-plus"></i> إضافة حقل قراءة جديد</button>
                 </div>
+
             </div>
             
-            <div style="margin-top: 20px; max-width: 300px;">
-                <label>الفاصل الكنتوري (Contour Interval):</label>
-                <input type="number" id="contourInterval" value="5" min="1" max="100">
+            <div style="margin-top: 25px; max-width: 300px; padding: 15px; background: #fdf2e9; border-radius: 8px; border-right: 4px solid #d35400;">
+                <label style="color: #d35400;">الفاصل الكنتوري المطلوب للمحاكاة (متر):</label>
+                <input type="number" id="contourInterval" value="5" min="1" max="100" style="border-color: #d35400; font-weight: bold;">
             </div>
         </div>
 
         <div class="screen-only">
-            <button class="btn-calc" onclick="generateContourMapAndReport()">معالجة البيانات وتوليد الخريطة الكنتورية والتقرير <i class="fas fa-magic"></i></button>
+            <button class="btn-calc" onclick="processDataAndGenerateReport()">معالجة البيانات وتوليد الخريطة الكنتورية والتقرير <i class="fas fa-magic"></i></button>
         </div>
     </div>
     
     <div id="screenResultsSummary" class="screen-only section" style="display: none; border-color: #8e44ad; max-width: 1100px; margin: auto;">
-        <div class="section-title">تم إنشاء النموذج الجيومورفولوجي بنجاح</div>
+        <div class="section-title">تمت المعالجة وإنشاء النموذج الجيومورفولوجي بنجاح</div>
         <div style="text-align: center; margin-top: 15px;">
             <button class="btn-print" style="width: auto; padding: 10px 30px;" onclick="window.print()">📄 حفظ التقرير والخريطة الشاملة (PDF)</button>
         </div>
@@ -218,6 +243,7 @@
                 <h1>نظام المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
                 <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
             </div>
+            <div class="header-left-info printDateHeader">--/--/----</div>
         </div>
         
         <div class="content-padding">
@@ -236,15 +262,15 @@
                 <tr><th>تقييم مخاطر السيول:</th><td id="res_floodRisk">--</td></tr>
             </table>
             
-            <div class="table-title">ثالثاً: ملخص النقاط المرفوعة مساحياً</div>
+            <div class="table-title">ثالثاً: ملخص المعالجة المساحية</div>
             <table class="print-table">
-                <tr><th>عدد نقاط الرفع الطوبوغرافي:</th><td><span id="res_topoCount">0</span> نقطة</td></tr>
-                <tr><th>عدد نقاط المجرى المائي:</th><td><span id="res_riverCount">0</span> نقطة</td></tr>
-                <tr><th>الفاصل الكنتوري المعتمد للرسم:</th><td><span id="res_cInterval">0</span> متر</td></tr>
+                <tr><th>عدد النقاط الطوبوغرافية المعتمدة:</th><td><span id="res_topoCount" style="color:#27ae60;">0</span> نقطة فعالة</td></tr>
+                <tr><th>عدد نقاط مسار المجرى المائي المعتمدة:</th><td><span id="res_riverCount" style="color:#2980b9;">0</span> نقطة فعالة</td></tr>
+                <tr><th>الفاصل الكنتوري للمحاكاة:</th><td><span id="res_cInterval">0</span> متر</td></tr>
             </table>
             
-            <p style="font-size: 1.1rem; line-height: 1.8; text-align: justify; margin-top: 20px;">
-                <b>الاستنتاج الحقلي:</b> بناءً على البيانات المرفوعة، تم إعداد الخريطة الكنتورية المرفقة في الصفحة التالية باستخدام خوارزميات الاستيفاء المكاني لربط الارتفاعات المتساوية. كما تم إسقاط مسار المجرى المائي (إن وجد) لتوضيح علاقة خطوط الكنتور باتجاه الجريان وانحدار سطح الأرض، مما يشكل قاعدة بيانات دقيقة لدراسة أحواض التصريف ومخاطر السيول.
+            <p style="font-size: 1.15rem; line-height: 1.8; text-align: justify; margin-top: 25px; padding: 15px; background: #fafafa; border: 1px solid #ddd; border-radius: 8px;">
+                <b>الاستنتاج الحقلي والهندسي:</b> بناءً على القراءات المساحية المرفوعة، تم إجراء المعالجة الرياضية وبناء النموذج الكنتوري المرفق في الصفحة التالية باستخدام خوارزميات الاستيفاء المكاني لربط النقاط ذات الارتفاعات المتساوية. كما تم إسقاط مسار المجرى المائي وتداخله مع خطوط الكنتور لبيان اتجاه الانحدار ونقاط تجمع المياه، مما يوفر قاعدة هندسية دقيقة لدراسة اتجاهات السيول وأحواض التصريف السطحي.
             </p>
         </div>
         <div class="print-bottom-str print-only">الصفحة 1 من 2</div>
@@ -256,19 +282,20 @@
                 <h1>نظام المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
                 <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
             </div>
+            <div class="header-left-info printDateHeader">--/--/----</div>
         </div>
         
         <div class="content-padding">
             <div class="section" style="border: 2px solid #8e44ad; padding: 15px;">
-                <h3 style="color: #8e44ad; margin: 0 0 10px 0; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">الخريطة الكنتورية والهيدرولوجية للموقع</h3>
+                <h3 style="color: #8e44ad; margin: 0 0 10px 0; border-bottom: 1px dashed #ccc; padding-bottom: 5px;">النموذج الكنتوري والهيدرولوجي للموقع (محاكاة 2D)</h3>
                 <div class="map-canvas-container">
                     <canvas id="contourMap" width="800" height="550"></canvas>
                 </div>
-                <div style="display: flex; justify-content: center; gap: 20px; font-size: 14px; font-weight: bold; margin-top: 10px;">
-                    <span style="color: #c0392b;">■ مناطق مرتفعة</span>
-                    <span style="color: #f1c40f;">■ مناطق متوسطة الارتفاع</span>
-                    <span style="color: #27ae60;">■ مناطق منخفضة</span>
-                    <span style="color: #2980b9;">▬ مسار النهر/الوادي</span>
+                <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; font-size: 14px; font-weight: bold; margin-top: 15px; padding: 10px; background: #f9f9f9; border-radius: 6px;">
+                    <span style="color: #c0392b;">■ التضاريس المرتفعة</span>
+                    <span style="color: #f1c40f;">■ التضاريس المتوسطة</span>
+                    <span style="color: #27ae60;">■ التضاريس المنخفضة</span>
+                    <span style="color: #2980b9; font-size: 16px;">▬ مسار النهر/الوادي الفعلي</span>
                 </div>
             </div>
         </div>
@@ -277,16 +304,60 @@
 </div>
 
 <script>
-// مصفوفات لحفظ النقاط
-    let topoPoints = [];
-    let riverPoints = [];
+    // ==========================================
+    // 1. هندسة الجداول المفتوحة
+    // ==========================================
     
-    // دالة محاكاة لتحويل Lat/Lon إلى إحداثيات UTM مبسطة للرسم
-    function pseudoUTM(lat, lon) {
-        return { x: Math.round((lon - 40) * 100000), y: Math.round((lat - 30) * 100000) };
+    // عند تحميل الصفحة، إضافة 5 حقول فارغة افتراضية لكل جدول
+    document.addEventListener('DOMContentLoaded', () => {
+        for(let i=0; i<5; i++) {
+            addPointRow('topo');
+            addPointRow('river');
+        }
+        
+        // تعيين التاريخ للطباعة
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('en-GB');
+        document.querySelectorAll('.printDateHeader').forEach(el => el.innerText = dateStr);
+    });
+
+    function addPointRow(type) {
+        const tbody = document.getElementById(type + 'Body');
+        const rowCount = tbody.rows.length + 1;
+        const tr = document.createElement('tr');
+        
+        tr.innerHTML = `
+            <td class="row-index">${rowCount}</td>
+            <td><input type="number" class="easting" placeholder="X" step="any"></td>
+            <td><input type="number" class="northing" placeholder="Y" step="any"></td>
+            <td><input type="number" class="elevation" placeholder="Z" step="any"></td>
+        `;
+        tbody.appendChild(tr);
     }
 
-    function capturePoint(type) {
+    // ==========================================
+    // 2. المحرك الرياضي والالتقاط الآلي (من نظام المقالع)
+    // ==========================================
+    
+    function latLonToUTM(lat, lon) {
+        const a = 6378137.0; const eccSquared = 0.00669438; const k0 = 0.9996;
+        let zoneNumber = Math.floor((lon + 180) / 6) + 1; 
+        let lonOrigin = (zoneNumber - 1) * 6 - 180 + 3; 
+        let lonOriginRad = lonOrigin * (Math.PI / 180.0); 
+        let latRad = lat * (Math.PI / 180.0); 
+        let lonRad = lon * (Math.PI / 180.0); 
+        let eccPrimeSquared = (eccSquared) / (1 - eccSquared);
+        let N = a / Math.sqrt(1 - eccSquared * Math.sin(latRad) * Math.sin(latRad)); 
+        let T = Math.tan(latRad) * Math.tan(latRad); 
+        let C = eccPrimeSquared * Math.cos(latRad) * Math.cos(latRad); 
+        let A = Math.cos(latRad) * (lonRad - lonOriginRad);
+        let M = a * ((1 - eccSquared / 4 - 3 * eccSquared * eccSquared / 64 - 5 * Math.pow(eccSquared, 3) / 256) * latRad - (3 * eccSquared / 8 + 3 * eccSquared * eccSquared / 32 + 45 * Math.pow(eccSquared, 3) / 1024) * Math.sin(2 * latRad) + (15 * eccSquared * eccSquared / 256 + 45 * Math.pow(eccSquared, 3) / 1024) * Math.sin(4 * latRad) - (35 * Math.pow(eccSquared, 3) / 3072) * Math.sin(6 * latRad));
+        let UTMEasting = (k0 * N * (A + (1 - T + C) * Math.pow(A, 3) / 6 + (5 - 18 * T + T * T + 72 * C - 58 * eccPrimeSquared) * Math.pow(A, 5) / 120) + 500000.0); 
+        let UTMNorthing = (k0 * (M + N * Math.tan(latRad) * (Math.pow(A, 2) / 2 + (5 - T + 9 * C + 4 * C * C) * Math.pow(A, 4) / 24 + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) * Math.pow(A, 6) / 720)));
+        return { easting: parseFloat(UTMEasting.toFixed(2)), northing: parseFloat(UTMNorthing.toFixed(2)) };
+    }
+
+    function captureGPSPoint(type) {
         try {
             if (!navigator.geolocation) {
                 alert("متصفحك الحالي لا يدعم ميزة تحديد الموقع (GPS).");
@@ -295,15 +366,8 @@
 
             const btn = document.getElementById('btn_' + type);
             const accDiv = document.getElementById('acc_' + type);
-            
-            if (!btn || !accDiv) {
-                alert("خطأ في قراءة عناصر الصفحة، يرجى إعادة تحديث الصفحة.");
-                return;
-            }
-
             const originalContent = btn.innerHTML;
 
-            // استجابة فورية للزر لتعرف أنه يعمل
             btn.innerHTML = `⏳ جاري البحث عن الأقمار الصناعية...`;
             btn.disabled = true;
             accDiv.innerHTML = `<span style="color:#2980b9; font-weight:bold; font-size:0.9rem;">الرجاء الانتظار، جاري تحديد الدقة...</span>`;
@@ -315,34 +379,44 @@
                     const accuracy = position.coords.accuracy;
                     let alt = position.coords.altitude;
                     
-                    const manualAlt = document.getElementById('manualElevation').value;
-                    let finalZ = 0;
-                    let zMethod = "";
+                    const utm = latLonToUTM(lat, lon);
+                    let finalZ = (alt !== null) ? Math.round(alt * 10) / 10 : ""; // نتركه فارغاً إذا لم يجد ارتفاع
+                    
+                    let accColor = accuracy <= 10 ? '#27ae60' : (accuracy <= 30 ? '#f39c12' : '#e74c3c');
+                    let accMsg = `✅ تمت القراءة! الدقة الأفقيـة: ± ${accuracy.toFixed(1)} متر`;
+                    if (alt === null) accMsg += `<br><span style="color:#e74c3c; font-size:0.8rem;">⚠️ لم يقرأ الهاتف الارتفاع. اكتب الـ Z يدوياً في الجدول.</span>`;
+                    accDiv.innerHTML = `<span style="color:${accColor}; font-weight:bold; font-size:0.9rem;">${accMsg}</span>`;
 
-                    if (manualAlt && manualAlt.trim() !== "") {
-                        finalZ = parseFloat(manualAlt);
-                        zMethod = "(إدخال يدوي)";
-                    } else {
-                        finalZ = (alt !== null) ? Math.round(alt * 10) / 10 : 0;
-                        zMethod = "(تلقائي من GPS)";
-                        if (alt === null) {
-                            alert("⚠️ تنبيه: مستشعر هاتفك لا يدعم قراءة الارتفاع، تم تسجيل القيمة 0. يُرجى إدخال الارتفاع يدوياً في المربع المخصص.");
+                    // ================== البحث عن أول حقل فارغ في الجدول ==================
+                    const tbody = document.getElementById(type + 'Body');
+                    let targetRow = null;
+                    
+                    for (let i = 0; i < tbody.rows.length; i++) {
+                        let row = tbody.rows[i];
+                        let eVal = row.querySelector('.easting').value;
+                        let nVal = row.querySelector('.northing').value;
+                        // إذا كان X و Y فارغين، اعتبر الحقل فارغاً
+                        if (!eVal && !nVal) {
+                            targetRow = row;
+                            break;
                         }
                     }
                     
-                    const utm = pseudoUTM(lat, lon);
-                    const point = { x: utm.x, y: utm.y, z: finalZ };
+                    // إذا لم يجد حقل فارغ، قم بإضافة واحد جديد
+                    if (!targetRow) {
+                        addPointRow(type);
+                        targetRow = tbody.lastElementChild;
+                    }
                     
-                    let accColor = accuracy <= 10 ? '#27ae60' : (accuracy <= 30 ? '#f39c12' : '#e74c3c');
-                    accDiv.innerHTML = `<span style="color:${accColor}; font-weight:bold; font-size:0.9rem;">✅ تمت القراءة! الدقة: ± ${accuracy.toFixed(1)} متر</span>`;
-
-                    let tableId = type === 'topo' ? 'topoTable' : 'riverTable';
-                    let array = type === 'topo' ? topoPoints : riverPoints;
-                    
-                    array.push(point);
-                    let table = document.getElementById(tableId);
-                    let row = table.insertRow(-1);
-                    row.innerHTML = `<td>${array.length}</td><td>${point.x}</td><td>${point.y}</td><td style="color:#c0392b; font-weight:bold;">${point.z} m <br><small style="color:#888;">${zMethod}</small></td>`;
+                    // تعبئة الحقول بالأرقام الملتقطة
+                    targetRow.querySelector('.easting').value = utm.easting;
+                    targetRow.querySelector('.northing').value = utm.northing;
+                    if(finalZ !== "") {
+                        targetRow.querySelector('.elevation').value = finalZ;
+                        targetRow.querySelector('.elevation').style.background = "#d5f5e3"; // تلوين أخضر خفيف دلالة على النجاح
+                    } else {
+                        targetRow.querySelector('.elevation').style.background = "#fadbd8"; // تلوين أحمر لتنبيه الإدخال اليدوي
+                    }
 
                     btn.innerHTML = originalContent;
                     btn.disabled = false;
@@ -350,7 +424,7 @@
                 (error) => {
                     let msg = "خطأ غير معروف.";
                     if (error.code === 1) msg = "تم رفض الصلاحية. يرجى السماح للمتصفح بالوصول لموقعك.";
-                    else if (error.code === 2) msg = "المستشعر لا يستطيع التقاط الإشارة (أنت في مكان مغلق).";
+                    else if (error.code === 2) msg = "المستشعر لا يستطيع التقاط الإشارة.";
                     else if (error.code === 3) msg = "انتهى وقت الانتظار (تأكد من تفعيل GPS الهاتف).";
                     
                     alert("❌ فشل الالتقاط: " + msg);
@@ -358,19 +432,50 @@
                     btn.disabled = false;
                     accDiv.innerHTML = `<span style="color:#e74c3c; font-weight:bold; font-size:0.9rem;">❌ ${msg}</span>`;
                 }, 
-                { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+                { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
             );
         } catch (e) {
             alert("حدث خطأ برمجي يمنع الزر من العمل: " + e.message);
         }
     }
 
-    function generateContourMapAndReport() {
-        if (topoPoints.length < 3) {
-            alert("⚠️ يرجى التقاط 3 نقاط طوبوغرافية على الأقل لكي يتمكن النظام من رسم الخريطة الكنتورية.");
+    // ==========================================
+    // 3. سحب البيانات من الجداول، المعالجة، وتوليد التقرير
+    // ==========================================
+    
+    let processedTopo = [];
+    let processedRiver = [];
+
+    function processDataAndGenerateReport() {
+        processedTopo = [];
+        processedRiver = [];
+
+        // دالة مساعدة لقراءة الصفوف الممتلئة فقط من أي جدول
+        function extractValidPoints(tbodyId, targetArray) {
+            const tbody = document.getElementById(tbodyId);
+            for (let i = 0; i < tbody.rows.length; i++) {
+                let row = tbody.rows[i];
+                let x = parseFloat(row.querySelector('.easting').value);
+                let y = parseFloat(row.querySelector('.northing').value);
+                let z = parseFloat(row.querySelector('.elevation').value);
+                
+                // إذا الأرقام الثلاثة موجودة وصحيحة، أضفها للمصفوفة
+                if (!isNaN(x) && !isNaN(y) && !isNaN(z)) {
+                    targetArray.push({ x: x, y: y, z: z });
+                }
+            }
+        }
+
+        // سحب البيانات
+        extractValidPoints('topoBody', processedTopo);
+        extractValidPoints('riverBody', processedRiver);
+
+        if (processedTopo.length < 3) {
+            alert("⚠️ المعالجة فشلت: النظام يحتاج إلى 3 نقاط طوبوغرافية (X,Y,Z) على الأقل في الجدول لرسم الخريطة الكنتورية.");
             return;
         }
 
+        // تعبئة البيانات الوصفية في التقرير
         const geoName = document.getElementById('geoName').value || "غير محدد";
         document.querySelectorAll('.res_geoNameHeaderRep').forEach(el => el.innerText = geoName);
         document.getElementById('res_geoName').innerText = geoName;
@@ -382,40 +487,56 @@
         document.getElementById('res_weathering').innerText = document.getElementById('weatheringType').value;
         document.getElementById('res_floodRisk').innerText = document.getElementById('floodRisk').value;
         
-        document.getElementById('res_topoCount').innerText = topoPoints.length;
-        document.getElementById('res_riverCount').innerText = riverPoints.length;
+        document.getElementById('res_topoCount').innerText = processedTopo.length;
+        document.getElementById('res_riverCount').innerText = processedRiver.length;
         document.getElementById('res_cInterval').innerText = document.getElementById('contourInterval').value;
 
-        drawMap();
+        // رسم الخريطة الكنتورية
+        drawContourMap();
 
+        // إظهار شاشة الطباعة
         document.getElementById('inputSectionGeomorph').style.display = 'none';
         document.getElementById('screenResultsSummary').style.display = 'block';
         document.getElementById('pageResultsStr_1').style.display = 'block';
         document.getElementById('pageResultsStr_2').style.display = 'block';
     }
 
-    function drawMap() {
+    // ==========================================
+    // 4. محرك الرسم الجيومورفولوجي
+    // ==========================================
+    
+    function drawContourMap() {
         const canvas = document.getElementById('contourMap');
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
+        // إيجاد حدود النقاط (Bounding Box) للمعايرة التلقائية
         let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
         let minZ = Infinity, maxZ = -Infinity;
         
-        topoPoints.forEach(p => {
+        // جمع كل النقاط (طوبوغرافية + نهر) لحساب المربع المحيط الشامل
+        let allPoints = processedTopo.concat(processedRiver);
+        
+        allPoints.forEach(p => {
             if(p.x < minX) minX = p.x; if(p.x > maxX) maxX = p.x;
             if(p.y < minY) minY = p.y; if(p.y > maxY) maxY = p.y;
             if(p.z < minZ) minZ = p.z; if(p.z > maxZ) maxZ = p.z;
         });
 
-        const padding = 60;
+        // تجنب القسمة على صفر إذا التقط نقطة واحدة في نفس المكان
+        if (maxX === minX) { maxX += 10; minX -= 10; }
+        if (maxY === minY) { maxY += 10; minY -= 10; }
+
+        const padding = 70;
         function getScreenCoords(x, y) {
-            let sx = padding + ((x - minX) / (maxX - minX || 1)) * (canvas.width - 2 * padding);
-            let sy = canvas.height - padding - ((y - minY) / (maxY - minY || 1)) * (canvas.height - 2 * padding);
+            let sx = padding + ((x - minX) / (maxX - minX)) * (canvas.width - 2 * padding);
+            // عكس الإحداثي الصادي لأن صفر الـ Canvas في الأعلى
+            let sy = canvas.height - padding - ((y - minY) / (maxY - minY)) * (canvas.height - 2 * padding);
             return { x: sx, y: sy };
         }
 
-        topoPoints.forEach(p => {
+        // الطبقة 1: رسم محاكاة الألوان (Topographic Heatmap)
+        processedTopo.forEach(p => {
             let sc = getScreenCoords(p.x, p.y);
             let normalizedZ = (p.z - minZ) / (maxZ - minZ || 1);
             
@@ -423,49 +544,65 @@
             let g = Math.floor(255 * (1 - normalizedZ));
             
             let gradient = ctx.createRadialGradient(sc.x, sc.y, 0, sc.x, sc.y, 180);
-            gradient.addColorStop(0, `rgba(${r}, ${g}, 50, 0.4)`);
+            gradient.addColorStop(0, `rgba(${r}, ${g}, 50, 0.45)`);
             gradient.addColorStop(1, `rgba(${r}, ${g}, 50, 0)`);
             
             ctx.fillStyle = gradient;
             ctx.beginPath();
             ctx.arc(sc.x, sc.y, 180, 0, Math.PI * 2);
             ctx.fill();
-            
+        });
+
+        // الطبقة 2: رسم نقاط التضاريس وإظهار الارتفاع
+        processedTopo.forEach(p => {
+            let sc = getScreenCoords(p.x, p.y);
             ctx.fillStyle = '#2c3e50';
             ctx.beginPath();
             ctx.arc(sc.x, sc.y, 4, 0, Math.PI * 2);
             ctx.fill();
-            ctx.font = 'bold 13px Arial';
+            ctx.font = 'bold 14px Arial';
             ctx.fillText(`${p.z}m`, sc.x + 8, sc.y - 8);
         });
 
-        if (riverPoints.length > 1) {
+        // الطبقة 3: رسم مسار النهر/الوادي (Polyline)
+        if (processedRiver.length > 1) {
             ctx.beginPath();
             ctx.strokeStyle = '#2980b9'; 
             ctx.lineWidth = 5;
             ctx.lineJoin = 'round';
             
-            for (let i = 0; i < riverPoints.length; i++) {
-                let p = riverPoints[i];
-                let sc = getScreenCoords(p.x, p.y);
+            for (let i = 0; i < processedRiver.length; i++) {
+                let sc = getScreenCoords(processedRiver[i].x, processedRiver[i].y);
                 if (i === 0) ctx.moveTo(sc.x, sc.y);
                 else ctx.lineTo(sc.x, sc.y);
             }
             ctx.stroke();
             
-            riverPoints.forEach(p => {
+            // رسم نقاط النهر وقيم الارتفاع الخاصة بها لتوضيح اتجاه الميل
+            processedRiver.forEach(p => {
                 let sc = getScreenCoords(p.x, p.y);
                 ctx.fillStyle = '#fff';
                 ctx.beginPath(); ctx.arc(sc.x, sc.y, 5, 0, Math.PI * 2); ctx.fill();
                 ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2; ctx.stroke();
                 
                 ctx.fillStyle = '#2980b9';
-                ctx.font = 'bold 12px Arial';
-                ctx.fillText(`${p.z}m`, sc.x + 8, sc.y + 15);
+                ctx.font = 'bold 13px Arial';
+                // كتابة القيمة أسفل النقطة لعدم التداخل مع نقاط التضاريس
+                ctx.fillText(`${p.z}m`, sc.x + 8, sc.y + 20); 
             });
         }
-        
+
+        // إطار الخريطة النهائي والمقياس
         ctx.strokeStyle = '#2c3e50';
         ctx.lineWidth = 3;
         ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+        
+        ctx.fillStyle = '#2c3e50';
+        ctx.font = 'bold 18px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('N', canvas.width / 2, 35);
+        ctx.fillText('محاكاة ثنائية الأبعاد للسطح الطوبوغرافي (2D Model)', canvas.width / 2, canvas.height - 25);
     }
+</script>
+</body>
+</html>
