@@ -42,8 +42,9 @@
         /* تنسيقات أزرار وجداول التقاط النقاط */
         .capture-grid { display: flex; gap: 20px; flex-wrap: wrap; }
         .capture-col { flex: 1; min-width: 300px; background: #fdfdfd; border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
-        .btn-capture { background: #27ae60; color: white; border: none; padding: 10px; width: 100%; font-size: 1rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 8px;}
+        .btn-capture { background: #27ae60; color: white; border: none; padding: 10px; width: 100%; font-size: 1rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 5px; display: flex; justify-content: center; align-items: center; gap: 8px;}
         .btn-capture:hover { background: #219150; }
+        .btn-capture:disabled { background: #95a5a6; cursor: not-allowed; }
         .btn-capture-river { background: #2980b9; } .btn-capture-river:hover { background: #1f618d; }
         
         .points-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 10px; text-align: center; }
@@ -153,19 +154,26 @@
         </div>
 
         <div class="section">
-            <div class="section-title">ثالثاً: الرفع الطوبوغرافي وتتبع المسارات</div>
-            <p style="color: #555; font-size: 0.9rem; margin-top:-10px;">* تنويه: إذا كان مستشعر البارومتر في الهاتف لا يدعم قراءة الارتفاع بدقة، يمكنك إدخال الارتفاع التقريبي يدوياً في المربع أدناه قبل التقاط النقطة.</p>
+            <div class="section-title">ثالثاً: الرفع الطوبوغرافي وتتبع المسارات (نظام UTM)</div>
             
-            <div style="margin-bottom: 15px; max-width: 300px;">
-                <label style="color:#c0392b;">تجاوز الارتفاع يدوياً (متر) - اختياري:</label>
-                <input type="number" id="manualElevation" placeholder="أدخل الارتفاع Z (مثال: 45) ثم التقط">
+            <div style="margin-bottom: 20px; background: #f4ecf7; padding: 15px; border-radius: 8px; border-right: 5px solid #8e44ad;">
+                <label style="color:#8e44ad; display: block; margin-bottom: 10px;">
+                    <i class="fas fa-hand-pointer"></i> خيار الارتفاع اليدوي (Z):
+                </label>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <input type="number" id="manualElevation" placeholder="أدخل الارتفاع Z يدوياً هنا..." style="max-width: 250px;">
+                    <span style="font-size: 0.85rem; color: #666;">* اترك الحقل فارغاً لاستخدام ارتفاع الهاتف التلقائي.</span>
+                </div>
             </div>
 
             <div class="capture-grid">
                 <div class="capture-col">
                     <h3 style="color:#27ae60; margin-top:0; border-bottom:1px dashed #ccc; padding-bottom:5px;">نقاط الرفع الطوبوغرافي (للكنتور)</h3>
-                    <button class="btn-capture" onclick="capturePoint('topo')"><i class="fas fa-map-marker-alt"></i> التقاط نقطة تضاريس (X, Y, Z)</button>
-                    <div style="max-height: 200px; overflow-y: auto;">
+                    <button class="btn-capture" id="btn_topo" onclick="capturePoint('topo')">
+                        <i class="fas fa-map-marker-alt"></i> التقاط نقطة تضاريس (X, Y, Z)
+                    </button>
+                    <div id="acc_topo" style="margin-bottom:10px; min-height: 20px;"></div>
+                    <div style="max-height: 300px; overflow-y: auto;">
                         <table class="points-table" id="topoTable">
                             <tr><th>#</th><th>Easting (X)</th><th>Northing (Y)</th><th>Elev (Z)</th></tr>
                         </table>
@@ -174,8 +182,11 @@
 
                 <div class="capture-col">
                     <h3 style="color:#2980b9; margin-top:0; border-bottom:1px dashed #ccc; padding-bottom:5px;">مسار المجرى المائي / الوادي</h3>
-                    <button class="btn-capture btn-capture-river" onclick="capturePoint('river')"><i class="fas fa-water"></i> تسجيل نقطة مسار النهر (X, Y, Z)</button>
-                    <div style="max-height: 200px; overflow-y: auto;">
+                    <button class="btn-capture btn-capture-river" id="btn_river" onclick="capturePoint('river')">
+                        <i class="fas fa-water"></i> تسجيل نقطة مسار النهر (X, Y, Z)
+                    </button>
+                    <div id="acc_river" style="margin-bottom:10px; min-height: 20px;"></div>
+                    <div style="max-height: 300px; overflow-y: auto;">
                         <table class="points-table" id="riverTable">
                             <tr><th>#</th><th>Easting (X)</th><th>Northing (Y)</th><th>Elev (Z)</th></tr>
                         </table>
@@ -183,8 +194,8 @@
                 </div>
             </div>
             
-            <div style="margin-top: 15px; max-width: 300px;">
-                <label>الفاصل الكنتوري المطلوب (Contour Interval):</label>
+            <div style="margin-top: 20px; max-width: 300px;">
+                <label>الفاصل الكنتوري (Contour Interval):</label>
                 <input type="number" id="contourInterval" value="5" min="1" max="100">
             </div>
         </div>
@@ -272,7 +283,6 @@
     
     // دالة محاكاة لتحويل Lat/Lon إلى إحداثيات UTM مبسطة للرسم
     function pseudoUTM(lat, lon) {
-        // معادلة مبسطة جداً لغرض الرسم على الكانفاس بمرجع محلي
         return { x: Math.round((lon - 40) * 100000), y: Math.round((lat - 30) * 100000) };
     }
 
@@ -281,21 +291,11 @@
             alert("المتصفح لا يدعم تحديد الموقع.");
             return;
         }
-        
-        navigator.geolocation.getCurrentPosition((position) => {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            let alt = position.coords.altitude;
-            
-            // قراءة التجاوز اليدوي للارتفاع
-            const manualAlt = document.getElementById('manualElevation').value;
-            if (manualAlt && manualAlt.trim() !== "") {
-                alt = parseFloat(manualAlt);
-            } else if (alt === null) {
-                // إذا لم يتمكن المستشعر من القراءة ولم يدخل المستخدم رقماً
-                alt = Math.floor(Math.random() * 20) + 30; // توليد رقم عشوائي كبديل (للتجربة)
-                alert("⚠️ لم يتمكن المستشعر من قراءة الارتفاع. تم توليد ارتفاع تقريبي. يُفضل إدخال الارتفاع يدوياً.");
-            }
-            
-            const utm = pseudoUTM(lat, lon);
-   
+
+        const btn = document.getElementById('btn_' + type);
+        const accDiv = document.getElementById('acc_' + type);
+        const originalContent = btn.innerHTML;
+
+        // 1. تحديث شكل الزر عند الضغط
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> جاري الاتصال بالأقمار الصناعية...`;
+        btn.disabled
