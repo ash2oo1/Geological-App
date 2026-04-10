@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام المسح الميداني الجيولوجي (الجيومورفولوجي والكنتوري)</title>
+    <title>نظام المسح الميداني الجيولوجي (المسح الجيومورفولوجي والكنتوري)</title>
     
     <meta name="description" content="نظام الرفع الطوبوغرافي، تتبع الأنهار، ورسم الخرائط الكنتورية">
     <meta name="author" content="الجيولوجي علي شندل الجنابي">
@@ -111,7 +111,7 @@
  
 <div class="container">
     <div class="header screen-only">
-        <h1>نظام المسح الميداني الجيولوجي (الجيومورفولوجي والكنتوري)</h1>
+        <h1>نظام المسح الميداني الجيولوجي (المسح الجيومورفولوجي والكنتوري)</h1>
         <h2>بإشراف الجيولوجي: <span id="mainTitleName">علي شندل الجنابي</span></h2>
     </div>
 
@@ -612,10 +612,10 @@
 
         let dx = (rawMaxX - rawMinX) || 10;
         let dy = (rawMaxY - rawMinY) || 10;
-        let paddingLeft = 80; 
-        let paddingRight = 100; 
-        let paddingTop = 70;
-        let paddingBottom = 80;
+        let paddingLeft = 85; 
+        let paddingRight = 130; // مساحة لضمان عدم تداخل الإحداثيات والصندوق
+        let paddingTop = 85;    // مساحة لسهم الشمال والأرقام العلوية
+        let paddingBottom = 85; // مساحة لمقياس الرسم
 
         let minX = rawMinX - dx * 0.08;
         let maxX = rawMaxX + dx * 0.08;
@@ -677,7 +677,7 @@
             ctx.fillRect(paddingLeft, paddingTop, mapW, mapH);
         }
 
-        // ================= خطوة 3: خوارزمية الخطوط وتوزيع الأرقام الذكية =================
+        // ================= خطوة 3: خوارزمية الخطوط وتوزيع الأرقام الذكية والمتباعدة =================
         if (showLines) {
             let contourLevels = [];
             for(let z = startZ; z <= endZ; z += interval) contourLevels.push(z);
@@ -689,10 +689,8 @@
                 ctx.lineJoin = 'round'; 
                 
                 let isIndex = Math.abs(iso % (interval * 5)) < 0.001;
-                ctx.strokeStyle = '#000'; 
-                ctx.lineWidth = isIndex ? 1.8 : 0.8;
-
-                let segments = [];
+                ctx.strokeStyle = '#000'; // جميع الخطوط سوداء صريحة
+                ctx.lineWidth = isIndex ? 2.0 : 0.8;
 
                 for (let i = 0; i < gridCols - 1; i++) {
                     for (let j = 0; j < gridRows - 1; j++) {
@@ -722,86 +720,43 @@
                         else if(idx===8 || idx===7) { p1 = d; p2 = c; }
                         else if(idx===3 || idx===12) { p1 = d; p2 = b; }
                         else if(idx===6 || idx===9) { p1 = a; p2 = c; }
-                        else if(idx===5) { ctx.moveTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.moveTo(b.x, b.y); ctx.lineTo(c.x, c.y); p1=a; p2=d; segments.push({p1:b, p2:c}); } 
-                        else if(idx===10) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); p1=a; p2=b; segments.push({p1:c, p2:d}); } 
+                        else if(idx===5) { ctx.moveTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.moveTo(b.x, b.y); ctx.lineTo(c.x, c.y); p1=a; p2=d; } 
+                        else if(idx===10) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); p1=a; p2=b; } 
 
                         if (p1 && p2 && idx !== 5 && idx !== 10) {
                             ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
-                            segments.push({p1: p1, p2: p2});
+                            
+                            // ترقيم جميع الخطوط الكنتورية
+                            if (showLabels) {
+                                let midX = (p1.x + p2.x) / 2;
+                                let midY = (p1.y + p2.y) / 2;
+                                let buffer = 35;
+                                if (midX > paddingLeft + buffer && midX < paddingLeft + mapW - buffer && midY > paddingTop + buffer && midY < paddingTop + mapH - buffer) {
+                                    labelCandidates.push({x: midX, y: midY, val: iso});
+                                }
+                            }
                         }
                     }
                 }
                 ctx.stroke();
-
-                if (showLabels && segments.length > 0) {
-                    let lines = [];
-                    while(segments.length > 0) {
-                        let currentLine = [segments.pop()];
-                        let added = true;
-                        let attempts = 0;
-                        while(added && attempts < 5000) {
-                            added = false;
-                            attempts++;
-                            for(let i=0; i<segments.length; i++) {
-                                let seg = segments[i];
-                                let startSeg = currentLine[0];
-                                let endSeg = currentLine[currentLine.length-1];
-                                let tol = 2.0;
-                                if (Math.hypot(seg.p1.x - endSeg.p2.x, seg.p1.y - endSeg.p2.y) <= tol) {
-                                    currentLine.push(seg); segments.splice(i, 1); added = true; break;
-                                } else if (Math.hypot(seg.p2.x - startSeg.p1.x, seg.p2.y - startSeg.p1.y) <= tol) {
-                                    currentLine.unshift(seg); segments.splice(i, 1); added = true; break;
-                                } else if (Math.hypot(seg.p2.x - endSeg.p2.x, seg.p2.y - endSeg.p2.y) <= tol) {
-                                    currentLine.push({p1: seg.p2, p2: seg.p1}); segments.splice(i, 1); added = true; break;
-                                } else if (Math.hypot(seg.p1.x - startSeg.p1.x, seg.p1.y - startSeg.p1.y) <= tol) {
-                                    currentLine.unshift({p1: seg.p2, p2: seg.p1}); segments.splice(i, 1); added = true; break;
-                                }
-                            }
-                        }
-                        lines.push(currentLine);
-                    }
-
-                    for(let line of lines) {
-                        let totalLen = 0;
-                        for(let s of line) totalLen += Math.hypot(s.p2.x - s.p1.x, s.p2.y - s.p1.y);
-
-                        if(totalLen > 50) { 
-                            let midIdx = Math.floor(line.length / 2);
-                            let buffer = 30;
-                            let validPoint = null;
-
-                            let pt = {x: (line[midIdx].p1.x + line[midIdx].p2.x)/2, y: (line[midIdx].p1.y + line[midIdx].p2.y)/2};
-                            if (pt.x > paddingLeft + buffer && pt.x < paddingLeft + mapW - buffer && pt.y > paddingTop + buffer && pt.y < paddingTop + mapH - buffer) {
-                                validPoint = pt;
-                            } else {
-                                for(let k=0; k<line.length; k+=2) {
-                                    let cpt = {x: (line[k].p1.x + line[k].p2.x)/2, y: (line[k].p1.y + line[k].p2.y)/2};
-                                    if (cpt.x > paddingLeft + buffer && cpt.x < paddingLeft + mapW - buffer && cpt.y > paddingTop + buffer && cpt.y < paddingTop + mapH - buffer) {
-                                        validPoint = cpt; break;
-                                    }
-                                }
-                            }
-                            if(validPoint) {
-                                labelCandidates.push({x: validPoint.x, y: validPoint.y, val: iso});
-                            }
-                        }
-                    }
-                }
             });
 
             if (showLabels) {
                 let placedLabels = [];
+                // فلترة لمنع التراصف المزعج في الانحدار الشديد (Staggered Distances)
                 for(let cand of labelCandidates) {
                     let tooClose = false;
                     for(let p of placedLabels) {
-                        if (cand.val === p.val && Math.hypot(cand.x - p.x, cand.y - p.y) < 180) { tooClose = true; break; }
-                        if (cand.val !== p.val && Math.hypot(cand.x - p.x, cand.y - p.y) < 65) { tooClose = true; break; }
+                        // مسافة أفقية/عمودية واسعة جداً لنفس الخط لمنع التكرار المزعج للرقم
+                        if (cand.val === p.val && Math.hypot(cand.x - p.x, cand.y - p.y) < 200) { tooClose = true; break; }
+                        // مسافة تباعد قطرية واسعة للخطوط المختلفة لمنع التراصف وتكدس الأرقام (الأسود على الأسود)
+                        if (cand.val !== p.val && Math.hypot(cand.x - p.x, cand.y - p.y) < 45) { tooClose = true; break; }
                     }
                     if(!tooClose) placedLabels.push(cand);
                 }
 
                 ctx.direction = "ltr";
-                ctx.font = 'bold 10px Arial'; 
+                ctx.font = 'bold 10px Arial'; // خط صغير مقروء
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 
@@ -809,6 +764,7 @@
                     let txt = lp.val.toFixed(1);
                     let textW = ctx.measureText(txt).width;
                     
+                    // مسح الخط تحته بلون الخلفية الصلب (بدون هالة بيضاء)
                     let bgCol = showFill ? getColorPalette(lp.val, startZ, endZ) : '#fff';
                     ctx.fillStyle = bgCol;
                     ctx.fillRect(lp.x - textW/2 - 1, lp.y - 6, textW + 2, 12);
@@ -820,7 +776,7 @@
             }
         }
 
-        // ================= خطوة 4: الإطار الخارجي والإحداثيات =================
+        // ================= خطوة 4: الإطار الخارجي والإحداثيات (Northing & Easting) =================
         ctx.strokeStyle = '#1c2833';
         ctx.lineWidth = 3;
         ctx.strokeRect(paddingLeft, paddingTop, mapW, mapH);
@@ -831,6 +787,7 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'top';
             
+            // Bottom Easting
             for (let i = 0; i <= 5; i++) {
                 let rx = minX + (i / 5) * (maxX - minX);
                 let sx = getScreenX(rx);
@@ -838,7 +795,7 @@
                 ctx.fillText(rx.toFixed(1), sx, paddingTop + mapH + 10);
             }
 
-            ctx.textAlign = 'right';
+            // Left & Right Northing
             ctx.textBaseline = 'middle';
             for (let i = 0; i <= 5; i++) {
                 let ry = minY + (i / 5) * (maxY - minY);
@@ -860,11 +817,13 @@
             ctx.font = 'bold 14px Arial';
             ctx.textAlign = 'center';
             
+            // Left Northing text
             ctx.translate(paddingLeft - 65, paddingTop + mapH / 2);
             ctx.rotate(-Math.PI / 2);
             ctx.fillText('Northing', 0, 0);
             ctx.restore();
             
+            // Right Northing text
             ctx.save();
             ctx.translate(paddingLeft + mapW + 65, paddingTop + mapH / 2);
             ctx.rotate(-Math.PI / 2);
@@ -874,6 +833,7 @@
             ctx.fillText('Northing', 0, 0);
             ctx.restore();
             
+            // Bottom Easting text
             ctx.fillStyle = '#1c2833';
             ctx.font = 'bold 14px Arial';
             ctx.textAlign = 'center';
@@ -881,7 +841,7 @@
             ctx.fillText('Easting', paddingLeft + mapW / 2, paddingTop + mapH + 35);
         }
 
-        // ================= خطوة 5: مقياس الرسم الجغرافي الخطي (أقصى اليسار أسفل) =================
+        // ================= خطوة 5: مقياس الرسم الجغرافي الخطي (أقصى اليسار أسفل الخريطة) =================
         if (showScale) {
             const realDistX = maxX - minX;
             let scaleValue = Math.pow(10, Math.floor(Math.log10(realDistX / 2))); 
@@ -889,7 +849,7 @@
             let scalePxWidth = (scaleValue / realDistX) * mapW;
 
             const scX = paddingLeft; 
-            const scY = paddingTop + mapH + 65; 
+            const scY = paddingTop + mapH + 75; // إنزال إضافي لعدم التداخل مع Easting
             
             ctx.beginPath();
             ctx.lineWidth = 2.5;
@@ -903,30 +863,33 @@
             ctx.fillStyle = '#000';
             ctx.font = 'bold 12px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('0', scX, scY - 18);
-            ctx.fillText(scaleValue + ' m', scX + scalePxWidth, scY - 18);
+            // رفع الأرقام لتكون فوق الخط تماماً وإزالة حرف m
+            ctx.fillText('0', scX, scY - 10);
+            ctx.fillText(scaleValue, scX + scalePxWidth, scY - 10);
             ctx.direction = "rtl";
         }
 
-        // ================= خطوة 6: صندوق الألوان وسهم الشمال (أقصى اليمين، مفصول تماماً) =================
+        // ================= خطوة 6: صندوق الألوان المصغر وسهم الشمال (أقصى اليمين، مفصول تماماً) =================
         if (showFill) {
             const legX = paddingLeft + mapW + 110; 
-            const legH = mapH * 0.7; 
+            // تقليص ارتفاع الصندوق لترك مساحة واسعة لسهم الشمال في الأعلى
+            const legH = mapH * 0.70; 
             const legY = paddingTop + (mapH - legH); 
             const legW = 20;
             
             if (showNorth) {
+                // سهم الشمال عالي ومفصول تماماً عن مقياس الألوان
                 const nX = legX + (legW / 2); 
-                const nY = paddingTop + 10; 
+                const nY = paddingTop + 15; 
                 ctx.beginPath();
-                ctx.moveTo(nX, nY - 15); ctx.lineTo(nX + 8, nY + 10); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10);
+                ctx.moveTo(nX, nY - 18); ctx.lineTo(nX + 8, nY + 10); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10);
                 ctx.closePath();
                 ctx.fillStyle = '#000'; ctx.fill();
                 ctx.fillStyle = '#fff';
-                ctx.beginPath(); ctx.moveTo(nX, nY - 15); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10); ctx.fill();
-                ctx.strokeStyle = '#000'; ctx.lineWidth = 1; ctx.stroke();
-                ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center';
-                ctx.fillText('N', nX, nY + 20);
+                ctx.beginPath(); ctx.moveTo(nX, nY - 18); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10); ctx.fill();
+                ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5; ctx.stroke();
+                ctx.fillStyle = '#000'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center';
+                ctx.fillText('N', nX, nY + 24);
             }
 
             let gradient = ctx.createLinearGradient(0, legY + legH, 0, legY); 
@@ -947,27 +910,29 @@
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
             
-            const offsetText = 6;
+            // إزالة حرف الـ m من مقياس الألوان
+            const offsetText = 8;
             ctx.fillText(endZ.toFixed(1), legX + legW + offsetText, legY);
             ctx.fillText(startZ.toFixed(1), legX + legW + offsetText, legY + legH);
             const midZ = (startZ + endZ) / 2;
             ctx.fillText(midZ.toFixed(1), legX + legW + offsetText, legY + legH / 2);
             ctx.direction = "rtl";
         } else if (showNorth) {
+            // سهم الشمال في حال عدم وجود الألوان
             const nX = paddingLeft + mapW + 110; 
-            const nY = paddingTop + 10; 
+            const nY = paddingTop + 15; 
             ctx.beginPath();
-            ctx.moveTo(nX, nY - 15); ctx.lineTo(nX + 8, nY + 10); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10);
+            ctx.moveTo(nX, nY - 18); ctx.lineTo(nX + 8, nY + 10); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10);
             ctx.closePath();
             ctx.fillStyle = '#000'; ctx.fill();
             ctx.fillStyle = '#fff';
-            ctx.beginPath(); ctx.moveTo(nX, nY - 15); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10); ctx.fill();
-            ctx.strokeStyle = '#000'; ctx.lineWidth = 1; ctx.stroke();
-            ctx.fillStyle = '#000'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center';
-            ctx.fillText('N', nX, nY + 20);
+            ctx.beginPath(); ctx.moveTo(nX, nY - 18); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10); ctx.fill();
+            ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5; ctx.stroke();
+            ctx.fillStyle = '#000'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center';
+            ctx.fillText('N', nX, nY + 24);
         }
 
-        // ================= خطوة 7: إسقاط النقاط الميدانية =================
+        // ================= خطوة 7: إسقاط النقاط الميدانية الأصلية وتقاطع الكنتور =================
         if (showPoints) {
             ctx.direction = "ltr";
             topoPts.forEach(p => {
