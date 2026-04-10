@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام المسح الجيومورفولوجي والكنتوري</title>
     
-    <meta name="description" content="نظام الرفع الطوبوغرافي، تتبع الأنهار، ورسم الخرائط الكنتورية الاحترافية">
+    <meta name="description" content="نظام الرفع الطوبوغرافي، تتبع الأنهار، ورسم الخرائط الكنتورية">
     <meta name="author" content="الجيولوجي علي شندل الجنابي">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,7 +26,6 @@
         
         .section { margin-bottom: 25px; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         .section-title { color: #8e44ad; border-bottom: 2px solid #8e44ad; padding-bottom: 8px; font-size: 1.3rem; margin-bottom: 20px; font-weight: bold; }
-        .sub-title { color: #9b59b6; font-size: 1.1rem; margin: 15px 0 10px 0; border-bottom: 1px dashed #ccc; padding-bottom: 5px; font-weight: bold;}
         
         .form-row { display: flex; gap: 20px; margin-bottom: 15px; flex-wrap: wrap; }
         .form-group { flex: 1; min-width: 200px; }
@@ -39,7 +38,7 @@
         .btn-print { background: #d35400; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(211, 84, 0, 0.3); transition: 0.3s;}
         .btn-print:hover { background: #ba4a00; transform: translateY(-2px);}
         
-        /* ================= تنسيقات الجداول الميدانية المفتوحة ================= */
+        /* ================= الجداول الميدانية ================= */
         .capture-grid { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
         .capture-col { flex: 1; min-width: 340px; background: #fdfdfd; border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
         
@@ -69,12 +68,14 @@
         .slider-group label { margin: 0; color: #2c3e50; }
         .slider-group input[type="range"] { flex: 1; cursor: pointer; }
 
-        /* ================= تنسيق خريطة الكنتور ================= */
+        /* ================= تنسيق الخريطة ================= */
         .map-canvas-container { width: 100%; display: flex; flex-direction: column; align-items: center; background: #fff; padding: 20px; border-radius: 8px; border: 2px solid #8e44ad; margin-bottom: 20px; box-sizing: border-box; overflow: hidden; }
         #contourMap { background: #fff; max-width: 100%; height: auto; object-fit: contain; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 4px; cursor: default;}
         .map-loading { color: #8e44ad; font-weight: bold; font-size: 1.2rem; display: none; margin-bottom: 10px;}
+        
+        .interpretation-box { margin-top: 20px; padding: 15px; border: 2px solid #27ae60; background-color: #e9f7ef; border-radius: 8px; font-size: 1.1rem; line-height: 1.6; display: none; color: #1e8449; font-weight: bold;}
 
-        /* ================= هندسة الطباعة (PDF) ================= */
+        /* ================= الطباعة الصارمة (PDF) ================= */
         .print-only { display: none !important; }
         @media print {
             @page { margin: 0; size: A4 portrait; }
@@ -90,10 +91,12 @@
             .header-center-info h1 { font-size: 16px; margin: 0 0 5px 0; color: #1c2833; font-weight: bold;}
             .header-center-info h2 { font-size: 14px; margin: 0; color: #8e44ad; font-weight: bold; }
             .header-left-info { text-align: left; flex: 1; font-size: 11px; font-weight: bold; color: #555; }
-            .header-right-blank { flex: 1; }
             .print-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; direction: rtl; }
             .print-table th { background: #f4ecf7; color: #8e44ad; border: 1px solid #bdc3c7; padding: 10px; text-align: right; width: 35%; font-size: 13px; }
             .print-table td { border: 1px solid #bdc3c7; padding: 10px; text-align: right; font-size: 13px; color: #2c3e50; font-weight: bold; }
+            .print-data-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; direction: rtl; font-size: 11px; text-align: center; page-break-inside: auto; }
+            .print-data-table th, .print-data-table td { border: 1px solid #bdc3c7; padding: 5px; }
+            .print-data-table th { background: #ecf0f1; }
             .table-title { background: #ecf0f1; color: #2c3e50; padding: 8px 15px; font-weight: bold; border-radius: 5px; margin-bottom: 10px; font-size: 14px; border-right: 4px solid #8e44ad; }
             .section { margin-bottom: 10px; border: 1px solid #bdc3c7; border-radius: 6px; padding: 10px; box-shadow: none; page-break-inside: avoid; }
             .print-bottom-str { position: absolute; bottom: 1cm; left: 0; width: 100%; text-align: center; font-weight: bold; font-size: 12px; color: #333; border-top: 1px solid #eee; padding-top: 5px; }
@@ -109,7 +112,7 @@
 <div class="container">
     <div class="header screen-only">
         <h1>نظام المسح الجيومورفولوجي والكنتوري</h1>
-        <h2>بإشراف الجيولوجي: علي شندل الجنابي</h2>
+        <h2>بإشراف الجيولوجي: <span id="mainTitleName">علي شندل الجنابي</span></h2>
     </div>
 
     <div class="content-padding screen-only" id="inputSectionGeomorph">
@@ -213,43 +216,44 @@
             </div>
             
             <div class="settings-box" style="margin-top: 25px;">
-                <h4><i class="fas fa-sliders-h"></i> إعدادات المظهر والتحليل الهندسـي الاحترافي</h4>
+                <h4><i class="fas fa-sliders-h"></i> إعدادات المظهر والتحليل</h4>
                 <div style="margin-bottom: 15px; max-width: 300px;">
-                    <label style="color: #d35400;">الفاصل الكنتوري المطلوب للمحاكاة (متر):</label>
+                    <label style="color: #d35400;">الفاصل الكنتوري المطلوب (متر):</label>
                     <input type="number" id="contourInterval" value="2" min="0.1" max="100" step="0.5" style="border-color: #d35400; font-weight: bold; padding: 8px;">
                 </div>
                 
                 <div class="toggles-grid">
-                    <label class="toggle-item"><input type="checkbox" id="chk_fill" checked> <span>إظهار التعبئة اللونية (Discrete Bands)</span></label>
-                    <label class="toggle-item"><input type="checkbox" id="chk_lines" checked> <span>إظهار خطوط الكنتور حادة النظافة</span></label>
-                    <label class="toggle-item"><input type="checkbox" id="chk_labels" checked> <span>كتابة القيم على خط الكنتور (Halos)</span></label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_fill" checked> <span>إظهار التعبئة اللونية</span></label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_lines" checked> <span>إظهار خطوط الكنتور</span></label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_labels" checked> <span>كتابة القيم على خط الكنتور</span></label>
                     <label class="toggle-item"><input type="checkbox" id="chk_points" checked> <span>إظهار النقاط الميدانية الأصلية</span></label>
                     <label class="toggle-item"><input type="checkbox" id="chk_grid"> <span>إظهار الإحداثيات على الحواف</span></label>
                     <label class="toggle-item"><input type="checkbox" id="chk_scale" checked> <span>إظهار مقياس الرسم الجغرافي</span></label>
-                    <label class="toggle-item"><input type="checkbox" id="chk_north" checked> <span>إظهار اتجاه الشمال هندسياً</span></label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_north" checked> <span>إظهار اتجاه الشمال</span></label>
                 </div>
                 
                 <div class="slider-group">
-                    <label>معامل التنعيم (Smoothing Factor):</label>
+                    <label>معامل التنعيم للمنحنيات:</label>
                     <input type="range" id="smoothFactor" min="0.001" max="0.1" step="0.001" value="0.02">
-                    <span style="font-size: 0.8rem; color:#7f8c8d;">(يمين: انسيابي جاف / يسار: حاد صخري)</span>
+                    <span style="font-size: 0.8rem; color:#7f8c8d;">(يمين: انسيابي / يسار: حاد)</span>
                 </div>
             </div>
         </div>
 
         <div class="screen-only">
-            <button class="btn-calc" onclick="processDataAndGenerateReport()">معالجة البيانات وتوليد الخريطة الكنتورية والتقرير <i class="fas fa-magic"></i></button>
+            <button class="btn-calc" onclick="processDataAndGenerateReport()">معالجة البيانات وتوليد الخارطة الكنتورية والتقرير <i class="fas fa-magic"></i></button>
         </div>
     </div>
     
     <div id="screenMapDisplay" class="screen-only section" style="display: none; border-color: #8e44ad; background-color: #fdfdfd;">
-        <div class="section-title">المحاكاة الهندسية للنموذج الكنتوري (الخريطة الحية)</div>
-        <div id="loadingIndicator" class="map-loading"><i class="fas fa-spinner fa-spin"></i> جاري إجراء الحسابات وتوليد الطبقات... يرجى الانتظار</div>
+        <div class="section-title">الخارطة الكنتورية</div>
+        <div id="loadingIndicator" class="map-loading"><i class="fas fa-spinner fa-spin"></i> جاري إجراء الحسابات وتوليد الخارطة... يرجى الانتظار</div>
         <div class="map-canvas-container">
             <canvas id="screenContourMap" width="950" height="700"></canvas>
+            <div id="geomorphAnalysisBox" class="interpretation-box"></div>
         </div>
         <div style="text-align: center; margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 15px;">
-            <button class="btn-print" style="width: auto; padding: 10px 30px;" onclick="window.print()">📄 حفظ التقرير والخريطة الشاملة (PDF)</button>
+            <button class="btn-print" style="width: auto; padding: 10px 30px;" onclick="window.print()">📄 حفظ التقرير والخارطة الشاملة (PDF)</button>
         </div>
     </div>
 
@@ -278,19 +282,48 @@
                 <tr><th>تقييم مخاطر السيول:</th><td id="res_floodRisk">--</td></tr>
             </table>
             
-            <div class="table-title">ثالثاً: ملخص المعالجة المساحية</div>
+            <div class="table-title">ثالثاً: ملخص المعالجة المساحية والاستنتاج الجيومورفولوجي</div>
             <table class="print-table">
                 <tr><th>عدد النقاط الطوبوغرافية المعتمدة:</th><td><span id="res_topoCount" style="color:#27ae60;">0</span> نقطة فعالة</td></tr>
                 <tr><th>عدد نقاط مسار المجرى المائي المعتمدة:</th><td><span id="res_riverCount" style="color:#2980b9;">0</span> نقطة فعالة</td></tr>
-                <tr><th>الفاصل الكنتوري للمحاكاة:</th><td><span id="res_cInterval">0</span> متر</td></tr>
+                <tr><th>الفاصل الكنتوري المعتمد:</th><td><span id="res_cInterval">0</span> متر</td></tr>
             </table>
+            
+            <div id="printInterpretationBox" style="font-size: 1.15rem; line-height: 1.8; text-align: justify; margin-top: 20px; padding: 15px; background: #fafafa; border: 1px solid #ddd; border-radius: 8px; color: #1e8449; font-weight: bold;">
+                </div>
         </div>
     </div>
 
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_2">
         <div class="print-master-header print-only">
             <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(الخريطة الكنتورية والهيدرولوجية - 2D)</h2>
+                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(جداول الرفع المساحي - UTM)</h2>
+                <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
+            </div>
+            <div class="header-left-info printDateHeader">--/--/----</div>
+        </div>
+        
+        <div class="content-padding">
+            <div class="table-title">نقاط الرفع الطوبوغرافي المعتمدة في رسم الخارطة</div>
+            <table class="print-data-table">
+                <thead><tr><th>#</th><th>Easting (X)</th><th>Northing (Y)</th><th>Elevation (Z)</th></tr></thead>
+                <tbody id="printTopoBody"></tbody>
+            </table>
+
+            <div id="printRiverContainer" style="display: none;">
+                <div class="table-title" style="margin-top: 20px; border-right-color: #2980b9;">إحداثيات مسار المجرى المائي / الوادي</div>
+                <table class="print-data-table">
+                    <thead><tr><th>#</th><th>Easting (X)</th><th>Northing (Y)</th><th>Elevation (Z)</th></tr></thead>
+                    <tbody id="printRiverBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_3">
+        <div class="print-master-header print-only">
+            <div class="header-center-info">
+                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(الخارطة الكنتورية)</h2>
                 <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
             </div>
             <div class="header-left-info printDateHeader">--/--/----</div>
@@ -306,7 +339,7 @@
 
 <script>
     // ==========================================
-    // 1. هندسة الجداول والDependencies
+    // 1. هندسة الجداول والإحداثيات
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
         for(let i=0; i<10; i++) addPointRow('topo');
@@ -316,14 +349,10 @@
         const dateStr = now.toLocaleDateString('en-GB');
         document.querySelectorAll('.printDateHeader').forEach(el => el.innerText = dateStr);
 
-        // إضافة dependency لمنع إظهار مقياس اللون إذا كانت التعبئة مغلقة
-        document.getElementById('chk_fill').onchange = function() {
-            const chkLabels = document.getElementById('chk_labels');
-            if(!this.checked) {
-                // إذا ألقيت التعبئة، غالباً لا تحتاج لكتابة القيم فوق الخطوط لأنها تتداخل
-                // ونعتمد على قيم النقاط أو المقياس العام إذا فعل
-            }
-        };
+        // تحديث الاسم الحي
+        document.getElementById('geoName').addEventListener('input', function() {
+            document.getElementById('mainTitleName').innerText = this.value || "علي شندل الجنابي";
+        });
     });
 
     function addPointRow(type) {
@@ -415,7 +444,7 @@
     }
 
     // ==========================================
-    // 2. إدارة البيانات وبدء المعالجة
+    // 2. معالجة البيانات وبناء الجداول والتحليل
     // ==========================================
     
     let processedTopo = [];
@@ -440,15 +469,50 @@
         extractValidPoints('riverBody', processedRiver);
 
         if (processedTopo.length < 3) {
-            alert("⚠️ يتطلب النظام 3 نقاط طوبوغرافية على الأقل في الجدول لرسم الخريطة.");
+            alert("⚠️ يتطلب النظام 3 نقاط طوبوغرافية على الأقل في الجدول لرسم الخارطة.");
             return;
+        }
+
+        // --- تحديث بيانات التقرير ---
+        const geoName = document.getElementById('geoName').value || "علي شندل الجنابي";
+        document.querySelectorAll('.res_geoNameHeaderRep').forEach(el => el.innerText = geoName);
+        document.getElementById('res_geoName').innerText = geoName;
+        document.getElementById('res_regionName').innerText = document.getElementById('regionName').value || "غير محدد";
+        document.getElementById('res_topoEnv').innerText = document.getElementById('topoEnv').value;
+        document.getElementById('res_drainage').innerText = document.getElementById('drainagePattern').value;
+        document.getElementById('res_valley').innerText = document.getElementById('valleyShape').value;
+        document.getElementById('res_weathering').innerText = document.getElementById('weatheringType').value;
+        document.getElementById('res_floodRisk').innerText = document.getElementById('floodRisk').value;
+        
+        const cInterval = parseFloat(document.getElementById('contourInterval').value) || 2;
+        document.getElementById('res_topoCount').innerText = processedTopo.length;
+        document.getElementById('res_riverCount').innerText = processedRiver.length;
+        document.getElementById('res_cInterval').innerText = cInterval;
+
+        // --- بناء جداول الطباعة الديناميكية ---
+        let printTopoBody = document.getElementById('printTopoBody');
+        printTopoBody.innerHTML = '';
+        processedTopo.forEach((p, i) => {
+            printTopoBody.innerHTML += `<tr><td>${i+1}</td><td>${p.x}</td><td>${p.y}</td><td>${p.z}</td></tr>`;
+        });
+
+        let printRiverContainer = document.getElementById('printRiverContainer');
+        let printRiverBody = document.getElementById('printRiverBody');
+        if (processedRiver.length > 0) {
+            printRiverContainer.style.display = 'block';
+            printRiverBody.innerHTML = '';
+            processedRiver.forEach((p, i) => {
+                printRiverBody.innerHTML += `<tr><td>${i+1}</td><td>${p.x}</td><td>${p.y}</td><td>${p.z}</td></tr>`;
+            });
+        } else {
+            printRiverContainer.style.display = 'none';
         }
 
         document.getElementById('screenMapDisplay').style.display = 'block';
         document.getElementById('loadingIndicator').style.display = 'block';
         
         setTimeout(() => {
-            drawProfessionalContourMap('screenContourMap', processedTopo, processedRiver, parseFloat(document.getElementById('contourInterval').value) || 2);
+            drawProfessionalContourMap('screenContourMap', processedTopo, processedRiver, cInterval);
             document.getElementById('loadingIndicator').style.display = 'none';
             
             const canvas = document.getElementById('screenContourMap');
@@ -459,7 +523,7 @@
     }
 
     // ==========================================
-    // 3. المحرك الاحترافي: Discrete Bands & Halo Labels
+    // 3. المحرك الخرائطي والتحليل الجيومورفولوجي
     // ==========================================
     
     function getColorPalette(val, minZ, maxZ) {
@@ -487,12 +551,41 @@
         return `rgb(${r},${g},${b})`;
     }
 
+    function generateGeomorphAnalysis(topoPts, minX, maxX, minY, maxY) {
+        let maxP = topoPts.reduce((prev, curr) => (curr.z > prev.z) ? curr : prev);
+        let minP = topoPts.reduce((prev, curr) => (curr.z < prev.z) ? curr : prev);
+        
+        let midX = (maxX + minX) / 2;
+        let midY = (maxY + minY) / 2;
+
+        function getDirection(p) {
+            let ns = p.y >= midY ? "الشمال" : "الجنوب";
+            let ew = p.x >= midX ? "الشرقي" : "الغربي";
+            // للتأكد إذا كان في المنتصف تقريباً
+            if (Math.abs(p.x - midX) < (maxX - minX) * 0.1) ew = "";
+            if (Math.abs(p.y - midY) < (maxY - minY) * 0.1) ns = (ew === "") ? "الوسط" : "";
+            return (ns + " " + ew).trim();
+        }
+
+        let maxDir = getDirection(maxP);
+        let minDir = getDirection(minP);
+        
+        let dist = Math.hypot(maxP.x - minP.x, maxP.y - minP.y);
+        let slope = (maxP.z - minP.z) / (dist || 1);
+        let slopeDesc = slope > 0.05 ? "انحداراً شديداً وتقارباً في الخطوط الكنتورية" : "انحداراً تدريجياً (لطيفاً) وتباعداً في الخطوط الكنتورية";
+
+        let text = `تُظهر الخارطة الكنتورية المستنبطة تبايناً طوبوغرافياً واضحاً، حيث يُسجل أعلى ارتفاع في المنطقة (${maxP.z} متر) باتجاه ${maxDir}، بينما ينحدر السطح تدريجياً ليصل إلى أدنى مستوى له (${minP.z} متر) باتجاه ${minDir}. ويشير الفارق في المنسوب إلى ${slopeDesc}، مما يحدد هندسياً اتجاه الجريان السطحي المتوقع نحو المناطق المنخفضة.`;
+        
+        document.getElementById('geomorphAnalysisBox').innerText = text;
+        document.getElementById('geomorphAnalysisBox').style.display = 'block';
+        document.getElementById('printInterpretationBox').innerText = text;
+    }
+
     function drawProfessionalContourMap(canvasId, topoPts, riverPts, interval) {
         const canvas = document.getElementById(canvasId);
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // جلب الإعدادات
         const showFill = document.getElementById('chk_fill').checked;
         const showLines = document.getElementById('chk_lines').checked;
         const showLabels = document.getElementById('chk_labels').checked;
@@ -511,13 +604,18 @@
             if(p.z < minZ) minZ = p.z; if(p.z > maxZ) maxZ = p.z;
         });
 
+        if (maxX === minX) { maxX += 100; minX -= 100; }
+        if (maxY === minY) { maxY += 100; minY -= 100; }
+
+        generateGeomorphAnalysis(topoPts, minX, maxX, minY, maxY);
+
         let startZ = Math.floor(minZ / interval) * interval;
         let endZ = Math.ceil(maxZ / interval) * interval;
         if (startZ === endZ) endZ += interval;
 
         const padding = 60; 
         const legendWidth = 100; 
-        const mapW = canvas.width - padding * 2 - legendWidth - 30;
+        const mapW = canvas.width - padding * 2 - legendWidth - 20;
         const mapH = canvas.height - padding * 2 - 40;
 
         function getScreenX(realX) { return padding + ((realX - minX) / (maxX - minX)) * mapW; }
@@ -548,7 +646,7 @@
             }
         }
 
-        // ================= خطوة 2: التعبئة اللونية المنفصلة (Discrete Bands) =================
+        // ================= خطوة 2: التعبئة اللونية =================
         if (showFill) {
             for (let i = 0; i < gridCols - 1; i++) {
                 for (let j = 0; j < gridRows - 1; j++) {
@@ -558,7 +656,6 @@
                     let sy = padding + mapH - j * res;
                     
                     ctx.fillStyle = getColorPalette(bandZ, startZ, endZ);
-                    // رسم بيكسل كامل لضمان تعبئة صلبة بدون تدرج
                     ctx.fillRect(Math.round(sx), Math.round(sy - res), res + 1, res + 1); 
                 }
             }
@@ -567,39 +664,33 @@
             ctx.fillRect(padding, padding, mapW, mapH);
         }
 
-        // ================= خطوة 3: رسم خطوط الكنتور والأرقام (Halos) =================
+        // ================= خطوة 3: خوارزمية تتبع الأرقام وخطوط الكنتور =================
         if (showLines) {
             let contourLevels = [];
             for(let z = startZ; z <= endZ; z += interval) contourLevels.push(z);
 
-            // تجميع معلومات الخطوط لوضع الأرقام لاحقاً
-            let allContourLines = [];
+            let placedLabels = [];
 
             contourLevels.forEach(iso => {
                 ctx.beginPath();
+                ctx.lineJoin = 'round'; 
                 
                 let isIndex = Math.abs(iso % (interval * 5)) < 0.001;
                 ctx.strokeStyle = isIndex ? '#000' : 'rgba(0,0,0,0.7)';
-                ctx.lineWidth = isIndex ? 2.0 : 0.8;
+                ctx.lineWidth = isIndex ? 2.2 : 0.8;
 
                 for (let i = 0; i < gridCols - 1; i++) {
                     for (let j = 0; j < gridRows - 1; j++) {
-                        let v0 = grid[i][j];       
-                        let v1 = grid[i+1][j];     
-                        let v2 = grid[i+1][j+1];   
-                        let v3 = grid[i][j+1];     
+                        let v0 = grid[i][j]; let v1 = grid[i+1][j];     
+                        let v2 = grid[i+1][j+1]; let v3 = grid[i][j+1];     
                         
                         let idx = 0;
-                        if(v0 > iso) idx |= 1;
-                        if(v1 > iso) idx |= 2;
-                        if(v2 > iso) idx |= 4;
-                        if(v3 > iso) idx |= 8;
+                        if(v0 > iso) idx |= 1; if(v1 > iso) idx |= 2;
+                        if(v2 > iso) idx |= 4; if(v3 > iso) idx |= 8;
                         
                         if(idx === 0 || idx === 15) continue;
                         
-                        let sx = padding + i * res;
-                        let sy = padding + mapH - j * res; 
-                        
+                        let sx = padding + i * res; let sy = padding + mapH - j * res; 
                         let getX = (valA, valB, xA, xB) => xA + (iso - valA) * (xB - xA) / (valB - valA || 1);
                         let getY = (valA, valB, yA, yB) => yA + (iso - valA) * (yB - yA) / (valB - valA || 1);
                         
@@ -620,17 +711,18 @@
                         else if(idx===10) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); p1=a; p2=b; } 
 
                         if (p1 && p2 && idx !== 5 && idx !== 10) {
-                            ctx.moveTo(p1.x, p1.y);
-                            ctx.lineTo(p2.x, p2.y);
+                            ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
                             
-                            // تسجيل النقاط لكتابة الأرقام لاحقاً، مع مسافة أمان من الحواف (Buffer Zone)
-                            let buffer = 45; // مسافة أمان لعدم التداخل مع الحافة أو الإحداثيات
-                            if (showLabels && isIndex && (i % 30 === 0 && j % 30 === 0)) {
-                                let midX = (p1.x+p2.x)/2;
-                                let midY = (p1.y+p2.y)/2;
-                                if(midX > padding + buffer && midX < padding + mapW - buffer &&
-                                   midY > padding + buffer && midY < padding + mapH - buffer){
-                                    allContourLines.push({x: midX, y: midY, val: iso});
+                            if (showLabels && isIndex) {
+                                let midX = (p1.x + p2.x) / 2;
+                                let midY = (p1.y + p2.y) / 2;
+                                let buffer = 40;
+                                if (midX > padding + buffer && midX < padding + mapW - buffer && midY > padding + buffer && midY < padding + mapH - buffer) {
+                                    let tooClose = false;
+                                    for (let l of placedLabels) {
+                                        if (Math.hypot(midX - l.x, midY - l.y) < 100) { tooClose = true; break; }
+                                    }
+                                    if (!tooClose) placedLabels.push({x: midX, y: midY, val: iso});
                                 }
                             }
                         }
@@ -639,27 +731,26 @@
                 ctx.stroke();
             });
 
-            // رسم الأرقام بتقنية الهالة (Halo)
             if (showLabels) {
+                // إجبار الكانفاس على اتجاه LTR لرسم الأرقام مع الوحدة بشكل صحيح 100%
+                ctx.direction = "ltr";
                 ctx.font = 'bold 12px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 
-                allContourLines.forEach(lp => {
+                placedLabels.forEach(lp => {
                     let txt = lp.val.toFixed(1);
-                    // رسم هالة بيضاء (Stroke)
                     ctx.lineWidth = 4;
                     ctx.strokeStyle = '#fff';
                     ctx.strokeText(txt, lp.x, lp.y);
-                    // رسم النص الأسود (Fill)
                     ctx.fillStyle = '#000';
                     ctx.fillText(txt, lp.x, lp.y);
                 });
+                ctx.direction = "rtl"; // إعادة الاتجاه
             }
         }
 
-        // ================= خطوة 4: الإطار الخارجي والإحداثيات الجغرافية =================
-        // رسم حدود الخريطة النهائية (العلبة الصماء)
+        // ================= خطوة 4: الإطار الخارجي والإحداثيات =================
         ctx.strokeStyle = '#1c2833';
         ctx.lineWidth = 3;
         ctx.strokeRect(padding, padding, mapW, mapH);
@@ -670,15 +761,12 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'top';
             
-            // Easting
             for (let i = 0; i <= 5; i++) {
                 let rx = minX + (i / 5) * (maxX - minX);
                 let sx = getScreenX(rx);
-                // منع رسم الإحداثيات إذا كانت قريبة جداً من صندوق اللون
                 if (sx < padding + mapW + 10) {
                     ctx.beginPath(); ctx.moveTo(sx, padding + mapH); ctx.lineTo(sx, padding + mapH + 6); ctx.stroke();
                     ctx.fillText(rx.toFixed(1), sx, padding + mapH + 10);
-                    
                     ctx.beginPath(); ctx.moveTo(sx, padding); ctx.lineTo(sx, padding - 6); ctx.stroke();
                     ctx.textBaseline = 'bottom';
                     ctx.fillText(rx.toFixed(1), sx, padding - 8);
@@ -686,7 +774,6 @@
                 }
             }
 
-            // Northing
             ctx.textAlign = 'right';
             ctx.textBaseline = 'middle';
             for (let i = 0; i <= 5; i++) {
@@ -694,7 +781,6 @@
                 let sy = getScreenY(ry);
                 ctx.beginPath(); ctx.moveTo(padding, sy); ctx.lineTo(padding - 6, sy); ctx.stroke();
                 ctx.fillText(ry.toFixed(1), padding - 8, sy);
-                
                 ctx.beginPath(); ctx.moveTo(padding + mapW, sy); ctx.lineTo(padding + mapW + 6, sy); ctx.stroke();
                 ctx.textAlign = 'left';
                 ctx.fillText(ry.toFixed(1), padding + mapW + 8, sy);
@@ -702,7 +788,7 @@
             }
         }
 
-        // ================= خطوة 5: سهم الشمال ومقياس الرسم الجغرافي =================
+        // ================= خطوة 5: سهم الشمال ومقياس الرسم =================
         if (showNorth) {
             const nX = padding + mapW - 35;
             const nY = padding + 40;
@@ -719,41 +805,38 @@
 
         if (showScale) {
             const realDistX = maxX - minX;
-            // حساب قيمة مقياس رسم جميل (مثلاً مضاعفات 10، 50، 100)
             let scaleValue = Math.pow(10, Math.floor(Math.log10(realDistX / 2))); 
-            if (scaleValue < 1) scaleValue = 10; // قيمة افتراضية دنيا
+            if (scaleValue < 1) scaleValue = 10; 
             let scalePxWidth = (scaleValue / realDistX) * mapW;
 
-            const scX = padding + 30; // إزاحة لعدم التداخل مع الحافة
+            const scX = padding + 30; 
             const scY = padding + mapH - 30;
             
             ctx.beginPath();
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 2.5;
             ctx.strokeStyle = '#000';
-            ctx.moveTo(scX, scY - 6); ctx.lineTo(scX, scY + 6); // Tick Start
-            ctx.moveTo(scX, scY); ctx.lineTo(scX + scalePxWidth, scY); // Line
-            ctx.moveTo(scX + scalePxWidth, scY - 6); ctx.lineTo(scX + scalePxWidth, scY + 6); // Tick End
+            ctx.moveTo(scX, scY - 6); ctx.lineTo(scX, scY + 6); 
+            ctx.moveTo(scX, scY); ctx.lineTo(scX + scalePxWidth, scY); 
+            ctx.moveTo(scX + scalePxWidth, scY - 6); ctx.lineTo(scX + scalePxWidth, scY + 6); 
             ctx.stroke();
             
+            ctx.direction = "ltr";
             ctx.fillStyle = '#000';
             ctx.font = 'bold 13px Arial';
             ctx.textAlign = 'center';
-            // طباعة الرقم ثم الوحدة على اليمين 
             ctx.fillText('0', scX, scY - 12);
             ctx.fillText(scaleValue + ' m', scX + scalePxWidth, scY - 12);
+            ctx.direction = "rtl";
         }
 
-        // ================= خطوة 6: صندوق اللون المتدرج (Gradient Legend) وتصحيح حرف الm =================
+        // ================= خطوة 6: صندوق اللون المتدرج (Gradient Legend) =================
         if (showFill) {
             const legX = padding + mapW + 60;
             const legY = padding + 20;
             const legW = 25;
             const legH = mapH - 40;
             
-            // إنشاء مستطيل متدرج (Linear Gradient)
-            let gradient = ctx.createLinearGradient(0, legY + legH, 0, legY); // من الأسفل (الدنيا) للأعلى (العليا)
-            // استخدام نفس مقياس الألوان (getColorPalette) لإنشاء التدرج
-            // الألوان القياسية (أزرق منخفض -> أحمر مرتفع)
+            let gradient = ctx.createLinearGradient(0, legY + legH, 0, legY); 
             gradient.addColorStop(0, "rgb(69, 117, 180)");
             gradient.addColorStop(0.2, "rgb(171, 217, 233)");
             gradient.addColorStop(0.5, "rgb(166, 217, 106)");
@@ -765,29 +848,25 @@
             ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5;
             ctx.strokeRect(legX, legY, legW, legH);
             
-            // طباعة القيم المرجعية ال3 فقط (Max, Min, Mid)
+            ctx.direction = "ltr";
             ctx.fillStyle = '#000';
             ctx.font = 'bold 12px Arial';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
             
             const offsetText = 8;
-            // العليا (Max Z) - الرقم ثم الوحدة م على اليمين
             ctx.fillText(endZ.toFixed(1) + ' m', legX + legW + offsetText, legY);
-            
-            // الدنيا (Min Z)
             ctx.fillText(startZ.toFixed(1) + ' m', legX + legW + offsetText, legY + legH);
-            
-            // الوسطى (Mid Z)
             const midZ = (startZ + endZ) / 2;
             ctx.fillText(midZ.toFixed(1) + ' m', legX + legW + offsetText, legY + legH / 2);
+            ctx.direction = "rtl";
         }
 
-        // ================= خطوة 7: إسقاط النقاط الميدانية الأصلية وتقاطع الكنتور =================
+        // ================= خطوة 7: إسقاط النقاط الميدانية =================
         if (showPoints) {
+            ctx.direction = "ltr";
             topoPts.forEach(p => {
                 let sx = getScreenX(p.x); let sy = getScreenY(p.y);
-                // تلوين أخف للنقاط لتبرز من الخلفية
                 ctx.fillStyle = '#ecf0f1';
                 ctx.beginPath(); ctx.arc(sx, sy, 4, 0, Math.PI * 2); ctx.fill();
                 ctx.strokeStyle = '#34495e'; ctx.lineWidth = 1.5; ctx.stroke();
@@ -797,12 +876,13 @@
                 ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
                 ctx.fillText(p.z.toFixed(1), sx + 6, sy - 2);
             });
+            ctx.direction = "rtl";
         }
 
         // ================= خطوة 8: مسار النهر =================
         if (riverPts.length > 1) {
             ctx.beginPath();
-            ctx.strokeStyle = '#2980b9'; // أزرق النهر
+            ctx.strokeStyle = '#2980b9'; 
             ctx.lineWidth = 4;
             ctx.lineJoin = 'round';
             for (let i = 0; i < riverPts.length; i++) {
@@ -811,8 +891,8 @@
             }
             ctx.stroke();
             
-            // رسم نقاط النهر وقيمها إذا فعلت النقاط
             if (showPoints) {
+                ctx.direction = "ltr";
                 riverPts.forEach(p => {
                     let sx = getScreenX(p.x); let sy = getScreenY(p.y);
                     ctx.fillStyle = '#fff';
@@ -824,6 +904,7 @@
                     ctx.textAlign = 'right'; ctx.textBaseline = 'top';
                     ctx.fillText(p.z.toFixed(1), sx - 6, sy + 6);
                 });
+                ctx.direction = "rtl";
             }
         }
     }
