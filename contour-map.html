@@ -260,7 +260,7 @@
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_1">
         <div class="print-master-header print-only">
             <div class="header-center-info">
-                <h1>منصة المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
+                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
                 <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
             </div>
             <div class="header-left-info printDateHeader">--/--/----</div>
@@ -295,7 +295,7 @@
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_2">
         <div class="print-master-header print-only">
             <div class="header-center-info">
-                <h1>منصة المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
+                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
                 <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
             </div>
             <div class="header-left-info printDateHeader">--/--/----</div>
@@ -322,7 +322,7 @@
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_3">
         <div class="print-master-header print-only">
             <div class="header-center-info">
-                <h1>منصة المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
+                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
                 <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
             </div>
             <div class="header-left-info printDateHeader">--/--/----</div>
@@ -690,12 +690,11 @@
             ctx.fillRect(paddingLeft, paddingTop, mapW, mapH);
         }
 
-        // ================= خطوة 3: خوارزمية الخطوط وتوزيع الأرقام =================
+        // ================= خطوة 3: خوارزمية الخطوط وتوزيع الأرقام الذكية والمشتتة =================
         if (showLines) {
             let contourLevels = [];
             for(let z = startZ; z <= endZ; z += interval) contourLevels.push(z);
 
-            let drawnLabelsValues = []; // تتبع القيم التي تم رسمها
             let labelCandidates = [];
 
             contourLevels.forEach(iso => {
@@ -747,7 +746,7 @@
                 }
                 ctx.stroke();
 
-                if (showLabels && segments.length > 0 && !drawnLabelsValues.includes(iso)) {
+                if (showLabels && segments.length > 0) {
                     let lines = [];
                     while(segments.length > 0) {
                         let currentLine = [segments.pop()];
@@ -775,28 +774,31 @@
                         lines.push(currentLine);
                     }
 
-                    // العثور على أطول خط لهذه القيمة لوضع الرقم عليه مرة واحدة
-                    let longestLine = lines.reduce((prev, current) => (prev.length > current.length) ? prev : current, []);
+                    for(let line of lines) {
+                        let totalLen = 0;
+                        for(let s of line) totalLen += Math.hypot(s.p2.x - s.p1.x, s.p2.y - s.p1.y);
 
-                    if(longestLine.length > 50) { 
-                        let midIdx = Math.floor(longestLine.length / 2);
-                        let buffer = 30;
-                        let validPoint = null;
+                        // إعطاء كل خط منفصل رقماً واحداً فقط مع تشتيت المواقع لتجنب التراصف
+                        if(totalLen > 50) { 
+                            let fraction = 0.25 + ((iso * 13.7) % 0.5); 
+                            let targetIdx = Math.floor(line.length * fraction);
+                            let buffer = 30;
+                            let validPoint = null;
 
-                        let pt = {x: (longestLine[midIdx].p1.x + longestLine[midIdx].p2.x)/2, y: (longestLine[midIdx].p1.y + longestLine[midIdx].p2.y)/2};
-                        if (pt.x > paddingLeft + buffer && pt.x < paddingLeft + mapW - buffer && pt.y > paddingTop + buffer && pt.y < paddingTop + mapH - buffer) {
-                            validPoint = pt;
-                        } else {
-                            for(let k=0; k<longestLine.length; k+=2) {
-                                let cpt = {x: (longestLine[k].p1.x + longestLine[k].p2.x)/2, y: (longestLine[k].p1.y + longestLine[k].p2.y)/2};
-                                if (cpt.x > paddingLeft + buffer && cpt.x < paddingLeft + mapW - buffer && cpt.y > paddingTop + buffer && cpt.y < paddingTop + mapH - buffer) {
-                                    validPoint = cpt; break;
+                            let pt = {x: (line[targetIdx].p1.x + line[targetIdx].p2.x)/2, y: (line[targetIdx].p1.y + line[targetIdx].p2.y)/2};
+                            if (pt.x > paddingLeft + buffer && pt.x < paddingLeft + mapW - buffer && pt.y > paddingTop + buffer && pt.y < paddingTop + mapH - buffer) {
+                                validPoint = pt;
+                            } else {
+                                for(let k=0; k<line.length; k+=2) {
+                                    let cpt = {x: (line[k].p1.x + line[k].p2.x)/2, y: (line[k].p1.y + line[k].p2.y)/2};
+                                    if (cpt.x > paddingLeft + buffer && cpt.x < paddingLeft + mapW - buffer && cpt.y > paddingTop + buffer && cpt.y < paddingTop + mapH - buffer) {
+                                        validPoint = cpt; break;
+                                    }
                                 }
                             }
-                        }
-                        if(validPoint) {
-                            labelCandidates.push({x: validPoint.x, y: validPoint.y, val: iso});
-                            drawnLabelsValues.push(iso); // تسجيل أنه تم وضع رقم لهذا الخط
+                            if(validPoint) {
+                                labelCandidates.push({x: validPoint.x, y: validPoint.y, val: iso});
+                            }
                         }
                     }
                 }
@@ -807,8 +809,8 @@
                 for(let cand of labelCandidates) {
                     let tooClose = false;
                     for(let p of placedLabels) {
-                        // مسافة تباعد لتجنب تراكم الأرقام المختلفة
-                        if (Math.hypot(cand.x - p.x, cand.y - p.y) < 45) { tooClose = true; break; }
+                        // مسافة تباعد صغيرة فقط لمنع تداخل الأرقام مع بعضها البعض (التصاق النصوص)
+                        if (Math.hypot(cand.x - p.x, cand.y - p.y) < 25) { tooClose = true; break; }
                     }
                     if(!tooClose) placedLabels.push(cand);
                 }
@@ -916,8 +918,8 @@
             ctx.fillStyle = '#000';
             ctx.font = 'bold 12px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('0', scX, scY - 12);
-            ctx.fillText(scaleValue + ' m', scX + scalePxWidth, scY - 12);
+            ctx.fillText('0', scX, scY - 15);
+            ctx.fillText(scaleValue + ' m', scX + scalePxWidth, scY - 15);
             ctx.direction = "rtl";
         }
 
