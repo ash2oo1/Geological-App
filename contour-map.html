@@ -70,8 +70,8 @@
         .slider-group input[type="range"] { flex: 1; cursor: pointer; }
 
         /* ================= تنسيق خريطة الكنتور ================= */
-        .map-canvas-container { width: 100%; display: flex; flex-direction: column; align-items: center; background: #fff; padding: 20px; border-radius: 8px; border: 2px solid #8e44ad; margin-bottom: 20px; box-sizing: border-box;}
-        #contourMap { background: #fff; max-width: 100%; height: auto; object-fit: contain; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 4px; }
+        .map-canvas-container { width: 100%; display: flex; flex-direction: column; align-items: center; background: #fff; padding: 20px; border-radius: 8px; border: 2px solid #8e44ad; margin-bottom: 20px; box-sizing: border-box; overflow: hidden; }
+        #contourMap { background: #fff; max-width: 100%; height: auto; object-fit: contain; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 4px; cursor: default;}
         .map-loading { color: #8e44ad; font-weight: bold; font-size: 1.2rem; display: none; margin-bottom: 10px;}
 
         /* ================= هندسة الطباعة (PDF) ================= */
@@ -174,10 +174,6 @@
 
         <div class="section">
             <div class="section-title">ثالثاً: جداول الرفع الطوبوغرافي وتتبع المسارات (UTM)</div>
-            <p style="color: #7f8c8d; font-size: 0.95rem; margin-top:-10px; margin-bottom: 15px;">
-                * أدخل الإحداثيات والارتفاع يدوياً، أو اضغط على الزر ليقوم النظام بالتقاط القراءة ووضعها في أول حقل فارغ تلقائياً.
-            </p>
-
             <div class="capture-grid">
                 <div class="capture-col">
                     <h3 style="color:#27ae60; margin-top:0; border-bottom:1px dashed #ccc; padding-bottom:5px;">نقاط الرفع الطوبوغرافي (للكنتور)</h3>
@@ -217,25 +213,26 @@
             </div>
             
             <div class="settings-box" style="margin-top: 25px;">
-                <h4><i class="fas fa-sliders-h"></i> إعدادات المظهر والتحليل الهندسـي</h4>
+                <h4><i class="fas fa-sliders-h"></i> إعدادات المظهر والتحليل الهندسـي الاحترافي</h4>
                 <div style="margin-bottom: 15px; max-width: 300px;">
                     <label style="color: #d35400;">الفاصل الكنتوري المطلوب للمحاكاة (متر):</label>
                     <input type="number" id="contourInterval" value="2" min="0.1" max="100" step="0.5" style="border-color: #d35400; font-weight: bold; padding: 8px;">
                 </div>
                 
                 <div class="toggles-grid">
-                    <label class="toggle-item"><input type="checkbox" id="chk_fill" checked> <span>إظهار التعبئة اللونية الصلبة</span></label>
-                    <label class="toggle-item"><input type="checkbox" id="chk_lines" checked> <span>إظهار خطوط الكنتور</span></label>
-                    <label class="toggle-item"><input type="checkbox" id="chk_labels" checked> <span>كتابة القيم على خط الكنتور</span></label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_fill" checked> <span>إظهار التعبئة اللونية (Discrete Bands)</span></label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_lines" checked> <span>إظهار خطوط الكنتور حادة النظافة</span></label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_labels" checked> <span>كتابة القيم على خط الكنتور (Halos)</span></label>
                     <label class="toggle-item"><input type="checkbox" id="chk_points" checked> <span>إظهار النقاط الميدانية الأصلية</span></label>
                     <label class="toggle-item"><input type="checkbox" id="chk_grid"> <span>إظهار الإحداثيات على الحواف</span></label>
-                    <label class="toggle-item"><input type="checkbox" id="chk_scale" checked> <span>إظهار مقياس الرسم وسهم الشمال</span></label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_scale" checked> <span>إظهار مقياس الرسم الجغرافي</span></label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_north" checked> <span>إظهار اتجاه الشمال هندسياً</span></label>
                 </div>
                 
                 <div class="slider-group">
-                    <label>معامل التنعيم (Smoothing):</label>
+                    <label>معامل التنعيم (Smoothing Factor):</label>
                     <input type="range" id="smoothFactor" min="0.001" max="0.1" step="0.001" value="0.02">
-                    <span style="font-size: 0.8rem; color:#7f8c8d;">(يمين: انسيابي / يسار: حاد)</span>
+                    <span style="font-size: 0.8rem; color:#7f8c8d;">(يمين: انسيابي جاف / يسار: حاد صخري)</span>
                 </div>
             </div>
         </div>
@@ -252,7 +249,6 @@
             <canvas id="screenContourMap" width="950" height="700"></canvas>
         </div>
         <div style="text-align: center; margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 15px;">
-            <p style="color: #555; font-size: 0.95rem;">* يمكنك تعديل القراءات أو الإعدادات في الأعلى والضغط على (معالجة) مرة أخرى لتحديث الخريطة.</p>
             <button class="btn-print" style="width: auto; padding: 10px 30px;" onclick="window.print()">📄 حفظ التقرير والخريطة الشاملة (PDF)</button>
         </div>
     </div>
@@ -288,12 +284,7 @@
                 <tr><th>عدد نقاط مسار المجرى المائي المعتمدة:</th><td><span id="res_riverCount" style="color:#2980b9;">0</span> نقطة فعالة</td></tr>
                 <tr><th>الفاصل الكنتوري للمحاكاة:</th><td><span id="res_cInterval">0</span> متر</td></tr>
             </table>
-            
-            <p style="font-size: 1.15rem; line-height: 1.8; text-align: justify; margin-top: 25px; padding: 15px; background: #fafafa; border: 1px solid #ddd; border-radius: 8px;">
-                <b>الاستنتاج الحقلي والهندسي:</b> بناءً على القراءات المساحية المرفوعة، تم إجراء المعالجة الرياضية وبناء النموذج الكنتوري المرفق في الصفحة التالية باستخدام خوارزميات الاستيفاء المكاني المتطورة. كما تم إسقاط مسار المجرى المائي وتقاطعه مع التضاريس لتوضيح الاتجاهات والانحدارات، لتشكل قاعدة هندسية معتمدة لدراسة الأحواض المائية.
-            </p>
         </div>
-        <div class="print-bottom-str print-only">الصفحة 1 من 2</div>
     </div>
 
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_2">
@@ -310,13 +301,12 @@
                 <img id="printMapImage" style="width: 100%; max-height: 800px; object-fit: contain; border: 1px solid #333;" />
             </div>
         </div>
-        <div class="print-bottom-str print-only">الصفحة 2 من 2</div>
     </div>
 </div>
 
 <script>
     // ==========================================
-    // 1. هندسة الجداول والالتقاط (UTM)
+    // 1. هندسة الجداول والDependencies
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
         for(let i=0; i<10; i++) addPointRow('topo');
@@ -325,6 +315,15 @@
         const now = new Date();
         const dateStr = now.toLocaleDateString('en-GB');
         document.querySelectorAll('.printDateHeader').forEach(el => el.innerText = dateStr);
+
+        // إضافة dependency لمنع إظهار مقياس اللون إذا كانت التعبئة مغلقة
+        document.getElementById('chk_fill').onchange = function() {
+            const chkLabels = document.getElementById('chk_labels');
+            if(!this.checked) {
+                // إذا ألقيت التعبئة، غالباً لا تحتاج لكتابة القيم فوق الخطوط لأنها تتداخل
+                // ونعتمد على قيم النقاط أو المقياس العام إذا فعل
+            }
+        };
     });
 
     function addPointRow(type) {
@@ -445,26 +444,11 @@
             return;
         }
 
-        const geoName = document.getElementById('geoName').value || "غير محدد";
-        document.querySelectorAll('.res_geoNameHeaderRep').forEach(el => el.innerText = geoName);
-        document.getElementById('res_geoName').innerText = geoName;
-        document.getElementById('res_regionName').innerText = document.getElementById('regionName').value || "غير محدد";
-        document.getElementById('res_topoEnv').innerText = document.getElementById('topoEnv').value;
-        document.getElementById('res_drainage').innerText = document.getElementById('drainagePattern').value;
-        document.getElementById('res_valley').innerText = document.getElementById('valleyShape').value;
-        document.getElementById('res_weathering').innerText = document.getElementById('weatheringType').value;
-        document.getElementById('res_floodRisk').innerText = document.getElementById('floodRisk').value;
-        
-        const cInterval = parseFloat(document.getElementById('contourInterval').value) || 2;
-        document.getElementById('res_topoCount').innerText = processedTopo.length;
-        document.getElementById('res_riverCount').innerText = processedRiver.length;
-        document.getElementById('res_cInterval').innerText = cInterval;
-
         document.getElementById('screenMapDisplay').style.display = 'block';
         document.getElementById('loadingIndicator').style.display = 'block';
         
         setTimeout(() => {
-            drawProfessionalContourMap('screenContourMap', processedTopo, processedRiver, cInterval);
+            drawProfessionalContourMap('screenContourMap', processedTopo, processedRiver, parseFloat(document.getElementById('contourInterval').value) || 2);
             document.getElementById('loadingIndicator').style.display = 'none';
             
             const canvas = document.getElementById('screenContourMap');
@@ -475,7 +459,7 @@
     }
 
     // ==========================================
-    // 3. المحرك الاحترافي: Vector Contours & Text Halos
+    // 3. المحرك الاحترافي: Discrete Bands & Halo Labels
     // ==========================================
     
     function getColorPalette(val, minZ, maxZ) {
@@ -508,13 +492,14 @@
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // جلب الإعدادات من الواجهة
+        // جلب الإعدادات
         const showFill = document.getElementById('chk_fill').checked;
         const showLines = document.getElementById('chk_lines').checked;
         const showLabels = document.getElementById('chk_labels').checked;
         const showPoints = document.getElementById('chk_points').checked;
         const showGrid = document.getElementById('chk_grid').checked;
         const showScale = document.getElementById('chk_scale').checked;
+        const showNorth = document.getElementById('chk_north').checked;
         const smoothFactor = parseFloat(document.getElementById('smoothFactor').value) || 0.02;
 
         let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
@@ -526,23 +511,20 @@
             if(p.z < minZ) minZ = p.z; if(p.z > maxZ) maxZ = p.z;
         });
 
-        if (maxX === minX) { maxX += 100; minX -= 100; }
-        if (maxY === minY) { maxY += 100; minY -= 100; }
-
         let startZ = Math.floor(minZ / interval) * interval;
         let endZ = Math.ceil(maxZ / interval) * interval;
         if (startZ === endZ) endZ += interval;
 
         const padding = 60; 
         const legendWidth = 100; 
-        const mapW = canvas.width - padding * 2 - legendWidth - 20;
+        const mapW = canvas.width - padding * 2 - legendWidth - 30;
         const mapH = canvas.height - padding * 2 - 40;
 
         function getScreenX(realX) { return padding + ((realX - minX) / (maxX - minX)) * mapW; }
         function getScreenY(realY) { return padding + mapH - ((realY - minY) / (maxY - minY)) * mapH; }
 
         // ================= خطوة 1: الاستيفاء (IDW Grid) =================
-        const res = 3; 
+        const res = 2; 
         let gridCols = Math.ceil(mapW / res) + 1;
         let gridRows = Math.ceil(mapH / res) + 1;
         let grid = new Array(gridCols).fill(0).map(() => new Array(gridRows).fill(0));
@@ -551,7 +533,6 @@
             for (let j = 0; j < gridRows; j++) {
                 let sx = padding + i * res;
                 let sy = padding + mapH - j * res; 
-                
                 let rx = minX + ((sx - padding) / mapW) * (maxX - minX);
                 let ry = minY + ((padding + mapH - sy) / mapH) * (maxY - minY);
                 
@@ -567,7 +548,7 @@
             }
         }
 
-        // ================= خطوة 2: التعبئة اللونية (Discrete Bands) =================
+        // ================= خطوة 2: التعبئة اللونية المنفصلة (Discrete Bands) =================
         if (showFill) {
             for (let i = 0; i < gridCols - 1; i++) {
                 for (let j = 0; j < gridRows - 1; j++) {
@@ -577,7 +558,8 @@
                     let sy = padding + mapH - j * res;
                     
                     ctx.fillStyle = getColorPalette(bandZ, startZ, endZ);
-                    ctx.fillRect(sx, sy - res, res + 1, res + 1); 
+                    // رسم بيكسل كامل لضمان تعبئة صلبة بدون تدرج
+                    ctx.fillRect(Math.round(sx), Math.round(sy - res), res + 1, res + 1); 
                 }
             }
         } else {
@@ -585,19 +567,19 @@
             ctx.fillRect(padding, padding, mapW, mapH);
         }
 
-        // ================= خطوة 3: رسم خطوط الكنتور والأرقام مع الهالة =================
+        // ================= خطوة 3: رسم خطوط الكنتور والأرقام (Halos) =================
         if (showLines) {
             let contourLevels = [];
             for(let z = startZ; z <= endZ; z += interval) contourLevels.push(z);
 
-            let labelPoints = []; // تجميع مسارات الخطوط لوضع الأرقام لاحقاً
+            // تجميع معلومات الخطوط لوضع الأرقام لاحقاً
+            let allContourLines = [];
 
             contourLevels.forEach(iso => {
                 ctx.beginPath();
-                ctx.lineJoin = 'round'; // لتنعيم تقاطع الخطوط
                 
                 let isIndex = Math.abs(iso % (interval * 5)) < 0.001;
-                ctx.strokeStyle = isIndex ? '#000' : 'rgba(0,0,0,0.6)';
+                ctx.strokeStyle = isIndex ? '#000' : 'rgba(0,0,0,0.7)';
                 ctx.lineWidth = isIndex ? 2.0 : 0.8;
 
                 for (let i = 0; i < gridCols - 1; i++) {
@@ -641,14 +623,14 @@
                             ctx.moveTo(p1.x, p1.y);
                             ctx.lineTo(p2.x, p2.y);
                             
-                            // اختيار نقاط متباعدة للرقم بعيداً عن حواف الخريطة (Buffer Zone)
-                            let buffer = 40;
-                            if (showLabels && isIndex && (i % 35 === 0 && j % 35 === 0)) {
-                                let midX = (p1.x + p2.x) / 2;
-                                let midY = (p1.y + p2.y) / 2;
-                                if (midX > padding + buffer && midX < padding + mapW - buffer &&
-                                    midY > padding + buffer && midY < padding + mapH - buffer) {
-                                    labelPoints.push({x: midX, y: midY, val: iso});
+                            // تسجيل النقاط لكتابة الأرقام لاحقاً، مع مسافة أمان من الحواف (Buffer Zone)
+                            let buffer = 45; // مسافة أمان لعدم التداخل مع الحافة أو الإحداثيات
+                            if (showLabels && isIndex && (i % 30 === 0 && j % 30 === 0)) {
+                                let midX = (p1.x+p2.x)/2;
+                                let midY = (p1.y+p2.y)/2;
+                                if(midX > padding + buffer && midX < padding + mapW - buffer &&
+                                   midY > padding + buffer && midY < padding + mapH - buffer){
+                                    allContourLines.push({x: midX, y: midY, val: iso});
                                 }
                             }
                         }
@@ -657,26 +639,27 @@
                 ctx.stroke();
             });
 
-            // رسم الأرقام مع تقنية الهالة (Text Halo) بدون مربعات
+            // رسم الأرقام بتقنية الهالة (Halo)
             if (showLabels) {
                 ctx.font = 'bold 12px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 
-                labelPoints.forEach(lp => {
+                allContourLines.forEach(lp => {
                     let txt = lp.val.toFixed(1);
-                    // رسم الهالة البيضاء لقطع الخط
+                    // رسم هالة بيضاء (Stroke)
                     ctx.lineWidth = 4;
-                    ctx.strokeStyle = showFill ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,1)';
+                    ctx.strokeStyle = '#fff';
                     ctx.strokeText(txt, lp.x, lp.y);
-                    // رسم الرقم الأسود
+                    // رسم النص الأسود (Fill)
                     ctx.fillStyle = '#000';
                     ctx.fillText(txt, lp.x, lp.y);
                 });
             }
         }
 
-        // ================= خطوة 4: الإطار الخارجي والإحداثيات المخفية اختيارياً =================
+        // ================= خطوة 4: الإطار الخارجي والإحداثيات الجغرافية =================
+        // رسم حدود الخريطة النهائية (العلبة الصماء)
         ctx.strokeStyle = '#1c2833';
         ctx.lineWidth = 3;
         ctx.strokeRect(padding, padding, mapW, mapH);
@@ -687,18 +670,23 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'top';
             
+            // Easting
             for (let i = 0; i <= 5; i++) {
                 let rx = minX + (i / 5) * (maxX - minX);
                 let sx = getScreenX(rx);
-                ctx.beginPath(); ctx.moveTo(sx, padding + mapH); ctx.lineTo(sx, padding + mapH + 6); ctx.stroke();
-                ctx.fillText(rx.toFixed(1), sx, padding + mapH + 10);
-                
-                ctx.beginPath(); ctx.moveTo(sx, padding); ctx.lineTo(sx, padding - 6); ctx.stroke();
-                ctx.textBaseline = 'bottom';
-                ctx.fillText(rx.toFixed(1), sx, padding - 8);
-                ctx.textBaseline = 'top';
+                // منع رسم الإحداثيات إذا كانت قريبة جداً من صندوق اللون
+                if (sx < padding + mapW + 10) {
+                    ctx.beginPath(); ctx.moveTo(sx, padding + mapH); ctx.lineTo(sx, padding + mapH + 6); ctx.stroke();
+                    ctx.fillText(rx.toFixed(1), sx, padding + mapH + 10);
+                    
+                    ctx.beginPath(); ctx.moveTo(sx, padding); ctx.lineTo(sx, padding - 6); ctx.stroke();
+                    ctx.textBaseline = 'bottom';
+                    ctx.fillText(rx.toFixed(1), sx, padding - 8);
+                    ctx.textBaseline = 'top';
+                }
             }
 
+            // Northing
             ctx.textAlign = 'right';
             ctx.textBaseline = 'middle';
             for (let i = 0; i <= 5; i++) {
@@ -714,9 +702,8 @@
             }
         }
 
-        // ================= خطوة 5: مقياس الرسم الاحترافي وسهم الشمال =================
-        if (showScale) {
-            // سهم الشمال (معدل ومحسن)
+        // ================= خطوة 5: سهم الشمال ومقياس الرسم الجغرافي =================
+        if (showNorth) {
             const nX = padding + mapW - 35;
             const nY = padding + 40;
             ctx.beginPath();
@@ -727,65 +714,80 @@
             ctx.beginPath(); ctx.moveTo(nX, nY - 25); ctx.lineTo(nX, nY + 5); ctx.lineTo(nX - 12, nY + 15); ctx.fill();
             ctx.strokeStyle = '#000'; ctx.lineWidth = 1; ctx.stroke();
             ctx.fillStyle = '#000'; ctx.font = 'bold 18px Arial'; ctx.textAlign = 'center';
-            ctx.fillText('N', nX, nY + 30);
+            ctx.fillText('N', nX, nY + 25);
+        }
 
-            // مقياس الرسم الدقيق
+        if (showScale) {
             const realDistX = maxX - minX;
+            // حساب قيمة مقياس رسم جميل (مثلاً مضاعفات 10، 50، 100)
             let scaleValue = Math.pow(10, Math.floor(Math.log10(realDistX / 2))); 
-            if (scaleValue < 1) scaleValue = 10;
+            if (scaleValue < 1) scaleValue = 10; // قيمة افتراضية دنيا
             let scalePxWidth = (scaleValue / realDistX) * mapW;
 
-            const scX = padding + 25;
-            const scY = padding + mapH - 25;
+            const scX = padding + 30; // إزاحة لعدم التداخل مع الحافة
+            const scY = padding + mapH - 30;
             
             ctx.beginPath();
-            ctx.lineWidth = 2.5;
+            ctx.lineWidth = 3;
             ctx.strokeStyle = '#000';
             ctx.moveTo(scX, scY - 6); ctx.lineTo(scX, scY + 6); // Tick Start
-            ctx.moveTo(scX, scY); ctx.lineTo(scX + scalePxWidth, scY); // Main Line
+            ctx.moveTo(scX, scY); ctx.lineTo(scX + scalePxWidth, scY); // Line
             ctx.moveTo(scX + scalePxWidth, scY - 6); ctx.lineTo(scX + scalePxWidth, scY + 6); // Tick End
             ctx.stroke();
             
             ctx.fillStyle = '#000';
             ctx.font = 'bold 13px Arial';
             ctx.textAlign = 'center';
-            // إضافة مسافة لعدم التداخل
+            // طباعة الرقم ثم الوحدة على اليمين 
             ctx.fillText('0', scX, scY - 12);
-            ctx.fillText(`${scaleValue} m`, scX + scalePxWidth, scY - 12);
+            ctx.fillText(scaleValue + ' m', scX + scalePxWidth, scY - 12);
         }
 
-        // ================= خطوة 6: مفتاح الألوان (Legend) وتصحيح حرف الـ m =================
-        const legX = padding + mapW + 30;
-        const legY = padding + 20;
-        const legW = 25;
-        const legH = mapH - 40;
-        
-        let numBands = Math.ceil((endZ - startZ) / interval);
-        let bandH = legH / numBands;
-
-        ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5;
-        
-        for (let i = 0; i < numBands; i++) {
-            let val = startZ + i * interval;
-            let yPos = legY + legH - (i + 1) * bandH;
+        // ================= خطوة 6: صندوق اللون المتدرج (Gradient Legend) وتصحيح حرف الm =================
+        if (showFill) {
+            const legX = padding + mapW + 60;
+            const legY = padding + 20;
+            const legW = 25;
+            const legH = mapH - 40;
             
-            ctx.fillStyle = getColorPalette(val, startZ, endZ);
-            ctx.fillRect(legX, yPos, legW, bandH);
-            ctx.strokeRect(legX, yPos, legW, bandH);
+            // إنشاء مستطيل متدرج (Linear Gradient)
+            let gradient = ctx.createLinearGradient(0, legY + legH, 0, legY); // من الأسفل (الدنيا) للأعلى (العليا)
+            // استخدام نفس مقياس الألوان (getColorPalette) لإنشاء التدرج
+            // الألوان القياسية (أزرق منخفض -> أحمر مرتفع)
+            gradient.addColorStop(0, "rgb(69, 117, 180)");
+            gradient.addColorStop(0.2, "rgb(171, 217, 233)");
+            gradient.addColorStop(0.5, "rgb(166, 217, 106)");
+            gradient.addColorStop(0.8, "rgb(253, 174, 97)");
+            gradient.addColorStop(1, "rgb(215, 48, 39)");
             
+            ctx.fillStyle = gradient;
+            ctx.fillRect(legX, legY, legW, legH);
+            ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5;
+            ctx.strokeRect(legX, legY, legW, legH);
+            
+            // طباعة القيم المرجعية ال3 فقط (Max, Min, Mid)
             ctx.fillStyle = '#000';
             ctx.font = 'bold 12px Arial';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
-            // طباعة الرقم ثم حرف الـ m على اليمين 
-            ctx.fillText(val.toFixed(1) + ' m', legX + legW + 8, yPos + bandH);
+            
+            const offsetText = 8;
+            // العليا (Max Z) - الرقم ثم الوحدة م على اليمين
+            ctx.fillText(endZ.toFixed(1) + ' m', legX + legW + offsetText, legY);
+            
+            // الدنيا (Min Z)
+            ctx.fillText(startZ.toFixed(1) + ' m', legX + legW + offsetText, legY + legH);
+            
+            // الوسطى (Mid Z)
+            const midZ = (startZ + endZ) / 2;
+            ctx.fillText(midZ.toFixed(1) + ' m', legX + legW + offsetText, legY + legH / 2);
         }
-        ctx.fillText(endZ.toFixed(1) + ' m', legX + legW + 8, legY);
 
-        // ================= خطوة 7: إسقاط النقاط الميدانية =================
+        // ================= خطوة 7: إسقاط النقاط الميدانية الأصلية وتقاطع الكنتور =================
         if (showPoints) {
             topoPts.forEach(p => {
                 let sx = getScreenX(p.x); let sy = getScreenY(p.y);
+                // تلوين أخف للنقاط لتبرز من الخلفية
                 ctx.fillStyle = '#ecf0f1';
                 ctx.beginPath(); ctx.arc(sx, sy, 4, 0, Math.PI * 2); ctx.fill();
                 ctx.strokeStyle = '#34495e'; ctx.lineWidth = 1.5; ctx.stroke();
@@ -800,7 +802,7 @@
         // ================= خطوة 8: مسار النهر =================
         if (riverPts.length > 1) {
             ctx.beginPath();
-            ctx.strokeStyle = '#2980b9'; 
+            ctx.strokeStyle = '#2980b9'; // أزرق النهر
             ctx.lineWidth = 4;
             ctx.lineJoin = 'round';
             for (let i = 0; i < riverPts.length; i++) {
@@ -809,6 +811,7 @@
             }
             ctx.stroke();
             
+            // رسم نقاط النهر وقيمها إذا فعلت النقاط
             if (showPoints) {
                 riverPts.forEach(p => {
                     let sx = getScreenX(p.x); let sy = getScreenY(p.y);
