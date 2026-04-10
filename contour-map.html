@@ -59,6 +59,16 @@
         .points-table input[type="number"]:focus { background: #fff; border-color: #8e44ad; }
         .row-index { font-weight: bold; color: #7f8c8d; }
 
+        /* ================= لوحة إعدادات المظهر ================= */
+        .settings-box { background: #fdf2e9; border: 1px solid #e67e22; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .settings-box h4 { color: #d35400; margin-top: 0; margin-bottom: 15px; border-bottom: 1px dashed #d35400; padding-bottom: 5px; }
+        .toggles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px; }
+        .toggle-item { display: flex; align-items: center; gap: 8px; font-size: 0.95rem; font-weight: bold; color: #2c3e50; cursor: pointer; }
+        .toggle-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+        .slider-group { display: flex; align-items: center; gap: 15px; margin-top: 10px; border-top: 1px solid #ccc; padding-top: 15px; }
+        .slider-group label { margin: 0; color: #2c3e50; }
+        .slider-group input[type="range"] { flex: 1; cursor: pointer; }
+
         /* ================= تنسيق خريطة الكنتور ================= */
         .map-canvas-container { width: 100%; display: flex; flex-direction: column; align-items: center; background: #fff; padding: 20px; border-radius: 8px; border: 2px solid #8e44ad; margin-bottom: 20px; box-sizing: border-box;}
         #contourMap { background: #fff; max-width: 100%; height: auto; object-fit: contain; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 4px; }
@@ -206,9 +216,27 @@
                 </div>
             </div>
             
-            <div style="margin-top: 25px; max-width: 300px; padding: 15px; background: #fdf2e9; border-radius: 8px; border-right: 4px solid #d35400;">
-                <label style="color: #d35400;">الفاصل الكنتوري المطلوب للمحاكاة (متر):</label>
-                <input type="number" id="contourInterval" value="2" min="0.1" max="100" step="0.5" style="border-color: #d35400; font-weight: bold;">
+            <div class="settings-box" style="margin-top: 25px;">
+                <h4><i class="fas fa-sliders-h"></i> إعدادات المظهر والتحليل الهندسـي</h4>
+                <div style="margin-bottom: 15px; max-width: 300px;">
+                    <label style="color: #d35400;">الفاصل الكنتوري المطلوب للمحاكاة (متر):</label>
+                    <input type="number" id="contourInterval" value="2" min="0.1" max="100" step="0.5" style="border-color: #d35400; font-weight: bold; padding: 8px;">
+                </div>
+                
+                <div class="toggles-grid">
+                    <label class="toggle-item"><input type="checkbox" id="chk_fill" checked> <span>إظهار التعبئة اللونية (Color Fill)</span></label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_lines" checked> <span>إظهار خطوط الكنتور (Contour Lines)</span></label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_labels" checked> <span>كتابة القيم على الكنتور (Inline Labels)</span></label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_points" checked> <span>إظهار النقاط الميدانية (Data Points)</span></label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_grid"> <span>إظهار الإحداثيات على الحواف (Grid Ticks)</span></label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_scale" checked> <span>إظهار مقياس الرسم وسهم الشمال</span></label>
+                </div>
+                
+                <div class="slider-group">
+                    <label>معامل التنعيم (Smoothing):</label>
+                    <input type="range" id="smoothFactor" min="0.001" max="0.1" step="0.001" value="0.015">
+                    <span style="font-size: 0.8rem; color:#7f8c8d;">(يمين: انسيابي / يسار: حاد)</span>
+                </div>
             </div>
         </div>
 
@@ -224,7 +252,7 @@
             <canvas id="screenContourMap" width="950" height="700"></canvas>
         </div>
         <div style="text-align: center; margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 15px;">
-            <p style="color: #555; font-size: 0.95rem;">* يمكنك تعديل القراءات أو الفاصل الكنتوري في الجدول المفتوح بالأعلى والضغط على (معالجة) مرة أخرى لتحديث الخريطة.</p>
+            <p style="color: #555; font-size: 0.95rem;">* يمكنك تعديل القراءات أو الإعدادات في الأعلى والضغط على (معالجة) مرة أخرى لتحديث الخريطة.</p>
             <button class="btn-print" style="width: auto; padding: 10px 30px;" onclick="window.print()">📄 حفظ التقرير والخريطة الشاملة (PDF)</button>
         </div>
     </div>
@@ -262,7 +290,7 @@
             </table>
             
             <p style="font-size: 1.15rem; line-height: 1.8; text-align: justify; margin-top: 25px; padding: 15px; background: #fafafa; border: 1px solid #ddd; border-radius: 8px;">
-                <b>الاستنتاج الحقلي والهندسي:</b> بناءً على القراءات المساحية المرفوعة، تم إجراء المعالجة الرياضية وبناء النموذج الكنتوري المرفق في الصفحة التالية باستخدام خوارزميات الاستيفاء المكاني (IDW with Smoothing) لتحديد نطاقات التساوي ورسم خطوط الكنتور آلياً. كما تم إسقاط مسار المجرى المائي وتقاطعه مع خطوط الكنتور لبيان اتجاه الانحدار، مما يوفر قاعدة هندسية دقيقة لدراسة اتجاهات السيول.
+                <b>الاستنتاج الحقلي والهندسي:</b> بناءً على القراءات المساحية المرفوعة، تم إجراء المعالجة الرياضية وبناء النموذج الكنتوري المرفق في الصفحة التالية باستخدام خوارزميات الاستيفاء المكاني المتطورة (IDW Smoothing) وتطبيق (Marching Squares) لرسم خطوط التساوي الكنتورية. كما تم إسقاط مسار المجرى المائي وتقاطعه مع التضاريس لتوضيح الاتجاهات والانحدارات، لتشكل قاعدة هندسية معتمدة لدراسة الأحواض المائية والمخاطر.
             </p>
         </div>
         <div class="print-bottom-str print-only">الصفحة 1 من 2</div>
@@ -271,7 +299,7 @@
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_2">
         <div class="print-master-header print-only">
             <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(الخريطة الكنتورية والهيدرولوجية - 2D)</h2>
+                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(الخريطة الكنتورية والهيدرولوجية)</h2>
                 <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
             </div>
             <div class="header-left-info printDateHeader">--/--/----</div>
@@ -418,7 +446,7 @@
             return;
         }
 
-        // تعبئة البيانات في التقرير
+        // قراءة الإعدادات
         const geoName = document.getElementById('geoName').value || "غير محدد";
         document.querySelectorAll('.res_geoNameHeaderRep').forEach(el => el.innerText = geoName);
         document.getElementById('res_geoName').innerText = geoName;
@@ -434,7 +462,7 @@
         document.getElementById('res_riverCount').innerText = processedRiver.length;
         document.getElementById('res_cInterval').innerText = cInterval;
 
-        // إظهار قسم الخريطة في الأسفل بدون إخفاء الجداول (للمرونة)
+        // إظهار قسم الخريطة في الأسفل بدون إخفاء الجداول
         document.getElementById('screenMapDisplay').style.display = 'block';
         document.getElementById('loadingIndicator').style.display = 'block';
         
@@ -443,7 +471,6 @@
             drawProfessionalContourMap('screenContourMap', processedTopo, processedRiver, cInterval);
             document.getElementById('loadingIndicator').style.display = 'none';
             
-            // تصدير الكانفاس لصورة في صفحة الطباعة لضمان الجودة
             const canvas = document.getElementById('screenContourMap');
             document.getElementById('printMapImage').src = canvas.toDataURL("image/png");
             
@@ -452,15 +479,12 @@
     }
 
     // ==========================================
-    // 3. المحرك الاحترافي: IDW Smoothing & Marching Squares
+    // 3. المحرك الاحترافي الجديد (Vector Contours & Labels)
     // ==========================================
     
-    // دالة محاكاة مقياس الألوان القياسي للخرائط
     function getColorPalette(val, minZ, maxZ) {
         let ratio = (val - minZ) / (maxZ - minZ || 1);
         ratio = Math.max(0, Math.min(1, ratio));
-        
-        // التدرج من الأزرق -> السماوي -> الأخضر -> الأصفر -> البرتقالي -> الأحمر
         const colors = [
             {r: 69, g: 117, b: 180},    
             {r: 116, g: 173, b: 209},   
@@ -477,7 +501,6 @@
         let lower = Math.floor(idx);
         let upper = Math.ceil(idx);
         let weight = idx - lower;
-        
         let r = Math.round(colors[lower].r * (1 - weight) + colors[upper].r * weight);
         let g = Math.round(colors[lower].g * (1 - weight) + colors[upper].g * weight);
         let b = Math.round(colors[lower].b * (1 - weight) + colors[upper].b * weight);
@@ -489,6 +512,15 @@
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
+        // قراءة الإعدادات
+        const showFill = document.getElementById('chk_fill').checked;
+        const showLines = document.getElementById('chk_lines').checked;
+        const showLabels = document.getElementById('chk_labels').checked;
+        const showPoints = document.getElementById('chk_points').checked;
+        const showGrid = document.getElementById('chk_grid').checked;
+        const showScale = document.getElementById('chk_scale').checked;
+        const smoothFactor = parseFloat(document.getElementById('smoothFactor').value) || 0.015;
+
         // حساب الحدود (Bounding Box)
         let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
         let minZ = Infinity, maxZ = -Infinity;
@@ -499,46 +531,41 @@
             if(p.z < minZ) minZ = p.z; if(p.z > maxZ) maxZ = p.z;
         });
 
-        // حماية من الأخطاء إذا كانت النقاط في نفس الخط
         if (maxX === minX) { maxX += 100; minX -= 100; }
         if (maxY === minY) { maxY += 100; minY -= 100; }
 
-        // تحديد البداية والنهاية للفواصل
         let startZ = Math.floor(minZ / interval) * interval;
         let endZ = Math.ceil(maxZ / interval) * interval;
         if (startZ === endZ) endZ += interval;
 
-        // هندسة إطار الخريطة
-        const padding = 100; 
-        const legendWidth = 100; 
-        const mapW = canvas.width - padding * 2 - legendWidth;
-        const mapH = canvas.height - padding * 2;
+        const padding = 60; 
+        const legendWidth = 90; 
+        const mapW = canvas.width - padding * 2 - legendWidth - 30;
+        const mapH = canvas.height - padding * 2 - 40;
+
+        function getScreenX(realX) { return padding + ((realX - minX) / (maxX - minX)) * mapW; }
+        function getScreenY(realY) { return padding + mapH - ((realY - minY) / (maxY - minY)) * mapH; }
 
         // ================= خطوة 1: معالجة IDW عالية الدقة مع تنعيم =================
-        const res = 2; // حجم البيكسل (2 لضمان نعومة عالية وتفادي البكسلة)
+        const res = 4; // حجم خلية المعالجة
         let gridCols = Math.ceil(mapW / res) + 1;
         let gridRows = Math.ceil(mapH / res) + 1;
         let grid = new Array(gridCols).fill(0).map(() => new Array(gridRows).fill(0));
 
-        // حساب الشبكة
         for (let i = 0; i < gridCols; i++) {
             for (let j = 0; j < gridRows; j++) {
                 let sx = padding + i * res;
-                let sy = canvas.height - padding - j * res; 
+                let sy = padding + mapH - j * res; 
                 
-                // تحويل للإحداثي الحقيقي
                 let rx = minX + ((sx - padding) / mapW) * (maxX - minX);
-                let ry = minY + ((canvas.height - padding - sy) / mapH) * (maxY - minY);
+                let ry = minY + ((padding + mapH - sy) / mapH) * (maxY - minY);
                 
-                // IDW Calculation with Smoothing Factor
                 let num = 0, den = 0;
                 for (let p of topoPts) {
                     let nx = (p.x - rx) / (maxX - minX || 1);
                     let ny = (p.y - ry) / (maxY - minY || 1);
                     let d2 = nx * nx + ny * ny;
-                    
-                    // إضافة Smoothing Factor (0.01) لإلغاء تأثير عين الثور (Bullseye)
-                    let w = 1 / (d2 + 0.015); 
+                    let w = 1 / (d2 + smoothFactor); // استخدام معامل التنعيم الديناميكي
                     num += w * p.z;
                     den += w;
                 }
@@ -546,143 +573,194 @@
             }
         }
 
-        // ================= خطوة 2: رسم الألوان الكنتورية (Discrete Banding) =================
-        for (let i = 0; i < gridCols - 1; i++) {
-            for (let j = 0; j < gridRows - 1; j++) {
-                let zVal = grid[i][j];
-                let bandZ = Math.floor(zVal / interval) * interval;
-                
-                let sx = padding + i * res;
-                let sy = canvas.height - padding - j * res;
-                
-                ctx.fillStyle = getColorPalette(bandZ, startZ, endZ);
-                // ملء المربع بدقة لعدم ترك فراغات
-                ctx.fillRect(sx, sy - res, res + 1, res + 1); 
-            }
-        }
-
-        // ================= خطوة 3: خوارزمية (Marching Squares) لرسم خطوط التساوي =================
-        let contourLevels = [];
-        for(let z = startZ; z <= endZ; z += interval) contourLevels.push(z);
-
-        contourLevels.forEach(iso => {
-            ctx.beginPath();
-            ctx.strokeStyle = 'rgba(0,0,0,0.5)'; // لون خط الكنتور
-            ctx.lineWidth = 1.2;
-            
-            // تغميظ خطوط الدليل (Index Contours) لتوضيح القراءة
-            if (Math.abs(iso % (interval * 5)) < 0.001) {
-                ctx.strokeStyle = 'rgba(0,0,0,0.8)';
-                ctx.lineWidth = 2;
-            }
-
+        // ================= خطوة 2: التعبئة اللونية (Discrete Bands) =================
+        if (showFill) {
             for (let i = 0; i < gridCols - 1; i++) {
                 for (let j = 0; j < gridRows - 1; j++) {
-                    let v0 = grid[i][j];       
-                    let v1 = grid[i+1][j];     
-                    let v2 = grid[i+1][j+1];   
-                    let v3 = grid[i][j+1];     
-                    
-                    let idx = 0;
-                    if(v0 > iso) idx |= 1;
-                    if(v1 > iso) idx |= 2;
-                    if(v2 > iso) idx |= 4;
-                    if(v3 > iso) idx |= 8;
-                    
-                    if(idx === 0 || idx === 15) continue;
-                    
+                    let zVal = grid[i][j];
+                    let bandZ = Math.floor(zVal / interval) * interval;
                     let sx = padding + i * res;
-                    let sy = canvas.height - padding - j * res; 
-                    
-                    // دالة الاستيفاء الخطي للمسافات للحصول على منحنى ناعم جداً
-                    let getX = (valA, valB, xA, xB) => xA + (iso - valA) * (xB - xA) / (valB - valA || 1);
-                    let getY = (valA, valB, yA, yB) => yA + (iso - valA) * (yB - yA) / (valB - valA || 1);
-                    
-                    let a, b, c, d; 
-                    if((idx & 1) !== (idx & 2) >> 1) a = {x: getX(v0, v1, sx, sx+res), y: sy};
-                    if((idx & 2) >> 1 !== (idx & 4) >> 2) b = {x: sx+res, y: getY(v1, v2, sy, sy-res)};
-                    if((idx & 8) >> 3 !== (idx & 4) >> 2) c = {x: getX(v3, v2, sx, sx+res), y: sy-res};
-                    if((idx & 1) !== (idx & 8) >> 3) d = {x: sx, y: getY(v0, v3, sy, sy-res)};
-                    
-                    if(idx===1 || idx===14) { ctx.moveTo(a.x, a.y); ctx.lineTo(d.x, d.y); }
-                    else if(idx===2 || idx===13) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); }
-                    else if(idx===4 || idx===11) { ctx.moveTo(b.x, b.y); ctx.lineTo(c.x, c.y); }
-                    else if(idx===8 || idx===7) { ctx.moveTo(d.x, d.y); ctx.lineTo(c.x, c.y); }
-                    else if(idx===3 || idx===12) { ctx.moveTo(d.x, d.y); ctx.lineTo(b.x, b.y); }
-                    else if(idx===6 || idx===9) { ctx.moveTo(a.x, a.y); ctx.lineTo(c.x, c.y); }
-                    else if(idx===5) { ctx.moveTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.moveTo(b.x, b.y); ctx.lineTo(c.x, c.y); } 
-                    else if(idx===10) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); } 
+                    let sy = padding + mapH - j * res;
+                    ctx.fillStyle = getColorPalette(bandZ, startZ, endZ);
+                    ctx.fillRect(sx, sy - res, res + 1, res + 1); 
                 }
             }
-            ctx.stroke();
-        });
+        } else {
+            // رسم خلفية بيضاء صافية
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(padding, padding, mapW, mapH);
+        }
 
-        // ================= خطوة 4: الإطار الخارجي والإحداثيات (Axes Layout) =================
-        function getScreenX(realX) { return padding + ((realX - minX) / (maxX - minX)) * mapW; }
-        function getScreenY(realY) { return canvas.height - padding - ((realY - minY) / (maxY - minY)) * mapH; }
+        // ================= خطوة 3: رسم خطوط الكنتور الحقيقية (Marching Squares) وكتابة القيم =================
+        if (showLines) {
+            let contourLevels = [];
+            for(let z = startZ; z <= endZ; z += interval) contourLevels.push(z);
 
+            contourLevels.forEach(iso => {
+                ctx.beginPath();
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 1.0;
+                
+                // كل خامس خط نجعله Index Contour
+                let isIndex = Math.abs(iso % (interval * 5)) < 0.001;
+                if (isIndex) {
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 2.0;
+                }
+
+                // مصفوفة بسيطة لتباعد الأرقام على الخط
+                let labelPoints = [];
+
+                for (let i = 0; i < gridCols - 1; i++) {
+                    for (let j = 0; j < gridRows - 1; j++) {
+                        let v0 = grid[i][j];       
+                        let v1 = grid[i+1][j];     
+                        let v2 = grid[i+1][j+1];   
+                        let v3 = grid[i][j+1];     
+                        
+                        let idx = 0;
+                        if(v0 > iso) idx |= 1;
+                        if(v1 > iso) idx |= 2;
+                        if(v2 > iso) idx |= 4;
+                        if(v3 > iso) idx |= 8;
+                        
+                        if(idx === 0 || idx === 15) continue;
+                        
+                        let sx = padding + i * res;
+                        let sy = padding + mapH - j * res; 
+                        
+                        let getX = (valA, valB, xA, xB) => xA + (iso - valA) * (xB - xA) / (valB - valA || 1);
+                        let getY = (valA, valB, yA, yB) => yA + (iso - valA) * (yB - yA) / (valB - valA || 1);
+                        
+                        let a, b, c, d; 
+                        if((idx & 1) !== (idx & 2) >> 1) a = {x: getX(v0, v1, sx, sx+res), y: sy};
+                        if((idx & 2) >> 1 !== (idx & 4) >> 2) b = {x: sx+res, y: getY(v1, v2, sy, sy-res)};
+                        if((idx & 8) >> 3 !== (idx & 4) >> 2) c = {x: getX(v3, v2, sx, sx+res), y: sy-res};
+                        if((idx & 1) !== (idx & 8) >> 3) d = {x: sx, y: getY(v0, v3, sy, sy-res)};
+                        
+                        let p1, p2;
+                        if(idx===1 || idx===14) { p1 = a; p2 = d; }
+                        else if(idx===2 || idx===13) { p1 = a; p2 = b; }
+                        else if(idx===4 || idx===11) { p1 = b; p2 = c; }
+                        else if(idx===8 || idx===7) { p1 = d; p2 = c; }
+                        else if(idx===3 || idx===12) { p1 = d; p2 = b; }
+                        else if(idx===6 || idx===9) { p1 = a; p2 = c; }
+                        else if(idx===5) { ctx.moveTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.moveTo(b.x, b.y); ctx.lineTo(c.x, c.y); p1=a; p2=d; } 
+                        else if(idx===10) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); p1=a; p2=b; } 
+
+                        if (p1 && p2 && idx !== 5 && idx !== 10) {
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            
+                            // تسجيل بعض النقاط لكتابة الأرقام عليها لاحقاً
+                            if (showLabels && isIndex && (i % 25 === 0 && j % 25 === 0)) {
+                                labelPoints.push({x: (p1.x+p2.x)/2, y: (p1.y+p2.y)/2});
+                            }
+                        }
+                    }
+                }
+                ctx.stroke();
+
+                // طباعة القيم على خطوط الكنتور (Inline Contour Labels)
+                if (showLabels && isIndex) {
+                    ctx.fillStyle = '#000';
+                    ctx.font = 'bold 12px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    
+                    labelPoints.forEach(lp => {
+                        // رسم مربع صغير ليمسح الخط تحته
+                        let txt = iso.toFixed(1);
+                        let textW = ctx.measureText(txt).width + 4;
+                        ctx.fillStyle = showFill ? getColorPalette(iso, startZ, endZ) : '#fff';
+                        ctx.fillRect(lp.x - textW/2, lp.y - 8, textW, 16);
+                        
+                        ctx.fillStyle = '#000';
+                        ctx.fillText(txt, lp.x, lp.y);
+                    });
+                }
+            });
+        }
+
+        // ================= خطوة 4: الإطار الخارجي والإحداثيات =================
         ctx.strokeStyle = '#1c2833';
         ctx.lineWidth = 3;
         ctx.strokeRect(padding, padding, mapW, mapH);
 
-        ctx.fillStyle = '#1c2833';
-        ctx.font = '13px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-        
-        // Easting
-        for (let i = 0; i <= 5; i++) {
-            let rx = minX + (i / 5) * (maxX - minX);
-            let sx = getScreenX(rx);
-            ctx.beginPath(); ctx.moveTo(sx, canvas.height - padding); ctx.lineTo(sx, canvas.height - padding + 6); ctx.stroke();
-            ctx.fillText(rx.toFixed(1), sx, canvas.height - padding + 10);
+        if (showGrid) {
+            ctx.fillStyle = '#1c2833';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
             
-            ctx.beginPath(); ctx.moveTo(sx, padding); ctx.lineTo(sx, padding - 6); ctx.stroke();
-            ctx.textBaseline = 'bottom';
-            ctx.fillText(rx.toFixed(1), sx, padding - 10);
-        }
-        ctx.font = 'bold 16px Arial';
-        ctx.textBaseline = 'top';
-        ctx.fillText('Easting', padding + mapW / 2, canvas.height - padding + 35);
+            // X Ticks
+            for (let i = 0; i <= 5; i++) {
+                let rx = minX + (i / 5) * (maxX - minX);
+                let sx = getScreenX(rx);
+                ctx.beginPath(); ctx.moveTo(sx, padding + mapH); ctx.lineTo(sx, padding + mapH + 6); ctx.stroke();
+                ctx.fillText(rx.toFixed(1), sx, padding + mapH + 10);
+                
+                ctx.beginPath(); ctx.moveTo(sx, padding); ctx.lineTo(sx, padding - 6); ctx.stroke();
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(rx.toFixed(1), sx, padding - 8);
+                ctx.textBaseline = 'top';
+            }
 
-        // Northing
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'middle';
-        for (let i = 0; i <= 5; i++) {
-            let ry = minY + (i / 5) * (maxY - minY);
-            let sy = getScreenY(ry);
-            ctx.beginPath(); ctx.moveTo(padding, sy); ctx.lineTo(padding - 6, sy); ctx.stroke();
-            ctx.font = '13px Arial';
-            ctx.fillText(ry.toFixed(1), padding - 10, sy);
-            
-            ctx.beginPath(); ctx.moveTo(padding + mapW, sy); ctx.lineTo(padding + mapW + 6, sy); ctx.stroke();
-            ctx.textAlign = 'left';
-            ctx.fillText(ry.toFixed(1), padding + mapW + 10, sy);
+            // Y Ticks
             ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            for (let i = 0; i <= 5; i++) {
+                let ry = minY + (i / 5) * (maxY - minY);
+                let sy = getScreenY(ry);
+                ctx.beginPath(); ctx.moveTo(padding, sy); ctx.lineTo(padding - 6, sy); ctx.stroke();
+                ctx.fillText(ry.toFixed(1), padding - 8, sy);
+                
+                ctx.beginPath(); ctx.moveTo(padding + mapW, sy); ctx.lineTo(padding + mapW + 6, sy); ctx.stroke();
+                ctx.textAlign = 'left';
+                ctx.fillText(ry.toFixed(1), padding + mapW + 8, sy);
+                ctx.textAlign = 'right';
+            }
         }
-        ctx.save();
-        ctx.translate(padding - 70, padding + mapH / 2);
-        ctx.rotate(-Math.PI / 2);
-        ctx.font = 'bold 16px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('Northing', 0, 0);
-        ctx.restore();
 
-        // ================= خطوة 5: سهم الشمال الاحترافي =================
-        const nX = padding + mapW - 40;
-        const nY = padding + 40;
-        ctx.beginPath();
-        ctx.moveTo(nX, nY - 25); ctx.lineTo(nX + 12, nY + 15); ctx.lineTo(nX, nY + 5); ctx.lineTo(nX - 12, nY + 15);
-        ctx.closePath();
-        ctx.fillStyle = '#000'; ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.moveTo(nX, nY - 25); ctx.lineTo(nX, nY + 5); ctx.lineTo(nX - 12, nY + 15); ctx.fill();
-        ctx.strokeStyle = '#000'; ctx.lineWidth = 1; ctx.stroke();
-        ctx.fillStyle = '#000'; ctx.font = 'bold 18px Arial'; ctx.textAlign = 'center';
-        ctx.fillText('N', nX, nY + 30);
+        // ================= خطوة 5: مقياس الرسم وسهم الشمال =================
+        if (showScale) {
+            // سهم الشمال
+            const nX = padding + mapW - 35;
+            const nY = padding + 40;
+            ctx.beginPath();
+            ctx.moveTo(nX, nY - 25); ctx.lineTo(nX + 12, nY + 15); ctx.lineTo(nX, nY + 5); ctx.lineTo(nX - 12, nY + 15);
+            ctx.closePath();
+            ctx.fillStyle = '#000'; ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.beginPath(); ctx.moveTo(nX, nY - 25); ctx.lineTo(nX, nY + 5); ctx.lineTo(nX - 12, nY + 15); ctx.fill();
+            ctx.strokeStyle = '#000'; ctx.lineWidth = 1; ctx.stroke();
+            ctx.fillStyle = '#000'; ctx.font = 'bold 18px Arial'; ctx.textAlign = 'center';
+            ctx.fillText('N', nX, nY + 25);
 
-        // ================= خطوة 6: مفتاح الألوان المتقطع (Discrete Legend) =================
-        const legX = padding + mapW + 70;
+            // مقياس الرسم (Scale Bar)
+            const realDistX = maxX - minX;
+            let scaleValue = Math.pow(10, Math.floor(Math.log10(realDistX / 2))); // تقريب للرقم الجميل (مثلاً 10، 100)
+            if (scaleValue < 1) scaleValue = 10;
+            let scalePxWidth = (scaleValue / realDistX) * mapW;
+
+            const scX = padding + 20;
+            const scY = padding + mapH - 20;
+            ctx.beginPath();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#000';
+            ctx.moveTo(scX, scY - 5); ctx.lineTo(scX, scY + 5);
+            ctx.moveTo(scX, scY); ctx.lineTo(scX + scalePxWidth, scY);
+            ctx.moveTo(scX + scalePxWidth, scY - 5); ctx.lineTo(scX + scalePxWidth, scY + 5);
+            ctx.stroke();
+            ctx.fillStyle = '#000';
+            ctx.font = 'bold 13px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('0', scX, scY - 10);
+            ctx.fillText(`${scaleValue} m`, scX + scalePxWidth, scY - 10);
+        }
+
+        // ================= خطوة 6: مفتاح الألوان الاحترافي (Legend) =================
+        const legX = padding + mapW + 40;
         const legY = padding + 20;
         const legW = 25;
         const legH = mapH - 40;
@@ -704,27 +782,27 @@
             ctx.font = 'bold 12px Arial';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
-            // كتابة القيمة أسفل كل مستطيل لوني
-            ctx.fillText(val.toFixed(1), legX + legW + 10, yPos + bandH);
+            // كتابة القيمة وإضافة الوحدة (m)
+            ctx.fillText(`${val.toFixed(1)} m`, legX + legW + 8, yPos + bandH);
         }
-        // القيمة العلوية القصوى
-        ctx.fillText(endZ.toFixed(1), legX + legW + 10, legY);
+        ctx.fillText(`${endZ.toFixed(1)} m`, legX + legW + 8, legY);
 
         // ================= خطوة 7: إسقاط النقاط الميدانية =================
-        topoPts.forEach(p => {
-            let sx = getScreenX(p.x); let sy = getScreenY(p.y);
-            
-            ctx.fillStyle = '#ecf0f1';
-            ctx.beginPath(); ctx.arc(sx, sy, 4, 0, Math.PI * 2); ctx.fill();
-            ctx.strokeStyle = '#34495e'; ctx.lineWidth = 1.5; ctx.stroke();
-            
-            ctx.fillStyle = '#000';
-            ctx.font = 'bold 11px Arial';
-            ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
-            ctx.fillText(p.z.toFixed(1), sx + 6, sy - 2);
-        });
+        if (showPoints) {
+            topoPts.forEach(p => {
+                let sx = getScreenX(p.x); let sy = getScreenY(p.y);
+                ctx.fillStyle = '#ecf0f1';
+                ctx.beginPath(); ctx.arc(sx, sy, 4, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = '#34495e'; ctx.lineWidth = 1.5; ctx.stroke();
+                
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 11px Arial';
+                ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+                ctx.fillText(p.z.toFixed(1), sx + 6, sy - 2);
+            });
+        }
 
-        // ================= خطوة 8: مسار النهر (إن وجد) =================
+        // ================= خطوة 8: مسار النهر =================
         if (riverPts.length > 1) {
             ctx.beginPath();
             ctx.strokeStyle = '#2980b9'; 
@@ -736,17 +814,19 @@
             }
             ctx.stroke();
             
-            riverPts.forEach(p => {
-                let sx = getScreenX(p.x); let sy = getScreenY(p.y);
-                ctx.fillStyle = '#fff';
-                ctx.beginPath(); ctx.arc(sx, sy, 5, 0, Math.PI * 2); ctx.fill();
-                ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2; ctx.stroke();
-                
-                ctx.fillStyle = '#154360';
-                ctx.font = 'bold 12px Arial';
-                ctx.textAlign = 'right'; ctx.textBaseline = 'top';
-                ctx.fillText(p.z.toFixed(1), sx - 6, sy + 6);
-            });
+            if (showPoints) {
+                riverPts.forEach(p => {
+                    let sx = getScreenX(p.x); let sy = getScreenY(p.y);
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath(); ctx.arc(sx, sy, 5, 0, Math.PI * 2); ctx.fill();
+                    ctx.strokeStyle = '#2980b9'; ctx.lineWidth = 2; ctx.stroke();
+                    
+                    ctx.fillStyle = '#154360';
+                    ctx.font = 'bold 12px Arial';
+                    ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+                    ctx.fillText(p.z.toFixed(1), sx - 6, sy + 6);
+                });
+            }
         }
     }
 </script>
