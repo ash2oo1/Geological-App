@@ -111,7 +111,7 @@
  
 <div class="container">
     <div class="header screen-only">
-        <h1>نظام المسح الجيومورفولوجي والكنتوري</h1>
+        <h1>نظام المسح الميداني الجيولوجي نظام المسح الجيومورفولوجي والكنتوري</h1>
         <h2>بإشراف الجيولوجي: <span id="mainTitleName">علي شندل الجنابي</span></h2>
     </div>
 
@@ -260,7 +260,7 @@
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_1">
         <div class="print-master-header print-only">
             <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
+                <h1>نظام المسح الميداني الجيولوجي system نظام المسح الجيومورفولوجي والكنتوري</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
                 <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
             </div>
             <div class="header-left-info printDateHeader">--/--/----</div>
@@ -295,7 +295,7 @@
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_2">
         <div class="print-master-header print-only">
             <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
+                <h1>نظام المسح الميداني الجيولوجي system نظام المسح الجيومورفولوجي والكنتوري</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
                 <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
             </div>
             <div class="header-left-info printDateHeader">--/--/----</div>
@@ -322,19 +322,19 @@
     <div class="print-page-wrapper page-counter-element-str print-only" id="pageResultsStr_3">
         <div class="print-master-header print-only">
             <div class="header-center-info">
-                <h1>نظام المسح الميداني الجيولوجي</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
+                <h1>نظام المسح الميداني الجيولوجي system نظام المسح الجيومورفولوجي والكنتوري</h1><h2>(تقرير المسح الجيومورفولوجي والكنتوري)</h2>
                 <div class="geo-name">إعداد وتدقيق الجيولوجي: <span class="res_geoNameHeaderRep"></span></div>
             </div>
             <div class="header-left-info printDateHeader">--/--/----</div>
         </div>
         
         <div class="content-padding">
-            <div class="table-title">الخارطة الكنتورية والتحليل الجيومورفولوجي</div>
+            <div class="table-title">الخارطة الكنتورية والتحليل الجيومورفولوجي system الخارطة الكنتورية والتحليل الجيومورفولوجي</div>
             <div class="section" style="border: 2px solid #8e44ad; padding: 15px; box-shadow: none;">
                 <img id="printMapImage" style="width: 100%; max-height: 700px; object-fit: contain; border: 1px solid #333;" />
                 
                 <div id="printInterpretationBox" style="font-size: 1.15rem; line-height: 1.8; text-align: justify; margin-top: 20px; padding: 15px; background: #fafafa; border: 1px solid #ddd; border-radius: 8px; color: #1e8449; font-weight: bold;">
-                </div>
+                    </div>
             </div>
         </div>
         <div class="print-bottom-str print-only">الصفحة 3 من 3</div>
@@ -353,12 +353,14 @@
         const dateStr = now.toLocaleDateString('en-GB');
         document.querySelectorAll('.printDateHeader').forEach(el => el.innerText = dateStr);
 
+        // تحديث الاسم الحي
         document.getElementById('geoName').addEventListener('input', function() {
             let name = this.value.trim() || "علي شندل الجنابي";
             document.getElementById('mainTitleName').innerText = name;
             document.querySelectorAll('.res_geoNameHeaderRep').forEach(el => el.innerText = name);
         });
         
+        // ضبط أولي للاسم
         let initialName = document.getElementById('geoName').value.trim() || "علي شندل الجنابي";
         document.getElementById('mainTitleName').innerText = initialName;
         document.querySelectorAll('.res_geoNameHeaderRep').forEach(el => el.innerText = initialName);
@@ -610,8 +612,10 @@
             if(p.z < minZ) minZ = p.z; if(p.z > maxZ) maxZ = p.z;
         });
 
+        // زيادة الهامش لضمان عدم اقتطاع الإحداثيات اليمينية وحل تداخل مقياس الرسم وسهم الشمال
         let dx = (rawMaxX - rawMinX) || 10;
         let dy = (rawMaxY - rawMinY) || 10;
+        let padding = 100; // زيادة الهامش كلياً
         let minX = rawMinX - dx * 0.08;
         let maxX = rawMaxX + dx * 0.08;
         let minY = rawMinY - dy * 0.08;
@@ -623,7 +627,6 @@
         let endZ = Math.ceil(maxZ / interval) * interval;
         if (startZ === endZ) endZ += interval;
 
-        const padding = 85; 
         const legendWidth = 100; 
         const mapW = canvas.width - padding * 2 - legendWidth - 20;
         const mapH = canvas.height - padding * 2 - 40;
@@ -674,12 +677,10 @@
             ctx.fillRect(padding, padding, mapW, mapH);
         }
 
-        // ================= خطوة 3: خوارزمية تجميع الخطوط وتتبع الأرقام (Stitching) =================
+        // ================= خطوة 3: خوارزمية تجميع الخطوط وتتبع الأرقام المعدلة لتوزيع التسميات (Label Dispersal) =================
         if (showLines) {
             let contourLevels = [];
             for(let z = startZ; z <= endZ; z += interval) contourLevels.push(z);
-
-            let segmentsByIso = {}; // لتجميع كل القطع لكل قيمة كنتورية
 
             contourLevels.forEach(iso => {
                 ctx.beginPath();
@@ -689,8 +690,8 @@
                 ctx.strokeStyle = isIndex ? '#000' : 'rgba(0,0,0,0.7)';
                 ctx.lineWidth = isIndex ? 2.2 : 0.8;
 
-                if(!segmentsByIso[iso]) segmentsByIso[iso] = [];
-
+                // تجميع كل القطع لكل قيمة كنتورية
+                let segments = [];
                 for (let i = 0; i < gridCols - 1; i++) {
                     for (let j = 0; j < gridRows - 1; j++) {
                         let v0 = grid[i][j]; let v1 = grid[i+1][j];     
@@ -719,92 +720,56 @@
                         else if(idx===8 || idx===7) { p1 = d; p2 = c; }
                         else if(idx===3 || idx===12) { p1 = d; p2 = b; }
                         else if(idx===6 || idx===9) { p1 = a; p2 = c; }
-                        else if(idx===5) { ctx.moveTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.moveTo(b.x, b.y); ctx.lineTo(c.x, c.y); p1=a; p2=d; segmentsByIso[iso].push({p1:b, p2:c}); } 
-                        else if(idx===10) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); p1=a; p2=b; segmentsByIso[iso].push({p1:c, p2:d}); } 
+                        else if(idx===5) { ctx.moveTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.moveTo(b.x, b.y); ctx.lineTo(c.x, c.y); p1=a; p2=d; segments.push({p1:b, p2:c}); } 
+                        else if(idx===10) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); p1=a; p2=b; segments.push({p1:c, p2:d}); } 
 
                         if (p1 && p2 && idx !== 5 && idx !== 10) {
                             ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
-                            segmentsByIso[iso].push({p1: p1, p2: p2});
+                            segments.push({p1: p1, p2: p2});
                         }
                     }
                 }
                 ctx.stroke();
-            });
 
-            // خوارزمية تجميع القطع لتكوين خطوط متصلة وكتابة الرقم "مرة واحدة فقط" لكل خط
-            if (showLabels) {
-                let placedLabels = [];
-                
-                for (let isoKey in segmentsByIso) {
-                    let segments = segmentsByIso[isoKey];
-                    let lines = [];
+                // توزيع التسميات على طول الخط لتجنب التكدس
+                if (showLabels && segments.length > 0) {
+                    ctx.direction = "ltr";
+                    ctx.font = 'bold 12px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    let txt = iso.toFixed(1);
                     
-                    while(segments.length > 0) {
-                        let currentLine = [segments.pop()];
-                        let added = true;
-                        let attempts = 0;
-                        while(added && attempts < 5000) {
-                            added = false;
-                            attempts++;
-                            for(let i=0; i<segments.length; i++) {
-                                let seg = segments[i];
-                                let startSeg = currentLine[0];
-                                let endSeg = currentLine[currentLine.length-1];
-                                let tol = 2.0; 
-                                
-                                if (Math.hypot(seg.p1.x - endSeg.p2.x, seg.p1.y - endSeg.p2.y) <= tol) {
-                                    currentLine.push(seg); segments.splice(i, 1); added = true; break;
-                                } else if (Math.hypot(seg.p2.x - startSeg.p1.x, seg.p2.y - startSeg.p1.y) <= tol) {
-                                    currentLine.unshift(seg); segments.splice(i, 1); added = true; break;
-                                } else if (Math.hypot(seg.p2.x - endSeg.p2.x, seg.p2.y - endSeg.p2.y) <= tol) {
-                                    currentLine.push({p1: seg.p2, p2: seg.p1}); segments.splice(i, 1); added = true; break;
-                                } else if (Math.hypot(seg.p1.x - startSeg.p1.x, seg.p1.y - startSeg.p1.y) <= tol) {
-                                    currentLine.unshift({p1: seg.p2, p2: seg.p1}); segments.splice(i, 1); added = true; break;
-                                }
-                            }
-                        }
-                        lines.push(currentLine);
+                    let totalLength = 0;
+                    for (let seg of segments) {
+                        totalLength += Math.hypot(seg.p2.x - seg.p1.x, seg.p2.y - seg.p1.y);
                     }
-
-                    // لكل خط متصل نجد نقطة آمنة واحدة فقط لطباعة الرقم
-                    for(let line of lines) {
-                        if(line.length > 15) { // لتجاهل النقاط الصغيرة جداً
-                            let buffer = 50;
-                            let validPoint = null;
-                            let midIdx = Math.floor(line.length / 2);
+                    
+                    // وضع الرقم مرة واحدة فقط لكل خط، في نقطة عشوائية آمنة على طول المسار
+                    let placed = false;
+                    let targetDistance = Math.random() * totalLength;
+                    let currentDistance = 0;
+                    for (let seg of segments) {
+                        let segLength = Math.hypot(seg.p2.x - seg.p1.x, seg.p2.y - seg.p1.y);
+                        if (currentDistance + segLength >= targetDistance) {
+                            let ratio = (targetDistance - currentDistance) / segLength;
+                            let pt = {x: seg.p1.x + ratio * (seg.p2.x - seg.p1.x), y: seg.p1.y + ratio * (seg.p2.y - seg.p1.y)};
                             
-                            let pt = {x: (line[midIdx].p1.x + line[midIdx].p2.x)/2, y: (line[midIdx].p1.y + line[midIdx].p2.y)/2};
+                            let buffer = 60;
                             if (pt.x > padding + buffer && pt.x < padding + mapW - buffer && pt.y > padding + buffer && pt.y < padding + mapH - buffer) {
-                                validPoint = pt;
-                            } else {
-                                for(let k=0; k<line.length; k++) {
-                                    let cPt = {x: (line[k].p1.x + line[k].p2.x)/2, y: (line[k].p1.y + line[k].p2.y)/2};
-                                    if (cPt.x > padding + buffer && cPt.x < padding + mapW - buffer && cPt.y > padding + buffer && cPt.y < padding + mapH - buffer) {
-                                        validPoint = cPt;
-                                        if(Math.abs(k - midIdx) < line.length/4) break; 
-                                    }
-                                }
+                                ctx.lineWidth = 4;
+                                ctx.strokeStyle = '#fff';
+                                ctx.strokeText(txt, pt.x, pt.y);
+                                ctx.fillStyle = '#000';
+                                ctx.fillText(txt, pt.x, pt.y);
+                                placed = true;
+                                break;
                             }
-                            if(validPoint) placedLabels.push({x: validPoint.x, y: validPoint.y, val: parseFloat(isoKey)});
                         }
+                        currentDistance += segLength;
                     }
+                    ctx.direction = "rtl"; 
                 }
-
-                ctx.direction = "ltr";
-                ctx.font = 'bold 12px Arial';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                
-                placedLabels.forEach(lp => {
-                    let txt = lp.val.toFixed(1);
-                    ctx.lineWidth = 4;
-                    ctx.strokeStyle = '#fff';
-                    ctx.strokeText(txt, lp.x, lp.y);
-                    ctx.fillStyle = '#000';
-                    ctx.fillText(txt, lp.x, lp.y);
-                });
-                ctx.direction = "rtl"; 
-            }
+            });
         }
 
         // ================= خطوة 4: الإطار الخارجي والإحداثيات =================
@@ -845,10 +810,10 @@
             }
         }
 
-        // ================= خطوة 5: سهم الشمال ومقياس الرسم خارج الخارطة =================
+        // ================= خطوة 5: سهم الشمال ومقياس الرسم الجيولوجي خارج الخريطة =================
         if (showNorth) {
             const nX = padding + mapW; 
-            const nY = padding - 35;
+            const nY = padding - 45; // نقل سهم الشمال إلى خارج الخريطة
             ctx.beginPath();
             ctx.moveTo(nX, nY - 20); ctx.lineTo(nX + 10, nY + 12); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 10, nY + 12);
             ctx.closePath();
@@ -866,8 +831,14 @@
             if (scaleValue < 1) scaleValue = 10; 
             let scalePxWidth = (scaleValue / realDistX) * mapW;
 
+            // موقع مقياس الرسم خارج الخريطة
             const scX = padding; 
-            const scY = padding + mapH + 40;
+            const scY = padding + mapH + 50;
+            
+            // مستطيل مقياس الرسم الجيولوجي
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(scX, scY - 15, scalePxWidth, 30);
             
             ctx.beginPath();
             ctx.lineWidth = 2.5;
@@ -881,12 +852,31 @@
             ctx.fillStyle = '#000';
             ctx.font = 'bold 13px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('0', scX, scY - 12);
-            ctx.fillText(scaleValue + ' m', scX + scalePxWidth, scY - 12);
+            ctx.fillText('0', scX, scY - 20);
+            ctx.fillText(scaleValue + ' m', scX + scalePxWidth, scY - 20);
             ctx.direction = "rtl";
         }
 
-        // ================= خطوة 6: صندوق اللون المتدرج =================
+        // ================= خطوة 6: عرض الاتجاهات على الخريطة ( Compass Directions) =================
+        if (showNorth) {
+            ctx.fillStyle = '#1c2833';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.fillText('North (N)', padding + mapW / 2, padding - 10);
+            
+            ctx.textBaseline = 'bottom';
+            ctx.fillText('South (S)', padding + mapW / 2, padding + mapH + 10);
+            
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('East (E)', padding - 10, padding + mapH / 2);
+            
+            ctx.textAlign = 'left';
+            ctx.fillText('West (W)', padding + mapW + 10, padding + mapH / 2);
+        }
+
+        // ================= خطوة 7: صندوق اللون المتدرج =================
         if (showFill) {
             const legX = padding + mapW + 55;
             const legY = padding;
@@ -919,7 +909,7 @@
             ctx.direction = "rtl";
         }
 
-        // ================= خطوة 7: إسقاط النقاط الميدانية =================
+        // ================= خطوة 8: إسقاط النقاط الميدانية =================
         if (showPoints) {
             ctx.direction = "ltr";
             topoPts.forEach(p => {
@@ -936,7 +926,7 @@
             ctx.direction = "rtl";
         }
 
-        // ================= خطوة 8: مسار النهر =================
+        // ================= خطوة 9: مسار النهر =================
         if (riverPts.length > 1) {
             ctx.beginPath();
             ctx.strokeStyle = '#2980b9'; 
