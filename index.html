@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المسح الميداني الجيولوجي العالمية</title>
+    <title>منصة المسح الميداني الجيولوجي </title>
     
     <meta name="description" content="منصة رسانة: أول نظام رقمي متكامل للمسوحات الميدانية الجيولوجية (مقالع، تركيبي، جيوتقني، هيدروجيولوجي، ومختبر صوتي).">
     <meta name="author" content="الجيولوجي علي شندل الجنابي">
@@ -174,39 +174,6 @@
             .canvas-container { width: 100% !important; display: block !important; margin-bottom: 10px !important;} canvas { border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; background: #fff !important; }
             .leaflet-control-scale { display: none !important; } .map-wrapper { height: 800px !important; border: 2px solid #34495e !important; position: relative !important; page-break-inside: avoid; background-color: white !important;} #satelliteMap { height: 100% !important; } .leaflet-control-zoom { display: none !important; } .leaflet-control-container { background: white !important; } .content-padding { padding: 0 !important; }
         }
-        /* ============ تنسيقات المسح التركيبي الإضافية ============ */
-        .compass-live-box { display: none; background: #eaf2f8; border: 2px solid #3498db; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
-        .compass-live-box p { margin: 5px 0; font-size: 1.1rem; font-weight: bold; }
-        .compass-value-text { color: #e67e22; font-weight: bold; display: block; margin-top: 5px; font-size: 0.9rem; }
-        .kinematic-canvas-container { width: 100%; display: flex; flex-direction: column; align-items: center; background: #fcfcfc; padding: 20px; border-radius: 8px; border: 1px solid #bdc3c7; box-shadow: inset 0 0 10px rgba(0,0,0,0.02); box-sizing: border-box; margin-bottom: 20px;}
-        .kinematic-canvas-container h4 { color: #2c3e50; border-bottom: 2px solid #e67e22; padding-bottom: 10px; margin-top: 0; margin-bottom: 10px; width: 100%; text-align: center; font-size: 1.3rem;}
-        .geotech-split-legend { background: #fff; border: 1px solid #bdc3c7; padding: 15px; margin-top: 10px; border-radius: 8px; text-align: right; direction: rtl; font-size: 14px; width: 100%; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
-        .legend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-        .geotech-legend-item { display: flex; align-items: center; gap: 10px; color: #2c3e50; }
-        .geotech-legend-color { width: 22px; height: 22px; border-radius: 4px; border: 1px solid #333; flex-shrink: 0; }
-        .geotech-legend-text { font-weight: bold; line-height: 1.4; }
-        .geotech-legend-symbol { font-size: 1.2rem; width: 22px; text-align: center; }
-        .geological-explanation-box { border: 2px solid #e67e22; padding: 15px; margin-top: 15px; width: 100%; background-color: #fdf2e9; border-radius: 8px; font-size: 1.05rem; line-height: 1.8; color: #2c3e50; text-align: justify; box-sizing: border-box; }
-        .heatmap-wrapper { display: flex; gap: 30px; align-items: stretch; width: 100%; justify-content: center; padding: 20px 0; }
-        .heatmap-scale-legend { border: 2px solid #bdc3c7; padding: 15px; border-radius: 8px; background: #fff; font-size: 14px; font-weight: bold; width: 60px; flex-shrink: 0; text-align: center; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 2px 2px 8px rgba(0,0,0,0.1);}
-        .heatmap-scale-box { width: 30px; flex-grow: 1; background: linear-gradient(to top, #e74c3c, #f39c12, #f1c40f, #2ecc71); border-radius: 4px; border: 1px solid #333; margin: 10px auto; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; backdrop-filter: blur(5px); }
-        .modal-box { background: #fff; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); direction: rtl; text-align: right; position: relative; animation: modalFadeIn 0.3s ease; border-top: 5px solid #e67e22;}
-        @keyframes modalFadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        .modal-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 12px 12px 0 0; }
-        .modal-header h3 { margin: 0; color: #1c2833; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
-        .close-modal { background: none; border: none; font-size: 1.5rem; color: #e74c3c; cursor: pointer; transition: 0.2s; padding: 0; line-height: 1; }
-        .close-modal:hover { transform: scale(1.2); }
-        .modal-body { padding: 25px; line-height: 1.8; color: #34495e; font-size: 1.05rem; }
-        .modal-body h4 { color: #d35400; margin-top: 20px; margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
-        .modal-body h4:first-child { margin-top: 0; }
-        .modal-body ul { padding-right: 20px; margin-bottom: 15px; }
-        .modal-body li { margin-bottom: 8px; }
-        .table-guide { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; font-size: 0.95rem; }
-        .table-guide th, .table-guide td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        .table-guide th { background: #fdf2e9; color: #d35400; }
-        .info-icon { color: #d35400; cursor: pointer; margin-right: 8px; font-size: 1.2rem; transition: 0.2s; vertical-align: middle; }
-        .info-icon:hover { color: #e67e22; transform: scale(1.2); }
     </style>
 </head>
 <body>
@@ -214,34 +181,38 @@
 <div id="introScreen">
     <div class="intro-box">
         <div id="step1">
-            <h1>أهلاً وسهلاً بكم في منصة نظام المسح الميداني الجيولوجي</h1>
-            <h2>بإشراف الجيولوجي: علي شندل الجنابي</h2>
+            <h1>البوابة الرسمية لنظام المسح الميداني الجيولوجي</h1>
+            <h2>تصميم وإشراف الجيولوجي: علي شندل الجنابي</h2>
             
             <div class="official-text">
-                <h3><i class="fas fa-landmark"></i> نبذة تعريفية عن المنصة:</h3>
-                <p>أُسست هذه المنصة الرقمية الرائدة في عام <b>2026</b>، كطفرة نوعية في إدارة الثروات المعدنية، على يد الجيولوجي <b>علي شندل الجنابي</b>. لقد وُلدت هذه المنصة من رَحِم المعاناة الميدانية؛ لتكون الأداة الرسمية والحل الجذري الموثوق، الذي ينقل العمل الجيولوجي الرقابي من حقبة القياسات الورقية التقليدية إلى عصر الأتمتة والرقمنة الفضائية.</p>
-                <p>تاريخياً، كان التفتيش الجيولوجي يتطلب جهداً استثنائياً؛ بدءاً من أخذ الإحداثيات بالأجهزة اليدوية، مروراً بالحسابات الرياضية المعقدة، وصولاً إلى الاستعانة ببرامج حاسوبية خارجية (Software) لرسم الأعمدة الطباقية. أما اليوم، فقد صُممت هذه المنصة لتتولى كافة هذه المهام نيابة عن الجيولوجي بدقة تصل إلى 100%.</p>
-                <b>أبرز ما تُقدمه المنصة فنياً وهندسياً:</b>
+                <h3><i class="fas fa-landmark"></i> نبذة تعريفية وفلسفة التأسيس:</h3>
+                <p>انطلقت هذه المنصة الرقمية الرائدة في الخامس من شهر نيسان (أبريل) لعام <b>2026</b>، لتشكل البنية التحتية الرقمية الأولى من نوعها في إدارة الثروات المعدنية والمسوحات الهندسية. صُممت هذه المنصة بجهود وخبرات الجيولوجي <b>علي شندل الجنابي</b>، لتكون الأداة الرقابية والحقلية المعتمدة التي تنقل العمل الجيولوجي من حقبة العمليات الورقية والمكتبية المشتتة، إلى عصر الأتمتة المدمجة والتحليل اللحظي المتقدم.</p>
+                <p><b>لم يأتِ اختيار اسم (نظام المسح الميداني) اعتباطاً، بل استند إلى ركيزتين علميتين:</b></p>
                 <ul>
-                    <li><b>المعالجة الرياضية الفورية:</b> حساب المساحات (تحويل الدونم إلى متر مربع)، والكميات المستخرجة والمتبقية، وتحديد أقصى عمق استثماري مسموح.</li>
-                    <li><b>النمذجة ثنائية الأبعاد والطباقية:</b> توليد مرتسم هندسي للمساحات، ورسم "العمود الطباقي" (Stratigraphic Column) باحترافية قياسية مع تحديد الطبقات وسُمكها.</li>
-                    <li><b>الرفع الطوبوغرافي الفضائي:</b> اتصال مباشر بالأقمار الصناعية لتحديد الأركان (A,B,C,D) بنظام (UTM)، مع عرض دقة إشارة الـ GPS لحظياً لإعادة الرصد إن لزم الأمر.</li>
-                    <li><b>التوثيق البيئي والسلامة:</b> إتاحة توثيق المتغيرات الجيولوجية، مراقبة مستويات المياه الجوفية، ورصد التزام المستثمر بتعليمات السلامة المهنية.</li>
+                    <li><b>المسح (Surveying):</b> يمثل المنهجية الجيولوجية الصارمة لجمع البيانات المكانية، وتحديد الأبعاد، وتحليل الخصائص الفيزيائية والتركيبية للطبقات بدقة رياضية.</li>
+                    <li><b>الميداني (Field-Based):</b> يعكس الميزة الاستراتيجية للمنصة؛ فهي نظام محمول ومتنقل بالكامل عبر الأجهزة الذكية، يتيح للجيولوجي إنجاز أعقد التحليلات واستصدار القرارات مباشرةً في قلب "الميدان" (الحقل)، دون الحاجة للعودة إلى المكاتب أو حمل معدات ثقيلة وبرمجيات حاسوبية معقدة.</li>
                 </ul>
             </div>
 
             <div class="instruction-section">
-                <h3><i class="fas fa-exclamation-triangle"></i> تعليمات وإرشادات حقلية هامة جداً:</h3>
+                <h3><i class="fas fa-cogs"></i> التحول الاستراتيجي والوحدات التشغيلية:</h3>
+                <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 15px; color: #2c3e50;">تاريخياً، كانت أعمال التفتيش والمسح الجيولوجي تستنزف جهداً ووقتاً قياسياً؛ أما اليوم، تنجز هذه المنصة كافة هذه العمليات في وقت قياسي وبنسبة خطأ حسابي معدومة (0%). وتضم المنصة حالياً ثلاثة أنظمة مسح رئيسية تغطي كافة الاحتياجات الحقلية:</p>
                 <ul class="instruction-list">
-                    <li><i class="fas fa-location-arrow" style="color: #e74c3c;"></i> <strong>تفعيل الموقع (GPS):</strong> يجب تفعيل خدمة الموقع الجغرافي (Location) في هاتفك أو متصفحك <b>فور الدخول للمنصة</b>. هذا الإجراء إلزامي لضمان قدرة النظام على التقاط إشارات الأقمار الصناعية بدقة، وبدونه لن تتمكن من رفع الإحداثيات الميدانية (UTM).</li>
-                    <li><i class="fas fa-wifi" style="color: #3498db;"></i> <strong>الاتصال بالإنترنت:</strong> يُشترط وجود اتصال بالإنترنت <b>فقط</b> عند تسجيل الدخول الأول وتوليد الخريطة الفضائية. بعد تسجيل الدخول، يمكنك التوجه إلى المواقع النائية وسيعمل النظام وتسجيل الإحداثيات والطباعة (أوفلاين) بالكامل.</li>
-                    <li><i class="fas fa-hard-hat" style="color: #f1c40f;"></i> <strong>الاستعداد الحقلي:</strong> لا غنى للجيولوجي عن معداته؛ يُرجى اصطحاب شريط القياس الميداني (الفيتا) للمطابقة، وتأمين مصدر طاقة احتياطي للهاتف (Power Bank/شاحن)، مع الالتزام التام بمعدات السلامة المهنية (PPE) داخل الموقع.</li>
-                    <li><i class="fas fa-user-check" style="color: #2ecc71;"></i> <strong>الاشتراك والتسجيل:</strong> النظام محمي ومخصص للمشتركين فقط. يتطلب الدخول "رمزاً سرياً" مسبقاً. في حال عدم امتلاكك للرمز، يُرجى التواصل المباشر مع مؤسس المنصة عبر الأزرار أدناه.</li>
+                    <li><i class="fas fa-tractor" style="color: #27ae60;"></i> <strong>نظام المقالع واستثمار التراب:</strong> المعالجة الرياضية الفورية للكميات المستخرجة والمتبقية (م³)، واحتساب المساحات. توليد أوتوماتيكي للعمود الطباقي (Stratigraphic Column) وفق الأنماط الصخرية العالمية، ورسم مساقط هندسية وصور فضائية بحدود الاستثمار.</li>
+                    <li><i class="fas fa-compass" style="color: #e67e22;"></i> <strong>نظام المسح التركيبي والجيوتقني:</strong> استخدام بوصلة رقمية مدمجة، تصنيف هندسي للكتلة الصخرية (RMR)، وتحليل كينماتيكي متقدم للاستقرارية عبر (Stereonet Projection). وتوليد نماذج حية تشمل مخططات الكتلة الحرة (FBD) ورادار الانهيارات.</li>
+                    <li><i class="fas fa-map" style="color: #8e44ad;"></i> <strong>نظام المسح الجيومورفولوجي والكنتوري:</strong> رصد نقاط الارتفاع (X, Y, Z) بالاتصال المباشر بالأقمار الصناعية، ومعالجة استيفاء رياضية متقدمة لتوليد "خرائط كنتورية" احترافية مرمزة لونياً، مع تقديم تفسير جيومورفولوجي آلي.</li>
                 </ul>
             </div>
 
+            <div class="warning-box">
+                <h3>⚠️ البروتوكولات الحقلية وإرشادات الدخول (إلزامي):</h3>
+                <p><b>1. تفعيل التموضع الفضائي (GPS):</b> شرط إلزامي وحتمي. يجب منح المتصفح صلاحية الوصول للموقع لضمان التقاط الإحداثيات (UTM) بدقة عالية.</p>
+                <p><b>2. الاتصال الشبكي (Internet):</b> يُطلب عند تسجيل الدخول الأولي وتوليد الخرائط الفضائية، لتستمر المنصة بعدها بالعمل بكامل كفاءتها محلياً (Offline) في المناطق النائية.</p>
+                <p><b>3. الموثوقية والسرية:</b> تخضع هذه المنصة لبروتوكول أمني صارم. الولوج مخصص حصراً للكوادر المعتمدة عبر "رمز أمان سري".</p>
+            </div>
+
             <div class="social-container">
-                <p>لطلب الرمز السري أو الدعم الفني، تواصل مع مؤسس المنصة عبر الروابط الرسمية:</p>
+                <p>في حال عدم توفر الرمز السري، يُرجى مخاطبة الإدارة عبر قنوات الاتصال الرسمية:</p>
                 <div class="social-links">
                     <a href="https://wa.me/9647814993629" target="_blank" class="social-btn btn-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>
                     <a href="https://www.facebook.com/share/1a8sii4wcf/" target="_blank" class="social-btn btn-facebook"><i class="fab fa-facebook-f"></i> فيسبوك</a>
@@ -249,20 +220,20 @@
                 </div>
             </div>
 
-            <button onclick="goToStep2()" class="btn-action" id="btnNextStep1">فهمت التعليمات.. انتقل لتسجيل الدخول</button>
+            <button onclick="goToStep2()" class="btn-action" id="btnNextStep1">إقرار بالتعليمات والانتقال لتسجيل الدخول</button>
         </div>
 
         <div id="step2">
-            <h1 style="color: #2ecc71; border-bottom: 2px solid #2ecc71; padding-bottom: 10px; display: inline-block; margin-top: 0;">صفحة تسجيل الدخول</h1>
+            <h1 style="color: #2ecc71; border-bottom: 2px solid #2ecc71; padding-bottom: 10px; display: inline-block; margin-top: 0;">بوابة تسجيل الدخول الرسمية</h1>
             <div class="warning-box">
-                <h3>⚠️ قم بإدخال المعلومات التالية بحذر وبصورة صحيحة جداً:</h3>
-                <p><b style="color: #f1c40f;">أولاً:</b> اسم الجيولوجي الثلاثي.</p>
-                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري (من مؤسس المنصة <b>علي شندل الجنابي</b>).</p>
+                <h3>⚠️ يُرجى إدخال بيانات الاعتماد بدقة:</h3>
+                <p><b style="color: #f1c40f;">أولاً:</b> اسم الجيولوجي أو المفتش (الاسم الثلاثي).</p>
+                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الأمان السري المعتمد.</p>
             </div>
-            <input type="text" id="geoNameInput" placeholder="أدخل اسم الجيولوجي (الثلاثي) هنا..." required autocomplete="off">
-            <input type="password" id="adminPassword" placeholder="أدخل رمز الدخول السري هنا...">
-            <button onclick="handleLogin()" class="btn-action" id="loginBtn">تسجيل الدخول</button>
-            <div id="loginError" class="error-text">❌ يرجى التأكد من الاسم وكلمة المرور.</div>
+            <input type="text" id="geoNameInput" placeholder="أدخل الاسم الثلاثي هنا..." required autocomplete="off">
+            <input type="password" id="adminPassword" placeholder="أدخل رمز الأمان السري...">
+            <button onclick="handleLogin()" class="btn-action" id="loginBtn">تسجيل الدخول للنظام</button>
+            <div id="loginError" class="error-text">❌ بيانات الاعتماد غير صحيحة، يرجى المحاولة مجدداً.</div>
         </div>
     </div>
 </div>
