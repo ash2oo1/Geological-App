@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المسح الميداني الجيولوجي </title>
+    <title>منصة المسح الميداني الجيولوجي العالمية</title>
     
     <meta name="description" content="منصة رسانة: أول نظام رقمي متكامل للمسوحات الميدانية الجيولوجية (مقالع، تركيبي، جيوتقني، هيدروجيولوجي، ومختبر صوتي).">
     <meta name="author" content="الجيولوجي علي شندل الجنابي">
@@ -17,21 +17,22 @@
            1. شاشات الترحيب وتسجيل الدخول (النسخة الأصلية 100%)
            ======================================================== */
         #introScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: right; padding: 15px; box-sizing: border-box; }
-        .intro-box { background: rgba(255, 255, 255, 0.05); padding: 35px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 850px; width: 100%; max-height: 90vh; overflow-y: auto; backdrop-filter: blur(10px); margin: auto; box-sizing: border-box; }
+        .intro-box { background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 950px; width: 100%; max-height: 90vh; overflow-y: auto; backdrop-filter: blur(10px); margin: auto; box-sizing: border-box; }
         .intro-box::-webkit-scrollbar { width: 8px; } .intro-box::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; } .intro-box::-webkit-scrollbar-thumb { background: #2980b9; border-radius: 10px; }
         @media (max-width: 600px) { #introScreen { align-items: flex-start; } .intro-box { padding: 20px; margin: 10px auto; max-height: 95vh;} }
-        .intro-box h1 { color: #f1c40f; font-size: 1.8rem; margin-bottom: 5px; text-align: center; line-height: 1.4; }
-        .intro-box h2 { color: #a9cce3; font-size: 1.1rem; margin-top: 0; font-weight: normal; margin-bottom: 25px; text-align: center; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 15px;}
-        .official-text { background: rgba(0, 0, 0, 0.2); padding: 20px; border-radius: 8px; border-right: 4px solid #f1c40f; margin-bottom: 25px; font-size: 0.95rem; line-height: 1.8; color: #ecf0f1; text-align: justify; }
-        .official-text h3 { color: #f1c40f; margin-top: 0; border-bottom: 1px solid rgba(241, 196, 15, 0.3); padding-bottom: 8px; margin-bottom: 15px; font-size: 1.2rem;}
-        .official-text p { margin-bottom: 15px; } .official-text p:last-child { margin-bottom: 0; } .official-text ul { padding-right: 20px; margin: 10px 0; } .official-text li { margin-bottom: 8px; }
-        .instruction-section { background: rgba(41, 128, 185, 0.15); border: 1px solid rgba(41, 128, 185, 0.4); border-radius: 8px; padding: 20px; margin-bottom: 25px; }
-        .instruction-section h3 { color: #3498db; margin-top: 0; font-size: 1.2rem; border-bottom: 1px dashed #3498db; padding-bottom: 10px; margin-bottom: 15px; }
-        .instruction-list { list-style: none; padding: 0; margin: 0; } .instruction-list li { margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6; background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 6px; border-right: 3px solid #e74c3c;} .instruction-list li:nth-child(even) { border-right-color: #2ecc71; } .instruction-list li i { margin-left: 8px; font-size: 1.1rem; width: 20px; text-align: center;} .instruction-list li strong { color: #f1c40f; font-size: 1.05rem; }
-        .social-container { text-align: center; margin-bottom: 25px; padding: 15px; background: rgba(0,0,0,0.1); border-radius: 8px; } .social-container p { margin: 0 0 15px 0; color: #bdc3c7; font-size: 0.95rem; } .social-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
-        .social-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: 6px; text-decoration: none; color: white; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); } .social-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.3); color: white;}
-        .btn-whatsapp { background: #25D366; } .btn-whatsapp:hover { background: #1ebe57; } .btn-facebook { background: #1877F2; } .btn-facebook:hover { background: #145dbf; } .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); } .btn-instagram:hover { opacity: 0.9; }
-        .warning-box { background: rgba(231, 76, 60, 0.15); border-right: 4px solid #e74c3c; padding: 20px; border-radius: 8px; margin-bottom: 25px; text-align: right; } .warning-box h3 { color: #ffcccc; font-size: 1.1rem; margin-top: 0; margin-bottom: 15px; line-height: 1.5; } .warning-box p { color: #ecf0f1; font-size: 1rem; margin-bottom: 10px; line-height: 1.6; }
+        .intro-box h1 { color: #f1c40f; font-size: 2rem; margin-bottom: 5px; text-align: center; line-height: 1.4; }
+        .intro-box h2 { color: #a9cce3; font-size: 1.2rem; margin-top: 0; font-weight: normal; margin-bottom: 25px; text-align: center; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 15px;}
+        .official-text { background: rgba(0, 0, 0, 0.2); padding: 25px; border-radius: 8px; border-right: 4px solid #f1c40f; margin-bottom: 25px; font-size: 1.1rem; line-height: 1.9; color: #ecf0f1; text-align: justify; }
+        .official-text h3 { color: #f1c40f; margin-top: 0; border-bottom: 1px solid rgba(241, 196, 15, 0.3); padding-bottom: 8px; margin-bottom: 15px; font-size: 1.3rem;}
+        .official-text p { margin-bottom: 15px; } .official-text p:last-child { margin-bottom: 0; } .official-text ul { padding-right: 25px; margin: 10px 0; } .official-text li { margin-bottom: 10px; font-size: 1.05rem; }
+        .instruction-section { background: rgba(41, 128, 185, 0.15); border: 1px solid rgba(41, 128, 185, 0.4); border-radius: 8px; padding: 25px; margin-bottom: 25px; }
+        .instruction-section p { font-size: 1.1rem; line-height: 1.9; margin-bottom: 15px; }
+        .instruction-section h3 { color: #3498db; margin-top: 0; font-size: 1.3rem; border-bottom: 1px dashed #3498db; padding-bottom: 10px; margin-bottom: 15px; }
+        .instruction-list { list-style: none; padding: 0; margin: 0; } .instruction-list li { margin-bottom: 15px; font-size: 1.05rem; line-height: 1.8; background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 6px; border-right: 3px solid #e74c3c;} .instruction-list li:nth-child(even) { border-right-color: #2ecc71; } .instruction-list li i { margin-left: 10px; font-size: 1.2rem; width: 25px; text-align: center;} .instruction-list li b { color: #f1c40f; font-size: 1.1rem; }
+        .social-container { text-align: center; margin-bottom: 25px; padding: 20px; background: rgba(0,0,0,0.1); border-radius: 8px; } .social-container p { margin: 0 0 15px 0; color: #bdc3c7; font-size: 1.05rem; } .social-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .social-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 25px; border-radius: 6px; text-decoration: none; color: white; font-weight: bold; font-size: 1.05rem; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); } .social-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.3); color: white;}
+        .btn-whatsapp { background: #25D366; } .btn-whatsapp:hover { background: #1ebe57; } .btn-facebook { background: #1877F2; } .btn-facebook:hover { background: #145dbf; } .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); } .btn-instagram:hover { opacity: 0.9; } .btn-youtube { background: #FF0000; } .btn-youtube:hover { background: #cc0000; }
+        .warning-box { background: rgba(231, 76, 60, 0.15); border-right: 4px solid #e74c3c; padding: 25px; border-radius: 8px; margin-bottom: 25px; text-align: right; } .warning-box h3 { color: #ffcccc; font-size: 1.2rem; margin-top: 0; margin-bottom: 15px; line-height: 1.6; } .warning-box p { color: #ecf0f1; font-size: 1.1rem; margin-bottom: 12px; line-height: 1.8; }
         .intro-box input { width: 100%; padding: 15px; font-size: 1.1rem; border-radius: 6px; border: none; margin-bottom: 15px; outline: none; box-sizing: border-box; font-family: inherit; text-align: center; background: #fff; color: #333; font-weight: bold; } .intro-box input:focus { border: 2px solid #2ecc71; }
         .btn-action { background: #27ae60; color: white; padding: 15px; font-size: 1.2rem; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; margin-top: 10px; box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3); box-sizing: border-box; } .btn-action:hover { background: #219150; transform: translateY(-2px); } .btn-action:disabled { background: #7f8c8d; cursor: not-allowed; box-shadow: none; transform: none; }
         .error-text { color: #ff6b6b; font-weight: bold; margin-top: 15px; display: none; font-size: 1rem; text-align: center; background: rgba(255,0,0,0.1); padding: 10px; border-radius: 6px;}
@@ -174,6 +175,39 @@
             .canvas-container { width: 100% !important; display: block !important; margin-bottom: 10px !important;} canvas { border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; background: #fff !important; }
             .leaflet-control-scale { display: none !important; } .map-wrapper { height: 800px !important; border: 2px solid #34495e !important; position: relative !important; page-break-inside: avoid; background-color: white !important;} #satelliteMap { height: 100% !important; } .leaflet-control-zoom { display: none !important; } .leaflet-control-container { background: white !important; } .content-padding { padding: 0 !important; }
         }
+        /* ============ تنسيقات المسح التركيبي الإضافية ============ */
+        .compass-live-box { display: none; background: #eaf2f8; border: 2px solid #3498db; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
+        .compass-live-box p { margin: 5px 0; font-size: 1.1rem; font-weight: bold; }
+        .compass-value-text { color: #e67e22; font-weight: bold; display: block; margin-top: 5px; font-size: 0.9rem; }
+        .kinematic-canvas-container { width: 100%; display: flex; flex-direction: column; align-items: center; background: #fcfcfc; padding: 20px; border-radius: 8px; border: 1px solid #bdc3c7; box-shadow: inset 0 0 10px rgba(0,0,0,0.02); box-sizing: border-box; margin-bottom: 20px;}
+        .kinematic-canvas-container h4 { color: #2c3e50; border-bottom: 2px solid #e67e22; padding-bottom: 10px; margin-top: 0; margin-bottom: 10px; width: 100%; text-align: center; font-size: 1.3rem;}
+        .geotech-split-legend { background: #fff; border: 1px solid #bdc3c7; padding: 15px; margin-top: 10px; border-radius: 8px; text-align: right; direction: rtl; font-size: 14px; width: 100%; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .legend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+        .geotech-legend-item { display: flex; align-items: center; gap: 10px; color: #2c3e50; }
+        .geotech-legend-color { width: 22px; height: 22px; border-radius: 4px; border: 1px solid #333; flex-shrink: 0; }
+        .geotech-legend-text { font-weight: bold; line-height: 1.4; }
+        .geotech-legend-symbol { font-size: 1.2rem; width: 22px; text-align: center; }
+        .geological-explanation-box { border: 2px solid #e67e22; padding: 15px; margin-top: 15px; width: 100%; background-color: #fdf2e9; border-radius: 8px; font-size: 1.05rem; line-height: 1.8; color: #2c3e50; text-align: justify; box-sizing: border-box; }
+        .heatmap-wrapper { display: flex; gap: 30px; align-items: stretch; width: 100%; justify-content: center; padding: 20px 0; }
+        .heatmap-scale-legend { border: 2px solid #bdc3c7; padding: 15px; border-radius: 8px; background: #fff; font-size: 14px; font-weight: bold; width: 60px; flex-shrink: 0; text-align: center; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 2px 2px 8px rgba(0,0,0,0.1);}
+        .heatmap-scale-box { width: 30px; flex-grow: 1; background: linear-gradient(to top, #e74c3c, #f39c12, #f1c40f, #2ecc71); border-radius: 4px; border: 1px solid #333; margin: 10px auto; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; backdrop-filter: blur(5px); }
+        .modal-box { background: #fff; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); direction: rtl; text-align: right; position: relative; animation: modalFadeIn 0.3s ease; border-top: 5px solid #e67e22;}
+        @keyframes modalFadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 12px 12px 0 0; }
+        .modal-header h3 { margin: 0; color: #1c2833; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+        .close-modal { background: none; border: none; font-size: 1.5rem; color: #e74c3c; cursor: pointer; transition: 0.2s; padding: 0; line-height: 1; }
+        .close-modal:hover { transform: scale(1.2); }
+        .modal-body { padding: 25px; line-height: 1.8; color: #34495e; font-size: 1.05rem; }
+        .modal-body h4 { color: #d35400; margin-top: 20px; margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
+        .modal-body h4:first-child { margin-top: 0; }
+        .modal-body ul { padding-right: 20px; margin-bottom: 15px; }
+        .modal-body li { margin-bottom: 8px; }
+        .table-guide { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; font-size: 0.95rem; }
+        .table-guide th, .table-guide td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        .table-guide th { background: #fdf2e9; color: #d35400; }
+        .info-icon { color: #d35400; cursor: pointer; margin-right: 8px; font-size: 1.2rem; transition: 0.2s; vertical-align: middle; }
+        .info-icon:hover { color: #e67e22; transform: scale(1.2); }
     </style>
 </head>
 <body>
@@ -181,59 +215,67 @@
 <div id="introScreen">
     <div class="intro-box">
         <div id="step1">
-            <h1>البوابة الرسمية لنظام المسح الميداني الجيولوجي</h1>
+            <h1>أهلاً وسهلاً بكم في منصة المسح الميداني الجيولوجي العالمية</h1>
             <h2>تصميم وإشراف الجيولوجي: علي شندل الجنابي</h2>
             
             <div class="official-text">
-                <h3><i class="fas fa-landmark"></i> نبذة تعريفية وفلسفة التأسيس:</h3>
-                <p>انطلقت هذه المنصة الرقمية الرائدة في الخامس من شهر نيسان (أبريل) لعام <b>2026</b>، لتشكل البنية التحتية الرقمية الأولى من نوعها في إدارة الثروات المعدنية والمسوحات الهندسية. صُممت هذه المنصة بجهود وخبرات الجيولوجي <b>علي شندل الجنابي</b>، لتكون الأداة الرقابية والحقلية المعتمدة التي تنقل العمل الجيولوجي من حقبة العمليات الورقية والمكتبية المشتتة، إلى عصر الأتمتة المدمجة والتحليل اللحظي المتقدم.</p>
-                <p><b>لم يأتِ اختيار اسم (نظام المسح الميداني) اعتباطاً، بل استند إلى ركيزتين علميتين:</b></p>
+                <h3><i class="fas fa-landmark"></i> القسم الأول: فلسفة التأسيس ونبذة عن المنصة</h3>
+                <p><strong>نبذة تعريفية وفلسفة التسمية:</strong></p>
+                <p>انطلقت هذه المنصة الرقمية الرائدة في الخامس من شهر نيسان (أبريل) لعام <b>2026</b>، لتشكل علامة فارقة ونقطة تحول في تاريخ العمل الجيولوجي الميداني وإدارة الثروات المعدنية. تم تأسيس وتطوير هذه المنصة على يد الجيولوجي <b>علي شندل الجنابي</b>، لتكون الأداة الرسمية والحل الجذري الموثوق الذي ينقل العمل الرقابي والحقلي من حقبة القياسات الورقية التقليدية إلى عصر الأتمتة والتحليل اللحظي المتقدم.</p>
+                <p>وقد تم اختيار اسم <b>"نظام المسح الميداني الجيولوجي"</b> بعناية فائقة ليعكس الجوهر الحقيقي لعملنا:</p>
                 <ul>
-                    <li><b>المسح (Surveying):</b> يمثل المنهجية الجيولوجية الصارمة لجمع البيانات المكانية، وتحديد الأبعاد، وتحليل الخصائص الفيزيائية والتركيبية للطبقات بدقة رياضية.</li>
-                    <li><b>الميداني (Field-Based):</b> يعكس الميزة الاستراتيجية للمنصة؛ فهي نظام محمول ومتنقل بالكامل عبر الأجهزة الذكية، يتيح للجيولوجي إنجاز أعقد التحليلات واستصدار القرارات مباشرةً في قلب "الميدان" (الحقل)، دون الحاجة للعودة إلى المكاتب أو حمل معدات ثقيلة وبرمجيات حاسوبية معقدة.</li>
+                    <li><b>المسح (Surveying):</b> مصطلح جيولوجي هندسي أصيل يمثل جوهر عمليات الاستكشاف، وجمع البيانات المكانية، وتحديد الأبعاد، ورصد المتغيرات بدقة متناهية.</li>
+                    <li><b>الميداني (Field-based):</b> وهي الكلمة الرديفة لـ "الحقل"، لتؤكد أن هذه المنصة صُممت لترافق الجيولوجي في قلب الحدث (الميدان). فهي منصة متنقلة تغنيك عن حمل المعدات المعقدة، وتتيح لك إنجاز أدق المسوحات مباشرة من موقع العمل وفي الوقت الفعلي.</li>
                 </ul>
             </div>
 
             <div class="instruction-section">
-                <h3><i class="fas fa-cogs"></i> التحول الاستراتيجي والوحدات التشغيلية:</h3>
-                <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 15px; color: #2c3e50;">تاريخياً، كانت أعمال التفتيش والمسح الجيولوجي تستنزف جهداً ووقتاً قياسياً؛ أما اليوم، تنجز هذه المنصة كافة هذه العمليات في وقت قياسي وبنسبة خطأ حسابي معدومة (0%). وتضم المنصة حالياً ثلاثة أنظمة مسح رئيسية تغطي كافة الاحتياجات الحقلية:</p>
+                <h3><i class="fas fa-cogs"></i> القسم الثاني: القفزة النوعية (الماضي مقابل الحاضر)</h3>
+                <p><strong>لماذا هذه المنصة؟</strong></p>
+                <p>تاريخياً، كان التفتيش والمسح الجيولوجي يتطلب جهداً استثنائياً ووقتاً طويلاً؛ بدءاً من أخذ الإحداثيات بالأجهزة اليدوية، مروراً بالحسابات الرياضية المعقدة لاحتساب الكميات والمساحات، وقياس ميول الطبقات يدوياً، وصولاً إلى العودة للمكتب والاستعانة ببرامج حاسوبية خارجية (Software) لرسم الأعمدة الطباقية أو النماذج الكينماتيكية أو الخرائط الكنتورية.</p>
+                <p>أما اليوم، فقد صُممت هذه المنصة لتتولى كافة هذه المهام المعقدة نيابة عنك في أجزاء من الثانية، وبنسبة خطأ شبه معدومة (0%)، بفضل خوارزمياتها الرياضية الصارمة وكوداتها البرمجية فائقة الدقة.</p>
+                <p><strong>ماذا تقدم لك المنصة (المسوحات الثلاثة الشاملة)؟</strong></p>
+                <p>تعتبر هذه المنصة الأولى من نوعها التي تجمع بين القوانين الحسابية، والأشكال الهندسية، والتحليل الجيولوجي في نظام محمول واحد، وتوفر لك:</p>
                 <ul class="instruction-list">
-                    <li><i class="fas fa-tractor" style="color: #27ae60;"></i> <strong>نظام المقالع واستثمار التراب:</strong> المعالجة الرياضية الفورية للكميات المستخرجة والمتبقية (م³)، واحتساب المساحات. توليد أوتوماتيكي للعمود الطباقي (Stratigraphic Column) وفق الأنماط الصخرية العالمية، ورسم مساقط هندسية وصور فضائية بحدود الاستثمار.</li>
-                    <li><i class="fas fa-compass" style="color: #e67e22;"></i> <strong>نظام المسح التركيبي والجيوتقني:</strong> استخدام بوصلة رقمية مدمجة، تصنيف هندسي للكتلة الصخرية (RMR)، وتحليل كينماتيكي متقدم للاستقرارية عبر (Stereonet Projection). وتوليد نماذج حية تشمل مخططات الكتلة الحرة (FBD) ورادار الانهيارات.</li>
-                    <li><i class="fas fa-map" style="color: #8e44ad;"></i> <strong>نظام المسح الجيومورفولوجي والكنتوري:</strong> رصد نقاط الارتفاع (X, Y, Z) بالاتصال المباشر بالأقمار الصناعية، ومعالجة استيفاء رياضية متقدمة لتوليد "خرائط كنتورية" احترافية مرمزة لونياً، مع تقديم تفسير جيومورفولوجي آلي.</li>
+                    <li><i class="fas fa-tractor" style="color: #27ae60;"></i> <b>المعالجة الفورية (للمقالع):</b> حساب دقيق للكميات المستخرجة والمتبقية، وتحديد أقصى عمق مسموح، مع رسم فوري للعمود الطباقي (Stratigraphic Column).</li>
+                    <li><i class="fas fa-compass" style="color: #e67e22;"></i> <b>التحليل الكينماتيكي والجيوتقني:</b> استخدام مستشعرات الهاتف الذكي كبوصلة جيولوجية دقيقة لقياس الميل والمضرب، مع رسم مساقط (Stereonet) أوتوماتيكية، وتحليل استقرارية المنحدرات الصخرية وتقييم الـ (RMR).</li>
+                    <li><i class="fas fa-map" style="color: #8e44ad;"></i> <b>الرفع الطوبوغرافي والخرائط الكنتورية:</b> الاعتماد على الأقمار الصناعية لتحديد الإحداثيات بنظام (UTM)، وبناء خرائط كنتورية دقيقة للتحليل الجيومورفولوجي وتتبع المسارات المائية وتحديد اتجاهات الانحدار.</li>
                 </ul>
             </div>
 
             <div class="warning-box">
-                <h3>⚠️ البروتوكولات الحقلية وإرشادات الدخول (إلزامي):</h3>
-                <p><b>1. تفعيل التموضع الفضائي (GPS):</b> شرط إلزامي وحتمي. يجب منح المتصفح صلاحية الوصول للموقع لضمان التقاط الإحداثيات (UTM) بدقة عالية.</p>
-                <p><b>2. الاتصال الشبكي (Internet):</b> يُطلب عند تسجيل الدخول الأولي وتوليد الخرائط الفضائية، لتستمر المنصة بعدها بالعمل بكامل كفاءتها محلياً (Offline) في المناطق النائية.</p>
-                <p><b>3. الموثوقية والسرية:</b> تخضع هذه المنصة لبروتوكول أمني صارم. الولوج مخصص حصراً للكوادر المعتمدة عبر "رمز أمان سري".</p>
+                <h3>⚠️ القسم الثالث: التعليمات والإرشادات الحقلية</h3>
+                <p>لضمان الحصول على أدق النتائج وأفضل أداء من المنصة، يُرجى الالتزام بالتعليمات الحقلية التالية:</p>
+                <p><b>1. تفعيل الموقع (GPS):</b> هذا الإجراء إلزامي وحتمي. يجب تفعيل خدمة الموقع الجغرافي (Location) في هاتفك أو متصفحك فور الدخول للمنصة لضمان دقة التقاط الإحداثيات الفضائية.</p>
+                <p><b>2. الاتصال بالإنترنت:</b> يُشترط وجود اتصال بالإنترنت عند تسجيل الدخول الأول، ولتوليد الخرائط الفضائية. بعد ذلك، يمكنك التوجه إلى المواقع النائية وإجراء المسوحات وتصدير التقارير (أوفلاين).</p>
+                <p><b>3. الاستعداد والمتابعة:</b> يُرجى التحلي بالصبر وقراءة التعليمات الموجودة داخل كل مسح من المسوحات الثلاثة بعناية، وإدخال البيانات بتأنٍ لضمان خروج التقرير النهائي بأفضل صورة هندسية.</p>
+                <p><b>4. الاشتراك والأمان:</b> النظام محمي ومخصص للمشتركين فقط، ويتطلب الدخول "رمزاً سرياً". في حال عدم امتلاكك للرمز، يُرجى التواصل المباشر مع مؤسس المنصة عبر الأزرار أدناه للحصول عليه.</p>
             </div>
 
             <div class="social-container">
-                <p>في حال عدم توفر الرمز السري، يُرجى مخاطبة الإدارة عبر قنوات الاتصال الرسمية:</p>
+                <p>لطلب الرمز السري أو الدعم الفني، تواصل مع مؤسس المنصة عبر الروابط الرسمية:</p>
                 <div class="social-links">
                     <a href="https://wa.me/9647814993629" target="_blank" class="social-btn btn-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>
                     <a href="https://www.facebook.com/share/1a8sii4wcf/" target="_blank" class="social-btn btn-facebook"><i class="fab fa-facebook-f"></i> فيسبوك</a>
                     <a href="https://www.instagram.com/ash2oo1?igsh=MWR5Zng0dGkybmV1Zw==" target="_blank" class="social-btn btn-instagram"><i class="fab fa-instagram"></i> إنستجرام</a>
+                    <a href="https://www.youtube.com/@ash2oo1geo" target="_blank" class="social-btn btn-youtube"><i class="fab fa-youtube"></i> يوتيوب</a>
                 </div>
             </div>
 
-            <button onclick="goToStep2()" class="btn-action" id="btnNextStep1">إقرار بالتعليمات والانتقال لتسجيل الدخول</button>
+            <button onclick="goToStep2()" class="btn-action" id="btnNextStep1">فهمت التعليمات.. انتقل لتسجيل الدخول</button>
         </div>
 
         <div id="step2">
-            <h1 style="color: #2ecc71; border-bottom: 2px solid #2ecc71; padding-bottom: 10px; display: inline-block; margin-top: 0;">بوابة تسجيل الدخول الرسمية</h1>
+            <h1 style="color: #2ecc71; border-bottom: 2px solid #2ecc71; padding-bottom: 10px; display: inline-block; margin-top: 0;">صفحة تسجيل الدخول</h1>
             <div class="warning-box">
-                <h3>⚠️ يُرجى إدخال بيانات الاعتماد بدقة:</h3>
-                <p><b style="color: #f1c40f;">أولاً:</b> اسم الجيولوجي أو المفتش (الاسم الثلاثي).</p>
-                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الأمان السري المعتمد.</p>
+                <h3>⚠️ قم بإدخال المعلومات التالية بحذر وبصورة صحيحة جداً:</h3>
+                <p><b style="color: #f1c40f;">أولاً:</b> اسم الجيولوجي الثلاثي.</p>
+                <p><b style="color: #f1c40f;">ثانياً:</b> رمز الدخول السري (من مؤسس المنصة <b>علي شندل الجنابي</b>).</p>
             </div>
-            <input type="text" id="geoNameInput" placeholder="أدخل الاسم الثلاثي هنا..." required autocomplete="off">
-            <input type="password" id="adminPassword" placeholder="أدخل رمز الأمان السري...">
-            <button onclick="handleLogin()" class="btn-action" id="loginBtn">تسجيل الدخول للنظام</button>
-            <div id="loginError" class="error-text">❌ بيانات الاعتماد غير صحيحة، يرجى المحاولة مجدداً.</div>
+            <input type="text" id="geoNameInput" placeholder="أدخل اسم الجيولوجي (الثلاثي) هنا..." required autocomplete="off">
+            <input type="password" id="adminPassword" placeholder="أدخل رمز الدخول السري هنا...">
+            <button onclick="handleLogin()" class="btn-action" id="loginBtn">تسجيل الدخول</button>
+            <div id="loginError" class="error-text">❌ يرجى التأكد من الاسم وكلمة المرور.</div>
         </div>
     </div>
 </div>
