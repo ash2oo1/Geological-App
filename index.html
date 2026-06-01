@@ -645,21 +645,79 @@
     function toggleGeoVars() { document.getElementById('geoVarDetails').style.display = document.getElementById('geoVarSelect').value === 'yes' ? 'block' : 'none'; }
     function togglePollution() { document.getElementById('pollDetails').style.display = document.getElementById('pollSelect').value === 'yes' ? 'flex' : 'none'; }
 
-    function handleLogin() {
-        const errorDiv = document.getElementById('loginError'); const btn = document.getElementById('loginBtn');
-        const nameInput = document.getElementById('geoNameInput').value.trim(); const pwdInput = document.getElementById('adminPassword').value;
-        if (nameInput.split(' ').length < 2) { errorDiv.innerHTML = "❌ يرجى كتابة الاسم الثلاثي."; errorDiv.style.display = 'block'; return; }
-        const secretCode = String.fromCharCode(49, 50, 51, 113, 119, 101, 97, 115, 100, 122, 120, 99);
-        if (pwdInput === secretCode) {
-            currentGeoName = nameInput; errorDiv.style.display = 'none'; btn.innerText = "تم الدخول..."; btn.disabled = true;
-            document.getElementById('printGeoName').value = currentGeoName;
+    // ========================================================
+    // دالة تسجيل الدخول المحدثة بربط (جوجل شيت) والبصمة
+    // ========================================================
+    async function handleLogin() {
+        const errorDiv = document.getElementById('loginError'); 
+        const btn = document.getElementById('loginBtn');
+        const nameInput = document.getElementById('geoNameInput').value.trim(); 
+        const pwdInput = document.getElementById('adminPassword').value.trim();
+        
+        if (nameInput.split(' ').length < 2) { 
+            errorDiv.innerHTML = "❌ يرجى كتابة الاسم الثلاثي."; 
+            errorDiv.style.display = 'block'; 
+            return; 
+        }
+        if (!pwdInput) {
+            errorDiv.innerHTML = "❌ يرجى إدخال الرمز السري."; 
+            errorDiv.style.display = 'block'; 
+            return; 
+        }
+
+        btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> جاري التحقق من قاعدة البيانات..."; 
+        btn.disabled = true;
+
+        // 1. توليد بصمة الجهاز أو جلبها إذا كانت موجودة مسبقاً
+        let deviceToken = localStorage.getItem('shandal_device_token');
+        if (!deviceToken) {
+            deviceToken = 'DEV-' + Math.random().toString(36).substr(2, 16) + Date.now();
+            localStorage.setItem('shandal_device_token', deviceToken);
+        }
+
+        // 2. الرابط السري الخاص بك الذي استخرجته من جوجل
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxjbge1wg7soV51_ZedXgmxZsF3KOPDxUZ89qnrly6vpqnaxa-GtmjIZxZgZ1xLIDHQmg/exec";
+
+        try {
+            // 3. إرسال البيانات لجوجل للمطابقة
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    name: nameInput,
+                    password: pwdInput,
+                    deviceToken: deviceToken
+                })
+            });
             
-            // التوجه إلى لوحة التحكم
-            document.getElementById('introScreen').style.display = 'none'; 
-            document.getElementById('dashboardScreen').style.display = 'block';
+            const result = await response.json();
             
-            updateAllDepths(); sendDiscordAlert(currentGeoName, loginLocation, true);
-        } else { sendDiscordAlert(nameInput, loginLocation, false); errorDiv.innerHTML = "❌ الرمز السري خاطئ."; errorDiv.style.display = 'block'; }
+            // 4. معالجة رد السيرفر
+            if (result.success) {
+                currentGeoName = nameInput; 
+                errorDiv.style.display = 'none'; 
+                btn.innerText = "تم الدخول بنجاح...";
+                
+                document.getElementById('printGeoName').value = currentGeoName;
+                
+                // التوجه إلى لوحة التحكم
+                document.getElementById('introScreen').style.display = 'none'; 
+                document.getElementById('dashboardScreen').style.display = 'block';
+                
+                updateAllDepths(); 
+                sendDiscordAlert(currentGeoName, loginLocation, true);
+            } else {
+                sendDiscordAlert(nameInput, loginLocation, false); 
+                errorDiv.innerHTML = "❌ " + result.message; 
+                errorDiv.style.display = 'block';
+                btn.innerText = "تسجيل الدخول"; 
+                btn.disabled = false;
+            }
+        } catch (error) {
+            errorDiv.innerHTML = "❌ حدث خطأ في الاتصال بالخادم، يرجى التأكد من اتصالك بالإنترنت."; 
+            errorDiv.style.display = 'block';
+            btn.innerText = "تسجيل الدخول"; 
+            btn.disabled = false;
+        }
     }
 
     // الحماية من الـ Inspect
