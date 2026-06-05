@@ -9,6 +9,8 @@
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
     <style>
         /* ========================================================
@@ -29,42 +31,46 @@
         .section { margin-bottom: 25px; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         .section-title { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 8px; font-size: 1.2rem; margin-bottom: 20px; font-weight: bold; }
         
+        /* تنسيق الشبكة لترتيب المدخلات أفقياً */
+        .form-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px; }
+        .form-group { flex: 1; min-width: 250px; }
+        
         label { display: block; font-weight: bold; margin-bottom: 8px; color: var(--secondary); font-size: 1.05rem; }
-        input[type="text"], select { width: 100%; padding: 12px; border: 2px solid #bdc3c7; border-radius: 6px; box-sizing: border-box; font-size: 1rem; font-family: inherit; margin-bottom: 15px; font-weight: bold; color: #2c3e50; }
+        input[type="text"], select { width: 100%; padding: 12px; border: 2px solid #bdc3c7; border-radius: 6px; box-sizing: border-box; font-size: 1rem; font-family: inherit; font-weight: bold; color: #2c3e50; }
         input[type="text"]:focus, select:focus { border-color: #c0392b; outline: none; }
 
-        .btn-action { background: #34495e; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(52, 73, 94, 0.3); }
+        .btn-action { background: #34495e; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(52, 73, 94, 0.3); margin-top: 10px;}
         .btn-action:hover { background: #2c3e50; }
         .coord-display { background: #fdf2e9; border: 2px dashed #e67e22; padding: 15px; margin-top: 15px; border-radius: 6px; font-size: 1.1rem; text-align: center; font-weight: bold; color: #d35400; display: none; }
 
-        .seismic-results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
-        .seismic-box { background: #fcfcfc; border: 2px solid #bdc3c7; border-radius: 8px; padding: 20px; text-align: center; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .seismic-box h4 { margin: 0 0 15px 0; color: #2c3e50; font-size: 1.1rem; padding-bottom: 10px; border-bottom: 1px dashed #ccc; }
-        .seismic-value { font-size: 1.8rem; font-weight: bold; color: #c0392b; direction: ltr; display: block; line-height: 1.3;}
+        /* نتائج التحليل */
+        .seismic-results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 20px; }
+        .seismic-box { background: #fcfcfc; border: 2px solid #bdc3c7; border-radius: 8px; padding: 15px; text-align: center; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .seismic-box h4 { margin: 0 0 10px 0; color: #2c3e50; font-size: 1.05rem; padding-bottom: 8px; border-bottom: 1px dashed #ccc; }
+        .seismic-value { font-size: 1.6rem; font-weight: bold; color: #c0392b; direction: ltr; display: block; line-height: 1.3;}
         
-        .tooltip-icon { position: absolute; top: 15px; left: 15px; background: #3498db; color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.9rem; cursor: help; }
-        .tooltip-text { visibility: hidden; width: 240px; background-color: #2c3e50; color: #fff; text-align: center; border-radius: 6px; padding: 12px; position: absolute; z-index: 1000; bottom: 130%; left: 50%; transform: translateX(-50%); opacity: 0; transition: opacity 0.3s; font-size: 0.9rem; line-height: 1.6; font-weight: normal; pointer-events: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3);}
-        .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: #2c3e50 transparent transparent transparent; }
-        .tooltip-icon:hover .tooltip-text { visibility: visible; opacity: 1; }
-        .left-box .tooltip-text { left: 0; transform: translateX(-20%); }
-        .left-box .tooltip-text::after { left: 20%; }
-
-        .expert-report-box { background: #fdfefe; border: 2px solid #3498db; border-right: 6px solid #2980b9; padding: 25px; border-radius: 8px; margin-top: 25px; font-size: 1.1rem; line-height: 1.9; color: #2c3e50; text-align: justify; }
+        .expert-report-box { background: #fdfefe; border: 2px solid #3498db; border-right: 6px solid #2980b9; padding: 25px; border-radius: 8px; margin-top: 20px; font-size: 1.1rem; line-height: 1.9; color: #2c3e50; text-align: justify; }
         .expert-report-box p { margin-top: 0; margin-bottom: 15px; }
-        .expert-report-box p:last-child { margin-bottom: 0; }
         .expert-report-box ul { padding-right: 20px; margin-top: 10px; margin-bottom: 15px; }
         .expert-report-box li { margin-bottom: 8px; }
         .expert-report-box b { color: #c0392b; }
         
+        /* التنبيهات */
         .disclaimer-box { background: #f9ebea; border-right: 4px solid #c0392b; padding: 15px; border-radius: 6px; font-size: 0.95rem; color: #7b241c; margin-top: 20px; direction: ltr; text-align: left; }
+        .liquefaction-alert { display: none; background: #c0392b; color: white; padding: 15px; border-radius: 6px; margin-top: 15px; font-weight: bold; text-align: center; font-size: 1.1rem; animation: pulse 2s infinite;}
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(192, 57, 43, 0); } 100% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0); } }
 
-        .seismic-map-container { height: 550px; width: 100%; border-radius: 8px; border: 2px solid #34495e; margin-top: 15px; z-index: 1; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        /* الكانفاس لمنحنى الاستجابة */
+        .chart-container { width: 100%; margin-top: 25px; border: 1px solid #ccc; border-radius: 8px; padding: 15px; box-sizing: border-box; background: #fff; text-align: center;}
+        .chart-container h3 { margin-top: 0; color: #2c3e50; font-size: 1.2rem; border-bottom: 1px dashed #bdc3c7; padding-bottom: 10px; }
+
+        .seismic-map-container { height: 600px; width: 100%; border-radius: 8px; border: 2px solid #34495e; margin-top: 15px; z-index: 1; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
         .btn-print { background: #27ae60; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3); transition: 0.3s;}
         .btn-print:hover { background: #219150; }
 
         /* ========================================================
-           4. هندسة الطباعة الصارمة والمنفصلة (3 صفحات كاملة A4)
+           4. هندسة الطباعة (3 صفحات كاملة A4 منفصلة بدقة)
            ======================================================== */
         .print-only { display: none !important; }
         
@@ -74,51 +80,37 @@
             body { background: white; margin: 0; padding: 0; color: #333; font-family: 'Arial', sans-serif; font-size: 12pt; }
             
             .container { box-shadow: none; border: none; padding: 0; width: 100%; max-width: 100%; border-radius: 0; background: transparent; }
-            .screen-only, .btn-back-dash, .btn-action, .btn-print, .tooltip-icon { display: none !important; }
+            .screen-only, .btn-back-dash, .btn-action, .btn-print { display: none !important; }
             .print-only { display: block !important; }
             
-            .print-page-wrapper { 
-                width: 100%; 
-                box-sizing: border-box; 
-                padding: 1.5cm 1.5cm 2cm 1.5cm; 
-                min-height: 29.6cm; 
-                position: relative; 
-                display: block !important; 
-                background: white;
-            }
-            
-            /* تفعيل الفصل القسري للصفحات البيضاء المخصصة */
+            .print-page-wrapper { width: 100%; box-sizing: border-box; padding: 1.5cm 1.5cm 1.5cm 1.5cm; min-height: 29.6cm; position: relative; display: block !important; background: white; }
             .page-break-before { page-break-before: always; }
             
-            .print-header { text-align: center; border: 2px solid #2c3e50; background-color: #f8f9fa; padding: 15px; margin-bottom: 25px; border-radius: 8px; position: relative; }
-            .print-header h1 { font-size: 20px; color: #1c2833; margin: 0 0 5px 0; } 
-            .print-header h2 { font-size: 14px; color: #c0392b; margin: 0; font-weight: bold; } 
+            .print-header { text-align: center; border: 2px solid #2c3e50; background-color: #f8f9fa; padding: 10px; margin-bottom: 20px; border-radius: 8px; position: relative; }
+            .print-header h1 { font-size: 18px; color: #1c2833; margin: 0 0 5px 0; } 
+            .print-header h2 { font-size: 13px; color: #c0392b; margin: 0; font-weight: bold; } 
             
-            /* إظهار الإحصائيات الزمنية بالأرقام فقط تلبيةً لطلبك هندسياً */
-            .date-top-left { position: absolute; top: 10px; left: 15px; font-size: 11px; color: #34495e; font-weight: bold; direction: ltr;}
-            .print-bottom { position: absolute; bottom: 1cm; left: 0; width: 100%; text-align: center; font-weight: bold; font-size: 14px; color: #555; }
+            .date-top-left { position: absolute; top: 8px; left: 15px; font-size: 11px; color: #34495e; font-weight: bold; direction: ltr;}
+            .print-bottom { position: absolute; bottom: 0.8cm; left: 0; width: 100%; text-align: center; font-weight: bold; font-size: 13px; color: #555; }
 
             .content-padding { padding: 0 !important; }
-            .section { margin-bottom: 20px; border: 1px solid #bdc3c7; border-radius: 8px; padding: 15px; background-color: #fff; box-shadow: none; }
-            .section-title { font-size: 1.15rem; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid #2c3e50; color: #2c3e50 !important;}
+            .section { margin-bottom: 15px; border: 1px solid #bdc3c7; border-radius: 8px; padding: 15px; background-color: #fff; box-shadow: none; }
+            .section-title { font-size: 1.15rem; margin-bottom: 12px; padding-bottom: 5px; border-bottom: 2px solid #2c3e50; color: #2c3e50 !important;}
             
-            input[type="text"], select { border: none !important; border-bottom: 1px dashed #2c3e50 !important; padding: 5px 0; font-size: 1.05rem; background: transparent; appearance: none; -webkit-appearance: none; color: #c0392b !important; }
+            input[type="text"], select { border: none !important; border-bottom: 1px dashed #2c3e50 !important; padding: 5px 0; font-size: 1.05rem; background: transparent; appearance: none; -webkit-appearance: none; color: #c0392b !important; margin-bottom: 0;}
             
-            .seismic-results-grid { display: flex; justify-content: space-between; gap: 15px; }
-            .seismic-box { flex: 1; border: 2px solid #34495e; padding: 15px 10px; }
-            .seismic-box h4 { font-size: 1rem; border-bottom: 1px solid #ccc; color: #000; }
-            .seismic-value { font-size: 1.5rem; color: #c0392b !important; }
+            .form-row { gap: 15px; margin-bottom: 10px;}
             
-            .expert-report-box { border: 2px solid #3498db; border-right: 6px solid #2980b9; background: #fff !important; padding: 20px; font-size: 1.15rem; color: #000; margin-bottom: 15px; }
-            .coord-display { border: 1px solid #000 !important; background: #fff !important; color: #000 !important; padding: 10px; display: block !important;}
+            .seismic-results-grid { display: flex; justify-content: space-between; gap: 10px; margin-top: 10px;}
+            .seismic-box { flex: 1; border: 2px solid #34495e; padding: 10px; }
+            .seismic-box h4 { font-size: 0.95rem; margin-bottom: 5px; padding-bottom: 5px;}
+            .seismic-value { font-size: 1.3rem; }
             
-            .hide-in-print { display: none !important; }
-            .show-in-print { display: block !important; }
+            .expert-report-box { padding: 15px; font-size: 1.05rem; margin-top: 15px; margin-bottom: 10px;}
+            .chart-container { margin-top: 10px; padding: 10px;}
             
-            /* تضخيم وعزل المرتسم ليمتد على كامل الورقة الثالثة بمظهر خرائطي رصين */
-            .seismic-map-container { height: 650px !important; border: 3px solid #1c2833 !important; page-break-inside: avoid; margin-top: 10px; }
-            .leaflet-control-zoom { display: none !important; }
-            .leaflet-control-layers { display: none !important; }
+            .seismic-map-container { height: 700px !important; border: 3px solid #1c2833 !important; page-break-inside: avoid; margin-top: 10px; }
+            .leaflet-control-zoom, .leaflet-control-attribution { display: none !important; }
         }
     </style>
 </head>
@@ -136,30 +128,60 @@
         <span class="date-top-left printDateHeader"></span>
         <h1>نظام شندل للمسح الميداني الجيولوجي</h1>
         <h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
-        <h3 style="margin: 10px 0 0 0; font-size: 16px; color: #2c3e50; border-top: 1px solid #ccc; padding-top: 5px;">(تقرير التقييم الزلزالي الموقعي - البيانات الأساسية)</h3>
+        <h3 style="margin: 5px 0 0 0; font-size: 15px; color: #2c3e50; border-top: 1px solid #ccc; padding-top: 5px;">(تقرير التقييم الزلزالي الموقعي - المعطيات الأساسية)</h3>
     </div>
 
     <div class="content-padding">
+        
         <div class="section">
-            <div class="section-title">أولاً: بيانات الموقع والجيولوجي / المهندس</div>
-            <label>اسم الجيولوجي / المهندس:</label>
-            <input type="text" id="geoName" placeholder="أدخل اسمك الثلاثي هنا...">
-            
-            <label style="margin-top: 15px;">اسم المشروع / المعلم:</label>
-            <input type="text" id="projectName" placeholder="مثال: مجمع الأندلس السكني...">
+            <div class="section-title">أولاً: بيانات الموقع والمهندس</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>اسم الجيولوجي / المهندس:</label>
+                    <input type="text" id="geoName" placeholder="أدخل اسمك الثلاثي هنا...">
+                </div>
+                <div class="form-group">
+                    <label>اسم المشروع / المعلم:</label>
+                    <input type="text" id="projectName" placeholder="مثال: مجمع الأندلس السكني...">
+                </div>
+            </div>
         </div>
 
         <div class="section">
-            <div class="section-title" style="border-bottom-color: #e74c3c; color: #e74c3c;">ثانياً: المعطيات الهندسية ونوع المنشأة (Risk Category)</div>
-            <label class="hide-in-print">حدد نوع المشروع المراد تصميمه/تقييمه استناداً للأكواد العالمية:</label>
-            <div class="print-only show-in-print" style="display:none; font-weight: bold; margin-bottom: 10px; font-size: 1.1rem; color: #2c3e50;">فئة المشروع الإنشائي المحددة:</div>
+            <div class="section-title" style="border-bottom-color: #e74c3c; color: #e74c3c;">ثانياً: المعطيات الإنشائية والجيوتقنية</div>
             
-            <select id="projectRiskCategory">
-                <option value="IV">الفئة الرابعة (مستشفيات، مراكز طوارئ، شرطة، إطفاء، ملاجئ)</option>
-                <option value="III">الفئة الثالثة (جسور، سدود، مدارس، جامعات، مراكز تجمع كبرى)</option>
-                <option value="II" selected>الفئة الثانية (مجمعات سكنية، منازل، عمارات، مولات، فنادق)</option>
-                <option value="I">الفئة الأولى (حدائق عامة، مخازن زراعية، أسوار جدارية)</option>
-            </select>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>فئة خطورة المنشأة (Risk Category):</label>
+                    <select id="projectRiskCategory">
+                        <option value="IV">الفئة الرابعة (مستشفيات، شرطة، مراكز طوارئ)</option>
+                        <option value="III">الفئة الثالثة (جسور، سدود، مدارس، تجمعات كبرى)</option>
+                        <option value="II" selected>الفئة الثانية (مجمعات سكنية، منازل، عمارات، مولات)</option>
+                        <option value="I">الفئة الأولى (حدائق عامة، مخازن، أسوار جدارية)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>تصنيف نوع تربة الموقع (Site Class):</label>
+                    <select id="soilClass">
+                        <option value="A">صخر صلب جداً (Hard Rock - Class A)</option>
+                        <option value="B">صخر اعتيادي (Rock - Class B)</option>
+                        <option value="C">تربة كثيفة جداً (Very Dense Soil - Class C)</option>
+                        <option value="D" selected>تربة قوية (Stiff Soil - Class D)</option>
+                        <option value="E">تربة ضعيفة (Soft Soil - Class E)</option>
+                        <option value="F">تربة سائلة/انهيارية (Class F - Requires Site Eval)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row" style="margin-top: 15px;">
+                <div class="form-group" style="width: 100%;">
+                    <label>التقييم الهيدروجيولوجي لظاهرة التميع (Liquefaction):</label>
+                    <select id="liqRisk">
+                        <option value="no" selected>التربة متماسكة أو المياه الجوفية عميقة (لا يوجد خطر تميع مبدئي)</option>
+                        <option value="yes">التربة رملية مفككة ومستوى المياه الجوفية ضحل (خطر تميع وارد)</option>
+                    </select>
+                </div>
+            </div>
         </div>
 
         <div class="section">
@@ -178,35 +200,42 @@
         <span class="date-top-left printDateHeader"></span>
         <h1>نظام شندل للمسح الميداني الجيولوجي</h1>
         <h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2>
-        <h3 style="margin: 10px 0 0 0; font-size: 16px; color: #2c3e50; border-top: 1px solid #ccc; padding-top: 5px;">(النتائج الهندسية والتقرير الاستشاري الخبير)</h3>
+        <h3 style="margin: 5px 0 0 0; font-size: 15px; color: #2c3e50; border-top: 1px solid #ccc; padding-top: 5px;">(التحليل الإنشائي والتصميمي)</h3>
     </div>
 
     <div class="content-padding">
         <div class="section" id="seismicResultsSection" style="border: 2px solid #e74c3c;">
-            <div class="section-title" style="border-bottom-color: #e74c3c; color: #e74c3c; margin-bottom: 0;">رابعاً: مخرجات التحليل الزلزالي الإقليمي</div>
+            <div class="section-title" style="border-bottom-color: #e74c3c; color: #e74c3c; margin-bottom: 0;">رابعاً: مخرجات التحليل الزلزالي الإقليمي والتصميمي</div>
             
             <div class="seismic-results-grid">
                 <div class="seismic-box">
-                    <div class="tooltip-icon">?<span class="tooltip-text">النطاق الزلزالي يحدد الخطورة التكتونية الإقليمية بناءً على الأبحاث والمسوحات الزلزالية العالمية المعتمدة.</span></div>
-                    <h4>النطاق الزلزالي (Zone)</h4>
+                    <h4>المنطقة الزلزالية</h4>
                     <span class="seismic-value" id="outSeismicZone">--</span>
                 </div>
-
                 <div class="seismic-box">
-                    <div class="tooltip-icon">?<span class="tooltip-text">ذروة التسارع الأرضي الأفقي المتوقع (PGA)، وهو المعامل الرياضي الحاسم لحساب قوى القص الأساسية للمنشأة.</span></div>
-                    <h4>التسارع الأرضي (PGA)</h4>
-                    <span class="seismic-value" id="outPGA">--</span>
+                    <h4>معامل الاستجابة للقصور (S<sub>DS</sub>)</h4>
+                    <span class="seismic-value" id="outSDS">--</span>
                 </div>
-
-                <div class="seismic-box left-box">
-                    <div class="tooltip-icon">?<span class="tooltip-text">بيان الوضع التكتوني الموقعي ونطاق القرب الفعلي من الصدوع التكتونية الكبرى النشطة إقليمياً.</span></div>
-                    <h4>تأثير الفوالق (Faults)</h4>
-                    <span class="seismic-value" id="outFaultDist" style="font-size: 1.25rem; color: #2c3e50;">--</span>
+                <div class="seismic-box">
+                    <h4>معامل الاستجابة للثانية (S<sub>D1</sub>)</h4>
+                    <span class="seismic-value" id="outSD1">--</span>
+                </div>
+                <div class="seismic-box">
+                    <h4>بُعد أقرب فالق نشط</h4>
+                    <span class="seismic-value" id="outFaultDist" style="font-size: 1.4rem;">--</span>
                 </div>
             </div>
 
-            <div class="expert-report-box" id="expertReportContent">
-                </div>
+            <div id="liquefactionAlert" class="liquefaction-alert">
+                <i class="fas fa-exclamation-triangle"></i> تحذير جيوتقني حرج: الموقع معرض لخطر التميع الزلزالي (Liquefaction). يُمنع استخدام الأساسات السطحية (Shallow Foundations) ويُنصح بالانتقال للركائز العميقة (Piles) أو تحسين التربة.
+            </div>
+
+            <div class="chart-container">
+                <h3>طيف الاستجابة التصميمي (Design Response Spectrum) - IBC Standard</h3>
+                <canvas id="responseSpectrumCanvas" width="800" height="300" style="width: 100%; max-width: 800px; height: auto;"></canvas>
+            </div>
+
+            <div class="expert-report-box" id="expertReportContent"></div>
         </div>
     </div>
     <div class="print-only print-bottom">الصفحة 2 من 3</div>
@@ -220,8 +249,8 @@
     </div>
 
     <div class="content-padding">
-        <div class="section" style="border: 2px solid #1c2833; margin-bottom: 0;">
-            <div class="section-title" style="border-bottom-color: #1c2833; color: #1c2833; margin-bottom: 0;">خامساً: المرتسم التكتوني والزلزالي لتقييم المخاطر المكانية (Seismic & Tectonic Spatial Map)</div>
+        <div class="section" style="border: 2px solid #1c2833; margin-bottom: 0; padding: 10px;">
+            <div class="section-title" style="border-bottom-color: #1c2833; color: #1c2833; margin-bottom: 10px;">خامساً: المرتسم الطوبوغرافي لتحديد الموقع (Topographic Site Map)</div>
             
             <div id="seismicMap" class="seismic-map-container" dir="ltr"></div>
 
@@ -232,17 +261,104 @@
 </div>
 
 <script>
+    // ==========================================
+    // حماية النظام (إغلاق الفحص والنقر الأيمن)
+    // ==========================================
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.onkeydown = function(e) {
+        if(e.keyCode == 123) return false; // F12
+        if(e.ctrlKey && e.shiftKey && (e.keyCode == 'I'.charCodeAt(0) || e.keyCode == 'J'.charCodeAt(0) || e.keyCode == 'C'.charCodeAt(0))) return false;
+        if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; // Ctrl+U
+    };
+
     let mySeismicMap = null;
 
-    // قاعدة بيانات التكتونيك الإقليمية لحساب النطاقات والفوالق التقديرية بالخلفية
     const faultsDatabase = [
-        { name: "فالق مكحول - حمرين العميق (Makhul-Hemrin Fault Zone)", lat: 34.0, lon: 44.5 },
-        { name: "نطاق درز زاغروس التصادمي (Zagros Suture Belt)", lat: 35.5, lon: 45.8 },
-        { name: "فالق الفرات الحدودي الهيكلي (Euphrates Boundary Fault)", lat: 32.5, lon: 44.0 },
-        { name: "فالق سنجار - هركي النشط (Sinjar-Herki Fault)", lat: 36.4, lon: 42.5 },
-        { name: "فالق عانة العرضي (Anah Fault System)", lat: 34.4, lon: 42.0 },
-        { name: "صدع البحر الميت التحويلي الكبير (Dead Sea Transform)", lat: 31.5, lon: 35.5 }
+        { name: "فالق مكحول - حمرين العميق", lat: 34.0, lon: 44.5 },
+        { name: "نطاق درز زاغروس التصادمي", lat: 35.5, lon: 45.8 },
+        { name: "فالق الفرات الحدودي الهيكلي", lat: 32.5, lon: 44.0 },
+        { name: "فالق سنجار - هركي النشط", lat: 36.4, lon: 42.5 },
+        { name: "فالق عانة العرضي", lat: 34.4, lon: 42.0 },
+        { name: "صدع البحر الميت التحويلي", lat: 31.5, lon: 35.5 }
     ];
+
+    // رسم مخطط طيف الاستجابة على الـ Canvas
+    function drawResponseSpectrum(SDS, SD1) {
+        const canvas = document.getElementById('responseSpectrumCanvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const T0 = 0.2 * (SD1 / SDS);
+        const TS = SD1 / SDS;
+        const TL = 4.0; // افتراضي لكود البناء
+
+        const marginX = 50;
+        const marginY = 30;
+        const width = canvas.width - marginX * 2;
+        const height = canvas.height - marginY * 2;
+
+        // رسم المحاور
+        ctx.beginPath();
+        ctx.strokeStyle = '#2c3e50';
+        ctx.lineWidth = 2;
+        ctx.moveTo(marginX, marginY);
+        ctx.lineTo(marginX, marginY + height);
+        ctx.lineTo(marginX + width, marginY + height);
+        ctx.stroke();
+
+        ctx.font = '14px Arial';
+        ctx.fillStyle = '#2c3e50';
+        ctx.textAlign = 'center';
+        ctx.fillText('الزمن الدوري T (ثانية)', marginX + width / 2, marginY + height + 25);
+        
+        ctx.save();
+        ctx.translate(marginX - 35, marginY + height / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText('التسارع الطيفي Sa (g)', 0, 0);
+        ctx.restore();
+
+        // حساب نقاط المنحنى
+        ctx.beginPath();
+        ctx.strokeStyle = '#c0392b';
+        ctx.lineWidth = 3;
+        
+        const maxSa = SDS * 1.2; 
+        const maxT = 3.0; 
+
+        function getX(T) { return marginX + (T / maxT) * width; }
+        function getY(Sa) { return marginY + height - (Sa / maxSa) * height; }
+
+        ctx.moveTo(getX(0), getY(SDS * 0.4)); // نقطة الصفر
+        
+        for (let T = 0; T <= maxT; T += 0.05) {
+            let Sa;
+            if (T < T0) {
+                Sa = SDS * (0.4 + 0.6 * (T / T0));
+            } else if (T >= T0 && T <= TS) {
+                Sa = SDS;
+            } else {
+                Sa = SD1 / T;
+            }
+            ctx.lineTo(getX(T), getY(Sa));
+        }
+        ctx.stroke();
+
+        // رسم خطوط مرجعية متقطعة لـ SDS و SD1
+        ctx.beginPath();
+        ctx.strokeStyle = '#7f8c8d';
+        ctx.setLineDash([5, 5]);
+        ctx.lineWidth = 1;
+        ctx.moveTo(marginX, getY(SDS));
+        ctx.lineTo(getX(TS), getY(SDS));
+        ctx.lineTo(getX(TS), marginY + height);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#c0392b';
+        ctx.font = 'bold 12px Arial';
+        ctx.fillText(`SDS = ${SDS.toFixed(2)}g`, marginX + 40, getY(SDS) - 5);
+        ctx.fillText(`Ts = ${TS.toFixed(2)}s`, getX(TS), marginY + height - 5);
+    }
 
     async function runSeismicAnalysis() {
         const btn = document.getElementById('btnSeismic');
@@ -250,26 +366,13 @@
         const printPage2 = document.getElementById('printPage2');
         const printPage3 = document.getElementById('printPage3');
         
-        if(document.getElementById('geoName').value.trim() === '') {
-            alert('⚠️ يرجى إدخال اسم الجيولوجي / المهندس أولاً.');
-            document.getElementById('geoName').focus();
-            return;
-        }
-        if(document.getElementById('projectName').value.trim() === '') {
-            alert('⚠️ يرجى إدخال اسم المشروع أولاً.');
-            document.getElementById('projectName').focus();
+        if(document.getElementById('geoName').value.trim() === '' || document.getElementById('projectName').value.trim() === '') {
+            alert('⚠️ يرجى إدخال اسم المهندس واسم المشروع أولاً.');
             return;
         }
 
-        btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> جاري الاتصال بالأقمار الصناعية للتحليل الجغرافي...";
+        btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> جاري معالجة الإحداثيات والتصميم...";
         btn.disabled = true;
-
-        // إعدادات المسح الفضائي عالية الدقة لإجبار استخدام الهوائيات والأقمار الفضائية المباشرة
-        const satelliteOptions = {
-            enableHighAccuracy: true,
-            timeout: 25000,
-            maximumAge: 0
-        };
 
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(async function(position) {
@@ -286,158 +389,130 @@
                     if(data && data.address && data.address.country) { countryName = data.address.country; }
                 } catch(e) {}
 
-                // خوارزمية جغرافية لتقدير البُعد والمقاطعة التكتونية بالخلفية فقط لملء الحسابات
+                // حساب المسافة لأقرب فالق
                 let nearestFault = faultsDatabase[2];
                 let minDistance = 999;
-                
                 faultsDatabase.forEach(f => {
-                    let d = Math.sqrt(Math.pow(lat - f.lat, 2) + Math.pow(lon - f.lon, 2)) * 111; // تحويل تقديري إلى كم
+                    let d = Math.sqrt(Math.pow(lat - f.lat, 2) + Math.pow(lon - f.lon, 2)) * 111; 
                     if (d < minDistance) { minDistance = d; nearestFault = f; }
                 });
 
-                // تحديد المعاملات الزلزالية المعتمدة دولياً
-                let zone = "2A"; let pga = "0.10g"; let faultStatus = "نطاق مستقر نسبيّاً";
-                
-                if (minDistance <= 25) {
-                    zone = "3"; pga = "0.20g"; faultStatus = `نطاق نشط تكتونياً بالقرب من (${nearestFault.name})`;
-                    if (minDistance <= 10) { zone = "4"; pga = "0.30g"; faultStatus = `نطاق حرج (Near-Fault Zone) بمحاذاة (${nearestFault.name})`; }
-                } else if (minDistance <= 65) {
-                    zone = "2B"; pga = "0.15g"; faultStatus = `تأثير غير مباشر بفعل الصدوع الإقليمية المحيطة`;
-                }
+                // النطاق الأساسي PGA
+                let zone = "2A"; let PGA = 0.10; 
+                if (minDistance <= 25) { zone = "3"; PGA = 0.20; if (minDistance <= 10) { zone = "4"; PGA = 0.30; } } 
+                else if (minDistance <= 65) { zone = "2B"; PGA = 0.15; }
 
-                const riskCat = document.getElementById('projectRiskCategory').value;
-                const riskSelect = document.getElementById('projectRiskCategory');
-                const riskText = riskSelect.options[riskSelect.selectedIndex].text.split('(')[1].replace(')', '');
+                // حساب معاملات التربة (Fa, Fv) بناءً على IBC 
+                const soilClass = document.getElementById('soilClass').value;
+                let Fa = 1.0; let Fv = 1.0;
                 
-                let advisoryAr = ""; let advisoryEn = "";
-                if (riskCat === "IV") {
-                    advisoryAr = "يُشترط الكود الإنشائي إلزامية التصميم الديناميكي الكامل ومقاومة الانزلاقات الجانبية المفاجئة.";
-                    advisoryEn = "Dynamic Response Spectrum Analysis is strictly required for Risk Category IV structures.";
-                } else if (riskCat === "III") {
-                    advisoryAr = "يُوصى باستخدام جدران قص خرسانية مسلحة مع تفاصيل تسليح مرنة للجسور والمنشآت الاستراتيجية.";
-                    advisoryEn = "Reinforced shear walls and ductile detailing are recommended for critical infrastructure.";
+                if(soilClass === 'A') { Fa = 0.8; Fv = 0.8; }
+                else if(soilClass === 'B') { Fa = 1.0; Fv = 1.0; }
+                else if(soilClass === 'C') { Fa = 1.2; Fv = 1.5; }
+                else if(soilClass === 'D') { Fa = 1.4; Fv = 2.0; }
+                else if(soilClass === 'E') { Fa = 2.5; Fv = 3.2; }
+                else { Fa = 3.0; Fv = 4.0; } // Class F default worst case
+
+                // SS = 2.5 * PGA, S1 = PGA (تقريب استشاري مبدئي للـ IBC)
+                let SS = 2.5 * PGA;
+                let S1 = PGA;
+                
+                let SMS = Fa * SS;
+                let SM1 = Fv * S1;
+                
+                let SDS = (2/3) * SMS;
+                let SD1 = (2/3) * SM1;
+
+                // التميع (Liquefaction)
+                const liqRisk = document.getElementById('liqRisk').value;
+                const liqAlertDiv = document.getElementById('liquefactionAlert');
+                if (liqRisk === 'yes' && PGA >= 0.15) {
+                    liqAlertDiv.style.display = 'block';
                 } else {
-                    advisoryAr = "يمكن الاعتماد على طرق التحليل الاستاتيكي المكافئ وتصميم أساسات مستمرة متماسكة.";
-                    advisoryEn = "Equivalent Static Analysis Method is satisfactory for standard foundation design.";
+                    liqAlertDiv.style.display = 'none';
                 }
 
-                // صياغة التقارير بأسلوب علمي رصين وبشكل نقاط دقيقة
+                // التوصيات
+                const riskCat = document.getElementById('projectRiskCategory').value;
+                let adv = riskCat === "IV" ? "يتطلب الكود تصميماً ديناميكياً متقدماً." : "يُكتفى بالتحليل الاستاتيكي المكافئ مع الالتزام بقيم (SDS).";
+
+                // رسم المنحنى
+                drawResponseSpectrum(SDS, SD1);
+
+                // تقرير
                 const reportHTML = `
-                    <p style="font-weight: bold; color: #2c3e50;"><i class="fas fa-file-alt"></i> أولاً: التوصيف التكتوني والزلزالي (Arabic Section):</p>
+                    <p style="font-weight: bold; color: #2c3e50;">التحليل الإنشائي والزلزالي (Structural Seismic Evaluation):</p>
                     <ul>
-                        <li>تمت المقاطعة المكانية للموقع الجغرافي للجمهورية/الدولة المرصودة <b>(${countryName})</b> وتبين وقوع المشروع ضمن النطاق الزلزالي الإقليمي <b>[Zone ${zone}]</b>.</li>
-                        <li>وفقاً لطبيعة المنشأة المحددة <b>[${riskText}]</b>، فإن معامل ذروة التسارع الأرضي الأفقي المعتمد للتصاميم الإنشائية هو <b>[${pga}]</b>.</li>
-                        <li><b>الوضع التركيبي:</b> يقع الموقع في <b>[${faultStatus}]</b>. والمنطقة تخضع للاشتراطات الفنية الخاصة بـ الكود الدولي للبناء (IBC).</li>
-                        <li><b>التوصية الجيوتقنية الموقعية:</b> ${advisoryAr}</li>
+                        <li>يقع الموقع في النطاق <b>(Zone ${zone})</b> في ${countryName}.</li>
+                        <li>بناءً على تصنيف التربة المدخل <b>(Class ${soilClass})</b>، فإن معامل التكبير الموقعي للموجات القصيرة Fa = ${Fa.toFixed(2)}.</li>
+                        <li>الكود التصميمي لتسارع القص (S<sub>DS</sub>) المعتمد للأساسات هو: <b>${SDS.toFixed(3)}g</b>.</li>
+                        <li>الكود التصميمي للزمن الدوري 1 ثانية (S<sub>D1</sub>) هو: <b>${SD1.toFixed(3)}g</b>.</li>
+                        <li><b>التوصية:</b> ${adv}</li>
                     </ul>
-                    
-                    <p style="font-weight: bold; color: #2c3e50; margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 15px;"><i class="fas fa-globe"></i> ثانياً: التقييم الهندسي الدولي (English Section):</p>
-                    <ul style="direction: ltr; text-align: left;">
-                        <li>Spatial cross-referencing indicates the site is situated within <b>[Zone ${zone}]</b> seismic hazard profile in <b>(${countryName})</b>.</li>
-                        <li>Based on the designated utilization <b>[Risk Category ${riskCat}]</b>, the design Peak Ground Acceleration (PGA) is established at <b>[${pga}]</b>.</li>
-                        <li><b>Structural Status:</b> Classified under <b>[${faultStatus}]</b> structural block. Structural elements must strictly adhere to international codes (IBC / ASCE 7).</li>
-                        <li><b>Geotechnical Directive:</b> ${advisoryEn}</li>
-                    </ul>
-                    
-                    <div class="disclaimer-box">
-                        <b>* Comprehensive Statement:</b> This report represents an expert desktop seismic zoning evaluation fetched from regional structural basemaps. Final site specific designs must integrate subsurface profiling and localized soil amplification parameters (Site Class A-F) derived from standard borehole samples.
-                    </div>
                 `;
 
                 document.getElementById('outSeismicZone').innerText = "Zone " + zone;
-                document.getElementById('outPGA').innerText = pga;
-                document.getElementById('outFaultDist').innerText = zone === "2A" ? "مستقر بجلوسه" : "متأثر بنطاق الصدوع";
+                document.getElementById('outSDS').innerText = SDS.toFixed(3) + "g";
+                document.getElementById('outSD1').innerText = SD1.toFixed(3) + "g";
+                document.getElementById('outFaultDist').innerText = `${minDistance.toFixed(1)} كم (${nearestFault.name})`;
                 document.getElementById('expertReportContent').innerHTML = reportHTML;
                 
-                // تفعيل وعرض الصفحات الإضافية للطباعة والمعاينة الحية
                 printPage2.style.display = 'block';
                 printPage3.style.display = 'block';
                 
-                btn.innerHTML = "<i class='fas fa-check-circle'></i> اكتمل التحليل السيزمي والمكاني بنجاح";
+                btn.innerHTML = "<i class='fas fa-check-circle'></i> اكتمل التحليل والتصميم بنجاح";
                 btn.style.background = "#27ae60";
 
                 // ==========================================
-                // استدعاء السيرفرات السحابية العالمية للخرائط الجيولوجية
+                // توليد الخارطة الطوبوغرافية النظيفة (Esri Topo) للصفحة الثالثة
                 // ==========================================
                 if (mySeismicMap !== null) { mySeismicMap.remove(); }
                 
-                // سيرفر الخرائط الطوبوغرافية لـ Esri
                 const esriTopo = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-                    attribution: 'Tiles © Esri - Topographic',
+                    attribution: 'Tiles © Esri - Topographic Map',
                     maxZoom: 18
                 });
 
-                // السيرفر العالمي الأكاديمي للخرائط التكتونية والجيولوجية للكرة الأرضية بالكامل
-                const macrostratGeo = L.tileLayer('https://tiles.macrostrat.org/carto/{z}/{x}/{y}.png', {
-                    attribution: '© Macrostrat Global Tectonic Map Server',
-                    maxZoom: 18,
-                    opacity: 0.85
-                });
-
-                // سيرفر القمر الصناعي العالمي الفخم
-                const esriSatellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                    attribution: 'Tiles © Esri - Imagery',
-                    maxZoom: 18
-                });
-
-                // تهيئة الخريطة وتعيين الخريطة الجيولوجية العالمية كخلفية أساسية لرفع هيبة التقرير
                 mySeismicMap = L.map('seismicMap', {
                     center: [lat, lon],
-                    zoom: 7,
-                    layers: [macrostratGeo] 
+                    zoom: 11,
+                    layers: [esriTopo] 
                 });
 
-                // إضافة أداة التحكم بالطبقات ليتنقل المهندس بين التكتونيك والطوبوغرافيا والستلايت
-                const globalBasemaps = {
-                    "الخارطة الجيولوجية والتكتونية العالمية": macrostratGeo,
-                    "الخارطة الطوبوغرافية الهندسية (Esri)": esriTopo,
-                    "صورة القمر الصناعي الفضائية": esriSatellite
-                };
-                L.control.layers(globalBasemaps, null, { position: 'topright' }).addTo(mySeismicMap);
-
-                // إسقاط دبوس موقع المشروع الجغرافي الحقيقي والمطلق
                 L.marker([lat, lon]).addTo(mySeismicMap)
-                    .bindPopup('<b style="color:#c0392b; font-size:14px;">موقع المشروع الجيولوجي المعتمد</b><br>نظام شندل للمسح الفضائي').openPopup();
+                    .bindPopup('<b style="color:#c0392b;">موقع المشروع</b>').openPopup();
 
-                // رسم حلقة الأمان الجيوتقنية (شعاع 15 كم لمراقبة نطاق التأثير)
                 L.circle([lat, lon], {
                     color: '#c0392b',
                     fillColor: '#c0392b',
-                    fillOpacity: 0.12,
+                    fillOpacity: 0.1,
                     weight: 2,
                     radius: 15000 
-                }).addTo(mySeismicMap).bindTooltip('نطاق التأثير المباشر للصدوع المحيطة (15 كم)');
+                }).addTo(mySeismicMap).bindTooltip('نطاق التقييم الجيوتقني (15 كم)');
 
                 setTimeout(() => { mySeismicMap.invalidateSize(); }, 500);
 
             }, function(error) {
-                alert("⚠️ فشل التقاط الإحداثيات المباشرة، يرجى تفعيل الموقع (GPS) وإعادة المحاولة بالهوائيات الخارجية.");
-                btn.innerHTML = "<i class='fas fa-satellite'></i> إعادة التقاط إحداثيات الفضاء";
+                alert("⚠️ يرجى تفعيل الـ GPS (الموقع) للحصول على تقييم زلزالي دقيق.");
+                btn.innerHTML = "<i class='fas fa-satellite'></i> إعادة التقاط الإحداثيات";
                 btn.disabled = false;
-            }, satelliteOptions); 
+            }, { enableHighAccuracy: true, timeout: 25000, maximumAge: 0 }); 
         } else {
             alert("المتصفح لا يدعم تحديد الموقع.");
             btn.disabled = false;
         }
     }
 
-    function updatePrintCategoryText() {
-        // تحديث داخلي إذا دعت الحاجة لتغيير الفئات
-    }
-
     function prepareAndPrintReport() {
         const now = new Date(); 
         const dateStr = now.toLocaleDateString('en-GB');
         const timeStr = now.toLocaleTimeString('en-GB', {hour: '2-digit', minute:'2-digit'});
-        // صياغة أرقام صامتة ومحترفة في أعلى يسار الـ PDF بدون جمل لغوية تلبيةً لطلبك
-        const finalDateTime = `${dateStr}   ${timeStr}`;
         
         document.querySelectorAll('.printDateHeader').forEach(h => {
-            h.innerText = finalDateTime;
+            h.innerText = `${dateStr}   ${timeStr}`;
         });
 
         if(mySeismicMap) { mySeismicMap.invalidateSize(); }
-        
         setTimeout(() => { window.print(); }, 400);
     }
 </script>
