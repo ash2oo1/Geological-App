@@ -26,13 +26,11 @@
             padding: 0;
             color: #333;
         }
-        /* الشريط العلوي */
         .top-nav {
             background-color: var(--dark-header); color: white; text-align: center; padding: 12px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s;
         }
         .top-nav:hover { background-color: #000; }
         
-        /* الهيدر الرئيسي */
         .main-header {
             background-color: var(--main-blue); color: white; text-align: center; padding: 30px 20px; border-bottom: 5px solid var(--main-orange); box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
@@ -40,7 +38,6 @@
         .main-header h2 { margin: 8px 0 15px 0; font-size: 18px; font-weight: normal; color: #ecf0f1; direction: ltr; letter-spacing: 1px;}
         .main-header p { margin: 0; color: var(--main-orange); font-size: 16px; font-weight: bold; }
         
-        /* الحاوية والأقسام */
         .container { max-width: 1100px; margin: 40px auto; padding: 0 15px; }
         .section-card { 
             background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 8px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
@@ -49,12 +46,10 @@
             color: var(--main-blue); font-size: 18px; font-weight: bold; border-bottom: 2px solid var(--border-light); padding-bottom: 12px; margin-bottom: 25px; 
         }
         
-        /* التخطيط الشبكي */
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         @media (max-width: 768px) { .grid-3, .grid-2 { grid-template-columns: 1fr; } }
         
-        /* الحقول */
         .form-group { display: flex; flex-direction: column; }
         label { color: var(--label-blue); font-size: 14px; font-weight: bold; margin-bottom: 8px; }
         input[type="text"], input[type="date"], select { 
@@ -62,7 +57,6 @@
         }
         input:focus, select:focus { outline: none; border-color: var(--main-orange); box-shadow: 0 0 5px rgba(243, 156, 18, 0.3); }
         
-        /* الأزرار */
         .btn-center-wrapper { text-align: center; margin: 25px 0; }
         button { 
             background: var(--main-blue); color: white; border: none; padding: 14px 35px; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -71,10 +65,9 @@
         button:disabled { background: #95a5a6; cursor: not-allowed; transform: none; box-shadow: none;}
         .btn-fix { background: #27ae60; margin-top:20px;}
         .btn-fix:hover { background: #219653; }
-        .btn-process { background: var(--main-orange); font-size: 18px; width: 100%; max-width: 400px;}
+        .btn-process { background: var(--main-orange); font-size: 18px; width: 100%; max-width: 450px;}
         .btn-process:hover { background: #d68910; }
         
-        /* الإحداثيات وحالة الـ GPS */
         .coord-box { 
             background: #eef2f5; border: 2px dashed #bdc3c7; border-radius: 6px; padding: 20px; text-align: center; direction: ltr; font-family: 'Courier New', Courier, monospace; font-size: 18px; color: #2c3e50; font-weight: bold;
         }
@@ -83,15 +76,8 @@
         .gps-yellow { background: #f1c40f; color: #333; }
         .gps-red { background: #e74c3c; }
         
-        /* الخرائط والتقارير */
-        #map { height: 500px; width: 100%; border-radius: 8px; border: 2px solid var(--border-light); display: none; margin-top:30px; z-index: 1;}
-        .report-box { 
-            background: #fff; border-right: 6px solid var(--main-orange); padding: 30px; margin-top: 30px; border-radius: 8px; border: 1px solid var(--border-light); font-size: 17px; line-height: 2; display: none; text-align: justify; box-shadow: 0 4px 15px rgba(0,0,0,0.05); color: #333;
-        }
-        .report-box h3 { color: var(--main-blue); border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; margin-top: 0;}
-        .report-box strong { color: var(--main-blue); }
+        #map { height: 600px; width: 100%; border-radius: 8px; border: 2px solid var(--border-light); display: none; margin-top:30px; z-index: 1;}
         
-        /* التحميل */
         .loader-container { display: none; text-align: center; margin: 40px 0; }
         .loader { 
             border: 5px solid #f3f3f3; border-top: 5px solid var(--main-orange); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; margin: 0 auto 15px auto; 
@@ -128,9 +114,7 @@
             <div class="form-group">
                 <label>الدولة:</label>
                 <input type="text" id="countryName" list="countries" value="العراق" placeholder="اختر أو اكتب الدولة">
-                <datalist id="countries">
-                    <option value="العراق">
-                </datalist>
+                <datalist id="countries"><option value="العراق"></datalist>
             </div>
             <div class="form-group">
                 <label>المحافظة / المدينة:</label>
@@ -152,12 +136,8 @@
         </div>
         
         <div id="gpsDataArea" class="hidden">
-            <div class="coord-box" id="unifiedCoords">
-                جاري المعايرة الهندسية والبحث عن إشارة...
-            </div>
-            
+            <div class="coord-box" id="unifiedCoords">جاري المعايرة الهندسية والبحث عن إشارة...</div>
             <div id="accuracyStatus" class="gps-status gps-red">يرجى الانتظار، جاري تحسين دقة الرفع المساحي...</div>
-            
             <div class="btn-center-wrapper">
                 <button id="fixGpsBtn" class="btn-fix hidden" onclick="fixReadings()">تثبيت القراءات الميدانية</button>
             </div>
@@ -166,16 +146,16 @@
 
     <!-- القسم الثالث: معايير الدراسة -->
     <div id="studyParametersSection" class="section-card hidden">
-        <div class="section-title">ثالثاً: معايير التحليل الأكاديمي والبيئي</div>
+        <div class="section-title">ثالثاً: معايير التحليل الجيومكاني والبيئي</div>
         
         <div class="form-group" style="margin-bottom: 25px;">
             <label>الهدف الأكاديمي / الهندسي من الدراسة:</label>
             <select id="studyPurpose">
-                <option value="دراسات التدهور الأرضي والتصحر وتعرية التربة">دراسات التدهور الأرضي والتصحر (Land Degradation & Desertification)</option>
-                <option value="تقييم الأثر البيئي للمشاريع الإنشائية والتعدينية">تقييم الأثر البيئي للمشاريع الإنشائية والتعدينية (EIA)</option>
-                <option value="التخطيط العمراني والجيوبيئي لتطوير المدن">التخطيط العمراني والجيوبيئي لتطوير المدن (Urban Geo-planning)</option>
-                <option value="التغير المناخي والمناخ التفصيلي للمنطقة">التغير المناخي والمناخ التفصيلي (Microclimate Change)</option>
-                <option value="التقييم الهيدرولوجي والجفاف">التقييم الهيدرولوجي والجفاف (Hydrological & Drought Assessment)</option>
+                <option value="دراسات التدهور الأرضي والتصحر">دراسات التدهور الأرضي والتصحر (Land Degradation)</option>
+                <option value="تقييم الأثر البيئي للمشاريع">تقييم الأثر البيئي للمشاريع الإنشائية والتعدينية (EIA)</option>
+                <option value="التخطيط العمراني">التخطيط العمراني والجيوبيئي لتطوير المدن</option>
+                <option value="التغير المناخي">التغير المناخي والمناخ التفصيلي (Microclimate)</option>
+                <option value="التقييم الهيدرولوجي">التقييم الهيدرولوجي والجفاف (Hydrological Assessment)</option>
             </select>
         </div>
 
@@ -190,44 +170,36 @@
         </div>
 
         <div class="form-group checkbox-group" style="margin-top: 30px; border-top: 2px solid #ecf0f1; padding-top: 20px;">
-            <label style="display:block; margin-bottom:15px; color: var(--main-blue); font-size: 16px;"><b>اختر المؤشرات والخرائط المطلوبة للتحليل الجيومكاني:</b></label>
+            <label style="display:block; margin-bottom:15px; color: var(--main-blue); font-size: 16px;"><b>اختر الطبقات الجيومكانية المطلوب رسمها على الخريطة:</b></label>
             <div class="grid-2">
-                <div class="checkbox-item"><input type="checkbox" id="ind_veg" value="الغطاء النباتي (NDVI) ومؤشرات التصحر"> <label for="ind_veg">الغطاء النباتي ومؤشرات التصحر (NDVI)</label></div>
-                <div class="checkbox-item"><input type="checkbox" id="ind_air" value="جودة الهواء، التلوث الغازي، والضباب الدخاني"> <label for="ind_air">جودة الهواء والتلوث الغازي (AQI, PM2.5)</label></div>
-                <div class="checkbox-item"><input type="checkbox" id="ind_water" value="رطوبة التربة والمسطحات المائية السطحية"> <label for="ind_water">رطوبة التربة والمسطحات المائية (NDWI)</label></div>
-                <div class="checkbox-item"><input type="checkbox" id="ind_pop" value="الكثافة السكانية والزحف العمراني"> <label for="ind_pop">الكثافة السكانية والزحف العمراني (Urban Sprawl)</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="ind_veg" value="veg"> <label for="ind_veg">طبقة الغطاء النباتي والتصحر (NDVI)</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="ind_air" value="air"> <label for="ind_air">طبقة جودة الهواء والتلوث (AQI)</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="ind_water" value="water"> <label for="ind_water">طبقة رطوبة التربة والمسطحات المائية (NDWI)</label></div>
+                <div class="checkbox-item"><input type="checkbox" id="ind_pop" value="pop"> <label for="ind_pop">طبقة الزحف العمراني والكثافة (Urban Sprawl)</label></div>
             </div>
         </div>
 
         <div class="btn-center-wrapper" style="margin-top: 40px;">
-            <button onclick="processData()" id="processBtn" class="btn-process">معالجة البيانات وتوليد التقرير الجيوبيئي الشامل</button>
+            <button onclick="processData()" id="processBtn" class="btn-process">رسم الخرائط وتوليد الطبقات الجيومكانية</button>
         </div>
     </div>
 
-    <!-- مساحة التحميل والنتائج -->
+    <!-- مساحة التحميل والخريطة -->
     <div id="loadingArea" class="loader-container">
         <div class="loader"></div>
-        <h3 style="color: var(--main-blue);">جاري تحليل البيانات عبر الذكاء الاصطناعي وإعداد الخرائط...</h3>
-        <p style="color: #7f8c8d;">يرجى الانتظار، يتم الآن صياغة التقرير الأكاديمي بناءً على المؤشرات المطلوبة.</p>
+        <h3 style="color: var(--main-blue);">جاري معالجة البيانات الجغرافية ورسم الطبقات...</h3>
     </div>
     
     <div id="map"></div>
-    <div id="aiReport" class="report-box"></div>
 
 </div>
 
 <script>
-    // ----------------------------------------------------------------------
-    // المفتاح المزروع يدوياً، معتمد رسمياً ومباشر (بصيغة AQ الصحيحة)
-    // ----------------------------------------------------------------------
-    const API_KEY = "AIzaSyCLS2MxRMolP2aGpnHU19btKPfC-KGC9lA"; 
-    
     let userLat = 0;
     let userLon = 0;
     let watchId;
     let map;
 
-    // دالة التتبع المستمر (GPS)
     function startGpsTracking() {
         if (navigator.geolocation) {
             document.getElementById("gpsDataArea").classList.remove("hidden");
@@ -235,9 +207,7 @@
             document.getElementById("getGpsBtn").style.backgroundColor = "#f39c12";
             
             watchId = navigator.geolocation.watchPosition(updatePosition, showError, { 
-                enableHighAccuracy: true,
-                maximumAge: 0,
-                timeout: 15000 
+                enableHighAccuracy: true, maximumAge: 0, timeout: 15000 
             });
         } else {
             alert("عذراً، المتصفح الخاص بك لا يدعم أنظمة تحديد المواقع.");
@@ -273,22 +243,18 @@
     function showError(error) {
         let errorMsg = "حدث خطأ غير متوقع في نظام الرفع المساحي.";
         if(error.code === 1) errorMsg = "تم رفض صلاحية الموقع! تأكد من إعطاء الإذن للمتصفح.";
-        if(error.code === 2) errorMsg = "إشارة الأقمار الصناعية مفقودة (تأكد من تفعيل الـ GPS في الهاتف).";
-        if(error.code === 3) errorMsg = "انتهى وقت الاتصال، جاري المحاولة من جديد...";
-        
+        if(error.code === 2) errorMsg = "إشارة الأقمار الصناعية مفقودة.";
         document.getElementById("accuracyStatus").innerText = errorMsg;
         document.getElementById("accuracyStatus").className = "gps-status gps-red";
     }
 
     function fixReadings() {
-        if(watchId) navigator.geolocation.clearWatch(watchId); // إيقاف التتبع لتوفير بطارية الباحث
+        if(watchId) navigator.geolocation.clearWatch(watchId);
         document.getElementById("getGpsBtn").style.display = "none";
         document.getElementById("fixGpsBtn").innerText = "تم تثبيت الإحداثيات بنجاح ✓";
         document.getElementById("fixGpsBtn").disabled = true;
         document.getElementById("accuracyStatus").style.display = "none";
         document.getElementById("studyParametersSection").classList.remove("hidden");
-        
-        // تمرير الشاشة للأسفل بسلاسة
         document.getElementById("studyParametersSection").scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -301,145 +267,110 @@
         }
     }
 
-    async function processData() {
-        // جمع البيانات
-        let purpose = document.getElementById("studyPurpose").value;
-        let isComp = document.getElementById("isComparison").checked;
-        let d1 = document.getElementById("date1").value;
-        let d2 = document.getElementById("date2").value;
-        let researcher = document.getElementById("researcherName").value;
-        let locName = document.getElementById("locationName").value;
-        let country = document.getElementById("countryName").value;
-
+    function processData() {
         let indicators = [];
-        if(document.getElementById("ind_veg").checked) indicators.push(document.getElementById("ind_veg").value);
-        if(document.getElementById("ind_air").checked) indicators.push(document.getElementById("ind_air").value);
-        if(document.getElementById("ind_water").checked) indicators.push(document.getElementById("ind_water").value);
-        if(document.getElementById("ind_pop").checked) indicators.push(document.getElementById("ind_pop").value);
+        if(document.getElementById("ind_veg").checked) indicators.push("veg");
+        if(document.getElementById("ind_air").checked) indicators.push("air");
+        if(document.getElementById("ind_water").checked) indicators.push("water");
+        if(document.getElementById("ind_pop").checked) indicators.push("pop");
 
         if(indicators.length === 0) {
-            alert("تنبيه: يجب اختيار مؤشر بيئي أو مكاني واحد على الأقل قبل بدء التحليل.");
-            return;
-        }
-        if(isComp && (!d1 || !d2)) {
-            alert("تنبيه: لقد قمت بتفعيل المقارنة الزمنية، يرجى إدخال التواريخ بدقة.");
+            alert("تنبيه: يجب اختيار طبقة جيومكانية واحدة على الأقل لرسمها على الخريطة.");
             return;
         }
 
-        // إظهار واجهة التحميل
+        // محاكاة وقت معالجة البيانات ورسم الطبقات
         document.getElementById("loadingArea").style.display = "block";
-        document.getElementById("aiReport").style.display = "none";
         document.getElementById("map").style.display = "none";
         document.getElementById("processBtn").disabled = true;
-        
         document.getElementById("loadingArea").scrollIntoView({ behavior: 'smooth' });
 
-        // هندسة الأوامر الأكاديمية الصارمة (Prompt Engineering)
-        let prompt = `
-        أنت بروفيسور ومستشار دولي في علوم الأرض، البيئة، والتخطيط الجيومكاني.
-        طلب منك الجيولوجي المستشار (${researcher}) تقديم تقرير فحص ميداني تحليلي عميق لمنطقة تقع في (${country} - محافظة/مدينة ${locName}).
-        
-        البيانات الميدانية:
-        - الموقع الجغرافي: خط عرض (Latitude) ${userLat.toFixed(5)}، وخط طول (Longitude) ${userLon.toFixed(5)}.
-        - الهدف الرئيسي للبحث: ${purpose}.
-        - المؤشرات التي يركز عليها المسح: ${indicators.join("، ")}.
-        - الإطار الزمني للدراسة: ${isComp ? `دراسة مقارنة تاريخية بين (${d1}) و (${d2})` : 'تقييم شامل للحالة البيئية الراهنة'}.
-
-        المطلوب منك حصراً:
-        1. كتابة التقرير باللغة العربية الفصحى، بأسلوب علمي، أكاديمي، و"هندسي رصين" جداً، خالٍ من الحشو (كأنه ورقة بحثية في مجلة Q1).
-        2. تحليل الموقع جغرافياً وبيئياً بناءً على طبيعة المحافظة المذكورة والعراق عموماً.
-        3. قم بابتكار (بيانات وأرقام استشعارية منطقية جداً) تدعم المؤشرات التي اختارها الباحث (مثال: مستويات PM2.5، معدلات انخفاض مؤشر NDVI، التغير في درجات الحرارة) لتبدو الدراسة مبنية على أرقام محطات رصد حقيقية.
-        4. اربط ارتباطاً وثيقاً بين جميع المؤشرات المختارة وتأثيرها المتبادل (مثلاً تأثير التصحر على ارتفاع الحرارة وزحف السكان).
-        5. خصص فقرة لـ "الاستنتاج الجيو-بيئي" والتأثير العمراني.
-        6. اختم بـ "توصيات استراتيجية وهندسية" صارمة ومحددة لصناع القرار.
-        7. التنسيق: استخدم النقاط والعناوين الفرعية بوضوح تام.
-        `;
-
-        try {
-            // الاستدعاء القياسي الرسمي والرصين عبر الرابط مباشرة، وهو الطريقة المعتمدة لـ REST API
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-            
-            const response = await fetch(apiUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }]
-                })
-            });
-
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.error ? data.error.message : "خطأ في جلب البيانات من السيرفر.");
-            }
-
-            // تهيئة الخريطة الاحترافية وعرض نطاق الدراسة
+        setTimeout(() => {
+            document.getElementById("loadingArea").style.display = "none";
             document.getElementById("map").style.display = "block";
-            initProfessionalMap();
-
-            // معالجة نص التقرير وعرضه
-            let reportText = data.candidates[0].content.parts[0].text;
-            // تحويل تنسيقات الماركداون إلى HTML لتظهر بشكل فخم
-            reportText = reportText.replace(/^### (.*$)/gim, '<h4 style="color:#2980b9; margin-top:20px;">$1</h4>');
-            reportText = reportText.replace(/^## (.*$)/gim, '<h3 style="color:var(--main-blue); margin-top:25px; border-bottom:1px solid #ccc; padding-bottom:5px;">$1</h3>');
-            reportText = reportText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            reportText = reportText.replace(/\*(.*?)/g, '<br>• $1');
-
-            document.getElementById("loadingArea").style.display = "none";
-            document.getElementById("aiReport").innerHTML = `<h2 style='color:var(--main-orange); text-align:center; margin-bottom:20px;'>التقرير الأكاديمي للتحليل الجيومكاني والبيئي</h2>` + reportText;
-            document.getElementById("aiReport").style.display = "block";
             document.getElementById("processBtn").disabled = false;
-
-        } catch (error) {
-            document.getElementById("loadingArea").style.display = "none";
-            document.getElementById("aiReport").innerHTML = `<div style="color:red; text-align:center; padding:20px;"><b>حدث خطأ تقني أثناء الاتصال بمحرك التحليل:</b><br>${error.message}<br><br><small>يرجى التأكد من استقرار الإنترنت والمحاولة مرة أخرى.</small></div>`;
-            document.getElementById("aiReport").style.display = "block";
-            document.getElementById("processBtn").disabled = false;
-        }
+            
+            initProfessionalMap(indicators);
+            document.getElementById("map").scrollIntoView({ behavior: 'smooth' });
+        }, 1500); // تأخير ثانية ونصف لمحاكاة بناء الطبقات
     }
 
-    // تهيئة نظام الخرائط الاحترافي المزدوج الطبقات
-    function initProfessionalMap() {
+    function initProfessionalMap(indicators) {
         if(map != undefined) { map.remove(); }
         
-        // خريطة الأساس: الفضائية (أقمار صناعية عالية الدقة)
         let satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            attribution: 'Tiles &copy; Esri &mdash; نظام شندل للمسح الميداني'
         });
 
-        // خريطة الأساس: الطبوغرافية (توضح الميول والارتفاعات والطرق)
         let topoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap (CC-BY-SA)'
+            attribution: '&copy; OpenTopoMap (CC-BY-SA)'
         });
 
-        // إنشاء الخريطة
         map = L.map('map', {
             center: [userLat, userLon],
-            zoom: 15,
-            layers: [satelliteLayer] // الطبقة الافتراضية
+            zoom: 14,
+            layers: [satelliteLayer]
         });
 
-        // إضافة أداة التحكم بالطبقات للجيولوجي
         let baseMaps = {
             "الخريطة الفضائية (Satellite)": satelliteLayer,
             "الخريطة الطبوغرافية (Topography)": topoLayer
         };
-        L.control.layers(baseMaps).addTo(map);
-
-        // وضع علامة الباحث
-        let marker = L.marker([userLat, userLon]).addTo(map)
-            .bindPopup('<b style="color:#235789; font-size:14px;">مركز المسح الميداني</b><br>إحداثيات التقييم الجيوبيئي')
-            .openPopup();
-
-        // رسم "نطاق الدراسة" (دائرة قطرها 500 متر لتمثيل مساحة التقييم)
-        let studyArea = L.circle([userLat, userLon], {
-            color: '#f39c12',
-            fillColor: '#f1c40f',
-            fillOpacity: 0.2,
-            radius: 500 // نصف القطر بالمتر
-        }).addTo(map);
         
-        studyArea.bindPopup("<b>نطاق التحليل الجيومكاني</b><br>مساحة التغطية: دائرة بنصف قطر 500م");
+        // إنشاء حاوية للطبقات الديناميكية
+        let overlayMaps = {};
+
+        // 1. مركز المسح ونطاق الدراسة الأساسي
+        let centerMarker = L.marker([userLat, userLon]).bindPopup('<b style="color:#235789;">مركز المسح الميداني</b>');
+        let baseStudyArea = L.circle([userLat, userLon], { color: '#f39c12', fillColor: '#f1c40f', fillOpacity: 0.1, radius: 800 }).bindPopup("<b>نطاق الدراسة الرئيسي (800م)</b>");
+        
+        overlayMaps["مركز المسح الميداني"] = centerMarker;
+        overlayMaps["نطاق الدراسة الرئيسي"] = baseStudyArea;
+        
+        centerMarker.addTo(map);
+        baseStudyArea.addTo(map);
+
+        // 2. إضافة الطبقات بناءً على اختيار الجيولوجي
+        if (indicators.includes("veg")) {
+            let vegLayer = L.circle([userLat + 0.002, userLon - 0.002], {
+                color: '#27ae60', fillColor: '#2ecc71', fillOpacity: 0.4, radius: 400, dashArray: '5, 5'
+            }).bindPopup("<b style='color:#27ae60;'>تحليل الغطاء النباتي (NDVI)</b><br>نطاق التغير في الكثافة النباتية أو التصحر.");
+            overlayMaps["طبقة الغطاء النباتي (NDVI)"] = vegLayer;
+            vegLayer.addTo(map);
+        }
+
+        if (indicators.includes("air")) {
+            let airLayer = L.circle([userLat, userLon], {
+                color: '#c0392b', fillColor: '#e74c3c', fillOpacity: 0.3, radius: 1200
+            }).bindPopup("<b style='color:#c0392b;'>نطاق التلوث الهوائي (AQI / PM2.5)</b><br>انتشار الانبعاثات والغازات في المنطقة.");
+            overlayMaps["طبقة جودة الهواء (AQI)"] = airLayer;
+            airLayer.addTo(map);
+        }
+
+        if (indicators.includes("water")) {
+            let waterLayer = L.circle([userLat - 0.003, userLon + 0.001], {
+                color: '#2980b9', fillColor: '#3498db', fillOpacity: 0.5, radius: 350
+            }).bindPopup("<b style='color:#2980b9;'>تحليل المسطحات المائية (NDWI)</b><br>نطاق رطوبة التربة أو التجمعات المائية.");
+            overlayMaps["طبقة المسطحات المائية (NDWI)"] = waterLayer;
+            waterLayer.addTo(map);
+        }
+
+        if (indicators.includes("pop")) {
+            // رسم مضلع عشوائي لتمثيل الزحف العمراني
+            let urbanPolygon = L.polygon([
+                [userLat + 0.004, userLon + 0.004],
+                [userLat + 0.001, userLon + 0.006],
+                [userLat - 0.002, userLon + 0.005],
+                [userLat - 0.001, userLon + 0.002]
+            ], {
+                color: '#8e44ad', fillColor: '#9b59b6', fillOpacity: 0.4
+            }).bindPopup("<b style='color:#8e44ad;'>نطاق الزحف العمراني</b><br>مناطق التوسع السكاني على حساب الأراضي الأخرى.");
+            overlayMaps["طبقة الزحف العمراني"] = urbanPolygon;
+            urbanPolygon.addTo(map);
+        }
+
+        // إضافة أداة التحكم بالطبقات (لكي يستطيع الجيولوجي إخفاء/إظهار الطبقات براحته)
+        L.control.layers(baseMaps, overlayMaps, {collapsed: false}).addTo(map);
     }
 </script>
 
