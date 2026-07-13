@@ -25,120 +25,57 @@
             padding: 0;
             color: #333;
         }
-        /* الشريط العلوي */
         .top-nav {
-            background-color: var(--dark-header);
-            color: white;
-            text-align: center;
-            padding: 10px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
+            background-color: var(--dark-header); color: white; text-align: center; padding: 10px; font-size: 14px; font-weight: bold; cursor: pointer;
         }
-        .top-nav:hover { background-color: #1a252f; }
-        
-        /* الهيدر الرئيسي */
         .main-header {
-            background-color: var(--main-blue);
-            color: white;
-            text-align: center;
-            padding: 25px 20px;
-            border-bottom: 5px solid var(--main-orange);
+            background-color: var(--main-blue); color: white; text-align: center; padding: 25px 20px; border-bottom: 5px solid var(--main-orange);
         }
         .main-header h1 { margin: 0; font-size: 26px; }
         .main-header h2 { margin: 5px 0 15px 0; font-size: 18px; font-weight: normal; color: #ecf0f1; direction: ltr;}
         .main-header p { margin: 0; color: var(--main-orange); font-size: 16px; font-weight: bold; }
         
-        /* الحاوية الرئيسية */
-        .container {
-            max-width: 1100px;
-            margin: 30px auto;
-            padding: 0 15px;
-        }
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 15px; }
+        .section-card { background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 5px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .section-title { color: var(--main-blue); font-size: 16px; font-weight: bold; border-bottom: 1px solid var(--border-light); padding-bottom: 10px; margin-bottom: 20px; }
         
-        /* البطاقات (الأقسام) */
-        .section-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-light);
-            border-radius: 5px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
-        .section-title {
-            color: var(--main-blue);
-            font-size: 16px;
-            font-weight: bold;
-            border-bottom: 1px solid var(--border-light);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        
-        /* تخطيط الشبكة للأعمدة */
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 768px) {
-            .grid-3, .grid-2 { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 768px) { .grid-3, .grid-2 { grid-template-columns: 1fr; } }
         
-        /* الحقول والنصوص */
         .form-group { display: flex; flex-direction: column; }
         label { color: var(--label-blue); font-size: 14px; font-weight: bold; margin-bottom: 8px; }
-        input[type="text"], input[type="date"], select {
-            padding: 10px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 14px;
-            background-color: #fcfcfc;
-        }
+        input[type="text"], input[type="date"], select { padding: 10px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 14px; background-color: #fcfcfc; width: 100%; box-sizing: border-box;}
         input:focus, select:focus { outline: none; border-color: var(--main-blue); }
         
-        /* الأزرار */
         .btn-center-wrapper { text-align: center; margin: 20px 0; }
-        button {
-            background: var(--main-blue); color: white; border: none; padding: 12px 30px; 
-            border-radius: 4px; font-size: 15px; cursor: pointer; font-weight: bold; transition: 0.3s;
-        }
+        button { background: var(--main-blue); color: white; border: none; padding: 12px 30px; border-radius: 4px; font-size: 15px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         button:hover { background: #1a4066; }
         button:disabled { background: #95a5a6; cursor: not-allowed; }
         .btn-fix { background: #27ae60; margin-top:15px;}
         .btn-fix:hover { background: #219653; }
         
-        /* الإحداثيات الموحدة */
-        .coord-box {
-            background: #eef2f5; border: 1px solid #c8d6e5; border-radius: 4px; padding: 15px;
-            text-align: center; direction: ltr; font-family: monospace; font-size: 16px; color: #222;
-        }
+        .coord-box { background: #eef2f5; border: 1px solid #c8d6e5; border-radius: 4px; padding: 15px; text-align: center; direction: ltr; font-family: monospace; font-size: 16px; color: #222; }
         
-        /* حالة الـ GPS */
-        .gps-status {
-            font-weight: bold; padding: 12px; border-radius: 4px; margin-top: 15px; text-align: center; color: white;
-        }
+        .gps-status { font-weight: bold; padding: 12px; border-radius: 4px; margin-top: 15px; text-align: center; color: white; }
         .gps-green { background: #27ae60; }
         .gps-yellow { background: #f39c12; color: #fff; }
         .gps-red { background: #e74c3c; }
         
-        /* الخريطة والتقرير */
         #map { height: 450px; width: 100%; border-radius: 4px; border: 1px solid var(--border-light); display: none; margin-top:20px;}
-        .report-box {
-            background: #fff; border-right: 5px solid var(--main-orange); padding: 25px; margin-top: 20px;
-            border-radius: 4px; border: 1px solid var(--border-light); font-size: 16px; line-height: 1.9; display: none; text-align: justify;
-        }
-        .loader {
-            border: 4px solid #f3f3f3; border-top: 4px solid var(--main-orange); border-radius: 50%;
-            width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 30px auto; display: none;
-        }
+        .report-box { background: #fff; border-right: 5px solid var(--main-orange); padding: 25px; margin-top: 20px; border-radius: 4px; border: 1px solid var(--border-light); font-size: 16px; line-height: 1.9; display: none; text-align: justify; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--main-orange); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 30px auto; display: none; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .hidden { display: none !important; }
-        
         .checkbox-group label { display: inline-block; font-weight: normal; margin-right: 8px; cursor: pointer; color: #333; }
     </style>
 </head>
 <body>
 
-<!-- الشريط العلوي -->
-<div class="top-nav" onclick="alert('سيتم الرجوع للوحة التحكم')">
+<div class="top-nav" onclick="window.location.href='index.html'">
     ➔ رجوع إلى لوحة التحكم الرئيسية
 </div>
 
-<!-- الهيدر الرئيسي -->
 <div class="main-header">
     <h1>نظام شندل للمسح الميداني الجيولوجي (المسح الديناميكي الجيو-بيئي)</h1>
     <h2>Geo-Environmental Dynamics Survey</h2>
@@ -147,7 +84,7 @@
 
 <div class="container">
     
-    <!-- القسم الأول: بيانات الجيولوجي المشرف وموقع العمل -->
+    <!-- القسم الأول: بيانات الجيولوجي -->
     <div class="section-card">
         <div class="section-title">أولاً: بيانات الجيولوجي المشرف وموقع العمل</div>
         <div class="grid-3">
@@ -157,20 +94,29 @@
             </div>
             <div class="form-group">
                 <label>الدولة:</label>
-                <select id="countryName">
-                    <option value="العراق" selected>العراق</option>
-                    <option value="أخرى">أخرى</option>
-                </select>
+                <!-- استخدام datalist يتيح الاختيار أو الكتابة الحرة لأي دولة -->
+                <input type="text" id="countryName" list="countries" value="العراق" placeholder="اختر أو اكتب الدولة">
+                <datalist id="countries">
+                    <option value="العراق">
+                    <option value="السعودية">
+                    <option value="الإمارات">
+                    <option value="مصر">
+                    <option value="الأردن">
+                </datalist>
             </div>
             <div class="form-group">
-                <label>المحافظة:</label>
-                <select id="locationName">
-                    <option value="بغداد" selected>بغداد</option>
-                    <option value="الأنبار">الأنبار</option>
-                    <option value="البصرة">البصرة</option>
-                    <option value="أربيل">أربيل</option>
-                    <option value="أخرى">أخرى</option>
-                </select>
+                <label>المحافظة / المدينة:</label>
+                <!-- استخدام datalist يتيح الاختيار أو الكتابة الحرة لأي محافظة -->
+                <input type="text" id="locationName" list="provinces" value="بغداد" placeholder="اختر أو اكتب المحافظة">
+                <datalist id="provinces">
+                    <option value="بغداد">
+                    <option value="البصرة">
+                    <option value="نينوى">
+                    <option value="أربيل">
+                    <option value="الأنبار">
+                    <option value="النجف">
+                    <option value="ذي قار">
+                </datalist>
             </div>
         </div>
     </div>
@@ -203,10 +149,10 @@
         <div class="form-group">
             <label>الهدف الأكاديمي / الهندسي من الدراسة:</label>
             <select id="studyPurpose">
-                <option value="دراسات التدهور الأرضي والتصحر">دراسات التدهور الأرضي والتصحر</option>
-                <option value="تقييم الأثر البيئي للمشاريع الإنشائية والتعدينية">تقييم الأثر البيئي للمشاريع الإنشائية والتعدينية</option>
-                <option value="التخطيط العمراني والجيوبيئي للمدن">التخطيط العمراني والجيوبيئي للمدن</option>
-                <option value="التغير المناخي والمناخ التفصيلي">التغير المناخي والمناخ التفصيلي</option>
+                <option value="دراسات التدهور الأرضي والتصحر">دراسات التدهور الأرضي والتصحر (Land Degradation)</option>
+                <option value="تقييم الأثر البيئي للمشاريع الإنشائية والتعدينية">تقييم الأثر البيئي للمشاريع الإنشائية والتعدينية (EIA)</option>
+                <option value="التخطيط العمراني والجيوبيئي للمدن">التخطيط العمراني والجيوبيئي للمدن (Urban Planning)</option>
+                <option value="التغير المناخي والمناخ التفصيلي">التغير المناخي والمناخ التفصيلي (Climate Change)</option>
             </select>
         </div>
 
@@ -241,7 +187,7 @@
 </div>
 
 <script>
-    // --- 1. ضع مفتاح الـ API الخاص بك هنا ---
+    // --- ضع مفتاح الـ API الخاص بك هنا ---
     const API_KEY = "[AQ.Ab8RN6KDChEej8QeNQ3V0-S-6RXcGkWG6v_jrGGuXlMTtKFg7A]"; 
     // ----------------------------------------
 
@@ -250,7 +196,7 @@
     let watchId;
     let map;
 
-    // دالة بدء التتبع المستمر للحصول على أفضل دقة
+    // دالة التتبع المستمر للحصول على أفضل دقة
     function startGpsTracking() {
         if (navigator.geolocation) {
             document.getElementById("gpsDataArea").classList.remove("hidden");
@@ -267,20 +213,18 @@
         }
     }
 
-    // تحديث الموقع على الشاشة بشكل مستمر
+    // تحديث الموقع
     function updatePosition(position) {
         userLat = position.coords.latitude;
         userLon = position.coords.longitude;
         let accuracy = position.coords.accuracy;
 
-        // عرض الإحداثيات في البلوك الموحد
         document.getElementById("unifiedCoords").innerHTML = 
             `<strong>Latitude:</strong> ${userLat.toFixed(6)} &nbsp; | &nbsp; <strong>Longitude:</strong> ${userLon.toFixed(6)}`;
 
         let accStatus = document.getElementById("accuracyStatus");
         let fixBtn = document.getElementById("fixGpsBtn");
 
-        // تقييم الدقة وتغيير الألوان بناءً عليها
         if (accuracy < 10) {
             accStatus.innerText = `الدقة ممتازة جداً: ± ${accuracy.toFixed(1)} متر`;
             accStatus.className = "gps-status gps-green";
@@ -297,28 +241,24 @@
     }
 
     function showError(error) {
-        let errorMsg = "حدث خطأ غير معروف.";
-        if(error.code === 1) errorMsg = "تم رفض صلاحية الموقع. يرجى تفعيل الموقع من إعدادات المتصفح.";
-        if(error.code === 2) errorMsg = "إشارة الـ GPS غير متوفرة.";
-        if(error.code === 3) errorMsg = "انتهى وقت الاتصال، جاري المحاولة مرة أخرى...";
+        let errorMsg = "حدث خطأ غير معروف في الـ GPS.";
+        if(error.code === 1) errorMsg = "تم رفض صلاحية الموقع. (ملاحظة: الـ GPS لا يعمل على الملفات المحلية، استخدم رابط آمن https).";
+        if(error.code === 2) errorMsg = "إشارة الـ GPS غير متوفرة حالياً.";
+        if(error.code === 3) errorMsg = "انتهى وقت الاتصال بالأقمار، جاري المحاولة...";
         
         document.getElementById("accuracyStatus").innerText = errorMsg;
         document.getElementById("accuracyStatus").className = "gps-status gps-red";
     }
 
-    // تثبيت القراءات وإيقاف البحث
     function fixReadings() {
-        if(watchId) navigator.geolocation.clearWatch(watchId); // إيقاف البحث المستمر
-        
+        if(watchId) navigator.geolocation.clearWatch(watchId);
         document.getElementById("getGpsBtn").style.display = "none";
         document.getElementById("fixGpsBtn").innerText = "تم تثبيت الإحداثيات بنجاح ✓";
         document.getElementById("fixGpsBtn").disabled = true;
         document.getElementById("accuracyStatus").style.display = "none";
-        
         document.getElementById("studyParametersSection").classList.remove("hidden");
     }
 
-    // إظهار/إخفاء تواريخ المقارنة
     function toggleComparisonDates() {
         let isChecked = document.getElementById("isComparison").checked;
         if(isChecked) {
@@ -328,7 +268,6 @@
         }
     }
 
-    // معالجة البيانات واستدعاء الذكاء الاصطناعي
     async function processData() {
         let purpose = document.getElementById("studyPurpose").value;
         let isComp = document.getElementById("isComparison").checked;
@@ -353,10 +292,8 @@
         document.getElementById("aiReport").style.display = "none";
         document.getElementById("map").style.display = "block";
 
-        // رسم الخريطة
         initMap();
 
-        // هندسة الأوامر (Prompt)
         let prompt = `
         أنت بروفيسور عراقي خبير ومستشار دولي في علوم الأرض والبيئة.
         طلب منك الجيولوجي (${researcher}) كتابة تقرير أكاديمي رصين لمنطقة في (${country} - ${locName}).
@@ -375,7 +312,6 @@
         6. نسق التقرير باستخدام عناوين عريضة.
         `;
 
-        // استدعاء Gemini API
         try {
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
                 method: "POST",
@@ -386,10 +322,7 @@
             });
 
             const data = await response.json();
-            
-            if (data.error) {
-                throw new Error(data.error.message);
-            }
+            if (data.error) throw new Error(data.error.message);
 
             let reportText = data.candidates[0].content.parts[0].text;
             reportText = reportText.replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--main-blue);">$1</strong>');
@@ -406,7 +339,6 @@
         }
     }
 
-    // تهيئة الخريطة الفضائية
     function initMap() {
         if(map != undefined) { map.remove(); }
         map = L.map('map').setView([userLat, userLon], 14);
@@ -420,6 +352,5 @@
             .openPopup();
     }
 </script>
-
 </body>
 </html>
