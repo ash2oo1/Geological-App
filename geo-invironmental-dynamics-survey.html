@@ -3,155 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مسح الديناميكية الجيو-بيئية | نظام شندل</title>
-    <!-- استدعاء مكتبة الخرائط Leaflet -->
+    <title>نظام شندل للمسح الميداني الجيولوجي (المسح الديناميكي الجيو-بيئي)</title>
+    <!-- مكتبة الخرائط Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <style>
         :root {
-            --primary: #1e3c72;
-            --secondary: #2a5298;
-            --accent: #e67e22;
-            --bg: #f4f7f6;
-            --text: #333;
-            --success: #27ae60;
-            --warning: #f1c40f;
-            --danger: #e74c3c;
+            --dark-header: #2c3e50;
+            --main-blue: #235789;
+            --main-orange: #f39c12;
+            --bg-color: #f0f3f5;
+            --card-bg: #ffffff;
+            --label-blue: #34495e;
+            --border-light: #d1d8e0;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            background-color: var(--bg-color);
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            color: #333;
         }
+        /* الشريط العلوي */
+        .top-nav {
+            background-color: var(--dark-header);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .top-nav:hover { background-color: #1a252f; }
+        
+        /* الهيدر الرئيسي */
+        .main-header {
+            background-color: var(--main-blue);
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+            border-bottom: 5px solid var(--main-orange);
+        }
+        .main-header h1 { margin: 0; font-size: 26px; }
+        .main-header h2 { margin: 5px 0 15px 0; font-size: 18px; font-weight: normal; color: #ecf0f1; direction: ltr;}
+        .main-header p { margin: 0; color: var(--main-orange); font-size: 16px; font-weight: bold; }
+        
+        /* الحاوية الرئيسية */
         .container {
-            max-width: 1000px;
-            margin: auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 15px;
         }
-        h1, h2, h3 { color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 10px;}
+        
+        /* البطاقات (الأقسام) */
         .section-card {
-            background: #f9fbff;
-            border: 1px solid #dce4f0;
-            border-radius: 8px;
-            padding: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 5px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .section-title {
+            color: var(--main-blue);
+            font-size: 16px;
+            font-weight: bold;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 10px;
             margin-bottom: 20px;
         }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; color: var(--secondary); }
+        
+        /* تخطيط الشبكة للأعمدة */
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) {
+            .grid-3, .grid-2 { grid-template-columns: 1fr; }
+        }
+        
+        /* الحقول والنصوص */
+        .form-group { display: flex; flex-direction: column; }
+        label { color: var(--label-blue); font-size: 14px; font-weight: bold; margin-bottom: 8px; }
         input[type="text"], input[type="date"], select {
-            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box;
+            padding: 10px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 14px;
+            background-color: #fcfcfc;
         }
-        .checkbox-group label { display: inline-block; font-weight: normal; margin-left: 15px; cursor: pointer; color: #000; }
+        input:focus, select:focus { outline: none; border-color: var(--main-blue); }
         
+        /* الأزرار */
+        .btn-center-wrapper { text-align: center; margin: 20px 0; }
         button {
-            background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 5px;
-            font-size: 16px; cursor: pointer; transition: 0.3s; font-weight: bold; width: 100%;
+            background: var(--main-blue); color: white; border: none; padding: 12px 30px; 
+            border-radius: 4px; font-size: 15px; cursor: pointer; font-weight: bold; transition: 0.3s;
         }
-        button:hover { background: var(--secondary); }
+        button:hover { background: #1a4066; }
         button:disabled { background: #95a5a6; cursor: not-allowed; }
-        .btn-fix { background: var(--success); width: auto; margin-top:10px; display: block;}
+        .btn-fix { background: #27ae60; margin-top:15px;}
+        .btn-fix:hover { background: #219653; }
         
+        /* الإحداثيات الموحدة */
+        .coord-box {
+            background: #eef2f5; border: 1px solid #c8d6e5; border-radius: 4px; padding: 15px;
+            text-align: center; direction: ltr; font-family: monospace; font-size: 16px; color: #222;
+        }
+        
+        /* حالة الـ GPS */
         .gps-status {
-            font-weight: bold; padding: 10px; border-radius: 5px; margin-top: 10px; text-align: center; color: white;
+            font-weight: bold; padding: 12px; border-radius: 4px; margin-top: 15px; text-align: center; color: white;
         }
-        .gps-green { background: var(--success); }
-        .gps-yellow { background: var(--warning); color: #333; }
-        .gps-red { background: var(--danger); }
+        .gps-green { background: #27ae60; }
+        .gps-yellow { background: #f39c12; color: #fff; }
+        .gps-red { background: #e74c3c; }
         
-        #map { height: 400px; width: 100%; border-radius: 8px; margin-top: 20px; border: 2px solid var(--primary); display: none;}
-        
+        /* الخريطة والتقرير */
+        #map { height: 450px; width: 100%; border-radius: 4px; border: 1px solid var(--border-light); display: none; margin-top:20px;}
         .report-box {
-            background: #fff; border-right: 5px solid var(--accent); padding: 20px; margin-top: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); font-size: 16px; line-height: 1.8; display: none;
-            text-align: justify;
+            background: #fff; border-right: 5px solid var(--main-orange); padding: 25px; margin-top: 20px;
+            border-radius: 4px; border: 1px solid var(--border-light); font-size: 16px; line-height: 1.9; display: none; text-align: justify;
         }
-        
         .loader {
-            border: 5px solid #f3f3f3; border-top: 5px solid var(--primary); border-radius: 50%;
-            width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; display: none;
+            border: 4px solid #f3f3f3; border-top: 4px solid var(--main-orange); border-radius: 50%;
+            width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 30px auto; display: none;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
         .hidden { display: none !important; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        .checkbox-group label { display: inline-block; font-weight: normal; margin-right: 8px; cursor: pointer; color: #333; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>مسح الديناميكية الجيو-بيئية | نظام شندل</h1>
-    <p>التقييم الجيومكاني الشامل للأنظمة البيئية والمناخية والعمرانية</p>
+<!-- الشريط العلوي -->
+<div class="top-nav" onclick="alert('سيتم الرجوع للوحة التحكم')">
+    ➔ رجوع إلى لوحة التحكم الرئيسية
+</div>
 
-    <!-- القسم الأول: معلومات الباحث -->
+<!-- الهيدر الرئيسي -->
+<div class="main-header">
+    <h1>نظام شندل للمسح الميداني الجيولوجي (المسح الديناميكي الجيو-بيئي)</h1>
+    <h2>Geo-Environmental Dynamics Survey</h2>
+    <p>بإشراف الجيولوجي: علي شندل فلاح</p>
+</div>
+
+<div class="container">
+    
+    <!-- القسم الأول: بيانات الجيولوجي المشرف وموقع العمل -->
     <div class="section-card">
-        <h3>أولاً: بيانات المشرف</h3>
-        <div class="grid-2">
+        <div class="section-title">أولاً: بيانات الجيولوجي المشرف وموقع العمل</div>
+        <div class="grid-3">
             <div class="form-group">
-                <label>اسم الجيولوجي / المختص:</label>
-                <input type="text" id="researcherName" placeholder="أدخل اسمك الكامل">
+                <label>اسم الجيولوجي المشرف:</label>
+                <input type="text" id="researcherName" value="علي شندل فلاح">
             </div>
             <div class="form-group">
-                <label>المنطقة / المحافظة:</label>
-                <input type="text" id="locationName" placeholder="مثال: بغداد، النهروان">
+                <label>الدولة:</label>
+                <select id="countryName">
+                    <option value="العراق" selected>العراق</option>
+                    <option value="أخرى">أخرى</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>المحافظة:</label>
+                <select id="locationName">
+                    <option value="بغداد" selected>بغداد</option>
+                    <option value="الأنبار">الأنبار</option>
+                    <option value="البصرة">البصرة</option>
+                    <option value="أربيل">أربيل</option>
+                    <option value="أخرى">أخرى</option>
+                </select>
             </div>
         </div>
     </div>
 
-    <!-- القسم الثاني: الرفع المساحي الذكي -->
+    <!-- القسم الثاني: الرفع المساحي -->
     <div class="section-card">
-        <h3>ثانياً: الرفع المساحي وتحديد الإحداثيات (UTM/GPS)</h3>
-        <button id="getGpsBtn" onclick="getLocation()" style="width: auto;">أخذ القراءات اللحظية عبر الأقمار الصناعية</button>
+        <div class="section-title">ثانياً: الرفع المساحي الموحد (GPS)</div>
+        
+        <div class="btn-center-wrapper">
+            <button id="getGpsBtn" onclick="startGpsTracking()">أخذ القراءات اللحظية عبر الأقمار الصناعية</button>
+        </div>
         
         <div id="gpsDataArea" class="hidden">
-            <div class="grid-2" style="margin-top: 15px;">
-                <div class="form-group"><label>خط العرض (Latitude):</label><input type="text" id="lat" readonly></div>
-                <div class="form-group"><label>خط الطول (Longitude):</label><input type="text" id="lon" readonly></div>
+            <div class="coord-box" id="unifiedCoords">
+                جاري البحث عن الأقمار الصناعية...
             </div>
-            <div id="accuracyStatus" class="gps-status">جاري حساب الدقة...</div>
-            <button id="fixGpsBtn" class="btn-fix hidden" onclick="fixReadings()">تثبيت القراءات والمتابعة</button>
+            
+            <div id="accuracyStatus" class="gps-status gps-red">جاري حساب الدقة وتحسينها... (يرجى الانتظار)</div>
+            
+            <div class="btn-center-wrapper">
+                <button id="fixGpsBtn" class="btn-fix hidden" onclick="fixReadings()">تثبيت القراءات الميدانية</button>
+            </div>
         </div>
     </div>
 
-    <!-- القسم الثالث: معايير الدراسة (مخفي حتى تثبيت القراءات) -->
+    <!-- القسم الثالث: معايير الدراسة -->
     <div id="studyParametersSection" class="section-card hidden">
-        <h3>ثالثاً: معايير الدراسة والتحليل الأكاديمي</h3>
+        <div class="section-title">ثالثاً: معايير التحليل الأكاديمي والبيئي</div>
         
         <div class="form-group">
             <label>الهدف الأكاديمي / الهندسي من الدراسة:</label>
             <select id="studyPurpose">
-                <option value="دراسات التدهور الأرضي والتصحر (Land Degradation)">دراسات التدهور الأرضي والتصحر</option>
-                <option value="تقييم الأثر البيئي للمشاريع الإنشائية والتعدينية (EIA)">تقييم الأثر البيئي للمشاريع الإنشائية والتعدينية</option>
-                <option value="المراقبة الهيدرولوجية وإدارة الجفاف">المراقبة الهيدرولوجية وإدارة الجفاف</option>
+                <option value="دراسات التدهور الأرضي والتصحر">دراسات التدهور الأرضي والتصحر</option>
+                <option value="تقييم الأثر البيئي للمشاريع الإنشائية والتعدينية">تقييم الأثر البيئي للمشاريع الإنشائية والتعدينية</option>
                 <option value="التخطيط العمراني والجيوبيئي للمدن">التخطيط العمراني والجيوبيئي للمدن</option>
                 <option value="التغير المناخي والمناخ التفصيلي">التغير المناخي والمناخ التفصيلي</option>
             </select>
         </div>
 
-        <div class="form-group checkbox-group">
+        <div class="form-group checkbox-group" style="margin-top: 15px;">
             <input type="checkbox" id="isComparison" onchange="toggleComparisonDates()"> 
             <label for="isComparison"><b>إجراء دراسة مقارنة زمنية (Time-Series Comparison)</b></label>
         </div>
 
-        <div id="comparisonDates" class="grid-2 hidden">
+        <div id="comparisonDates" class="grid-2 hidden" style="margin-top: 15px;">
             <div class="form-group"><label>تاريخ القراءة الأولى (الأساس):</label><input type="date" id="date1"></div>
             <div class="form-group"><label>تاريخ القراءة الثانية (الحديثة):</label><input type="date" id="date2"></div>
         </div>
 
-        <div class="form-group checkbox-group" style="margin-top: 20px;">
-            <label><b>المؤشرات والخرائط المطلوبة للتحليل:</b></label><br>
-            <input type="checkbox" id="ind_veg" value="الغطاء النباتي والتصحر"> <label>الغطاء النباتي والتصحر (NDVI)</label><br>
-            <input type="checkbox" id="ind_air" value="جودة الهواء والتلوث الغازي"> <label>جودة الهواء والتلوث الغازي (AQI, PM2.5)</label><br>
-            <input type="checkbox" id="ind_water" value="المسطحات المائية ورطوبة التربة"> <label>المسطحات المائية ورطوبة التربة</label><br>
-            <input type="checkbox" id="ind_pop" value="الكثافة السكانية والتوسع العمراني"> <label>الكثافة السكانية والتوسع العمراني</label>
+        <div class="form-group checkbox-group" style="margin-top: 25px; border-top: 1px dashed #ccc; padding-top: 15px;">
+            <label style="display:block; margin-bottom:10px;"><b>المؤشرات والخرائط المطلوبة للتحليل:</b></label>
+            <input type="checkbox" id="ind_veg" value="الغطاء النباتي والتصحر"> <label for="ind_veg">الغطاء النباتي والتصحر</label><br>
+            <input type="checkbox" id="ind_air" value="جودة الهواء والتلوث الغازي"> <label for="ind_air">جودة الهواء والتلوث الغازي</label><br>
+            <input type="checkbox" id="ind_water" value="المسطحات المائية"> <label for="ind_water">المسطحات المائية والرطوبة</label><br>
+            <input type="checkbox" id="ind_pop" value="الكثافة السكانية"> <label for="ind_pop">الكثافة السكانية والتوسع العمراني</label>
         </div>
 
-        <button onclick="processData()" id="processBtn" style="background: var(--accent); margin-top: 15px;">معالجة البيانات وتوليد التحليل الجيوبيئي الشامل</button>
+        <div class="btn-center-wrapper">
+            <button onclick="processData()" id="processBtn" style="background: var(--main-orange); font-size:16px;">معالجة البيانات وتوليد التحليل الجيوبيئي الشامل</button>
+        </div>
     </div>
 
     <!-- مساحة التحميل والنتائج -->
@@ -162,62 +241,80 @@
 </div>
 
 <script>
-    // --- 1. مفتاح الذكاء الاصطناعي (أدخل المفتاح هنا) ---
-    const API_KEY = "[ضع_المفتاح_هنا]"; 
-    // ----------------------------------------------------
+    // --- 1. ضع مفتاح الـ API الخاص بك هنا ---
+    const API_KEY = "[AQ.Ab8RN6KDChEej8QeNQ3V0-S-6RXcGkWG6v_jrGGuXlMTtKFg7A]"; 
+    // ----------------------------------------
 
     let userLat = 0;
     let userLon = 0;
+    let watchId;
     let map;
 
-    // دالة الحصول على الموقع
-    function getLocation() {
+    // دالة بدء التتبع المستمر للحصول على أفضل دقة
+    function startGpsTracking() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition, showError, { enableHighAccuracy: true });
             document.getElementById("gpsDataArea").classList.remove("hidden");
-            document.getElementById("accuracyStatus").innerText = "جاري الاتصال بالأقمار الصناعية...";
-            document.getElementById("accuracyStatus").className = "gps-status gps-yellow";
+            document.getElementById("getGpsBtn").innerText = "جاري الاتصال المستمر بالأقمار...";
+            
+            // استخدام watchPosition بدلاً من getCurrentPosition لتبقى تبحث عن دقة أفضل
+            watchId = navigator.geolocation.watchPosition(updatePosition, showError, { 
+                enableHighAccuracy: true,
+                maximumAge: 0,
+                timeout: 10000 
+            });
         } else {
             alert("المتصفح لا يدعم تحديد الموقع.");
         }
     }
 
-    // عرض الموقع وتقييم الدقة
-    function showPosition(position) {
+    // تحديث الموقع على الشاشة بشكل مستمر
+    function updatePosition(position) {
         userLat = position.coords.latitude;
         userLon = position.coords.longitude;
         let accuracy = position.coords.accuracy;
 
-        document.getElementById("lat").value = userLat.toFixed(6);
-        document.getElementById("lon").value = userLon.toFixed(6);
+        // عرض الإحداثيات في البلوك الموحد
+        document.getElementById("unifiedCoords").innerHTML = 
+            `<strong>Latitude:</strong> ${userLat.toFixed(6)} &nbsp; | &nbsp; <strong>Longitude:</strong> ${userLon.toFixed(6)}`;
 
         let accStatus = document.getElementById("accuracyStatus");
         let fixBtn = document.getElementById("fixGpsBtn");
 
-        if (accuracy < 15) {
-            accStatus.innerText = `الدقة ممتازة: ± ${accuracy.toFixed(1)} متر`;
+        // تقييم الدقة وتغيير الألوان بناءً عليها
+        if (accuracy < 10) {
+            accStatus.innerText = `الدقة ممتازة جداً: ± ${accuracy.toFixed(1)} متر`;
             accStatus.className = "gps-status gps-green";
             fixBtn.classList.remove("hidden");
-        } else if (accuracy <= 30) {
-            accStatus.innerText = `الدقة مقبولة: ± ${accuracy.toFixed(1)} متر (يرجى الانتظار لتحسين الدقة)`;
+        } else if (accuracy <= 25) {
+            accStatus.innerText = `الدقة مقبولة: ± ${accuracy.toFixed(1)} متر (النظام يحاول تحسينها، يرجى الانتظار...)`;
             accStatus.className = "gps-status gps-yellow";
             fixBtn.classList.remove("hidden");
         } else {
-            accStatus.innerText = `الدقة ضعيفة: ± ${accuracy.toFixed(1)} متر (تحرك لمكان مكشوف)`;
+            accStatus.innerText = `الدقة ضعيفة: ± ${accuracy.toFixed(1)} متر (يرجى التحرك لمكان مكشوف للسماء)`;
             accStatus.className = "gps-status gps-red";
             fixBtn.classList.add("hidden");
         }
     }
 
     function showError(error) {
-        alert("حدث خطأ في تحديد الموقع: " + error.message);
+        let errorMsg = "حدث خطأ غير معروف.";
+        if(error.code === 1) errorMsg = "تم رفض صلاحية الموقع. يرجى تفعيل الموقع من إعدادات المتصفح.";
+        if(error.code === 2) errorMsg = "إشارة الـ GPS غير متوفرة.";
+        if(error.code === 3) errorMsg = "انتهى وقت الاتصال، جاري المحاولة مرة أخرى...";
+        
+        document.getElementById("accuracyStatus").innerText = errorMsg;
+        document.getElementById("accuracyStatus").className = "gps-status gps-red";
     }
 
-    // تثبيت القراءات وإظهار القسم التالي
+    // تثبيت القراءات وإيقاف البحث
     function fixReadings() {
-        document.getElementById("getGpsBtn").disabled = true;
-        document.getElementById("fixGpsBtn").innerText = "تم التثبيت بنجاح ✓";
+        if(watchId) navigator.geolocation.clearWatch(watchId); // إيقاف البحث المستمر
+        
+        document.getElementById("getGpsBtn").style.display = "none";
+        document.getElementById("fixGpsBtn").innerText = "تم تثبيت الإحداثيات بنجاح ✓";
         document.getElementById("fixGpsBtn").disabled = true;
+        document.getElementById("accuracyStatus").style.display = "none";
+        
         document.getElementById("studyParametersSection").classList.remove("hidden");
     }
 
@@ -233,50 +330,49 @@
 
     // معالجة البيانات واستدعاء الذكاء الاصطناعي
     async function processData() {
-        // جمع المدخلات
         let purpose = document.getElementById("studyPurpose").value;
         let isComp = document.getElementById("isComparison").checked;
         let d1 = document.getElementById("date1").value;
         let d2 = document.getElementById("date2").value;
         let researcher = document.getElementById("researcherName").value || "باحث";
-        let locName = document.getElementById("locationName").value || "المنطقة المحددة";
+        let locName = document.getElementById("locationName").value;
+        let country = document.getElementById("countryName").value;
 
         let indicators = [];
         if(document.getElementById("ind_veg").checked) indicators.push("الغطاء النباتي والتصحر");
         if(document.getElementById("ind_air").checked) indicators.push("جودة الهواء والتلوث");
         if(document.getElementById("ind_water").checked) indicators.push("المسطحات المائية");
-        if(document.getElementById("ind_pop").checked) indicators.push("التوسع العمراني والكثافة السكانية");
+        if(document.getElementById("ind_pop").checked) indicators.push("الكثافة السكانية والتوسع العمراني");
 
         if(indicators.length === 0) {
             alert("يرجى اختيار مؤشر واحد على الأقل للتحليل.");
             return;
         }
 
-        // إظهار التحميل
         document.getElementById("loading").style.display = "block";
         document.getElementById("aiReport").style.display = "none";
         document.getElementById("map").style.display = "block";
 
-        // رسم الخريطة (Leaflet)
+        // رسم الخريطة
         initMap();
 
-        // إعداد هندسة الأوامر (The Professor Prompt)
+        // هندسة الأوامر (Prompt)
         let prompt = `
-        أنت بروفيسور عراقي خبير ومستشار دولي في علوم الأرض، الجيومورفولوجيا، والبيئة.
-        طلب منك الجيولوجي/الباحث (${researcher}) كتابة تقرير أكاديمي تحليلي ورصين لمنطقة (${locName}).
+        أنت بروفيسور عراقي خبير ومستشار دولي في علوم الأرض والبيئة.
+        طلب منك الجيولوجي (${researcher}) كتابة تقرير أكاديمي رصين لمنطقة في (${country} - ${locName}).
         المعطيات:
-        - الإحداثيات: خط عرض ${userLat.toFixed(4)}، خط طول ${userLon.toFixed(4)}.
+        - الإحداثيات: Latitude ${userLat.toFixed(5)}, Longitude ${userLon.toFixed(5)}.
         - الهدف من الدراسة: ${purpose}.
         - المؤشرات المدروسة: ${indicators.join("، ")}.
         - دراسة مقارنة: ${isComp ? 'نعم، بين ' + d1 + ' و ' + d2 : 'لا، تقييم للحالة الراهنة فقط'}.
 
         التعليمات الصارمة:
-        1. اكتب التقرير باللغة العربية، بأسلوب بحثي علمي صارم ومفصل (كأنه ورقة بحثية رصينة).
-        2. استخدم مصطلحات جيولوجية، هيدرولوجية، وبيئية معقدة ودقيقة.
-        3. قم بتوليد "أرقام ونسب افتراضية علمية دقيقة" بناءً على مناخ العراق وبيئة المنطقة المحددة لتبدو الدراسة حقيقية ومبنية على بيانات مستشعرات.
-        4. اربط بين المؤشرات التي طلبها الباحث (مثلاً كيف يؤثر التصحر على جودة الهواء والتوسع العمراني).
+        1. اكتب التقرير باللغة العربية، بأسلوب بحثي علمي صارم جداً ومفصل.
+        2. استخدم مصطلحات جيولوجية وبيئية دقيقة.
+        3. قم بتوليد "أرقام ونسب افتراضية دقيقة تحاكي الواقع" لتكون الدراسة مبنية على بيانات مستشعرات.
+        4. اربط بين المؤشرات التي طلبها الباحث.
         5. انهِ التقرير بـ "توصيات هندسية وبيئية استراتيجية" لصناع القرار.
-        6. نسق التقرير باستخدام عناوين عريضة (Bold) ونقاط.
+        6. نسق التقرير باستخدام عناوين عريضة.
         `;
 
         // استدعاء Gemini API
@@ -296,34 +392,31 @@
             }
 
             let reportText = data.candidates[0].content.parts[0].text;
-            
-            // تحويل النص إلى HTML
-            reportText = reportText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            reportText = reportText.replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--main-blue);">$1</strong>');
             reportText = reportText.replace(/\*(.*?)/g, '<br>• $1');
 
             document.getElementById("loading").style.display = "none";
-            document.getElementById("aiReport").innerHTML = `<h2 style='color:#e67e22;'>التقرير الجيو-بيئي الاستشاري المولد آلياً</h2><hr>` + reportText;
+            document.getElementById("aiReport").innerHTML = `<h3 style='color:var(--main-orange); border-bottom:1px solid #ccc; padding-bottom:10px;'>التقرير الجيو-بيئي الاستشاري</h3>` + reportText;
             document.getElementById("aiReport").style.display = "block";
 
         } catch (error) {
             document.getElementById("loading").style.display = "none";
-            document.getElementById("aiReport").innerHTML = `<span style="color:red;">حدث خطأ في الاتصال بالذكاء الاصطناعي: يرجى التأكد من وضع الـ API Key بشكل صحيح. (${error.message})</span>`;
+            document.getElementById("aiReport").innerHTML = `<span style="color:red;">حدث خطأ في الاتصال بالذكاء الاصطناعي: تأكد من وضع المفتاح الصحيح. (${error.message})</span>`;
             document.getElementById("aiReport").style.display = "block";
         }
     }
 
-    // تهيئة الخريطة
+    // تهيئة الخريطة الفضائية
     function initMap() {
         if(map != undefined) { map.remove(); }
         map = L.map('map').setView([userLat, userLon], 14);
         
-        // خريطة فضائية كطبقة أساسية
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: 'Tiles &copy; Esri &mdash; نظام شندل للمسح الميداني'
         }).addTo(map);
 
         L.marker([userLat, userLon]).addTo(map)
-            .bindPopup('<b>موقع المسح الحيوي</b><br>جاري استخراج البيانات...')
+            .bindPopup('<b style="color:#235789;">موقع المسح الحيوي</b><br>جاري استخراج البيانات الجيوبيئية...')
             .openPopup();
     }
 </script>
