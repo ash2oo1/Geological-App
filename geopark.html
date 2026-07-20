@@ -23,28 +23,24 @@
         .header h1 { margin: 0; font-size: 22px; color: #f39c12; font-weight: 900; line-height: 1.4; }
         .header p { margin: 5px 0 0 0; font-size: 15px; font-weight: bold; }
 
-        /* شريط البحث وزر اللغات */
         .search-bar { background: white; padding: 10px 20px; display: flex; gap: 10px; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); flex-wrap: wrap; }
         .lang-select { padding: 10px; border: 2px solid #235789; border-radius: 8px; font-family: 'Cairo'; font-size: 14px; font-weight: bold; color: #235789; cursor: pointer; outline: none; background: #eef2f5; }
         .search-input { padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Cairo'; font-size: 14px; outline: none; width: 300px; max-width: 100%; }
         .search-btn { background: #235789; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-family: 'Cairo'; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .search-btn:hover { background: #f39c12; }
 
-        /* الخريطة وإعدادات التمرير */
         .map-wrapper { width: 100%; display: flex; justify-content: center; background-color: #f4f7f6; padding: 15px 0; }
         .map-container { position: relative; height: 75vh; width: 94%; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); overflow: hidden; border: 3px solid #eef2f5; }
         #map { height: 100%; width: 100%; z-index: 1; }
 
         #routeDistanceInfo { display: none; position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 2000; background: #235789; color: white; padding: 10px 25px; border-radius: 30px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid #f39c12; }
 
-        /* دليل الخريطة */
         .map-legend { background: rgba(255, 255, 255, 0.95); padding: 10px 15px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); line-height: 1.8; font-size: 13px; font-weight: bold; color: #333; }
         .map-legend h4 { margin: 0 0 5px 0; font-size: 14px; color: #235789; border-bottom: 2px solid #f39c12; padding-bottom: 3px; }
         .legend-item { display: flex; align-items: center; gap: 8px; }
 
         .north-arrow { background: rgba(255, 255, 255, 0.8); padding: 5px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.3); font-size: 28px; line-height: 1; text-align: center; }
 
-        /* الفهرس المحدث بالشبكة والصور */
         .index-section { padding: 10px 20px 30px 20px; max-width: 1200px; margin: auto; }
         .index-title { color: #235789; border-right: 5px solid #f39c12; padding-right: 10px; padding-left: 10px; margin-bottom: 20px; font-size: 22px; }
         html[dir="ltr"] .index-title { border-right: none; border-left: 5px solid #f39c12; }
@@ -61,10 +57,10 @@
         .site-card h3 { margin: 0 0 5px 0; color: #f39c12; font-size: 15px; font-weight: 900;}
         .site-card p { margin: 0; color: #666; font-size: 12px; line-height: 1.6; font-weight: bold; }
 
-        /* الأزرار والعناصر العائمة */
+        /* تعديل زر تحديد الموقع: تم إلغاء الكود الذي ينقله لليسار في الإنجليزية، ليبقى ثابتاً في اليمين ولا يغطي دليل الخريطة */
         .gps-button { position: absolute; bottom: 85px; right: 20px; z-index: 1000; background-color: #ffffff; border: 2px solid #235789; color: #235789; padding: 12px 20px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .gps-button:hover { background-color: #235789; color: white; }
-        html[dir="ltr"] .gps-button { right: auto; left: 20px; }
+        
         .blue-dot { background-color: #4285F4; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 15px rgba(66, 133, 244, 0.8); animation: pulse-dot 2s infinite; }
         @keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(66, 133, 244, 0); } 100% { box-shadow: 0 0 0 0 rgba(66, 133, 244, 0); } }
 
@@ -73,7 +69,6 @@
         .timeline-btn:hover, .timeline-btn.active { background: #235789; color: white; }
         .timeline-btn.show-all { font-family: 'Cairo', sans-serif; }
 
-        /* النافذة المنبثقة ومعرض الصور */
         .custom-site-icon { font-size: 26px; text-shadow: 0px 2px 5px rgba(0,0,0,0.6); text-align: center; }
         .custom-popup .leaflet-popup-content-wrapper { padding: 0; overflow: hidden; border-radius: 12px; }
         .custom-popup .leaflet-popup-content { margin: 0; width: 250px !important; text-align: center; }
@@ -122,7 +117,6 @@
         <p id="ui_subtitle">نظام شندل للمسح الميداني الجيولوجي</p>
     </div>
 
-    <!-- شريط البحث مع زر اللغات الجديد -->
     <div class="search-bar">
         <select id="langSelect" class="lang-select" onchange="switchLanguage()">
             <option value="ar">🌐 العربية</option>
@@ -191,17 +185,15 @@
     </div>
 
     <script>
-        // --- 🔴 الحماية ومنع فحص الكود (Inspect Element) 🔴 ---
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.onkeydown = function(e) {
-            if(e.keyCode == 123) return false; // F12
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Ctrl+Shift+I
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false; // Ctrl+Shift+C
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; // Ctrl+Shift+J
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; // Ctrl+U
+            if(e.keyCode == 123) return false; 
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; 
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false; 
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; 
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; 
         }
 
-        // --- 🔴 نظام الترجمة واللغات 🔴 ---
         var currentLang = 'ar';
         const i18n = {
             ar: {
@@ -269,7 +261,13 @@
         var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: 'OSM' });
 
         var map = L.map('map', { center: [33.3152, 44.3661], zoom: 6, layers: [satellite] });
-        L.control.layers({ "صور فضائية": satellite, "خريطة طبوغرافية": topo, "خريطة الشوارع": osm }).addTo(map);
+        
+        // إعداد طبقات الخريطة بحيث يتم تحديثها مع اللغة
+        var baseMaps = {
+            ar: { "صور فضائية": satellite, "خريطة طبوغرافية": topo, "خريطة الشوارع": osm },
+            en: { "Satellite Image": satellite, "Topographic Map": topo, "Street Map": osm }
+        };
+        var layersControl = L.control.layers(baseMaps['ar']).addTo(map);
 
         var northControl = L.control({position: 'topleft'});
         northControl.onAdd = function () {
@@ -404,7 +402,6 @@
 
         function openModal(id) {
             var site = locations.find(s => s.id === id);
-            var t = i18n[currentLang];
             var d = site[currentLang];
             if(site) {
                 currentGalleryImages = site.images;
@@ -496,15 +493,12 @@
             closeModal();
         }
 
-        // دالة تبديل اللغة
         function switchLanguage() {
             currentLang = document.getElementById("langSelect").value;
             var t = i18n[currentLang];
             
-            // تغيير اتجاه الصفحة
             document.documentElement.dir = (currentLang === 'ar') ? 'rtl' : 'ltr';
             
-            // تحديث النصوص الثابتة
             document.getElementById("ui_title").innerText = t.title;
             document.getElementById("ui_subtitle").innerText = t.subtitle;
             document.getElementById("searchInput").placeholder = t.searchPlaceholder;
@@ -521,11 +515,14 @@
             document.getElementById("modalDrawRoute").innerText = t.drawRoute;
             document.getElementById("modalDirections").innerText = t.externalRoute;
             
+            // إزالة وإعادة إضافة طبقات الخريطة لتحديث اللغة
+            map.removeControl(layersControl);
+            layersControl = L.control.layers(baseMaps[currentLang]).addTo(map);
+
             updateLegendLanguage();
-            smartSearch(); // يعيد رسم الفهرس والخريطة باللغة الجديدة
+            smartSearch(); 
         }
 
-        // تهيئة اللغات عند تشغيل الموقع
         window.onload = function() {
             updateLegendLanguage();
             renderMarkers(locations);
