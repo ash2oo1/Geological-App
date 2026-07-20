@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الحديقة الجيولوجية العالمية - نظام رصانة (Rasana)</title>
+    <title>البوابة العالمية للسياحة الجيولوجية والآثارية - نظام شندل</title>
     
     <!-- خط Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
@@ -15,24 +15,25 @@
     <style>
         body, html { margin: 0; padding: 0; height: 100%; font-family: 'Cairo', sans-serif; background-color: #f4f7f6; overflow: hidden; }
         
+        /* التعديل الجديد على الهيدر (العنوان ونظام شندل) */
         .header { background-color: #1a252f; color: white; text-align: center; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; z-index: 1000; }
-        .header h1 { margin: 0; font-size: 24px; color: #f39c12; }
-        .header p { margin: 5px 0 0 0; font-size: 14px; opacity: 0.9; }
+        .header h1 { margin: 0; font-size: 24px; color: #f39c12; font-weight: 900; }
+        .header p { margin: 5px 0 0 0; font-size: 15px; opacity: 0.9; font-weight: bold; }
 
         #map { height: calc(100vh - 80px); width: 100%; z-index: 1; }
 
-        /* زر الـ GPS العائم */
-        .gps-button { position: absolute; bottom: 30px; right: 20px; z-index: 1000; background-color: #ffffff; border: 2px solid #235789; color: #235789; padding: 12px 20px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease; }
+        /* زر الـ GPS العائم (تم رفعه قليلاً لتوفير مساحة للشريط الزمني) */
+        .gps-button { position: absolute; bottom: 85px; right: 20px; z-index: 1000; background-color: #ffffff; border: 2px solid #235789; color: #235789; padding: 12px 20px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease; }
         .gps-button:hover { background-color: #235789; color: white; }
-
-        /* النقطة الزرقاء للـ GPS */
         .blue-dot { background-color: #4285F4; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 15px rgba(66, 133, 244, 0.8); animation: pulse-dot 2s infinite; }
         @keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(66, 133, 244, 0); } 100% { box-shadow: 0 0 0 0 rgba(66, 133, 244, 0); } }
 
-        /* تصميم الأيقونات الملونة للمواقع */
-        .custom-site-icon { font-size: 24px; text-shadow: 0px 2px 4px rgba(0,0,0,0.5); text-align: center; line-height: 24px; }
+        /* تصميم الشريط الزمني الجيولوجي (Timeline) */
+        .timeline-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 15px; border-radius: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); display: flex; gap: 10px; overflow-x: auto; max-width: 90vw; border: 2px solid #eef2f5; }
+        .timeline-btn { background: #eef2f5; border: 1px solid #235789; color: #235789; padding: 8px 18px; border-radius: 20px; font-family: 'Cairo', sans-serif; font-weight: bold; font-size: 14px; cursor: pointer; white-space: nowrap; transition: all 0.3s ease; }
+        .timeline-btn:hover, .timeline-btn.active { background: #235789; color: white; border-color: #235789; box-shadow: 0 4px 10px rgba(35, 87, 137, 0.4); }
 
-        /* تصميم النافذة المنبثقة الصغيرة (Popup) */
+        .custom-site-icon { font-size: 24px; text-shadow: 0px 2px 4px rgba(0,0,0,0.5); text-align: center; line-height: 24px; }
         .custom-popup .leaflet-popup-content-wrapper { padding: 0; overflow: hidden; border-radius: 12px; }
         .custom-popup .leaflet-popup-content { margin: 0; width: 250px !important; text-align: center; }
         .popup-img { width: 100%; height: 120px; object-fit: cover; border-bottom: 3px solid #f39c12; }
@@ -41,7 +42,6 @@
         .details-btn { background: #235789; color: white !important; border: none; padding: 8px; width: 100%; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; margin-top: 10px; text-decoration: none; display: block; }
         .details-btn:hover { background: #f39c12; }
 
-        /* تصميم صفحة التفاصيل (Modal) لتكون كصفحة مستقلة */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
         .modal-content { background: white; width: 90%; max-width: 800px; max-height: 90vh; border-radius: 12px; overflow-y: auto; position: relative; padding: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .modal-header-img { width: 100%; height: 250px; object-fit: cover; border-bottom: 5px solid #235789; }
@@ -57,15 +57,22 @@
 <body>
 
     <div class="header">
-        <h1>السياحة الجيولوجية والآثارية (Geo-Park)</h1>
-        <p>مبادرة منصة رصانة (Rasana) للمسح الميداني الجيولوجي</p>
+        <h1>البوابة العالمية للسياحة الجيولوجية والآثارية (Geo-Archaeological Tourism)</h1>
+        <p>نظام شندل للمسح الميداني الجيولوجي</p>
+    </div>
+
+    <!-- الشريط الزمني الجيولوجي للفلترة -->
+    <div class="timeline-container">
+        <button class="timeline-btn active" onclick="filterEra('All', this)">🌍 إظهار الكل</button>
+        <button class="timeline-btn" onclick="filterEra('البريكامبري', this)">البريكامبري / الكامبري</button>
+        <button class="timeline-btn" onclick="filterEra('الكريتاسي', this)">الكريتاسي (Cretaceous)</button>
+        <button class="timeline-btn" onclick="filterEra('الرباعي', this)">الرباعي (Quaternary)</button>
     </div>
 
     <button class="gps-button" onclick="locateUser()">🎯 تحديد موقعي</button>
 
     <div id="map"></div>
 
-    <!-- النافذة التفصيلية (الصفحة المستقلة) -->
     <div class="modal-overlay" id="siteModal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal()">×</button>
@@ -74,92 +81,62 @@
                 <h2 id="modalTitle" style="color: #235789; margin-top:0;"></h2>
                 <div id="modalTags"></div>
                 <p id="modalDesc" style="line-height: 1.8; color: #444; margin-top: 15px;"></p>
-                
-                <!-- البيانات الجيولوجية الهندسية -->
                 <div class="data-grid">
                     <div class="data-card"><h4>التكوين الجيولوجي</h4><p id="modalFormation">-</p></div>
-                    <div class="data-card"><h4>العمر (Age)</h4><p id="modalAge">-</p></div>
+                    <div class="data-card"><h4>العمر الجيولوجي</h4><p id="modalAge">-</p></div>
                     <div class="data-card"><h4>نوع الصخور</h4><p id="modalRock">-</p></div>
-                    <div class="data-card"><h4>التكتونيك</h4><p id="modalTectonic">-</p></div>
+                    <div class="data-card"><h4>البيئة التكتونية</h4><p id="modalTectonic">-</p></div>
                 </div>
-                
                 <a href="#" id="modalDirections" target="_blank" class="details-btn" style="text-align: center; margin-top:20px; font-size: 16px;">🧭 الملاحة إلى الموقع (GPS)</a>
             </div>
         </div>
     </div>
 
     <script>
-        // 1. تعريف الطبقات (Base Maps)
         var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri' });
         var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { attribution: 'OpenTopoMap' });
         var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: 'OSM' });
 
-        // تهيئة الخريطة مع الطبقة الفضائية كافتراضي
-        var map = L.map('map', {
-            center: [33.3152, 44.3661],
-            zoom: 6,
-            layers: [satellite] 
-        });
-
-        // إضافة أداة التحكم بالطبقات
-        var baseMaps = {
-            "صور فضائية (Satellite)": satellite,
-            "خريطة طبوغرافية (Topo)": topo,
-            "خريطة الشوارع (OSM)": osm
-        };
+        var map = L.map('map', { center: [33.3152, 44.3661], zoom: 6, layers: [satellite] });
+        var baseMaps = { "صور فضائية (Satellite)": satellite, "خريطة طبوغرافية (Topo)": topo, "خريطة الشوارع (OSM)": osm };
         L.control.layers(baseMaps).addTo(map);
 
-        // 2. دليل الأيقونات حسب نوع الموقع (مجاني وبدون تحميل صور)
-        const siteIcons = {
-            "Cave": "🟢", "Fault": "🔴", "Fold": "🟠", "Spring": "🔵", 
-            "Mountain": "🟣", "Canyon": "🟡", "Volcano": "⚫", "Heritage": "🏛️", "Default": "📍"
-        };
+        // إنشاء طبقة مخصصة للدبابيس حتى نتمكن من مسحها وتحديثها عند الفلترة
+        var markersLayerGroup = L.layerGroup().addTo(map);
 
-        // 3. قاعدة البيانات الشاملة (JSON Schema)
+        const siteIcons = { "Cave": "🟢", "Fault": "🔴", "Fold": "🟠", "Spring": "🔵", "Mountain": "🟣", "Canyon": "🟡", "Volcano": "⚫", "Heritage": "🏛️", "Default": "📍" };
+
         var locations = [
-            {
-                id: 1, name_ar: "كهف شانيدار", type: "Cave", province: "أربيل", lat: 36.8300, lng: 44.2000,
-                formation: "تكوين جيري (Limestone)", age: "الكريتاسي", rockType: "صخور جيرية رسوبية", tectonic: "طيات زاكروس",
-                description: "تكوين جيولوجي جيرى كارستي، من أهم المواقع الآثارية عالمياً لاكتشاف هياكل إنسان النياندرتال.",
-                img: "https://images.unsplash.com/photo-1519058082700-08a0b56da9b4?q=80&w=600"
-            },
-            {
-                id: 2, name_ar: "جبل سنام", type: "Mountain", province: "البصرة", lat: 30.1264, lng: 47.6256,
-                formation: "متبخرات", age: "البريكامبري / الكامبري", rockType: "جبس، ملح صخري، دولومايت", tectonic: "قبة ملحية (Salt Plug)",
-                description: "ظاهرة جيولوجية نادرة جداً في جنوب العراق تخترق السهول المنبسطة بقوة تكتونية صاعدة.",
-                img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600"
-            },
-            {
-                id: 3, name_ar: "زقورة بورسيبا", type: "Heritage", province: "بابل", lat: 32.3917, lng: 44.3417,
-                formation: "ترسبات حديثة", age: "الرباعي (Quaternary)", rockType: "آجر طيني، زجاج منصهر", tectonic: "حوض وادي الرافدين",
-                description: "موقع يجمع بين البناء الآثاري والظواهر الفيزيائية المحيرة المتمثلة في الكتل الآجرية المزججة بفعل حرارة عالية غير مفسرة.",
-                img: "https://images.unsplash.com/photo-1604085572504-a392ddf0d86a?q=80&w=600"
-            }
+            { id: 1, name_ar: "كهف شانيدار", type: "Cave", province: "أربيل", lat: 36.8300, lng: 44.2000, formation: "تكوين جيري", age: "الكريتاسي", rockType: "صخور جيرية", tectonic: "طيات زاكروس", description: "تكوين جيولوجي جيرى كارستي، من أهم المواقع الآثارية عالمياً.", img: "https://images.unsplash.com/photo-1519058082700-08a0b56da9b4?q=80&w=600" },
+            { id: 2, name_ar: "جبل سنام", type: "Mountain", province: "البصرة", lat: 30.1264, lng: 47.6256, formation: "متبخرات", age: "البريكامبري", rockType: "جبس، ملح صخري", tectonic: "قبة ملحية (Salt Plug)", description: "ظاهرة جيولوجية نادرة جداً في جنوب العراق.", img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600" },
+            { id: 3, name_ar: "زقورة بورسيبا", type: "Heritage", province: "بابل", lat: 32.3917, lng: 44.3417, formation: "ترسبات حديثة", age: "الرباعي", rockType: "آجر طيني مزجج", tectonic: "حوض وادي الرافدين", description: "موقع يجمع بين البناء الآثاري والظواهر الفيزيائية المحيرة.", img: "https://images.unsplash.com/photo-1604085572504-a392ddf0d86a?q=80&w=600" }
         ];
 
-        // 4. رسم المعالم بناءً على البيانات
-        locations.forEach(function(loc) {
-            // تحديد شكل الأيقونة بناءً على النوع
-            var emoji = siteIcons[loc.type] || siteIcons["Default"];
-            var customIcon = L.divIcon({
-                className: 'custom-site-icon',
-                html: emoji,
-                iconSize: [30, 30],
-                iconAnchor: [15, 15]
+        // دالة رسم المواقع (تمت برمجتها لتدعم الفلترة الزمنية)
+        function renderMarkers(filterAge) {
+            markersLayerGroup.clearLayers(); // مسح الدبابيس القديمة
+
+            locations.forEach(function(loc) {
+                // إذا كان الفلتر "الكل" أو يتطابق مع عمر الموقع، قم برسمه
+                if (filterAge === 'All' || loc.age.includes(filterAge)) {
+                    var emoji = siteIcons[loc.type] || siteIcons["Default"];
+                    var customIcon = L.divIcon({ className: 'custom-site-icon', html: emoji, iconSize: [30, 30], iconAnchor: [15, 15] });
+                    var popupContent = `<img src="${loc.img}" class="popup-img"><div class="popup-body"><h3 class="popup-title">${loc.name_ar}</h3><span style="font-size:12px; color:gray;">📍 ${loc.province}</span><button class="details-btn" onclick="openModal(${loc.id})">📖 التفاصيل العلمية</button></div>`;
+                    L.marker([loc.lat, loc.lng], {icon: customIcon}).bindPopup(popupContent, { className: 'custom-popup' }).addTo(markersLayerGroup);
+                }
             });
+        }
 
-            var popupContent = `
-                <img src="${loc.img}" class="popup-img">
-                <div class="popup-body">
-                    <h3 class="popup-title">${loc.name_ar}</h3>
-                    <span style="font-size:12px; color:gray;">📍 ${loc.province}</span>
-                    <button class="details-btn" onclick="openModal(${loc.id})">📖 التفاصيل العلمية</button>
-                </div>`;
-                
-            L.marker([loc.lat, loc.lng], {icon: customIcon}).bindPopup(popupContent, { className: 'custom-popup' }).addTo(map);
-        });
+        // دالة تفعيل فلتر الشريط الزمني
+        function filterEra(era, btnElement) {
+            document.querySelectorAll('.timeline-btn').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+            renderMarkers(era);
+        }
 
-        // 5. دوال الصفحة المستقلة (Modal)
+        // رسم كل المواقع عند فتح الصفحة لأول مرة
+        renderMarkers('All');
+
         function openModal(id) {
             var site = locations.find(s => s.id === id);
             if(site) {
@@ -170,28 +147,15 @@
                 document.getElementById("modalAge").innerText = site.age;
                 document.getElementById("modalRock").innerText = site.rockType;
                 document.getElementById("modalTectonic").innerText = site.tectonic;
-                
-                // روابط الملاحة
                 document.getElementById("modalDirections").href = `https://www.google.com/maps/dir/?api=1&destination=${site.lat},${site.lng}`;
-                
-                // التاجات
-                document.getElementById("modalTags").innerHTML = `
-                    <span class="tag-badge">نوع الموقع: ${site.type}</span>
-                    <span class="tag-badge">المحافظة: ${site.province}</span>
-                `;
-                
+                document.getElementById("modalTags").innerHTML = `<span class="tag-badge">نوع الموقع: ${site.type}</span><span class="tag-badge">المحافظة: ${site.province}</span>`;
                 document.getElementById("siteModal").style.display = "flex";
             }
         }
+        function closeModal() { document.getElementById("siteModal").style.display = "none"; }
 
-        function closeModal() {
-            document.getElementById("siteModal").style.display = "none";
-        }
-
-        // 6. نظام الـ GPS
         var userMarker, userCircle;
         function locateUser() { map.locate({setView: true, maxZoom: 8, enableHighAccuracy: true}); }
-
         map.on('locationfound', function(e) {
             var radius = Math.round(e.accuracy);
             if (userMarker) { map.removeLayer(userMarker); map.removeLayer(userCircle); }
@@ -199,7 +163,6 @@
             userMarker = L.marker(e.latlng, {icon: blueDotIcon}).addTo(map).bindPopup('<b>موقعك الحالي</b>');
             userCircle = L.circle(e.latlng, radius, { color: '#4285F4', fillOpacity: 0.15, weight: 1 }).addTo(map);
         });
-        
         map.on('locationerror', function(e) { alert("يرجى تفعيل الـ GPS في هاتفك."); });
 
     </script>
