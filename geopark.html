@@ -11,27 +11,29 @@
     <!-- مكتبة الخرائط Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- مكتبة مخطط الرحلات (Routing Machine) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     
     <style>
-        /* استخدام Flexbox لمنع تداخل النصوص مع الخريطة */
         body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Cairo', sans-serif; background-color: #f4f7f6; overflow: hidden; display: flex; flex-direction: column; }
         
-        /* التعديل الجذري للهيدر */
+        /* الهيدر */
         .header { background-color: #1a252f; color: white; text-align: center; padding: 15px 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000; flex-shrink: 0; }
         .header h1 { margin: 0; font-size: 22px; color: #f39c12; font-weight: 900; line-height: 1.4; }
         .header p { margin: 5px 0 0 0; font-size: 15px; opacity: 0.9; font-weight: bold; }
 
-        /* الخريطة تأخذ المساحة المتبقية تلقائياً */
         #map { flex-grow: 1; width: 100%; z-index: 1; }
 
-        /* زر الـ GPS العائم */
+        /* زر الـ GPS */
         .gps-button { position: absolute; bottom: 85px; right: 20px; z-index: 1000; background-color: #ffffff; border: 2px solid #235789; color: #235789; padding: 12px 20px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease; }
         .gps-button:hover { background-color: #235789; color: white; }
         .blue-dot { background-color: #4285F4; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 15px rgba(66, 133, 244, 0.8); animation: pulse-dot 2s infinite; }
         @keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(66, 133, 244, 0); } 100% { box-shadow: 0 0 0 0 rgba(66, 133, 244, 0); } }
 
-        /* الشريط الزمني الجيولوجي (Timeline) */
-        .timeline-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 15px; border-radius: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); display: flex; gap: 10px; overflow-x: auto; max-width: 90vw; border: 2px solid #eef2f5; direction: ltr; /* اتجاه الأزرار من اليسار لليمين لأنها بالإنجليزية */ }
+        /* الشريط الزمني المحدث (4 عصور فقط) */
+        .timeline-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 15px; border-radius: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); display: flex; gap: 10px; overflow-x: auto; max-width: 90vw; border: 2px solid #eef2f5; direction: ltr; }
         .timeline-btn { background: #eef2f5; border: 1px solid #235789; color: #235789; padding: 8px 18px; border-radius: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: bold; font-size: 14px; cursor: pointer; white-space: nowrap; transition: all 0.3s ease; }
         .timeline-btn:hover, .timeline-btn.active { background: #235789; color: white; border-color: #235789; box-shadow: 0 4px 10px rgba(35, 87, 137, 0.4); }
         .timeline-btn.show-all { font-family: 'Cairo', sans-serif; direction: rtl; }
@@ -45,6 +47,7 @@
         .details-btn { background: #235789; color: white !important; border: none; padding: 8px; width: 100%; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; margin-top: 10px; text-decoration: none; display: block; }
         .details-btn:hover { background: #f39c12; }
 
+        /* تفاصيل النافذة المستقلة (Modal) */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
         .modal-content { background: white; width: 90%; max-width: 800px; max-height: 90vh; border-radius: 12px; overflow-y: auto; position: relative; padding: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .modal-header-img { width: 100%; height: 250px; object-fit: cover; border-bottom: 5px solid #235789; }
@@ -55,6 +58,12 @@
         .data-card { background: #f9f9f9; padding: 15px; border-radius: 8px; border-right: 4px solid #f39c12; }
         .data-card h4 { margin: 0 0 5px 0; color: #555; font-size: 14px; }
         .data-card p { margin: 0; color: #111; font-weight: bold; font-size: 15px; }
+        
+        .route-btn { background: #f39c12; color: white !important; border: none; padding: 12px; width: 100%; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; margin-top: 15px; text-decoration: none; display: block; font-size: 16px; text-align: center; }
+        .route-btn:hover { background: #d68910; }
+
+        /* إخفاء نافذة التعليمات الافتراضية الخاصة بمسار الرحلة لتكون الخريطة نظيفة */
+        .leaflet-routing-container { display: none !important; }
     </style>
 </head>
 <body>
@@ -64,15 +73,13 @@
         <p>نظام شندل للمسح الميداني الجيولوجي</p>
     </div>
 
-    <!-- الشريط الزمني باللغة الإنجليزية حصراً -->
+    <!-- الشريط الزمني المصحح جيولوجياً -->
     <div class="timeline-container">
         <button class="timeline-btn show-all active" onclick="filterEra('All', this)">🌍 إظهار الكل</button>
         <button class="timeline-btn" onclick="filterEra('Precambrian', this)">Precambrian</button>
         <button class="timeline-btn" onclick="filterEra('Paleozoic', this)">Paleozoic</button>
         <button class="timeline-btn" onclick="filterEra('Mesozoic', this)">Mesozoic</button>
-        <button class="timeline-btn" onclick="filterEra('Cretaceous', this)">Cretaceous</button>
         <button class="timeline-btn" onclick="filterEra('Cenozoic', this)">Cenozoic</button>
-        <button class="timeline-btn" onclick="filterEra('Quaternary', this)">Quaternary</button>
     </div>
 
     <button class="gps-button" onclick="locateUser()">🎯 تحديد موقعي</button>
@@ -89,11 +96,16 @@
                 <p id="modalDesc" style="line-height: 1.8; color: #444; margin-top: 15px;"></p>
                 <div class="data-grid">
                     <div class="data-card"><h4>التكوين الجيولوجي</h4><p id="modalFormation">-</p></div>
-                    <div class="data-card"><h4>العمر الجيولوجي</h4><p id="modalAge">-</p></div>
+                    <div class="data-card"><h4>الحقبة الزمنية (Era)</h4><p id="modalAge">-</p></div>
                     <div class="data-card"><h4>نوع الصخور</h4><p id="modalRock">-</p></div>
                     <div class="data-card"><h4>البيئة التكتونية</h4><p id="modalTectonic">-</p></div>
                 </div>
-                <a href="#" id="modalDirections" target="_blank" class="details-btn" style="text-align: center; margin-top:20px; font-size: 16px;">🧭 الملاحة إلى الموقع (GPS)</a>
+                
+                <!-- زر رسم المسار داخل المنصة -->
+                <button id="modalDrawRoute" class="route-btn" onclick="">🛣️ رسم مسار الرحلة على الخريطة</button>
+                
+                <!-- زر فتح خرائط جوجل (كخيار بديل) -->
+                <a href="#" id="modalDirections" target="_blank" class="details-btn" style="text-align: center;">🧭 فتح في خرائط جوجل</a>
             </div>
         </div>
     </div>
@@ -111,17 +123,17 @@
 
         const siteIcons = { "Cave": "🟢", "Fault": "🔴", "Fold": "🟠", "Spring": "🔵", "Mountain": "🟣", "Canyon": "🟡", "Volcano": "⚫", "Heritage": "🏛️", "Default": "📍" };
 
-        // تم تحديث حقل العمر (age) ليتطابق مع الأزرار الإنجليزية
+        // قاعدة البيانات مع تعديل الأعمار لتتطابق مع الأحقاب الأربعة الرئيسية
         var locations = [
-            { id: 1, name_ar: "كهف شانيدار", type: "Cave", province: "أربيل", lat: 36.8300, lng: 44.2000, formation: "تكوين جيري", age: "Cretaceous", rockType: "صخور جيرية", tectonic: "طيات زاكروس", description: "تكوين جيولوجي جيرى كارستي، من أهم المواقع الآثارية عالمياً.", img: "https://images.unsplash.com/photo-1519058082700-08a0b56da9b4?q=80&w=600" },
+            { id: 1, name_ar: "كهف شانيدار", type: "Cave", province: "أربيل", lat: 36.8300, lng: 44.2000, formation: "تكوين جيري", age: "Mesozoic", rockType: "صخور جيرية", tectonic: "طيات زاكروس", description: "تكوين جيولوجي جيرى كارستي، من أهم المواقع الآثارية عالمياً.", img: "https://images.unsplash.com/photo-1519058082700-08a0b56da9b4?q=80&w=600" },
             { id: 2, name_ar: "جبل سنام", type: "Mountain", province: "البصرة", lat: 30.1264, lng: 47.6256, formation: "متبخرات", age: "Precambrian", rockType: "جبس، ملح صخري", tectonic: "قبة ملحية (Salt Plug)", description: "ظاهرة جيولوجية نادرة جداً في جنوب العراق.", img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600" },
-            { id: 3, name_ar: "زقورة بورسيبا", type: "Heritage", province: "بابل", lat: 32.3917, lng: 44.3417, formation: "ترسبات حديثة", age: "Quaternary", rockType: "آجر طيني مزجج", tectonic: "حوض وادي الرافدين", description: "موقع يجمع بين البناء الآثاري والظواهر الفيزيائية المحيرة.", img: "https://images.unsplash.com/photo-1604085572504-a392ddf0d86a?q=80&w=600" }
+            { id: 3, name_ar: "زقورة بورسيبا", type: "Heritage", province: "بابل", lat: 32.3917, lng: 44.3417, formation: "ترسبات حديثة", age: "Cenozoic", rockType: "آجر طيني مزجج", tectonic: "حوض وادي الرافدين", description: "موقع يجمع بين البناء الآثاري والظواهر الفيزيائية المحيرة.", img: "https://images.unsplash.com/photo-1604085572504-a392ddf0d86a?q=80&w=600" }
         ];
 
         function renderMarkers(filterAge) {
             markersLayerGroup.clearLayers();
             locations.forEach(function(loc) {
-                if (filterAge === 'All' || loc.age.includes(filterAge)) {
+                if (filterAge === 'All' || loc.age === filterAge) {
                     var emoji = siteIcons[loc.type] || siteIcons["Default"];
                     var customIcon = L.divIcon({ className: 'custom-site-icon', html: emoji, iconSize: [30, 30], iconAnchor: [15, 15] });
                     var popupContent = `<img src="${loc.img}" class="popup-img"><div class="popup-body"><h3 class="popup-title">${loc.name_ar}</h3><span style="font-size:12px; color:gray;">📍 ${loc.province}</span><button class="details-btn" onclick="openModal(${loc.id})">📖 التفاصيل العلمية</button></div>`;
@@ -138,6 +150,24 @@
 
         renderMarkers('All');
 
+        // المتغيرات الخاصة بتحديد الموقع ومسار الرحلة
+        var userMarker, userCircle;
+        var routingControl = null;
+
+        function locateUser() { 
+            map.locate({setView: true, maxZoom: 8, enableHighAccuracy: true}); 
+        }
+        
+        map.on('locationfound', function(e) {
+            var radius = Math.round(e.accuracy);
+            if (userMarker) { map.removeLayer(userMarker); map.removeLayer(userCircle); }
+            var blueDotIcon = L.divIcon({ className: 'blue-dot', iconSize: [20, 20], iconAnchor: [10, 10] });
+            userMarker = L.marker(e.latlng, {icon: blueDotIcon}).addTo(map).bindPopup('<b>موقعك الحالي</b>');
+            userCircle = L.circle(e.latlng, radius, { color: '#4285F4', fillOpacity: 0.15, weight: 1 }).addTo(map);
+        });
+        
+        map.on('locationerror', function(e) { alert("يرجى تفعيل الـ GPS في هاتفك."); });
+
         function openModal(id) {
             var site = locations.find(s => s.id === id);
             if(site) {
@@ -148,23 +178,49 @@
                 document.getElementById("modalAge").innerText = site.age;
                 document.getElementById("modalRock").innerText = site.rockType;
                 document.getElementById("modalTectonic").innerText = site.tectonic;
+                
+                // تحديث زر رسم المسار
+                document.getElementById("modalDrawRoute").setAttribute("onclick", `drawRoute(${site.lat}, ${site.lng})`);
+                
                 document.getElementById("modalDirections").href = `https://www.google.com/maps/dir/?api=1&destination=${site.lat},${site.lng}`;
                 document.getElementById("modalTags").innerHTML = `<span class="tag-badge">نوع الموقع: ${site.type}</span><span class="tag-badge">المحافظة: ${site.province}</span>`;
                 document.getElementById("siteModal").style.display = "flex";
             }
         }
+        
         function closeModal() { document.getElementById("siteModal").style.display = "none"; }
 
-        var userMarker, userCircle;
-        function locateUser() { map.locate({setView: true, maxZoom: 8, enableHighAccuracy: true}); }
-        map.on('locationfound', function(e) {
-            var radius = Math.round(e.accuracy);
-            if (userMarker) { map.removeLayer(userMarker); map.removeLayer(userCircle); }
-            var blueDotIcon = L.divIcon({ className: 'blue-dot', iconSize: [20, 20], iconAnchor: [10, 10] });
-            userMarker = L.marker(e.latlng, {icon: blueDotIcon}).addTo(map).bindPopup('<b>موقعك الحالي</b>');
-            userCircle = L.circle(e.latlng, radius, { color: '#4285F4', fillOpacity: 0.15, weight: 1 }).addTo(map);
-        });
-        map.on('locationerror', function(e) { alert("يرجى تفعيل الـ GPS في هاتفك."); });
+        // الدالة المسؤولة عن رسم مسار الرحلة
+        function drawRoute(siteLat, siteLng) {
+            if (!userMarker) {
+                alert("يرجى الضغط على زر 'تحديد موقعي' أولاً ليتمكن النظام من رسم المسار من موقعك الحالي.");
+                closeModal();
+                return;
+            }
+
+            // إزالة أي مسار قديم إذا كان موجوداً
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+
+            var startLat = userMarker.getLatLng().lat;
+            var startLng = userMarker.getLatLng().lng;
+
+            // رسم المسار الجديد
+            routingControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(startLat, startLng),
+                    L.latLng(siteLat, siteLng)
+                ],
+                routeWhileDragging: false,
+                createMarker: function() { return null; }, // عدم إضافة علامات زائدة
+                lineOptions: {
+                    styles: [{color: '#f39c12', opacity: 0.9, weight: 5}]
+                }
+            }).addTo(map);
+
+            closeModal(); // إغلاق النافذة لرؤية المسار المرسوم
+        }
 
     </script>
 </body>
