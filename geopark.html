@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="htmlTag">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,30 +23,34 @@
         .header h1 { margin: 0; font-size: 22px; color: #f39c12; font-weight: 900; line-height: 1.4; }
         .header p { margin: 5px 0 0 0; font-size: 15px; font-weight: bold; }
 
-        .search-bar { background: white; padding: 10px 20px; display: flex; gap: 10px; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); flex-wrap: wrap; }
-        .search-input { padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Cairo'; font-size: 14px; outline: none; width: 350px; max-width: 100%; }
+        /* شريط البحث وزر اللغات */
+        .search-bar { background: white; padding: 10px 20px; display: flex; gap: 10px; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); flex-wrap: wrap; }
+        .lang-select { padding: 10px; border: 2px solid #235789; border-radius: 8px; font-family: 'Cairo'; font-size: 14px; font-weight: bold; color: #235789; cursor: pointer; outline: none; background: #eef2f5; }
+        .search-input { padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Cairo'; font-size: 14px; outline: none; width: 300px; max-width: 100%; }
         .search-btn { background: #235789; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-family: 'Cairo'; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .search-btn:hover { background: #f39c12; }
 
-        /* 🔴 التعديل الأول: تصغير عرض الخريطة لترك مساحة للتمرير (Scrolling) 🔴 */
+        /* الخريطة وإعدادات التمرير */
         .map-wrapper { width: 100%; display: flex; justify-content: center; background-color: #f4f7f6; padding: 15px 0; }
         .map-container { position: relative; height: 75vh; width: 94%; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); overflow: hidden; border: 3px solid #eef2f5; }
         #map { height: 100%; width: 100%; z-index: 1; }
 
         #routeDistanceInfo { display: none; position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 2000; background: #235789; color: white; padding: 10px 25px; border-radius: 30px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid #f39c12; }
 
+        /* دليل الخريطة */
         .map-legend { background: rgba(255, 255, 255, 0.95); padding: 10px 15px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); line-height: 1.8; font-size: 13px; font-weight: bold; color: #333; }
         .map-legend h4 { margin: 0 0 5px 0; font-size: 14px; color: #235789; border-bottom: 2px solid #f39c12; padding-bottom: 3px; }
         .legend-item { display: flex; align-items: center; gap: 8px; }
 
         .north-arrow { background: rgba(255, 255, 255, 0.8); padding: 5px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.3); font-size: 28px; line-height: 1; text-align: center; }
 
+        /* الفهرس المحدث بالشبكة والصور */
         .index-section { padding: 10px 20px 30px 20px; max-width: 1200px; margin: auto; }
-        .index-title { color: #235789; border-right: 5px solid #f39c12; padding-right: 10px; margin-bottom: 20px; font-size: 22px; }
+        .index-title { color: #235789; border-right: 5px solid #f39c12; padding-right: 10px; padding-left: 10px; margin-bottom: 20px; font-size: 22px; }
+        html[dir="ltr"] .index-title { border-right: none; border-left: 5px solid #f39c12; }
         .province-group { margin-bottom: 25px; }
         .province-title { background: #eef2f5; color: #1a252f; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 18px; margin-bottom: 15px; }
         
-        /* 🔴 التعديل الثاني: شبكة من 3 أعمدة مع إضافة الصورة للبطاقة 🔴 */
         .site-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
         @media (min-width: 992px) { .site-list { grid-template-columns: repeat(3, 1fr); } }
         
@@ -57,16 +61,19 @@
         .site-card h3 { margin: 0 0 5px 0; color: #f39c12; font-size: 15px; font-weight: 900;}
         .site-card p { margin: 0; color: #666; font-size: 12px; line-height: 1.6; font-weight: bold; }
 
+        /* الأزرار والعناصر العائمة */
         .gps-button { position: absolute; bottom: 85px; right: 20px; z-index: 1000; background-color: #ffffff; border: 2px solid #235789; color: #235789; padding: 12px 20px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .gps-button:hover { background-color: #235789; color: white; }
+        html[dir="ltr"] .gps-button { right: auto; left: 20px; }
         .blue-dot { background-color: #4285F4; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 15px rgba(66, 133, 244, 0.8); animation: pulse-dot 2s infinite; }
         @keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(66, 133, 244, 0); } 100% { box-shadow: 0 0 0 0 rgba(66, 133, 244, 0); } }
 
         .timeline-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 15px; border-radius: 30px; display: flex; gap: 10px; overflow-x: auto; max-width: 90vw; direction: ltr; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .timeline-btn { background: #eef2f5; border: 1px solid #235789; color: #235789; padding: 8px 18px; border-radius: 20px; font-family: 'Segoe UI', Tahoma, sans-serif; font-weight: bold; font-size: 14px; cursor: pointer; white-space: nowrap; transition: 0.3s; }
         .timeline-btn:hover, .timeline-btn.active { background: #235789; color: white; }
-        .timeline-btn.show-all { font-family: 'Cairo', sans-serif; direction: rtl; }
+        .timeline-btn.show-all { font-family: 'Cairo', sans-serif; }
 
+        /* النافذة المنبثقة ومعرض الصور */
         .custom-site-icon { font-size: 26px; text-shadow: 0px 2px 5px rgba(0,0,0,0.6); text-align: center; }
         .custom-popup .leaflet-popup-content-wrapper { padding: 0; overflow: hidden; border-radius: 12px; }
         .custom-popup .leaflet-popup-content { margin: 0; width: 250px !important; text-align: center; }
@@ -86,6 +93,7 @@
         .gallery-nav:hover { background: #f39c12; color: #fff; border-color: #f39c12; }
         
         .close-modal { position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; font-size: 20px; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; z-index: 20; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        html[dir="ltr"] .close-modal { right: auto; left: 10px; }
         .modal-body { padding: 25px; }
         
         .weather-card { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 10px 15px; border-radius: 8px; display: inline-flex; align-items: center; gap: 10px; margin-top: 10px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
@@ -94,6 +102,7 @@
         .tag-badge { display: inline-block; background: #eef2f5; color: #235789; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; margin: 5px 2px; }
         .data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
         .data-card { background: #f9f9f9; padding: 15px; border-radius: 8px; border-right: 4px solid #f39c12; }
+        html[dir="ltr"] .data-card { border-right: none; border-left: 4px solid #f39c12; }
         .data-card h4 { margin: 0 0 5px 0; color: #555; font-size: 13px; }
         .data-card p { margin: 0; color: #111; font-weight: bold; font-size: 14px; }
         
@@ -109,27 +118,32 @@
 <body>
 
     <div class="header">
-        <h1>السياحة الجيولوجية والآثارية (Geo-Archaeological Tourism)</h1>
-        <p>نظام شندل للمسح الميداني الجيولوجي</p>
+        <h1 id="ui_title">السياحة الجيولوجية والآثارية (Geo-Archaeological Tourism)</h1>
+        <p id="ui_subtitle">نظام شندل للمسح الميداني الجيولوجي</p>
     </div>
 
+    <!-- شريط البحث مع زر اللغات الجديد -->
     <div class="search-bar">
+        <select id="langSelect" class="lang-select" onchange="switchLanguage()">
+            <option value="ar">🌐 العربية</option>
+            <option value="en">🌐 English</option>
+        </select>
         <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن موقع، تكوين، أو دولة/محافظة..." onkeyup="smartSearch()">
-        <button class="search-btn" onclick="smartSearch()">🔍 بحث سريع</button>
+        <button class="search-btn" id="ui_searchBtn" onclick="smartSearch()">🔍 بحث سريع</button>
     </div>
 
     <div class="map-wrapper">
         <div class="map-container">
-            <div id="routeDistanceInfo">المسافة: <span id="routeDistText">0</span> كم</div>
+            <div id="routeDistanceInfo"><span id="ui_distLabel">المسافة:</span> <span id="routeDistText">0</span> <span id="ui_distKm">كم</span></div>
 
             <div class="timeline-container">
-                <button class="timeline-btn show-all active" onclick="filterEra('All', this)">🌍 إظهار الكل</button>
+                <button class="timeline-btn show-all active" id="ui_showAll" onclick="filterEra('All', this)">🌍 إظهار الكل</button>
                 <button class="timeline-btn" onclick="filterEra('Precambrian', this)">Precambrian</button>
                 <button class="timeline-btn" onclick="filterEra('Paleozoic', this)">Paleozoic</button>
                 <button class="timeline-btn" onclick="filterEra('Mesozoic', this)">Mesozoic</button>
                 <button class="timeline-btn" onclick="filterEra('Cenozoic', this)">Cenozoic</button>
             </div>
-            <button class="gps-button" onclick="locateUser()">🎯 تحديد موقعي</button>
+            <button class="gps-button" id="ui_locateMe" onclick="locateUser()">🎯 تحديد موقعي</button>
             <div id="map"></div>
         </div>
     </div>
@@ -162,13 +176,12 @@
 
                 <p id="modalDesc" style="line-height: 1.8; color: #444; margin-top: 15px;"></p>
                 <div class="data-grid">
-                    <div class="data-card"><h4>التكوين الجيولوجي</h4><p id="modalFormation">-</p></div>
-                    <div class="data-card"><h4>الحقبة الزمنية (Era)</h4><p id="modalAge">-</p></div>
-                    <div class="data-card"><h4>نوع الصخور</h4><p id="modalRock">-</p></div>
-                    <div class="data-card"><h4>البيئة التكتونية</h4><p id="modalTectonic">-</p></div>
+                    <div class="data-card"><h4 id="ui_formation">التكوين الجيولوجي</h4><p id="modalFormation">-</p></div>
+                    <div class="data-card"><h4 id="ui_era">الحقبة الزمنية (Era)</h4><p id="modalAge">-</p></div>
+                    <div class="data-card"><h4 id="ui_rockType">نوع الصخور</h4><p id="modalRock">-</p></div>
+                    <div class="data-card"><h4 id="ui_tectonic">البيئة التكتونية</h4><p id="modalTectonic">-</p></div>
                 </div>
                 
-                <!-- 🔴 التعديل الثالث: نصوص الأزرار الجديدة 🔴 -->
                 <div class="btn-group">
                     <button id="modalDrawRoute" class="route-btn">🧭 الملاحة الجغرافية</button>
                     <a href="#" id="modalDirections" target="_blank" class="external-btn">🗺️ التوجيه الميداني</a>
@@ -178,6 +191,79 @@
     </div>
 
     <script>
+        // --- 🔴 الحماية ومنع فحص الكود (Inspect Element) 🔴 ---
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.onkeydown = function(e) {
+            if(e.keyCode == 123) return false; // F12
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Ctrl+Shift+I
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false; // Ctrl+Shift+C
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; // Ctrl+Shift+J
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; // Ctrl+U
+        }
+
+        // --- 🔴 نظام الترجمة واللغات 🔴 ---
+        var currentLang = 'ar';
+        const i18n = {
+            ar: {
+                title: "السياحة الجيولوجية والآثارية (Geo-Archaeological Tourism)",
+                subtitle: "نظام شندل للمسح الميداني الجيولوجي",
+                searchPlaceholder: "ابحث عن موقع، تكوين، أو دولة/محافظة...",
+                searchBtn: "🔍 بحث سريع",
+                distLabel: "المسافة:",
+                distKm: "كم",
+                showAll: "🌍 إظهار الكل",
+                locateMe: "🎯 تحديد موقعي",
+                indexTitleDef: "المناطق السياحية الجيولوجية والآثارية",
+                indexTitleNear: "المناطق السياحية الجيولوجية والآثارية (الأقرب إليك)",
+                legendTitle: "دليل الخريطة",
+                legendCave: "🕳️ كهوف ومغارات",
+                legendMountain: "⛰️ جبال وقباب",
+                legendHeritage: "🏛️ آثار وتراث جيولوجي",
+                legendFault: "⚡ فوالق وصدوع",
+                legendFold: "〽️ طيات",
+                legendVolcano: "🌋 براكين",
+                legendSpring: "💧 ينابيع وعيون",
+                formation: "التكوين الجيولوجي",
+                era: "الحقبة الزمنية (Era)",
+                rockType: "نوع الصخور",
+                tectonic: "البيئة التكتونية",
+                drawRoute: "🧭 الملاحة الجغرافية",
+                externalRoute: "🗺️ التوجيه الميداني",
+                scientificDetails: "📖 التفاصيل العلمية",
+                regionLabel: "📍 منطقة: ",
+                distanceLabel: "📍 يبعد: "
+            },
+            en: {
+                title: "Geo-Archaeological Tourism",
+                subtitle: "Shandal Geological Field Survey System",
+                searchPlaceholder: "Search site, formation, or region...",
+                searchBtn: "🔍 Quick Search",
+                distLabel: "Distance:",
+                distKm: "km",
+                showAll: "🌍 Show All",
+                locateMe: "🎯 Locate Me",
+                indexTitleDef: "Geo-Archaeological Tourist Areas",
+                indexTitleNear: "Geo-Archaeological Tourist Areas (Nearest)",
+                legendTitle: "Map Legend",
+                legendCave: "🕳️ Caves",
+                legendMountain: "⛰️ Mountains & Domes",
+                legendHeritage: "🏛️ Geo-Heritage",
+                legendFault: "⚡ Faults",
+                legendFold: "〽️ Folds",
+                legendVolcano: "🌋 Volcanoes",
+                legendSpring: "💧 Springs",
+                formation: "Formation",
+                era: "Geological Era",
+                rockType: "Rock Type",
+                tectonic: "Tectonic Setting",
+                drawRoute: "🧭 Geographic Navigation",
+                externalRoute: "🗺️ Field Routing",
+                scientificDetails: "📖 Scientific Details",
+                regionLabel: "📍 Region: ",
+                distanceLabel: "📍 Distance: "
+            }
+        };
+
         var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri' });
         var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { attribution: 'OpenTopoMap' });
         var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: 'OSM' });
@@ -196,35 +282,38 @@
         var legendControl = L.control({position: 'bottomleft'});
         legendControl.onAdd = function () {
             var div = L.DomUtil.create('div', 'map-legend');
-            div.innerHTML = `
-                <h4>دليل الخريطة</h4>
-                <div class="legend-item"><span>🕳️</span> كهوف ومغارات</div>
-                <div class="legend-item"><span>⛰️</span> جبال وقباب</div>
-                <div class="legend-item"><span>🏛️</span> آثار وتراث جيولوجي</div>
-                <div class="legend-item"><span>⚡</span> فوالق وصدوع</div>
-                <div class="legend-item"><span>〽️</span> طيات</div>
-                <div class="legend-item"><span>🌋</span> براكين</div>
-                <div class="legend-item"><span>💧</span> ينابيع وعيون</div>
-            `;
+            div.id = "mapLegendDiv";
             return div;
         };
         legendControl.addTo(map);
+
+        function updateLegendLanguage() {
+            var t = i18n[currentLang];
+            document.getElementById("mapLegendDiv").innerHTML = `
+                <h4>${t.legendTitle}</h4>
+                <div class="legend-item"><span>🕳️</span> ${t.legendCave}</div>
+                <div class="legend-item"><span>⛰️</span> ${t.legendMountain}</div>
+                <div class="legend-item"><span>🏛️</span> ${t.legendHeritage}</div>
+                <div class="legend-item"><span>⚡</span> ${t.legendFault}</div>
+                <div class="legend-item"><span>〽️</span> ${t.legendFold}</div>
+                <div class="legend-item"><span>🌋</span> ${t.legendVolcano}</div>
+                <div class="legend-item"><span>💧</span> ${t.legendSpring}</div>
+            `;
+        }
 
         var markersLayerGroup = L.layerGroup().addTo(map);
         const siteIcons = { "Cave": "🕳️", "Fault": "⚡", "Fold": "〽️", "Spring": "💧", "Mountain": "⛰️", "Canyon": "🏜️", "Volcano": "🌋", "Heritage": "🏛️", "Default": "📍" };
 
         var locations = [
-            { id: 1, name_ar: "كهف شانيدار", type: "Cave", province: "أربيل", lat: 36.8300, lng: 44.2000, formation: "تكوين جيري", age: "Mesozoic", rockType: "صخور جيرية", tectonic: "طيات زاكروس", description: "تكوين جيولوجي جيرى كارستي، من أهم المواقع الآثارية عالمياً.", images: ["https://images.unsplash.com/photo-1519058082700-08a0b56da9b4?q=80&w=600", "https://images.unsplash.com/photo-1574781617260-26462ec5428a?q=80&w=600"] },
-            { id: 2, name_ar: "زقورة بورسيبا", type: "Heritage", province: "بابل", lat: 32.3917, lng: 44.3417, formation: "ترسبات حديثة", age: "Cenozoic", rockType: "آجر طيني مزجج", tectonic: "حوض وادي الرافدين", description: "موقع يجمع بين البناء الآثاري والظواهر الفيزيائية المحيرة.", 
-              images: [
-                  "https://images.unsplash.com/photo-1604085572504-a392ddf0d86a?q=80&w=600",
-                  "https://images.unsplash.com/photo-1578308298711-8273614cd3b7?q=80&w=600", 
-                  "https://images.unsplash.com/photo-1628156172675-9c94f509fb3a?q=80&w=600",
-                  "https://images.unsplash.com/photo-1544641662-8868997ef31e?q=80&w=600",
-                  "https://images.unsplash.com/photo-1590494498848-73599ec244a2?q=80&w=600"
-              ] 
-            },
-            { id: 3, name_ar: "جبل سنام", type: "Mountain", province: "البصرة", lat: 30.1264, lng: 47.6256, formation: "متبخرات", age: "Precambrian", rockType: "جبس، ملح صخري", tectonic: "قبة ملحية (Salt Plug)", description: "ظاهرة جيولوجية نادرة جداً في جنوب العراق.", images: ["https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600", "https://images.unsplash.com/photo-1469521669194-babbdf900920?q=80&w=600"] }
+            { id: 1, type: "Cave", lat: 36.8300, lng: 44.2000, age: "Mesozoic", images: ["https://images.unsplash.com/photo-1519058082700-08a0b56da9b4?q=80&w=600", "https://images.unsplash.com/photo-1574781617260-26462ec5428a?q=80&w=600"],
+              ar: { name: "كهف شانيدار", province: "أربيل", formation: "تكوين جيري", rockType: "صخور جيرية", tectonic: "طيات زاكروس", description: "تكوين جيولوجي جيرى كارستي، من أهم المواقع الآثارية عالمياً." },
+              en: { name: "Shanidar Cave", province: "Erbil", formation: "Limestone Formation", rockType: "Limestone", tectonic: "Zagros Folds", description: "A karstic limestone geological formation, globally significant archaeological site." } },
+            { id: 2, type: "Heritage", lat: 32.3917, lng: 44.3417, age: "Cenozoic", images: ["https://images.unsplash.com/photo-1604085572504-a392ddf0d86a?q=80&w=600", "https://images.unsplash.com/photo-1578308298711-8273614cd3b7?q=80&w=600", "https://images.unsplash.com/photo-1628156172675-9c94f509fb3a?q=80&w=600", "https://images.unsplash.com/photo-1544641662-8868997ef31e?q=80&w=600", "https://images.unsplash.com/photo-1590494498848-73599ec244a2?q=80&w=600"],
+              ar: { name: "زقورة بورسيبا", province: "بابل", formation: "ترسبات حديثة", rockType: "آجر طيني مزجج", tectonic: "حوض وادي الرافدين", description: "موقع يجمع بين البناء الآثاري والظواهر الفيزيائية المحيرة." },
+              en: { name: "Borsippa Ziggurat", province: "Babylon", formation: "Recent Deposits", rockType: "Glazed Clay Brick", tectonic: "Mesopotamian Basin", description: "A site combining archaeological structure with perplexing physical phenomena." } },
+            { id: 3, type: "Mountain", lat: 30.1264, lng: 47.6256, age: "Precambrian", images: ["https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600", "https://images.unsplash.com/photo-1469521669194-babbdf900920?q=80&w=600"],
+              ar: { name: "جبل سنام", province: "البصرة", formation: "متبخرات", rockType: "جبس، ملح صخري", tectonic: "قبة ملحية (Salt Plug)", description: "ظاهرة جيولوجية نادرة جداً في جنوب العراق." },
+              en: { name: "Jabal Sanam", province: "Basra", formation: "Evaporites", rockType: "Gypsum, Rock Salt", tectonic: "Salt Plug", description: "A very rare geological phenomenon in southern Iraq." } }
         ];
 
         var userMarker, userCircle, routingControl = null;
@@ -233,16 +322,19 @@
 
         function renderMarkers(filteredList) {
             markersLayerGroup.clearLayers();
+            var t = i18n[currentLang];
             filteredList.forEach(function(loc) {
+                var langData = loc[currentLang];
                 var emoji = siteIcons[loc.type] || siteIcons["Default"];
                 var customIcon = L.divIcon({ className: 'custom-site-icon', html: emoji, iconSize: [35, 35], iconAnchor: [17, 17] });
-                var popupContent = `<img src="${loc.images[0]}" class="popup-img"><div class="popup-body"><h3 style="color:#235789; margin:5px 0;">${loc.name_ar}</h3><button class="details-btn" onclick="openModal(${loc.id})">📖 التفاصيل العلمية</button></div>`;
+                var popupContent = `<img src="${loc.images[0]}" class="popup-img"><div class="popup-body"><h3 style="color:#235789; margin:5px 0;">${langData.name}</h3><button class="details-btn" onclick="openModal(${loc.id})">${t.scientificDetails}</button></div>`;
                 L.marker([loc.lat, loc.lng], {icon: customIcon}).bindPopup(popupContent, { className: 'custom-popup' }).addTo(markersLayerGroup);
             });
             generateIndex(filteredList);
         }
 
         function generateIndex(list) {
+            var t = i18n[currentLang];
             var indexDiv = document.getElementById("dynamicIndex");
             indexDiv.innerHTML = "";
             var sortedList = [...list];
@@ -250,36 +342,35 @@
             if (userMarker) {
                 var userLat = userMarker.getLatLng().lat;
                 var userLng = userMarker.getLatLng().lng;
-                sortedList.forEach(loc => {
-                    loc.distance = map.distance([userLat, userLng], [loc.lat, loc.lng]);
-                });
+                sortedList.forEach(loc => { loc.distance = map.distance([userLat, userLng], [loc.lat, loc.lng]); });
                 sortedList.sort((a, b) => a.distance - b.distance);
-                document.getElementById("indexTitle").innerText = "المناطق السياحية الجيولوجية والآثارية (الأقرب إليك)";
+                document.getElementById("indexTitle").innerText = t.indexTitleNear;
             } else {
                 sortedList.sort((a, b) => b.lat - a.lat);
-                document.getElementById("indexTitle").innerText = "المناطق السياحية الجيولوجية والآثارية";
+                document.getElementById("indexTitle").innerText = t.indexTitleDef;
             }
 
             var grouped = {};
             sortedList.forEach(loc => {
-                if (!grouped[loc.province]) grouped[loc.province] = [];
-                grouped[loc.province].push(loc);
+                var provName = loc[currentLang].province;
+                if (!grouped[provName]) grouped[provName] = [];
+                grouped[provName].push(loc);
             });
 
             for (var prov in grouped) {
-                var html = `<div class="province-group"><div class="province-title">📍 منطقة: ${prov}</div><div class="site-list">`;
+                var html = `<div class="province-group"><div class="province-title">${t.regionLabel}${prov}</div><div class="site-list">`;
                 grouped[prov].forEach(site => {
+                    var langData = site[currentLang];
                     var distText = "";
                     if (userMarker && site.distance !== undefined) {
-                        distText = `<br><span style="color:#e74c3c; font-weight:bold;">📍 يبعد: ${(site.distance / 1000).toFixed(1)} كم</span>`;
+                        distText = `<br><span style="color:#e74c3c; font-weight:bold;">${t.distanceLabel}${(site.distance / 1000).toFixed(1)} ${t.distKm}</span>`;
                     }
-                    // 🔴 إضافة الصورة للبطاقة وجعل البطاقات على شكل شبكة 🔴
                     html += `
                         <div class="site-card" onclick="focusOnSite(${site.lat}, ${site.lng}, ${site.id})">
-                            <img src="${site.images[0]}" class="site-card-img" alt="${site.name_ar}">
+                            <img src="${site.images[0]}" class="site-card-img" alt="${langData.name}">
                             <div class="site-card-info">
-                                <h3>${site.name_ar}</h3>
-                                <p>${siteIcons[site.type]} | التكوين: ${site.formation} ${distText}</p>
+                                <h3>${langData.name}</h3>
+                                <p>${siteIcons[site.type]} | ${t.formation}: ${langData.formation} ${distText}</p>
                             </div>
                         </div>
                     `;
@@ -298,10 +389,8 @@
         function smartSearch() {
             var text = document.getElementById("searchInput").value.toLowerCase();
             var filtered = locations.filter(loc => {
-                return loc.name_ar.toLowerCase().includes(text) || 
-                       loc.formation.toLowerCase().includes(text) || 
-                       loc.rockType.toLowerCase().includes(text) ||
-                       loc.province.toLowerCase().includes(text);
+                var d = loc[currentLang];
+                return d.name.toLowerCase().includes(text) || d.formation.toLowerCase().includes(text) || d.rockType.toLowerCase().includes(text) || d.province.toLowerCase().includes(text);
             });
             renderMarkers(filtered);
         }
@@ -313,34 +402,33 @@
             renderMarkers(filtered);
         }
 
-        renderMarkers(locations);
-
         function openModal(id) {
             var site = locations.find(s => s.id === id);
+            var t = i18n[currentLang];
+            var d = site[currentLang];
             if(site) {
                 currentGalleryImages = site.images;
                 currentImageIndex = 0;
                 updateGalleryHTML();
 
-                document.getElementById("modalTitle").innerText = site.name_ar;
-                document.getElementById("modalDesc").innerText = site.description;
-                document.getElementById("modalFormation").innerText = site.formation;
+                document.getElementById("modalTitle").innerText = d.name;
+                document.getElementById("modalDesc").innerText = d.description;
+                document.getElementById("modalFormation").innerText = d.formation;
                 document.getElementById("modalAge").innerText = site.age;
-                document.getElementById("modalRock").innerText = site.rockType;
-                document.getElementById("modalTectonic").innerText = site.tectonic;
+                document.getElementById("modalRock").innerText = d.rockType;
+                document.getElementById("modalTectonic").innerText = d.tectonic;
                 
                 document.getElementById("modalDrawRoute").setAttribute("onclick", `drawRoute(${site.lat}, ${site.lng})`);
-                
                 document.getElementById("modalDirections").href = `https://www.google.com/maps/dir/?api=1&destination=${site.lat},${site.lng}`;
                 
-                document.getElementById("modalTags").innerHTML = `<span class="tag-badge">${siteIcons[site.type]} ${site.type}</span><span class="tag-badge">📍 ${site.province}</span>`;
+                document.getElementById("modalTags").innerHTML = `<span class="tag-badge">${siteIcons[site.type]} ${site.type}</span><span class="tag-badge">📍 ${d.province}</span>`;
                 
-                document.getElementById("weatherText").innerText = "جاري القياس المباشر...";
+                document.getElementById("weatherText").innerText = "---";
                 fetch(`https://api.open-meteo.com/v1/forecast?latitude=${site.lat}&longitude=${site.lng}&current_weather=true`)
                 .then(res => res.json())
                 .then(data => {
-                    document.getElementById("weatherText").innerText = `الحرارة الآن: ${data.current_weather.temperature}°C`;
-                }).catch(() => { document.getElementById("weatherText").innerText = "تعذر جلب الطقس"; });
+                    document.getElementById("weatherText").innerText = `${data.current_weather.temperature}°C`;
+                }).catch(() => { document.getElementById("weatherText").innerText = "Error"; });
 
                 document.getElementById("siteModal").style.display = "flex";
             }
@@ -382,14 +470,13 @@
             var radius = Math.round(e.accuracy);
             if (userMarker) { map.removeLayer(userMarker); map.removeLayer(userCircle); }
             var blueDotIcon = L.divIcon({ className: 'blue-dot', iconSize: [20, 20], iconAnchor: [10, 10] });
-            userMarker = L.marker(e.latlng, {icon: blueDotIcon}).addTo(map).bindPopup('<b>موقعك الحالي</b>');
+            userMarker = L.marker(e.latlng, {icon: blueDotIcon}).addTo(map).bindPopup('<b>📍</b>');
             userCircle = L.circle(e.latlng, radius, { color: '#4285F4', fillOpacity: 0.15, weight: 1 }).addTo(map);
-            
             generateIndex(locations);
         });
 
         function drawRoute(siteLat, siteLng) {
-            if (!userMarker) { alert("يرجى الضغط على 'تحديد موقعي' أولاً."); closeModal(); return; }
+            if (!userMarker) { alert(currentLang === 'ar' ? "يرجى تحديد موقعك أولاً" : "Please locate yourself first."); closeModal(); return; }
             if (routingControl) map.removeControl(routingControl);
             var startLat = userMarker.getLatLng().lat;
             var startLng = userMarker.getLatLng().lng;
@@ -406,384 +493,43 @@
                 document.getElementById("routeDistText").innerText = distanceKm;
                 document.getElementById("routeDistanceInfo").style.display = "block";
             });
-
             closeModal();
         }
-    </script>
-</body>
-</html>
-        .map-legend { background: rgba(255, 255, 255, 0.95); padding: 10px 15px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); line-height: 1.8; font-size: 13px; font-weight: bold; color: #333; }
-        .map-legend h4 { margin: 0 0 5px 0; font-size: 14px; color: #235789; border-bottom: 2px solid #f39c12; padding-bottom: 3px; }
-        .legend-item { display: flex; align-items: center; gap: 8px; }
 
-        .north-arrow { background: rgba(255, 255, 255, 0.8); padding: 5px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.3); font-size: 28px; line-height: 1; text-align: center; }
-
-        .index-section { padding: 30px 20px; max-width: 1200px; margin: auto; }
-        .index-title { color: #235789; border-right: 5px solid #f39c12; padding-right: 10px; margin-bottom: 20px; font-size: 22px; }
-        .province-group { margin-bottom: 25px; }
-        .province-title { background: #eef2f5; color: #1a252f; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 18px; margin-bottom: 10px; }
-        .site-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
-        .site-card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; border: 1px solid #eee; }
-        .site-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(35, 87, 137, 0.2); border-color: #235789; }
-        .site-card h3 { margin: 0 0 5px 0; color: #f39c12; font-size: 16px; }
-        .site-card p { margin: 0; color: #666; font-size: 13px; line-height: 1.6; }
-
-        .gps-button { position: absolute; bottom: 85px; right: 20px; z-index: 1000; background-color: #ffffff; border: 2px solid #235789; color: #235789; padding: 12px 20px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .gps-button:hover { background-color: #235789; color: white; }
-        .blue-dot { background-color: #4285F4; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 15px rgba(66, 133, 244, 0.8); animation: pulse-dot 2s infinite; }
-        @keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(66, 133, 244, 0); } 100% { box-shadow: 0 0 0 0 rgba(66, 133, 244, 0); } }
-
-        .timeline-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 15px; border-radius: 30px; display: flex; gap: 10px; overflow-x: auto; max-width: 90vw; direction: ltr; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        .timeline-btn { background: #eef2f5; border: 1px solid #235789; color: #235789; padding: 8px 18px; border-radius: 20px; font-family: 'Segoe UI', Tahoma, sans-serif; font-weight: bold; font-size: 14px; cursor: pointer; white-space: nowrap; transition: 0.3s; }
-        .timeline-btn:hover, .timeline-btn.active { background: #235789; color: white; }
-        .timeline-btn.show-all { font-family: 'Cairo', sans-serif; direction: rtl; }
-
-        .custom-site-icon { font-size: 26px; text-shadow: 0px 2px 5px rgba(0,0,0,0.6); text-align: center; }
-        .custom-popup .leaflet-popup-content-wrapper { padding: 0; overflow: hidden; border-radius: 12px; }
-        .custom-popup .leaflet-popup-content { margin: 0; width: 250px !important; text-align: center; }
-        .popup-img { width: 100%; height: 120px; object-fit: cover; border-bottom: 3px solid #f39c12; }
-        .popup-body { padding: 10px; }
-        .details-btn { background: #235789; color: white !important; border: none; padding: 8px; width: 100%; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; margin-top: 10px; text-decoration: none; display: block; }
-        
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: white; width: 90%; max-width: 800px; max-height: 90vh; border-radius: 12px; overflow-y: auto; position: relative; padding: 0; }
-        
-        .slider-wrapper { display: flex; align-items: center; justify-content: center; gap: 15px; background: #0b0c10; padding: 25px 10px; position: relative; overflow: hidden; border-radius: 12px 12px 0 0; }
-        .slider-img { border-radius: 8px; object-fit: cover; transition: all 0.4s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
-        .slider-img.side { width: 70px; height: 110px; opacity: 0.3; filter: blur(1px); cursor: pointer; }
-        .slider-img.side:hover { opacity: 0.6; filter: blur(0px); }
-        .slider-img.center { width: 260px; height: 180px; opacity: 1; border: 3px solid #f39c12; transform: scale(1.05); z-index: 2; }
-        .gallery-nav { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px; border-radius: 50%; cursor: pointer; font-size: 16px; z-index: 10; transition: 0.3s; }
-        .gallery-nav:hover { background: #f39c12; color: #fff; border-color: #f39c12; }
-        
-        .close-modal { position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; font-size: 20px; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; z-index: 20; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        .modal-body { padding: 25px; }
-        
-        .weather-card { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 10px 15px; border-radius: 8px; display: inline-flex; align-items: center; gap: 10px; margin-top: 10px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .weather-icon { font-size: 24px; }
-
-        .tag-badge { display: inline-block; background: #eef2f5; color: #235789; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; margin: 5px 2px; }
-        .data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
-        .data-card { background: #f9f9f9; padding: 15px; border-radius: 8px; border-right: 4px solid #f39c12; }
-        .data-card h4 { margin: 0 0 5px 0; color: #555; font-size: 13px; }
-        .data-card p { margin: 0; color: #111; font-weight: bold; font-size: 14px; }
-        
-        /* أزرار الاتجاهات (الداخلي والخارجي) */
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-        .route-btn { background: #f39c12; color: white !important; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; font-size: 16px; flex: 1; text-align: center; }
-        .route-btn:hover { background: #d68910; }
-        .external-btn { background: #27ae60; color: white !important; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; font-size: 16px; flex: 1; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; }
-        .external-btn:hover { background: #219150; }
-        
-        .leaflet-routing-container { display: none !important; }
-    </style>
-</head>
-<body>
-
-    <div class="header">
-        <h1>السياحة الجيولوجية والآثارية (Geo-Archaeological Tourism)</h1>
-        <p>نظام شندل للمسح الميداني الجيولوجي</p>
-    </div>
-
-    <!-- شريط البحث المحدث -->
-    <div class="search-bar">
-        <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن موقع، تكوين، أو دولة/محافظة..." onkeyup="smartSearch()">
-        <button class="search-btn" onclick="smartSearch()">🔍 بحث سريع</button>
-    </div>
-
-    <div class="map-container">
-        <!-- لافتة حساب المسافة -->
-        <div id="routeDistanceInfo">المسافة: <span id="routeDistText">0</span> كم</div>
-
-        <div class="timeline-container">
-            <button class="timeline-btn show-all active" onclick="filterEra('All', this)">🌍 إظهار الكل</button>
-            <button class="timeline-btn" onclick="filterEra('Precambrian', this)">Precambrian</button>
-            <button class="timeline-btn" onclick="filterEra('Paleozoic', this)">Paleozoic</button>
-            <button class="timeline-btn" onclick="filterEra('Mesozoic', this)">Mesozoic</button>
-            <button class="timeline-btn" onclick="filterEra('Cenozoic', this)">Cenozoic</button>
-        </div>
-        <button class="gps-button" onclick="locateUser()">🎯 تحديد موقعي</button>
-        <div id="map"></div>
-    </div>
-
-    <div class="index-section">
-        <h2 class="index-title" id="indexTitle">المناطق السياحية الجيولوجية والآثارية</h2>
-        <div id="dynamicIndex"></div>
-    </div>
-
-    <div class="modal-overlay" id="siteModal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal()">×</button>
+        // دالة تبديل اللغة
+        function switchLanguage() {
+            currentLang = document.getElementById("langSelect").value;
+            var t = i18n[currentLang];
             
-            <div class="slider-wrapper" id="modalGallery">
-                <button class="gallery-nav" onclick="changeImage(-1)">❮</button>
-                <img src="" class="slider-img side" id="imgLeft" onclick="changeImage(-1)">
-                <img src="" class="slider-img center" id="imgCenter">
-                <img src="" class="slider-img side" id="imgRight" onclick="changeImage(1)">
-                <button class="gallery-nav" onclick="changeImage(1)">❯</button>
-            </div>
+            // تغيير اتجاه الصفحة
+            document.documentElement.dir = (currentLang === 'ar') ? 'rtl' : 'ltr';
             
-            <div class="modal-body">
-                <h2 id="modalTitle" style="color: #235789; margin-top:0;"></h2>
-                <div id="modalTags"></div>
-                
-                <div class="weather-card" id="weatherContainer">
-                    <span class="weather-icon">☁️</span>
-                    <span id="weatherText">جاري القياس المباشر...</span>
-                </div>
+            // تحديث النصوص الثابتة
+            document.getElementById("ui_title").innerText = t.title;
+            document.getElementById("ui_subtitle").innerText = t.subtitle;
+            document.getElementById("searchInput").placeholder = t.searchPlaceholder;
+            document.getElementById("ui_searchBtn").innerText = t.searchBtn;
+            document.getElementById("ui_distLabel").innerText = t.distLabel;
+            document.getElementById("ui_distKm").innerText = t.distKm;
+            document.getElementById("ui_showAll").innerText = t.showAll;
+            document.getElementById("ui_locateMe").innerText = t.locateMe;
+            
+            document.getElementById("ui_formation").innerText = t.formation;
+            document.getElementById("ui_era").innerText = t.era;
+            document.getElementById("ui_rockType").innerText = t.rockType;
+            document.getElementById("ui_tectonic").innerText = t.tectonic;
+            document.getElementById("modalDrawRoute").innerText = t.drawRoute;
+            document.getElementById("modalDirections").innerText = t.externalRoute;
+            
+            updateLegendLanguage();
+            smartSearch(); // يعيد رسم الفهرس والخريطة باللغة الجديدة
+        }
 
-                <p id="modalDesc" style="line-height: 1.8; color: #444; margin-top: 15px;"></p>
-                <div class="data-grid">
-                    <div class="data-card"><h4>التكوين الجيولوجي</h4><p id="modalFormation">-</p></div>
-                    <div class="data-card"><h4>الحقبة الزمنية (Era)</h4><p id="modalAge">-</p></div>
-                    <div class="data-card"><h4>نوع الصخور</h4><p id="modalRock">-</p></div>
-                    <div class="data-card"><h4>البيئة التكتونية</h4><p id="modalTectonic">-</p></div>
-                </div>
-                
-                <!-- الأزرار المحدثة (رسم داخلي + فتح خارجي) -->
-                <div class="btn-group">
-                    <button id="modalDrawRoute" class="route-btn">🛣️ رسم مسار داخلي</button>
-                    <a href="#" id="modalDirections" target="_blank" class="external-btn">🧭 فتح عبر (Google/Waze)</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri' });
-        var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { attribution: 'OpenTopoMap' });
-        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: 'OSM' });
-
-        var map = L.map('map', { center: [33.3152, 44.3661], zoom: 6, layers: [satellite] });
-        L.control.layers({ "صور فضائية": satellite, "خريطة طبوغرافية": topo, "خريطة الشوارع": osm }).addTo(map);
-
-        var northControl = L.control({position: 'topleft'});
-        northControl.onAdd = function () {
-            var div = L.DomUtil.create('div', 'north-arrow');
-            div.innerHTML = '⬆️<br><span style="font-size:12px; font-weight:bold; font-family:Cairo;">N</span>';
-            return div;
+        // تهيئة اللغات عند تشغيل الموقع
+        window.onload = function() {
+            updateLegendLanguage();
+            renderMarkers(locations);
         };
-        northControl.addTo(map);
-
-        var legendControl = L.control({position: 'bottomleft'});
-        legendControl.onAdd = function () {
-            var div = L.DomUtil.create('div', 'map-legend');
-            div.innerHTML = `
-                <h4>دليل الخريطة</h4>
-                <div class="legend-item"><span>🕳️</span> كهوف ومغارات</div>
-                <div class="legend-item"><span>⛰️</span> جبال وقباب</div>
-                <div class="legend-item"><span>🏛️</span> آثار وتراث جيولوجي</div>
-                <div class="legend-item"><span>⚡</span> فوالق وصدوع</div>
-                <div class="legend-item"><span>〽️</span> طيات</div>
-                <div class="legend-item"><span>🌋</span> براكين</div>
-                <div class="legend-item"><span>💧</span> ينابيع وعيون</div>
-            `;
-            return div;
-        };
-        legendControl.addTo(map);
-
-        var markersLayerGroup = L.layerGroup().addTo(map);
-        const siteIcons = { "Cave": "🕳️", "Fault": "⚡", "Fold": "〽️", "Spring": "💧", "Mountain": "⛰️", "Canyon": "🏜️", "Volcano": "🌋", "Heritage": "🏛️", "Default": "📍" };
-
-        var locations = [
-            { id: 1, name_ar: "كهف شانيدار", type: "Cave", province: "أربيل", lat: 36.8300, lng: 44.2000, formation: "تكوين جيري", age: "Mesozoic", rockType: "صخور جيرية", tectonic: "طيات زاكروس", description: "تكوين جيولوجي جيرى كارستي، من أهم المواقع الآثارية عالمياً.", images: ["https://images.unsplash.com/photo-1519058082700-08a0b56da9b4?q=80&w=600", "https://images.unsplash.com/photo-1574781617260-26462ec5428a?q=80&w=600"] },
-            { id: 2, name_ar: "زقورة بورسيبا", type: "Heritage", province: "بابل", lat: 32.3917, lng: 44.3417, formation: "ترسبات حديثة", age: "Cenozoic", rockType: "آجر طيني مزجج", tectonic: "حوض وادي الرافدين", description: "موقع يجمع بين البناء الآثاري والظواهر الفيزيائية المحيرة.", 
-              images: [
-                  "https://images.unsplash.com/photo-1604085572504-a392ddf0d86a?q=80&w=600",
-                  "https://images.unsplash.com/photo-1578308298711-8273614cd3b7?q=80&w=600", 
-                  "https://images.unsplash.com/photo-1628156172675-9c94f509fb3a?q=80&w=600",
-                  "https://images.unsplash.com/photo-1544641662-8868997ef31e?q=80&w=600",
-                  "https://images.unsplash.com/photo-1590494498848-73599ec244a2?q=80&w=600"
-              ] 
-            },
-            { id: 3, name_ar: "جبل سنام", type: "Mountain", province: "البصرة", lat: 30.1264, lng: 47.6256, formation: "متبخرات", age: "Precambrian", rockType: "جبس، ملح صخري", tectonic: "قبة ملحية (Salt Plug)", description: "ظاهرة جيولوجية نادرة جداً في جنوب العراق.", images: ["https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600", "https://images.unsplash.com/photo-1469521669194-babbdf900920?q=80&w=600"] }
-        ];
-
-        var userMarker, userCircle, routingControl = null;
-        var currentGalleryImages = [];
-        var currentImageIndex = 0;
-
-        function renderMarkers(filteredList) {
-            markersLayerGroup.clearLayers();
-            filteredList.forEach(function(loc) {
-                var emoji = siteIcons[loc.type] || siteIcons["Default"];
-                var customIcon = L.divIcon({ className: 'custom-site-icon', html: emoji, iconSize: [35, 35], iconAnchor: [17, 17] });
-                var popupContent = `<img src="${loc.images[0]}" class="popup-img"><div class="popup-body"><h3 style="color:#235789; margin:5px 0;">${loc.name_ar}</h3><button class="details-btn" onclick="openModal(${loc.id})">📖 التفاصيل العلمية</button></div>`;
-                L.marker([loc.lat, loc.lng], {icon: customIcon}).bindPopup(popupContent, { className: 'custom-popup' }).addTo(markersLayerGroup);
-            });
-            generateIndex(filteredList);
-        }
-
-        // 🔴 الترتيب الذكي للفهرس (إذا تم تحديد الموقع، سيرتب الأقرب فالأقرب) 🔴
-        function generateIndex(list) {
-            var indexDiv = document.getElementById("dynamicIndex");
-            indexDiv.innerHTML = "";
-            var sortedList = [...list];
-
-            if (userMarker) {
-                var userLat = userMarker.getLatLng().lat;
-                var userLng = userMarker.getLatLng().lng;
-                sortedList.forEach(loc => {
-                    loc.distance = map.distance([userLat, userLng], [loc.lat, loc.lng]);
-                });
-                sortedList.sort((a, b) => a.distance - b.distance);
-                document.getElementById("indexTitle").innerText = "المناطق السياحية الجيولوجية والآثارية (الأقرب إليك)";
-            } else {
-                sortedList.sort((a, b) => b.lat - a.lat);
-                document.getElementById("indexTitle").innerText = "المناطق السياحية الجيولوجية والآثارية";
-            }
-
-            var grouped = {};
-            sortedList.forEach(loc => {
-                if (!grouped[loc.province]) grouped[loc.province] = [];
-                grouped[loc.province].push(loc);
-            });
-
-            for (var prov in grouped) {
-                var html = `<div class="province-group"><div class="province-title">📍 منطقة: ${prov}</div><div class="site-list">`;
-                grouped[prov].forEach(site => {
-                    var distText = "";
-                    // عرض المسافة تحت اسم الموقع إذا كان الـ GPS مفعلاً
-                    if (userMarker && site.distance !== undefined) {
-                        distText = `<br><span style="color:#e74c3c; font-weight:bold;">📍 يبعد عنك: ${(site.distance / 1000).toFixed(1)} كم</span>`;
-                    }
-                    html += `
-                        <div class="site-card" onclick="focusOnSite(${site.lat}, ${site.lng}, ${site.id})">
-                            <h3>${site.name_ar}</h3>
-                            <p>${siteIcons[site.type]} | التكوين: ${site.formation} ${distText}</p>
-                        </div>
-                    `;
-                });
-                html += `</div></div>`;
-                indexDiv.innerHTML += html;
-            }
-        }
-
-        function focusOnSite(lat, lng, id) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            map.flyTo([lat, lng], 12, { duration: 1.5 });
-            setTimeout(() => openModal(id), 1600);
-        }
-
-        function smartSearch() {
-            var text = document.getElementById("searchInput").value.toLowerCase();
-            var filtered = locations.filter(loc => {
-                return loc.name_ar.toLowerCase().includes(text) || 
-                       loc.formation.toLowerCase().includes(text) || 
-                       loc.rockType.toLowerCase().includes(text) ||
-                       loc.province.toLowerCase().includes(text);
-            });
-            renderMarkers(filtered);
-        }
-
-        function filterEra(era, btn) {
-            document.querySelectorAll('.timeline-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            var filtered = (era === 'All') ? locations : locations.filter(loc => loc.age === era);
-            renderMarkers(filtered);
-        }
-
-        renderMarkers(locations);
-
-        function openModal(id) {
-            var site = locations.find(s => s.id === id);
-            if(site) {
-                currentGalleryImages = site.images;
-                currentImageIndex = 0;
-                updateGalleryHTML();
-
-                document.getElementById("modalTitle").innerText = site.name_ar;
-                document.getElementById("modalDesc").innerText = site.description;
-                document.getElementById("modalFormation").innerText = site.formation;
-                document.getElementById("modalAge").innerText = site.age;
-                document.getElementById("modalRock").innerText = site.rockType;
-                document.getElementById("modalTectonic").innerText = site.tectonic;
-                
-                document.getElementById("modalDrawRoute").setAttribute("onclick", `drawRoute(${site.lat}, ${site.lng})`);
-                
-                // 🔴 إعادة ربط زر خرائط جوجل / Waze 🔴
-                document.getElementById("modalDirections").href = `https://www.google.com/maps/dir/?api=1&destination=${site.lat},${site.lng}`;
-                
-                document.getElementById("modalTags").innerHTML = `<span class="tag-badge">${siteIcons[site.type]} ${site.type}</span><span class="tag-badge">📍 ${site.province}</span>`;
-                
-                document.getElementById("weatherText").innerText = "جاري القياس المباشر...";
-                fetch(`https://api.open-meteo.com/v1/forecast?latitude=${site.lat}&longitude=${site.lng}&current_weather=true`)
-                .then(res => res.json())
-                .then(data => {
-                    document.getElementById("weatherText").innerText = `الحرارة الآن: ${data.current_weather.temperature}°C`;
-                }).catch(() => { document.getElementById("weatherText").innerText = "تعذر جلب الطقس"; });
-
-                document.getElementById("siteModal").style.display = "flex";
-            }
-        }
-
-        function updateGalleryHTML() {
-            var len = currentGalleryImages.length;
-            if(len === 0) return;
-            var centerImg = document.getElementById("imgCenter");
-            var leftImg = document.getElementById("imgLeft");
-            var rightImg = document.getElementById("imgRight");
-
-            centerImg.src = currentGalleryImages[currentImageIndex];
-
-            if (len >= 3) {
-                leftImg.style.display = 'block'; rightImg.style.display = 'block';
-                leftImg.src = currentGalleryImages[(currentImageIndex - 1 + len) % len];
-                rightImg.src = currentGalleryImages[(currentImageIndex + 1) % len];
-            } else if (len === 2) {
-                leftImg.style.display = 'none'; rightImg.style.display = 'block';
-                rightImg.src = currentGalleryImages[(currentImageIndex + 1) % len];
-            } else {
-                leftImg.style.display = 'none'; rightImg.style.display = 'none';
-            }
-        }
-
-        function changeImage(step) {
-            currentImageIndex += step;
-            var len = currentGalleryImages.length;
-            if (currentImageIndex >= len) currentImageIndex = 0;
-            if (currentImageIndex < 0) currentImageIndex = len - 1;
-            updateGalleryHTML();
-        }
-
-        function closeModal() { document.getElementById("siteModal").style.display = "none"; }
-
-        // 🔴 دالة تحديد الموقع أصبحت تُحدث القائمة لتجلب الأقرب فوراً 🔴
-        function locateUser() { map.locate({setView: true, maxZoom: 8, enableHighAccuracy: true}); }
-        map.on('locationfound', function(e) {
-            var radius = Math.round(e.accuracy);
-            if (userMarker) { map.removeLayer(userMarker); map.removeLayer(userCircle); }
-            var blueDotIcon = L.divIcon({ className: 'blue-dot', iconSize: [20, 20], iconAnchor: [10, 10] });
-            userMarker = L.marker(e.latlng, {icon: blueDotIcon}).addTo(map).bindPopup('<b>موقعك الحالي</b>');
-            userCircle = L.circle(e.latlng, radius, { color: '#4285F4', fillOpacity: 0.15, weight: 1 }).addTo(map);
-            
-            // إعادة توليد الفهرس ليتم ترتيبه حسب الأقرب بناءً على الـ GPS
-            generateIndex(locations);
-        });
-
-        // 🔴 دالة رسم المسار مع إظهار المسافة الدقيقة بالكيلومتر 🔴
-        function drawRoute(siteLat, siteLng) {
-            if (!userMarker) { alert("يرجى الضغط على 'تحديد موقعي' أولاً."); closeModal(); return; }
-            if (routingControl) map.removeControl(routingControl);
-            var startLat = userMarker.getLatLng().lat;
-            var startLng = userMarker.getLatLng().lng;
-            
-            routingControl = L.Routing.control({
-                waypoints: [ L.latLng(startLat, startLng), L.latLng(siteLat, siteLng) ],
-                routeWhileDragging: false, createMarker: function() { return null; },
-                lineOptions: { styles: [{color: '#f39c12', opacity: 0.9, weight: 5}] },
-                show: false // إخفاء المربع الافتراضي الخاص بالمكتبة لأنه مزعج
-            }).addTo(map);
-
-            // استخراج المسافة عند الانتهاء من حساب المسار
-            routingControl.on('routesfound', function(e) {
-                var distanceKm = (e.routes[0].summary.totalDistance / 1000).toFixed(1);
-                document.getElementById("routeDistText").innerText = distanceKm;
-                document.getElementById("routeDistanceInfo").style.display = "block"; // إظهار اللافتة العلوية
-            });
-
-            closeModal();
-        }
     </script>
 </body>
 </html>
