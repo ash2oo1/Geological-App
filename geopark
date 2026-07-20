@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الحديقة الجيولوجية العالمية (Geo-Park) - نظام شندل</title>
+    
+    <!-- خط Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- مكتبة الخرائط Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Cairo', sans-serif; background-color: #f4f7f6; }
+        
+        .header { background-color: #1a252f; color: white; text-align: center; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; z-index: 1000; }
+        .header h1 { margin: 0; font-size: 24px; color: #f39c12; }
+        .header p { margin: 5px 0 0 0; font-size: 14px; opacity: 0.9; }
+
+        #map { height: calc(100vh - 80px); width: 100%; z-index: 1; }
+
+        /* زر الـ GPS العائم */
+        .gps-button {
+            position: absolute;
+            bottom: 30px;
+            right: 20px;
+            z-index: 1000;
+            background-color: #ffffff;
+            border: 2px solid #235789;
+            color: #235789;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .gps-button:hover { background-color: #235789; color: white; }
+
+        /* تصميم النافذة المنبثقة (Popup) */
+        .custom-popup .leaflet-popup-content-wrapper { padding: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.25); background: #ffffff; border: 2px solid #eef2f5; }
+        .custom-popup .leaflet-popup-content { margin: 0; width: 280px !important; text-align: center; }
+        .popup-img { width: 100%; height: 160px; object-fit: cover; border-bottom: 3px solid #f39c12; display: block; }
+        .popup-body { padding: 15px; }
+        .popup-title { color: #235789; font-size: 18px; font-weight: 900; margin: 0 0 10px 0; }
+        .popup-desc { color: #555; font-size: 13px; line-height: 1.6; margin: 0 0 15px 0; font-weight: 600; }
+        .popup-btn { display: block; background: linear-gradient(135deg, #235789, #1a4066); color: white !important; text-decoration: none; padding: 10px 0; border-radius: 6px; font-size: 15px; font-weight: bold; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(35, 87, 137, 0.3); }
+        .popup-btn:hover { background: linear-gradient(135deg, #f39c12, #d68910); box-shadow: 0 4px 10px rgba(243, 156, 18, 0.4); transform: translateY(-2px); }
+        .leaflet-popup-close-button { color: white !important; text-shadow: 0 1px 3px rgba(0,0,0,0.8); font-size: 18px !important; top: 5px !important; right: 5px !important; z-index: 10; }
+        
+        /* تأثير النبض للنقطة الزرقاء */
+        .blue-dot {
+            background-color: #4285F4;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 15px rgba(66, 133, 244, 0.8);
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(66, 133, 244, 0); } 100% { box-shadow: 0 0 0 0 rgba(66, 133, 244, 0); } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>السياحة الجيولوجية والآثارية (Geo-Park)</h1>
+        <p>نظام شندل العالمي للمسح الميداني</p>
+    </div>
+
+    <!-- زر تحديد الموقع -->
+    <button class="gps-button" onclick="locateUser()">
+        🎯 تحديد موقعي
+    </button>
+
+    <div id="map"></div>
+
+    <script>
+        // 1. تهيئة الخريطة بزووم بعيد نسبياً لرؤية العالم/المنطقة قبل تحديد الموقع
+        var map = L.map('map').setView([25.0, 40.0], 4); 
+
+        // 2. إضافة الخريطة الفضائية 
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Shandal Geo-Park'
+        }).addTo(map);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; CartoDB', subdomains: 'abcd', maxZoom: 19
+        }).addTo(map);
+
+        // 3. قاعدة البيانات العالمية (يمكنك لاحقاً إضافة إحداثيات من أمريكا، مصر، الخ..)
+        var locations = [
+            { name: "زقورة بورسيبا", lat: 32.3917, lng: 44.3417, desc: "موقع يجمع بين البناء الآثاري والظواهر الفيزيائية المحيرة.", img: "https://images.unsplash.com/photo-1604085572504-a392ddf0d86a?q=80&w=600" },
+            { name: "كهوف الطار", lat: 32.5500, lng: 43.8160, desc: "ظاهرة جيومورفولوجية كارستية، استخدمت كمستوطنات قديمة.", img: "https://images.unsplash.com/photo-1574781617260-26462ec5428a?q=80&w=600" },
+            { name: "عيون القير (هيت)", lat: 33.6420, lng: 42.8250, desc: "تسربات هيدروكربونية طبيعية، استخدمت في البناء القديم.", img: "https://images.unsplash.com/photo-1590494498848-73599ec244a2?q=80&w=600" },
+            { name: "كهف شانيدار", lat: 36.8300, lng: 44.2000, desc: "تكوين جيولوجي جيرى، من أهم المواقع الآثارية عالمياً.", img: "https://images.unsplash.com/photo-1519058082700-08a0b56da9b4?q=80&w=600" },
+            { name: "جبل سنام", lat: 30.1264, lng: 47.6256, desc: "قبة ملحية (Salt Plug) نادرة، تخترق السهول المنبسطة بقوة تكتونية.", img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600" },
+            { name: "طيّة إنجانة (حمرين)", lat: 34.5000, lng: 44.5000, desc: "مكاشف طبقية رائعة ومقاطع جيولوجية مثالية لدراسة الطيات.", img: "https://images.unsplash.com/photo-1621213032549-b68e994e6308?q=80&w=600" },
+            { name: "وادي كلي علي بك", lat: 36.6264, lng: 44.4372, desc: "خانق جيولوجي (Canyon) يوضح قوة النحت النهري في الصخور.", img: "https://images.unsplash.com/photo-1469521669194-babbdf900920?q=80&w=600" }
+        ];
+
+        // 4. رسم المعالم (الدبابيس)
+        locations.forEach(function(loc) {
+            var directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}`;
+            var popupContent = `
+                <img src="${loc.img}" alt="${loc.name}" class="popup-img">
+                <div class="popup-body">
+                    <h3 class="popup-title">${loc.name}</h3>
+                    <p class="popup-desc">${loc.desc}</p>
+                    <a href="${directionsUrl}" target="_blank" class="popup-btn">🧭 احصل على الاتجاهات</a>
+                </div>`;
+            L.marker([loc.lat, loc.lng]).bindPopup(popupContent, { className: 'custom-popup', closeButton: true }).addTo(map);
+        });
+
+        // 5. نظام الـ GPS (النقطة الزرقاء والدائرة)
+        var userMarker, userCircle;
+
+        function locateUser() {
+            // طلب الإذن من المتصفح لمعرفة الموقع
+            map.locate({setView: true, maxZoom: 8, enableHighAccuracy: true});
+        }
+
+        // عند العثور على الموقع بنجاح
+        map.on('locationfound', function(e) {
+            var radius = Math.round(e.accuracy); // دائرة الدقة
+
+            // إذا كان هناك نقطة زرقاء سابقة، احذفها لنضع الجديدة
+            if (userMarker) { map.removeLayer(userMarker); map.removeLayer(userCircle); }
+
+            // إنشاء أيقونة النقطة الزرقاء النابضة (Google Maps Style)
+            var blueDotIcon = L.divIcon({
+                className: 'blue-dot',
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+            });
+
+            // رسم النقطة الزرقاء في موقع المستخدم
+            userMarker = L.marker(e.latlng, {icon: blueDotIcon}).addTo(map)
+                .bindPopup('<b style="color:#235789;">موقعك الحالي</b>').openPopup();
+            
+            // رسم الدائرة الزرقاء الشفافة حوله
+            userCircle = L.circle(e.latlng, radius, {
+                color: '#4285F4', fillColor: '#4285F4', fillOpacity: 0.15, weight: 1
+            }).addTo(map);
+        });
+
+        // في حال رفض المستخدم إعطاء الصلاحية أو حدث خطأ
+        map.on('locationerror', function(e) {
+            alert("عذراً! لم نتمكن من الوصول لموقعك. يرجى تفعيل الـ GPS في هاتفك أو السماح للمتصفح بمعرفة الموقع.");
+        });
+
+        // تشغيل تحديد الموقع تلقائياً بمجرد فتح الصفحة
+        window.onload = function() {
+            locateUser();
+        };
+
+    </script>
+</body>
+</html>
