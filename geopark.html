@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>البوابة العالمية للسياحة الجيولوجية والآثارية - نظام شندل</title>
+    <title>السياحة الجيولوجية والآثارية - نظام شندل</title>
     
     <!-- خط Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
@@ -13,25 +13,28 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Cairo', sans-serif; background-color: #f4f7f6; overflow: hidden; }
+        /* استخدام Flexbox لمنع تداخل النصوص مع الخريطة */
+        body, html { margin: 0; padding: 0; height: 100vh; font-family: 'Cairo', sans-serif; background-color: #f4f7f6; overflow: hidden; display: flex; flex-direction: column; }
         
-        /* التعديل الجديد على الهيدر (العنوان ونظام شندل) */
-        .header { background-color: #1a252f; color: white; text-align: center; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative; z-index: 1000; }
-        .header h1 { margin: 0; font-size: 24px; color: #f39c12; font-weight: 900; }
+        /* التعديل الجذري للهيدر */
+        .header { background-color: #1a252f; color: white; text-align: center; padding: 15px 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000; flex-shrink: 0; }
+        .header h1 { margin: 0; font-size: 22px; color: #f39c12; font-weight: 900; line-height: 1.4; }
         .header p { margin: 5px 0 0 0; font-size: 15px; opacity: 0.9; font-weight: bold; }
 
-        #map { height: calc(100vh - 80px); width: 100%; z-index: 1; }
+        /* الخريطة تأخذ المساحة المتبقية تلقائياً */
+        #map { flex-grow: 1; width: 100%; z-index: 1; }
 
-        /* زر الـ GPS العائم (تم رفعه قليلاً لتوفير مساحة للشريط الزمني) */
+        /* زر الـ GPS العائم */
         .gps-button { position: absolute; bottom: 85px; right: 20px; z-index: 1000; background-color: #ffffff; border: 2px solid #235789; color: #235789; padding: 12px 20px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease; }
         .gps-button:hover { background-color: #235789; color: white; }
         .blue-dot { background-color: #4285F4; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 15px rgba(66, 133, 244, 0.8); animation: pulse-dot 2s infinite; }
         @keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(66, 133, 244, 0); } 100% { box-shadow: 0 0 0 0 rgba(66, 133, 244, 0); } }
 
-        /* تصميم الشريط الزمني الجيولوجي (Timeline) */
-        .timeline-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 15px; border-radius: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); display: flex; gap: 10px; overflow-x: auto; max-width: 90vw; border: 2px solid #eef2f5; }
-        .timeline-btn { background: #eef2f5; border: 1px solid #235789; color: #235789; padding: 8px 18px; border-radius: 20px; font-family: 'Cairo', sans-serif; font-weight: bold; font-size: 14px; cursor: pointer; white-space: nowrap; transition: all 0.3s ease; }
+        /* الشريط الزمني الجيولوجي (Timeline) */
+        .timeline-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 10px 15px; border-radius: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); display: flex; gap: 10px; overflow-x: auto; max-width: 90vw; border: 2px solid #eef2f5; direction: ltr; /* اتجاه الأزرار من اليسار لليمين لأنها بالإنجليزية */ }
+        .timeline-btn { background: #eef2f5; border: 1px solid #235789; color: #235789; padding: 8px 18px; border-radius: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: bold; font-size: 14px; cursor: pointer; white-space: nowrap; transition: all 0.3s ease; }
         .timeline-btn:hover, .timeline-btn.active { background: #235789; color: white; border-color: #235789; box-shadow: 0 4px 10px rgba(35, 87, 137, 0.4); }
+        .timeline-btn.show-all { font-family: 'Cairo', sans-serif; direction: rtl; }
 
         .custom-site-icon { font-size: 24px; text-shadow: 0px 2px 4px rgba(0,0,0,0.5); text-align: center; line-height: 24px; }
         .custom-popup .leaflet-popup-content-wrapper { padding: 0; overflow: hidden; border-radius: 12px; }
@@ -57,16 +60,19 @@
 <body>
 
     <div class="header">
-        <h1>البوابة العالمية للسياحة الجيولوجية والآثارية (Geo-Archaeological Tourism)</h1>
+        <h1>السياحة الجيولوجية والآثارية (Geo-Archaeological Tourism)</h1>
         <p>نظام شندل للمسح الميداني الجيولوجي</p>
     </div>
 
-    <!-- الشريط الزمني الجيولوجي للفلترة -->
+    <!-- الشريط الزمني باللغة الإنجليزية حصراً -->
     <div class="timeline-container">
-        <button class="timeline-btn active" onclick="filterEra('All', this)">🌍 إظهار الكل</button>
-        <button class="timeline-btn" onclick="filterEra('البريكامبري', this)">البريكامبري / الكامبري</button>
-        <button class="timeline-btn" onclick="filterEra('الكريتاسي', this)">الكريتاسي (Cretaceous)</button>
-        <button class="timeline-btn" onclick="filterEra('الرباعي', this)">الرباعي (Quaternary)</button>
+        <button class="timeline-btn show-all active" onclick="filterEra('All', this)">🌍 إظهار الكل</button>
+        <button class="timeline-btn" onclick="filterEra('Precambrian', this)">Precambrian</button>
+        <button class="timeline-btn" onclick="filterEra('Paleozoic', this)">Paleozoic</button>
+        <button class="timeline-btn" onclick="filterEra('Mesozoic', this)">Mesozoic</button>
+        <button class="timeline-btn" onclick="filterEra('Cretaceous', this)">Cretaceous</button>
+        <button class="timeline-btn" onclick="filterEra('Cenozoic', this)">Cenozoic</button>
+        <button class="timeline-btn" onclick="filterEra('Quaternary', this)">Quaternary</button>
     </div>
 
     <button class="gps-button" onclick="locateUser()">🎯 تحديد موقعي</button>
@@ -101,23 +107,20 @@
         var baseMaps = { "صور فضائية (Satellite)": satellite, "خريطة طبوغرافية (Topo)": topo, "خريطة الشوارع (OSM)": osm };
         L.control.layers(baseMaps).addTo(map);
 
-        // إنشاء طبقة مخصصة للدبابيس حتى نتمكن من مسحها وتحديثها عند الفلترة
         var markersLayerGroup = L.layerGroup().addTo(map);
 
         const siteIcons = { "Cave": "🟢", "Fault": "🔴", "Fold": "🟠", "Spring": "🔵", "Mountain": "🟣", "Canyon": "🟡", "Volcano": "⚫", "Heritage": "🏛️", "Default": "📍" };
 
+        // تم تحديث حقل العمر (age) ليتطابق مع الأزرار الإنجليزية
         var locations = [
-            { id: 1, name_ar: "كهف شانيدار", type: "Cave", province: "أربيل", lat: 36.8300, lng: 44.2000, formation: "تكوين جيري", age: "الكريتاسي", rockType: "صخور جيرية", tectonic: "طيات زاكروس", description: "تكوين جيولوجي جيرى كارستي، من أهم المواقع الآثارية عالمياً.", img: "https://images.unsplash.com/photo-1519058082700-08a0b56da9b4?q=80&w=600" },
-            { id: 2, name_ar: "جبل سنام", type: "Mountain", province: "البصرة", lat: 30.1264, lng: 47.6256, formation: "متبخرات", age: "البريكامبري", rockType: "جبس، ملح صخري", tectonic: "قبة ملحية (Salt Plug)", description: "ظاهرة جيولوجية نادرة جداً في جنوب العراق.", img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600" },
-            { id: 3, name_ar: "زقورة بورسيبا", type: "Heritage", province: "بابل", lat: 32.3917, lng: 44.3417, formation: "ترسبات حديثة", age: "الرباعي", rockType: "آجر طيني مزجج", tectonic: "حوض وادي الرافدين", description: "موقع يجمع بين البناء الآثاري والظواهر الفيزيائية المحيرة.", img: "https://images.unsplash.com/photo-1604085572504-a392ddf0d86a?q=80&w=600" }
+            { id: 1, name_ar: "كهف شانيدار", type: "Cave", province: "أربيل", lat: 36.8300, lng: 44.2000, formation: "تكوين جيري", age: "Cretaceous", rockType: "صخور جيرية", tectonic: "طيات زاكروس", description: "تكوين جيولوجي جيرى كارستي، من أهم المواقع الآثارية عالمياً.", img: "https://images.unsplash.com/photo-1519058082700-08a0b56da9b4?q=80&w=600" },
+            { id: 2, name_ar: "جبل سنام", type: "Mountain", province: "البصرة", lat: 30.1264, lng: 47.6256, formation: "متبخرات", age: "Precambrian", rockType: "جبس، ملح صخري", tectonic: "قبة ملحية (Salt Plug)", description: "ظاهرة جيولوجية نادرة جداً في جنوب العراق.", img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600" },
+            { id: 3, name_ar: "زقورة بورسيبا", type: "Heritage", province: "بابل", lat: 32.3917, lng: 44.3417, formation: "ترسبات حديثة", age: "Quaternary", rockType: "آجر طيني مزجج", tectonic: "حوض وادي الرافدين", description: "موقع يجمع بين البناء الآثاري والظواهر الفيزيائية المحيرة.", img: "https://images.unsplash.com/photo-1604085572504-a392ddf0d86a?q=80&w=600" }
         ];
 
-        // دالة رسم المواقع (تمت برمجتها لتدعم الفلترة الزمنية)
         function renderMarkers(filterAge) {
-            markersLayerGroup.clearLayers(); // مسح الدبابيس القديمة
-
+            markersLayerGroup.clearLayers();
             locations.forEach(function(loc) {
-                // إذا كان الفلتر "الكل" أو يتطابق مع عمر الموقع، قم برسمه
                 if (filterAge === 'All' || loc.age.includes(filterAge)) {
                     var emoji = siteIcons[loc.type] || siteIcons["Default"];
                     var customIcon = L.divIcon({ className: 'custom-site-icon', html: emoji, iconSize: [30, 30], iconAnchor: [15, 15] });
@@ -127,14 +130,12 @@
             });
         }
 
-        // دالة تفعيل فلتر الشريط الزمني
         function filterEra(era, btnElement) {
             document.querySelectorAll('.timeline-btn').forEach(b => b.classList.remove('active'));
             btnElement.classList.add('active');
             renderMarkers(era);
         }
 
-        // رسم كل المواقع عند فتح الصفحة لأول مرة
         renderMarkers('All');
 
         function openModal(id) {
