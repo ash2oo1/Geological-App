@@ -23,17 +23,18 @@
         .header h1 { margin: 0; font-size: 22px; color: #f39c12; font-weight: 900; line-height: 1.4; }
         .header p { margin: 5px 0 0 0; font-size: 15px; font-weight: bold; }
 
-        /* شريط البحث المحدث (ديناميكي وعالمي) */
+        /* شريط البحث المحدث (تم حذف القائمة ليكون عالمياً) */
         .search-bar { background: white; padding: 10px 20px; display: flex; gap: 10px; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); flex-wrap: wrap; }
-        .search-input, .search-select { padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Cairo'; font-size: 14px; outline: none; }
-        .search-input { width: 250px; }
+        .search-input { padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Cairo'; font-size: 14px; outline: none; width: 350px; max-width: 100%; }
         .search-btn { background: #235789; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-family: 'Cairo'; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .search-btn:hover { background: #f39c12; }
 
         .map-container { position: relative; height: 75vh; width: 100%; }
         #map { height: 100%; width: 100%; z-index: 1; }
 
-        /* دليل الخريطة المحدث بالرموز الجديدة */
+        /* لافتة حساب المسافة الجديدة */
+        #routeDistanceInfo { display: none; position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 2000; background: #235789; color: white; padding: 10px 25px; border-radius: 30px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid #f39c12; }
+
         .map-legend { background: rgba(255, 255, 255, 0.95); padding: 10px 15px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); line-height: 1.8; font-size: 13px; font-weight: bold; color: #333; }
         .map-legend h4 { margin: 0 0 5px 0; font-size: 14px; color: #235789; border-bottom: 2px solid #f39c12; padding-bottom: 3px; }
         .legend-item { display: flex; align-items: center; gap: 8px; }
@@ -41,14 +42,14 @@
         .north-arrow { background: rgba(255, 255, 255, 0.8); padding: 5px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.3); font-size: 28px; line-height: 1; text-align: center; }
 
         .index-section { padding: 30px 20px; max-width: 1200px; margin: auto; }
-        .index-title { color: #235789; border-right: 5px solid #f39c12; padding-right: 10px; margin-bottom: 20px; }
+        .index-title { color: #235789; border-right: 5px solid #f39c12; padding-right: 10px; margin-bottom: 20px; font-size: 22px; }
         .province-group { margin-bottom: 25px; }
         .province-title { background: #eef2f5; color: #1a252f; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 18px; margin-bottom: 10px; }
         .site-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
         .site-card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; border: 1px solid #eee; }
         .site-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(35, 87, 137, 0.2); border-color: #235789; }
         .site-card h3 { margin: 0 0 5px 0; color: #f39c12; font-size: 16px; }
-        .site-card p { margin: 0; color: #666; font-size: 13px; }
+        .site-card p { margin: 0; color: #666; font-size: 13px; line-height: 1.6; }
 
         .gps-button { position: absolute; bottom: 85px; right: 20px; z-index: 1000; background-color: #ffffff; border: 2px solid #235789; color: #235789; padding: 12px 20px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .gps-button:hover { background-color: #235789; color: white; }
@@ -70,7 +71,6 @@
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
         .modal-content { background: white; width: 90%; max-width: 800px; max-height: 90vh; border-radius: 12px; overflow-y: auto; position: relative; padding: 0; }
         
-        /* 🔴 تصميم معرض الصور الجديد (التأثير السينمائي الشفاف) 🔴 */
         .slider-wrapper { display: flex; align-items: center; justify-content: center; gap: 15px; background: #0b0c10; padding: 25px 10px; position: relative; overflow: hidden; border-radius: 12px 12px 0 0; }
         .slider-img { border-radius: 8px; object-fit: cover; transition: all 0.4s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
         .slider-img.side { width: 70px; height: 110px; opacity: 0.3; filter: blur(1px); cursor: pointer; }
@@ -82,7 +82,6 @@
         .close-modal { position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; font-size: 20px; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; z-index: 20; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         .modal-body { padding: 25px; }
         
-        /* بطاقة حالة الطقس */
         .weather-card { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 10px 15px; border-radius: 8px; display: inline-flex; align-items: center; gap: 10px; margin-top: 10px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .weather-icon { font-size: 24px; }
 
@@ -91,7 +90,14 @@
         .data-card { background: #f9f9f9; padding: 15px; border-radius: 8px; border-right: 4px solid #f39c12; }
         .data-card h4 { margin: 0 0 5px 0; color: #555; font-size: 13px; }
         .data-card p { margin: 0; color: #111; font-weight: bold; font-size: 14px; }
-        .route-btn { background: #f39c12; color: white !important; border: none; padding: 12px; width: 100%; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; margin-top: 15px; font-size: 16px; text-align: center; }
+        
+        /* أزرار الاتجاهات (الداخلي والخارجي) */
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .route-btn { background: #f39c12; color: white !important; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; font-size: 16px; flex: 1; text-align: center; }
+        .route-btn:hover { background: #d68910; }
+        .external-btn { background: #27ae60; color: white !important; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; font-size: 16px; flex: 1; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; }
+        .external-btn:hover { background: #219150; }
+        
         .leaflet-routing-container { display: none !important; }
     </style>
 </head>
@@ -102,17 +108,16 @@
         <p>نظام شندل للمسح الميداني الجيولوجي</p>
     </div>
 
-    <!-- شريط البحث (معدل للعالمية) -->
+    <!-- شريط البحث المحدث -->
     <div class="search-bar">
-        <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن موقع، تكوين، أو صخور..." onkeyup="smartSearch()">
-        <select id="regionSelect" class="search-select" onchange="smartSearch()">
-            <option value="All">🌍 كل المناطق</option>
-            <!-- سيتم توليد المناطق هنا برمجياً لتشمل أي دولة أو محافظة مستقبلاً -->
-        </select>
+        <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن موقع، تكوين، أو دولة/محافظة..." onkeyup="smartSearch()">
         <button class="search-btn" onclick="smartSearch()">🔍 بحث سريع</button>
     </div>
 
     <div class="map-container">
+        <!-- لافتة حساب المسافة -->
+        <div id="routeDistanceInfo">المسافة: <span id="routeDistText">0</span> كم</div>
+
         <div class="timeline-container">
             <button class="timeline-btn show-all active" onclick="filterEra('All', this)">🌍 إظهار الكل</button>
             <button class="timeline-btn" onclick="filterEra('Precambrian', this)">Precambrian</button>
@@ -125,7 +130,7 @@
     </div>
 
     <div class="index-section">
-        <h2 class="index-title">فهرس المواقع (مرتب جغرافياً)</h2>
+        <h2 class="index-title" id="indexTitle">المناطق السياحية الجيولوجية والآثارية</h2>
         <div id="dynamicIndex"></div>
     </div>
 
@@ -133,7 +138,6 @@
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal()">×</button>
             
-            <!-- 🔴 معرض الصور التفاعلي الجديد 🔴 -->
             <div class="slider-wrapper" id="modalGallery">
                 <button class="gallery-nav" onclick="changeImage(-1)">❮</button>
                 <img src="" class="slider-img side" id="imgLeft" onclick="changeImage(-1)">
@@ -158,7 +162,12 @@
                     <div class="data-card"><h4>نوع الصخور</h4><p id="modalRock">-</p></div>
                     <div class="data-card"><h4>البيئة التكتونية</h4><p id="modalTectonic">-</p></div>
                 </div>
-                <button id="modalDrawRoute" class="route-btn">🛣️ رسم مسار الرحلة على الخريطة</button>
+                
+                <!-- الأزرار المحدثة (رسم داخلي + فتح خارجي) -->
+                <div class="btn-group">
+                    <button id="modalDrawRoute" class="route-btn">🛣️ رسم مسار داخلي</button>
+                    <a href="#" id="modalDirections" target="_blank" class="external-btn">🧭 فتح عبر (Google/Waze)</a>
+                </div>
             </div>
         </div>
     </div>
@@ -179,7 +188,6 @@
         };
         northControl.addTo(map);
 
-        // 🔴 الرموز والإيموجي المحدثة بالكامل حسب طلبك 🔴
         var legendControl = L.control({position: 'bottomleft'});
         legendControl.onAdd = function () {
             var div = L.DomUtil.create('div', 'map-legend');
@@ -202,8 +210,6 @@
 
         var locations = [
             { id: 1, name_ar: "كهف شانيدار", type: "Cave", province: "أربيل", lat: 36.8300, lng: 44.2000, formation: "تكوين جيري", age: "Mesozoic", rockType: "صخور جيرية", tectonic: "طيات زاكروس", description: "تكوين جيولوجي جيرى كارستي، من أهم المواقع الآثارية عالمياً.", images: ["https://images.unsplash.com/photo-1519058082700-08a0b56da9b4?q=80&w=600", "https://images.unsplash.com/photo-1574781617260-26462ec5428a?q=80&w=600"] },
-            
-            // 🔴 إضافة 5 صور لمعلم بابل لتجربة المعرض السينمائي 🔴
             { id: 2, name_ar: "زقورة بورسيبا", type: "Heritage", province: "بابل", lat: 32.3917, lng: 44.3417, formation: "ترسبات حديثة", age: "Cenozoic", rockType: "آجر طيني مزجج", tectonic: "حوض وادي الرافدين", description: "موقع يجمع بين البناء الآثاري والظواهر الفيزيائية المحيرة.", 
               images: [
                   "https://images.unsplash.com/photo-1604085572504-a392ddf0d86a?q=80&w=600",
@@ -213,20 +219,10 @@
                   "https://images.unsplash.com/photo-1590494498848-73599ec244a2?q=80&w=600"
               ] 
             },
-            
             { id: 3, name_ar: "جبل سنام", type: "Mountain", province: "البصرة", lat: 30.1264, lng: 47.6256, formation: "متبخرات", age: "Precambrian", rockType: "جبس، ملح صخري", tectonic: "قبة ملحية (Salt Plug)", description: "ظاهرة جيولوجية نادرة جداً في جنوب العراق.", images: ["https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600", "https://images.unsplash.com/photo-1469521669194-babbdf900920?q=80&w=600"] }
         ];
 
-        // 🔴 دالة توليد قائمة المناطق (دولية / عالمية) برمجياً 🔴
-        function populateRegions() {
-            var select = document.getElementById("regionSelect");
-            var regions = [...new Set(locations.map(loc => loc.province))];
-            regions.forEach(r => {
-                select.innerHTML += `<option value="${r}">${r}</option>`;
-            });
-        }
-        populateRegions();
-
+        var userMarker, userCircle, routingControl = null;
         var currentGalleryImages = [];
         var currentImageIndex = 0;
 
@@ -241,22 +237,43 @@
             generateIndex(filteredList);
         }
 
+        // 🔴 الترتيب الذكي للفهرس (إذا تم تحديد الموقع، سيرتب الأقرب فالأقرب) 🔴
         function generateIndex(list) {
             var indexDiv = document.getElementById("dynamicIndex");
             indexDiv.innerHTML = "";
-            var sortedList = [...list].sort((a, b) => b.lat - a.lat);
+            var sortedList = [...list];
+
+            if (userMarker) {
+                var userLat = userMarker.getLatLng().lat;
+                var userLng = userMarker.getLatLng().lng;
+                sortedList.forEach(loc => {
+                    loc.distance = map.distance([userLat, userLng], [loc.lat, loc.lng]);
+                });
+                sortedList.sort((a, b) => a.distance - b.distance);
+                document.getElementById("indexTitle").innerText = "المناطق السياحية الجيولوجية والآثارية (الأقرب إليك)";
+            } else {
+                sortedList.sort((a, b) => b.lat - a.lat);
+                document.getElementById("indexTitle").innerText = "المناطق السياحية الجيولوجية والآثارية";
+            }
+
             var grouped = {};
             sortedList.forEach(loc => {
                 if (!grouped[loc.province]) grouped[loc.province] = [];
                 grouped[loc.province].push(loc);
             });
+
             for (var prov in grouped) {
                 var html = `<div class="province-group"><div class="province-title">📍 منطقة: ${prov}</div><div class="site-list">`;
                 grouped[prov].forEach(site => {
+                    var distText = "";
+                    // عرض المسافة تحت اسم الموقع إذا كان الـ GPS مفعلاً
+                    if (userMarker && site.distance !== undefined) {
+                        distText = `<br><span style="color:#e74c3c; font-weight:bold;">📍 يبعد عنك: ${(site.distance / 1000).toFixed(1)} كم</span>`;
+                    }
                     html += `
                         <div class="site-card" onclick="focusOnSite(${site.lat}, ${site.lng}, ${site.id})">
                             <h3>${site.name_ar}</h3>
-                            <p>${siteIcons[site.type]} | التكوين: ${site.formation}</p>
+                            <p>${siteIcons[site.type]} | التكوين: ${site.formation} ${distText}</p>
                         </div>
                     `;
                 });
@@ -273,11 +290,11 @@
 
         function smartSearch() {
             var text = document.getElementById("searchInput").value.toLowerCase();
-            var prov = document.getElementById("regionSelect").value;
             var filtered = locations.filter(loc => {
-                var matchesText = loc.name_ar.toLowerCase().includes(text) || loc.formation.toLowerCase().includes(text) || loc.rockType.toLowerCase().includes(text);
-                var matchesProv = (prov === "All") || (loc.province === prov);
-                return matchesText && matchesProv;
+                return loc.name_ar.toLowerCase().includes(text) || 
+                       loc.formation.toLowerCase().includes(text) || 
+                       loc.rockType.toLowerCase().includes(text) ||
+                       loc.province.toLowerCase().includes(text);
             });
             renderMarkers(filtered);
         }
@@ -304,7 +321,12 @@
                 document.getElementById("modalAge").innerText = site.age;
                 document.getElementById("modalRock").innerText = site.rockType;
                 document.getElementById("modalTectonic").innerText = site.tectonic;
+                
                 document.getElementById("modalDrawRoute").setAttribute("onclick", `drawRoute(${site.lat}, ${site.lng})`);
+                
+                // 🔴 إعادة ربط زر خرائط جوجل / Waze 🔴
+                document.getElementById("modalDirections").href = `https://www.google.com/maps/dir/?api=1&destination=${site.lat},${site.lng}`;
+                
                 document.getElementById("modalTags").innerHTML = `<span class="tag-badge">${siteIcons[site.type]} ${site.type}</span><span class="tag-badge">📍 ${site.province}</span>`;
                 
                 document.getElementById("weatherText").innerText = "جاري القياس المباشر...";
@@ -318,11 +340,9 @@
             }
         }
 
-        // 🔴 المنطق البرمجي لمعرض الصور السينمائي (كبير بالمنتصف، شفاف بالأطراف) 🔴
         function updateGalleryHTML() {
             var len = currentGalleryImages.length;
             if(len === 0) return;
-            
             var centerImg = document.getElementById("imgCenter");
             var leftImg = document.getElementById("imgLeft");
             var rightImg = document.getElementById("imgRight");
@@ -351,7 +371,7 @@
 
         function closeModal() { document.getElementById("siteModal").style.display = "none"; }
 
-        var userMarker, userCircle, routingControl = null;
+        // 🔴 دالة تحديد الموقع أصبحت تُحدث القائمة لتجلب الأقرب فوراً 🔴
         function locateUser() { map.locate({setView: true, maxZoom: 8, enableHighAccuracy: true}); }
         map.on('locationfound', function(e) {
             var radius = Math.round(e.accuracy);
@@ -359,18 +379,32 @@
             var blueDotIcon = L.divIcon({ className: 'blue-dot', iconSize: [20, 20], iconAnchor: [10, 10] });
             userMarker = L.marker(e.latlng, {icon: blueDotIcon}).addTo(map).bindPopup('<b>موقعك الحالي</b>');
             userCircle = L.circle(e.latlng, radius, { color: '#4285F4', fillOpacity: 0.15, weight: 1 }).addTo(map);
+            
+            // إعادة توليد الفهرس ليتم ترتيبه حسب الأقرب بناءً على الـ GPS
+            generateIndex(locations);
         });
 
+        // 🔴 دالة رسم المسار مع إظهار المسافة الدقيقة بالكيلومتر 🔴
         function drawRoute(siteLat, siteLng) {
             if (!userMarker) { alert("يرجى الضغط على 'تحديد موقعي' أولاً."); closeModal(); return; }
             if (routingControl) map.removeControl(routingControl);
             var startLat = userMarker.getLatLng().lat;
             var startLng = userMarker.getLatLng().lng;
+            
             routingControl = L.Routing.control({
                 waypoints: [ L.latLng(startLat, startLng), L.latLng(siteLat, siteLng) ],
                 routeWhileDragging: false, createMarker: function() { return null; },
-                lineOptions: { styles: [{color: '#f39c12', opacity: 0.9, weight: 5}] }
+                lineOptions: { styles: [{color: '#f39c12', opacity: 0.9, weight: 5}] },
+                show: false // إخفاء المربع الافتراضي الخاص بالمكتبة لأنه مزعج
             }).addTo(map);
+
+            // استخراج المسافة عند الانتهاء من حساب المسار
+            routingControl.on('routesfound', function(e) {
+                var distanceKm = (e.routes[0].summary.totalDistance / 1000).toFixed(1);
+                document.getElementById("routeDistText").innerText = distanceKm;
+                document.getElementById("routeDistanceInfo").style.display = "block"; // إظهار اللافتة العلوية
+            });
+
             closeModal();
         }
     </script>
