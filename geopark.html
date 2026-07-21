@@ -5,14 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>السياحة الجيولوجية والآثارية - نظام شندل</title>
     
-    <!-- خط Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <!-- مكتبة الخرائط Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-    <!-- مكتبة مخطط الرحلات -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     
@@ -52,12 +47,11 @@
         
         .site-card { background: white; padding: 12px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; border: 1px solid #eee; display: flex; align-items: center; gap: 15px; }
         .site-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(35, 87, 137, 0.2); border-color: #235789; }
-        .site-card-img { width: 75px; height: 75px; border-radius: 8px; object-fit: cover; border: 1px solid #ddd; flex-shrink: 0; }
+        .site-card-img { width: 75px; height: 75px; border-radius: 8px; object-fit: cover; border: 1px solid #ddd; flex-shrink: 0; background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 10px; text-align: center; }
         .site-card-info { flex: 1; }
         .site-card h3 { margin: 0 0 5px 0; color: #f39c12; font-size: 15px; font-weight: 900;}
         .site-card p { margin: 0; color: #666; font-size: 12px; line-height: 1.6; font-weight: bold; }
 
-        /* تعديل زر تحديد الموقع: تم إلغاء الكود الذي ينقله لليسار في الإنجليزية، ليبقى ثابتاً في اليمين ولا يغطي دليل الخريطة */
         .gps-button { position: absolute; bottom: 85px; right: 20px; z-index: 1000; background-color: #ffffff; border: 2px solid #235789; color: #235789; padding: 12px 20px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .gps-button:hover { background-color: #235789; color: white; }
         
@@ -72,15 +66,15 @@
         .custom-site-icon { font-size: 26px; text-shadow: 0px 2px 5px rgba(0,0,0,0.6); text-align: center; }
         .custom-popup .leaflet-popup-content-wrapper { padding: 0; overflow: hidden; border-radius: 12px; }
         .custom-popup .leaflet-popup-content { margin: 0; width: 250px !important; text-align: center; }
-        .popup-img { width: 100%; height: 120px; object-fit: cover; border-bottom: 3px solid #f39c12; }
+        .popup-img { width: 100%; height: 120px; object-fit: cover; border-bottom: 3px solid #f39c12; background: #f0f0f0; }
         .popup-body { padding: 10px; }
         .details-btn { background: #235789; color: white !important; border: none; padding: 8px; width: 100%; border-radius: 5px; cursor: pointer; font-family: 'Cairo'; font-weight: bold; margin-top: 10px; text-decoration: none; display: block; }
         
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
         .modal-content { background: white; width: 90%; max-width: 800px; max-height: 90vh; border-radius: 12px; overflow-y: auto; position: relative; padding: 0; }
         
-        .slider-wrapper { display: flex; align-items: center; justify-content: center; gap: 15px; background: #0b0c10; padding: 25px 10px; position: relative; overflow: hidden; border-radius: 12px 12px 0 0; }
-        .slider-img { border-radius: 8px; object-fit: cover; transition: all 0.4s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+        .slider-wrapper { display: flex; align-items: center; justify-content: center; gap: 15px; background: #0b0c10; padding: 25px 10px; position: relative; overflow: hidden; border-radius: 12px 12px 0 0; min-height: 200px; }
+        .slider-img { border-radius: 8px; object-fit: cover; transition: all 0.4s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.6); background: #333; }
         .slider-img.side { width: 70px; height: 110px; opacity: 0.3; filter: blur(1px); cursor: pointer; }
         .slider-img.side:hover { opacity: 0.6; filter: blur(0px); }
         .slider-img.center { width: 260px; height: 180px; opacity: 1; border: 3px solid #f39c12; transform: scale(1.05); z-index: 2; }
@@ -152,11 +146,12 @@
             <button class="close-modal" onclick="closeModal()">×</button>
             
             <div class="slider-wrapper" id="modalGallery">
-                <button class="gallery-nav" onclick="changeImage(-1)">❮</button>
+                <button class="gallery-nav" id="btnPrevImg" onclick="changeImage(-1)">❮</button>
                 <img src="" class="slider-img side" id="imgLeft" onclick="changeImage(-1)">
                 <img src="" class="slider-img center" id="imgCenter">
                 <img src="" class="slider-img side" id="imgRight" onclick="changeImage(1)">
-                <button class="gallery-nav" onclick="changeImage(1)">❯</button>
+                <button class="gallery-nav" id="btnNextImg" onclick="changeImage(1)">❯</button>
+                <div id="noImageText" style="display:none; color:white; font-family:Cairo;">لا توجد صور حالياً / No Images Yet</div>
             </div>
             
             <div class="modal-body">
@@ -262,7 +257,6 @@
 
         var map = L.map('map', { center: [33.3152, 44.3661], zoom: 6, layers: [satellite] });
         
-        // إعداد طبقات الخريطة بحيث يتم تحديثها مع اللغة
         var baseMaps = {
             ar: { "صور فضائية": satellite, "خريطة طبوغرافية": topo, "خريطة الشوارع": osm },
             en: { "Satellite Image": satellite, "Topographic Map": topo, "Street Map": osm }
@@ -311,7 +305,42 @@
               en: { name: "Borsippa Ziggurat", province: "Babylon", formation: "Recent Deposits", rockType: "Glazed Clay Brick", tectonic: "Mesopotamian Basin", description: "A site combining archaeological structure with perplexing physical phenomena." } },
             { id: 3, type: "Mountain", lat: 30.1264, lng: 47.6256, age: "Precambrian", images: ["https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600", "https://images.unsplash.com/photo-1469521669194-babbdf900920?q=80&w=600"],
               ar: { name: "جبل سنام", province: "البصرة", formation: "متبخرات", rockType: "جبس، ملح صخري", tectonic: "قبة ملحية (Salt Plug)", description: "ظاهرة جيولوجية نادرة جداً في جنوب العراق." },
-              en: { name: "Jabal Sanam", province: "Basra", formation: "Evaporites", rockType: "Gypsum, Rock Salt", tectonic: "Salt Plug", description: "A very rare geological phenomenon in southern Iraq." } }
+              en: { name: "Jabal Sanam", province: "Basra", formation: "Evaporites", rockType: "Gypsum, Rock Salt", tectonic: "Salt Plug", description: "A very rare geological phenomenon in southern Iraq." } },
+            
+            // --- الإضافات الجديدة ---
+            { id: 4, type: "Heritage", lat: 33.3096, lng: 44.4672, age: "Cenozoic", images: [],
+              ar: { name: "تل حرمل (شادوبوم)", province: "بغداد", formation: "ترسبات السهل الفيضي", rockType: "طين محلي", tectonic: "حوض وادي الرافدين", description: "تل أثري يمثل مركزاً إدارياً قديماً، اكتشفت فيه ألواح قانون إشنونا، مبني من الطين المحلي." },
+              en: { name: "Tell Harmal (Shaduppum)", province: "Baghdad", formation: "Floodplain Deposits", rockType: "Local Mudbrick", tectonic: "Mesopotamian Basin", description: "An ancient administrative center where the Laws of Eshnunna were discovered, built from local mud." } },
+            { id: 5, type: "Heritage", lat: 33.3000, lng: 44.4694, age: "Cenozoic", images: [],
+              ar: { name: "تل محمد (بنايا)", province: "بغداد", formation: "ترسبات السهل الفيضي", rockType: "طين وفخار", tectonic: "حوض وادي الرافدين", description: "تل أثري يقع قرب بغداد الجديدة، يحتوي على وحدات معمارية وفخار ورؤوس هراوات من فترة حمورابي." },
+              en: { name: "Tell Muhammad (Banaya)", province: "Baghdad", formation: "Floodplain Deposits", rockType: "Mudbrick and Pottery", tectonic: "Mesopotamian Basin", description: "An archaeological mound near New Baghdad containing architectural units and artifacts from Hammurabi's period." } },
+            { id: 6, type: "Heritage", lat: 33.3536, lng: 44.2022, age: "Cenozoic", images: [],
+              ar: { name: "زقورة عقرقوف", province: "بغداد", formation: "ترسبات حديثة", rockType: "طوب طيني مقوى بالقصب والبتيومين", tectonic: "حوض وادي الرافدين", description: "صرح زقورة ضخم يقع غرب بغداد، يقاوم التعرية لاعتماده على تسليح هندسي بطبقات من القصب والبتيومين." },
+              en: { name: "Aqar Quf Ziggurat", province: "Baghdad", formation: "Recent Deposits", rockType: "Mudbrick reinforced with reeds and bitumen", tectonic: "Mesopotamian Basin", description: "A massive ziggurat west of Baghdad that resists erosion through an engineering reinforcement of reeds and bitumen." } },
+            { id: 7, type: "Heritage", lat: 33.3385, lng: 44.3895, age: "Cenozoic", images: [],
+              ar: { name: "المدرسة المستنصرية", province: "بغداد", formation: "ضفاف نهر دجلة", rockType: "آجر (طابوق مشوي)", tectonic: "حوض وادي الرافدين", description: "من أقدم المراكز التعليمية المطلة على نهر دجلة، تتميز بعمارتها العباسية." },
+              en: { name: "Mustansiriya Madrasah", province: "Baghdad", formation: "Tigris River Banks", rockType: "Baked Brick (Ajour)", tectonic: "Mesopotamian Basin", description: "One of the oldest educational centers overlooking the Tigris River, distinguished by its Abbasid architecture." } },
+            { id: 8, type: "Heritage", lat: 33.3430, lng: 44.3836, age: "Cenozoic", images: [],
+              ar: { name: "القصر العباسي", province: "بغداد", formation: "ضفاف نهر دجلة", rockType: "آجر (طابوق مشوي)", tectonic: "حوض وادي الرافدين", description: "قصر تاريخي يقع على ضفاف دجلة، يمتاز بالأقواس المدببة والمقرنصات والزخارف الآجرية المعقدة." },
+              en: { name: "Abbasid Palace", province: "Baghdad", formation: "Tigris River Banks", rockType: "Baked Brick (Ajour)", tectonic: "Mesopotamian Basin", description: "A historic palace on the Tigris, characterized by pointed arches, muqarnas, and complex brick decorations." } },
+            { id: 9, type: "Heritage", lat: 33.3316, lng: 44.3730, age: "Cenozoic", images: [],
+              ar: { name: "مرقد زمرد خاتون", province: "بغداد", formation: "ترسبات حديثة", rockType: "آجر ومواد رابطة", tectonic: "حوض وادي الرافدين", description: "يقع في مقبرة الشيخ معروف، ويتميز بقبة مخروطية فريدة مزينة بمقرنصات من الداخل والخارج." },
+              en: { name: "Zumurrud Khatun Tomb", province: "Baghdad", formation: "Recent Deposits", rockType: "Brick and Mortar", tectonic: "Mesopotamian Basin", description: "Located in the Sheikh Marouf cemetery, featuring a unique conical dome decorated with muqarnas." } },
+            { id: 10, type: "Heritage", lat: 33.3510, lng: 44.4036, age: "Cenozoic", images: [],
+              ar: { name: "الباب الوسطاني", province: "بغداد", formation: "ترسبات السهل الفيضي", rockType: "آجر دفاعي", tectonic: "حوض وادي الرافدين", description: "الباب الوحيد المتبقي من أبواب سور بغداد القديمة، وشيد لأغراض دفاعية لحماية المدينة." },
+              en: { name: "Bab al-Wastani", province: "Baghdad", formation: "Floodplain Deposits", rockType: "Defensive Brick", tectonic: "Mesopotamian Basin", description: "The only remaining gate from the old wall of Baghdad, built for defensive purposes." } },
+            { id: 11, type: "Heritage", lat: 33.3386, lng: 44.3925, age: "Cenozoic", images: [],
+              ar: { name: "خان مرجان", province: "بغداد", formation: "ترسبات حديثة", rockType: "طابوق (آجر)", tectonic: "حوض وادي الرافدين", description: "خان تجاري مسقوف بالكامل بعقود هائلة من الطابوق بطريقة هندسية مميزة في الرصافة." },
+              en: { name: "Khan Murjan", province: "Baghdad", formation: "Recent Deposits", rockType: "Baked Brick", tectonic: "Mesopotamian Basin", description: "A fully roofed commercial khan with massive brick arches built with distinctive engineering in Rusafa." } },
+            { id: 12, type: "Heritage", lat: 33.0936, lng: 44.5809, age: "Cenozoic", images: [],
+              ar: { name: "طاق كسرى (إيوان المدائن)", province: "بغداد", formation: "طين السهل الفيضي", rockType: "طابوق طيني حر", tectonic: "حوض وادي الرافدين", description: "يقع جنوب بغداد، يضم أكبر قوس مبني من الطابوق الطيني الحر في العالم، واعتمد بناؤه على طين السهل الفيضي." },
+              en: { name: "Taq Kasra (Iwan of Ctesiphon)", province: "Baghdad", formation: "Floodplain Clay", rockType: "Unreinforced Mudbrick", tectonic: "Mesopotamian Basin", description: "Located south of Baghdad, it features the largest unreinforced mudbrick vault in the world." } },
+            { id: 13, type: "Spring", lat: 33.2650, lng: 44.3550, age: "Cenozoic", images: [],
+              ar: { name: "منعطفات نهر دجلة (الجادرية)", province: "بغداد", formation: "البلايستوسين - الهولوسين", rockType: "رمال وأطيان نهرية", tectonic: "حوض وادي الرافدين", description: "التواءات نهرية حادة ناتجة عن تراجع سرعة النهر ضمن مرحلة النضوج، ترافقها عمليات تعرية وترسيب." },
+              en: { name: "Tigris Meanders (Jadriya)", province: "Baghdad", formation: "Pleistocene - Holocene", rockType: "River Sand and Mud", tectonic: "Mesopotamian Basin", description: "Sharp river meanders resulting from decreased river velocity, accompanied by erosion and deposition." } },
+            { id: 14, type: "Default", lat: 33.3333, lng: 44.4000, age: "Cenozoic", images: [],
+              ar: { name: "جزيرة أم الخنازير", province: "بغداد", formation: "الهولوسين (تكوين حديث)", rockType: "رمال ناعمة وغرين وطين", tectonic: "حوض وادي الرافدين", description: "جزر وترسبات نهرية تنشأ في باطن الانعطافات النهرية لدجلة داخل بغداد بفعل بطء الجريان." },
+              en: { name: "Umm Al-Khanazeer Island", province: "Baghdad", formation: "Holocene (Recent Formation)", rockType: "Fine Sand, Silt, and Clay", tectonic: "Mesopotamian Basin", description: "River islands and deposits formed inside the meanders of the Tigris within Baghdad due to slow flow." } }
         ];
 
         var userMarker, userCircle, routingControl = null;
@@ -325,7 +354,11 @@
                 var langData = loc[currentLang];
                 var emoji = siteIcons[loc.type] || siteIcons["Default"];
                 var customIcon = L.divIcon({ className: 'custom-site-icon', html: emoji, iconSize: [35, 35], iconAnchor: [17, 17] });
-                var popupContent = `<img src="${loc.images[0]}" class="popup-img"><div class="popup-body"><h3 style="color:#235789; margin:5px 0;">${langData.name}</h3><button class="details-btn" onclick="openModal(${loc.id})">${t.scientificDetails}</button></div>`;
+                
+                // استخدام صورة افتراضية في الخريطة إذا لم يقم المستخدم بإضافة صورة بعد
+                var imgThumb = (loc.images && loc.images.length > 0) ? loc.images[0] : 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" style="background:%23eee"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="12" fill="%23999">No Image</text></svg>';
+                
+                var popupContent = `<img src="${imgThumb}" class="popup-img"><div class="popup-body"><h3 style="color:#235789; margin:5px 0;">${langData.name}</h3><button class="details-btn" onclick="openModal(${loc.id})">${t.scientificDetails}</button></div>`;
                 L.marker([loc.lat, loc.lng], {icon: customIcon}).bindPopup(popupContent, { className: 'custom-popup' }).addTo(markersLayerGroup);
             });
             generateIndex(filteredList);
@@ -363,9 +396,12 @@
                     if (userMarker && site.distance !== undefined) {
                         distText = `<br><span style="color:#e74c3c; font-weight:bold;">${t.distanceLabel}${(site.distance / 1000).toFixed(1)} ${t.distKm}</span>`;
                     }
+                    
+                    var imgThumb = (site.images && site.images.length > 0) ? `<img src="${site.images[0]}" class="site-card-img" alt="${langData.name}">` : `<div class="site-card-img">No Image</div>`;
+
                     html += `
                         <div class="site-card" onclick="focusOnSite(${site.lat}, ${site.lng}, ${site.id})">
-                            <img src="${site.images[0]}" class="site-card-img" alt="${langData.name}">
+                            ${imgThumb}
                             <div class="site-card-info">
                                 <h3>${langData.name}</h3>
                                 <p>${siteIcons[site.type]} | ${t.formation}: ${langData.formation} ${distText}</p>
@@ -404,7 +440,7 @@
             var site = locations.find(s => s.id === id);
             var d = site[currentLang];
             if(site) {
-                currentGalleryImages = site.images;
+                currentGalleryImages = site.images || [];
                 currentImageIndex = 0;
                 updateGalleryHTML();
 
@@ -433,10 +469,24 @@
 
         function updateGalleryHTML() {
             var len = currentGalleryImages.length;
-            if(len === 0) return;
             var centerImg = document.getElementById("imgCenter");
             var leftImg = document.getElementById("imgLeft");
             var rightImg = document.getElementById("imgRight");
+            var navBtns = document.querySelectorAll('.gallery-nav');
+            var noImgText = document.getElementById("noImageText");
+
+            if(len === 0) {
+                centerImg.style.display = 'none';
+                leftImg.style.display = 'none';
+                rightImg.style.display = 'none';
+                navBtns.forEach(btn => btn.style.display = 'none');
+                noImgText.style.display = 'block';
+                return;
+            } else {
+                centerImg.style.display = 'block';
+                noImgText.style.display = 'none';
+                navBtns.forEach(btn => btn.style.display = 'block');
+            }
 
             centerImg.src = currentGalleryImages[currentImageIndex];
 
@@ -449,6 +499,7 @@
                 rightImg.src = currentGalleryImages[(currentImageIndex + 1) % len];
             } else {
                 leftImg.style.display = 'none'; rightImg.style.display = 'none';
+                navBtns.forEach(btn => btn.style.display = 'none');
             }
         }
 
@@ -515,7 +566,6 @@
             document.getElementById("modalDrawRoute").innerText = t.drawRoute;
             document.getElementById("modalDirections").innerText = t.externalRoute;
             
-            // إزالة وإعادة إضافة طبقات الخريطة لتحديث اللغة
             map.removeControl(layersControl);
             layersControl = L.control.layers(baseMaps[currentLang]).addTo(map);
 
