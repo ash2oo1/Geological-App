@@ -1,379 +1,349 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام شندل للمسح الميداني - الوحدة البيئية</title>
+    <title>Global Geological Platform</title>
     
-    <!-- مكتبة الـ QR Code -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
         :root {
-            --primary-blue: #0b1d3a;
-            --primary-orange: #f39c12;
-            --bg-color: #f4f6f9;
-            --border-color: #dcdde1;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            margin: 0; padding: 0; color: #333;
-        }
-        
-        /* --------------------------------------------------- */
-        /* تصميم واجهة المستخدم الرئيسية (UI)                  */
-        /* --------------------------------------------------- */
-        .main-ui { display: block; }
-        
-        header {
-            background-color: var(--primary-blue); color: white; text-align: center;
-            padding: 20px 10px; border-bottom: 4px solid var(--primary-orange);
-        }
-        header h1 { margin: 0; font-size: 22px; font-weight: bold; }
-        header p { margin: 5px 0 0; font-size: 13px; color: var(--primary-orange); }
-        
-        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
-        
-        .section-card {
-            background: #fff; border: 1px solid var(--border-color); border-radius: 8px;
-            margin-bottom: 20px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
-        .section-title {
-            font-size: 16px; font-weight: bold; color: var(--primary-blue);
-            border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; margin-bottom: 15px;
-        }
-        
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #555; }
-        .form-control {
-            width: 100%; padding: 10px; font-size: 14px;
-            border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background-color: #fcfcfc;
-        }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        
-        .btn {
-            display: block; width: 100%; padding: 12px; font-size: 15px; font-weight: bold;
-            color: white; background-color: var(--primary-blue); border: none;
-            border-radius: 4px; cursor: pointer; transition: 0.3s; text-align: center; margin-top: 10px;
-        }
-        .btn:hover { background-color: var(--primary-orange); color: var(--primary-blue); }
-        .btn-orange { background-color: var(--primary-orange); color: white; }
-        .btn-orange:hover { background-color: #d68910; color: white;}
-        
-        .status-box {
-            background: #eef2f7; border-radius: 4px; padding: 10px;
-            font-size: 13px; font-family: monospace; line-height: 1.5;
-            margin-top: 10px; color: var(--primary-blue);
+            --bg-dark: #020617; --sidebar-bg: #0f172a; --card-bg: #1e293b;
+            --accent-blue: #3b82f6; --accent-red: #ef4444; --text-main: #f8fafc;
+            --text-muted: #94a3b8; --border-color: #334155;
         }
 
-        /* حاوية خريطة Windy */
-        #windy-container {
-            width: 100%; height: 350px; margin-top: 15px; border-radius: 4px; border: 1px solid #ccc; display: none; overflow: hidden;
-        }
-        #windy-iframe { width: 100%; height: 100%; border: none; }
+        body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
-        /* الكاميرا */
-        video, canvas { width: 100%; max-height: 300px; background: #000; border-radius: 4px; object-fit: cover; margin-bottom: 10px; display: none; }
+        /* Sidebar Navigation */
+        .sidebar { width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px 0; z-index: 1000; }
+        .brand { padding: 0 20px 20px 20px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
+        .brand h1 { font-size: 18px; margin: 0; color: var(--text-main); letter-spacing: 1px;}
+        .brand p { font-size: 11px; color: var(--accent-blue); margin: 5px 0 0 0; text-transform: uppercase; letter-spacing: 1px;}
+
+        .nav-links { display: flex; flex-direction: column; gap: 5px; padding: 0 10px; }
+        .nav-item { padding: 12px 20px; color: var(--text-muted); text-decoration: none; border-radius: 8px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: all 0.3s; font-size: 14px; }
+        .nav-item:hover, .nav-item.active { background-color: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+        .nav-item i { width: 20px; text-align: center; }
+
+        /* Main Content */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; scroll-behavior: smooth; }
+
+        header { padding: 15px 40px; background-color: rgba(2, 6, 23, 0.95); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .location-bar { display: flex; align-items: center; gap: 15px; }
+        .btn-locate { background: var(--accent-blue); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; display: flex; gap: 8px; align-items: center; }
+        .btn-locate:hover { background: #2563eb; }
+        .city-name { font-size: 18px; font-weight: bold; color: var(--text-main); }
+
+        .section-container { padding: 30px 40px; display: none; animation: fadeIn 0.4s ease-in-out; }
+        .section-container.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        h2.section-title { margin-top: 0; color: var(--text-main); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; font-size: 20px; }
+
+        /* Weather Grid */
+        .weather-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .w-card { background: linear-gradient(145deg, var(--card-bg), #0f172a); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        .w-card-title { font-size: 13px; color: var(--text-muted); margin-bottom: 15px; display: flex; justify-content: space-between;}
+        .w-card-title i { color: var(--accent-blue); }
+        .w-value-main { font-size: 32px; font-weight: bold; margin-bottom: 5px; }
+        .w-value-sub { font-size: 13px; color: var(--text-muted); }
+
+        /* Wind & Progress */
+        .wind-compass-container { display: flex; align-items: center; justify-content: space-between; }
+        .wind-dial { width: 50px; height: 50px; border: 2px solid var(--border-color); border-radius: 50%; position: relative; }
+        .wind-arrow { position: absolute; top: 50%; left: 50%; width: 4px; height: 40px; background: var(--accent-blue); transform-origin: bottom center; margin-left: -2px; margin-top: -40px; border-radius: 2px; transition: 0.5s; }
+        .wind-arrow::after { content: ''; position: absolute; top: -4px; left: -4px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 8px solid var(--accent-blue); }
         
-        /* --------------------------------------------------- */
-        /* تصميم التقرير الرسمي (A4) - مخفي ويعمل فقط عند الطباعة */
-        /* --------------------------------------------------- */
-        #printable-report { display: none; background: white; color: black; padding: 20px; font-family: 'Segoe UI', sans-serif; }
+        .progress-bg { width: 100%; height: 6px; background: var(--border-color); border-radius: 3px; margin-top: 10px; overflow: hidden;}
+        .progress-fill { height: 100%; background: var(--accent-blue); border-radius: 3px;}
+
+        /* Maps & Charts */
+        #map { height: 500px; border-radius: 12px; z-index: 1; border: 1px solid var(--border-color); }
+        .radar-container { height: 450px; width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); margin-top: 20px;}
+        .chart-container { height: 400px; width: 100%; background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); box-sizing: border-box;}
         
-        @media print {
-            body { background-color: white; margin: 0; padding: 0; }
-            .main-ui { display: none !important; } /* إخفاء الواجهة بالكامل */
-            #printable-report { display: block !important; } /* إظهار التقرير فقط */
-            
-            .pdf-header { text-align: center; border-bottom: 3px solid #0b1d3a; padding-bottom: 15px; margin-bottom: 20px; }
-            .pdf-header h2 { margin: 0; color: #0b1d3a; font-size: 24px; }
-            .pdf-header p { margin: 5px 0 0; color: #555; font-size: 14px; }
-            
-            .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; }
-            .pdf-table th, .pdf-table td { border: 1px solid #000; padding: 10px; text-align: right; }
-            .pdf-table th { background-color: #f0f0f0; color: #000; width: 30%; font-weight: bold; }
-            
-            .pdf-image-container { text-align: center; margin-bottom: 20px; }
-            .pdf-image-container img { max-width: 90%; max-height: 350px; border: 2px solid #000; }
-            
-            .pdf-qr { display: flex; justify-content: center; margin-top: 20px; }
-            
-            .pdf-footer { text-align: center; margin-top: 40px; border-top: 1px solid #000; padding-top: 15px; font-size: 12px; color: #333; }
-        }
+        .grid-2 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <!-- ========================================== -->
-    <!-- واجهة المستخدم الرئيسية (المنصة الميدانية) -->
-    <!-- ========================================== -->
-    <div class="main-ui" id="main-ui">
+    <nav class="sidebar">
+        <div class="brand">
+            <h1>GEOQUAKE PRO</h1>
+            <p>Dr. Ali Shandal Al-Janabi</p>
+        </div>
+        <div class="nav-links">
+            <div class="nav-item active" onclick="switchSection('meteorology')"><i class="fas fa-cloud-sun-rain"></i> Meteorology</div>
+            <div class="nav-item" onclick="switchSection('climate')"><i class="fas fa-chart-area"></i> Climate Trends</div>
+            <div class="nav-item" onclick="switchSection('seismology')"><i class="fas fa-globe-americas"></i> Seismology</div>
+            <div class="nav-item" onclick="switchSection('dashboard')"><i class="fas fa-chart-line"></i> Dashboard</div>
+        </div>
+    </nav>
+
+    <main class="main-content">
         <header>
-            <h1>نظام شندل للمسح الميداني الجيولوجي</h1>
-            <p>وحدة الرصد والإشراف البيئي (متصلة بنماذج المناخ العالمية Windy)</p>
+            <div class="location-bar">
+                <button class="btn-locate" onclick="detectLocation()"><i class="fas fa-location-arrow"></i> Locate Me</button>
+                <div class="city-name" id="display-city">Awaiting Location...</div>
+            </div>
+            <div style="color: var(--text-muted); font-size: 14px;" id="live-clock">--:--:--</div>
         </header>
 
-        <div class="container">
+        <div id="meteorology" class="section-container active">
+            <h2 class="section-title">Atmospheric Conditions & Live Radar</h2>
             
-            <!-- 1. بيانات الفاحص والانتهاك -->
-            <div class="section-card">
-                <h2 class="section-title">1. بيانات الفاحص والانتهاك البيئي</h2>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>إعداد وتدقيق الجيولوجي:</label>
-                        <input type="text" id="inspector-name" class="form-control" placeholder="مثال: علي شندل فلاح">
+            <div class="weather-grid">
+                <div class="w-card">
+                    <div class="w-card-title"><span>Temperature</span> <i class="fas fa-temperature-half"></i></div>
+                    <div class="w-value-main" id="met-temp">--°</div>
+                    <div class="w-value-sub" id="met-feels">Feels like: --°</div>
+                    <div class="w-value-sub" style="margin-top: 5px; color: #10b981;" id="met-minmax">H: --° | L: --°</div>
+                </div>
+
+                <div class="w-card">
+                    <div class="w-card-title"><span>Wind</span> <i class="fas fa-wind"></i></div>
+                    <div class="wind-compass-container">
+                        <div>
+                            <div class="w-value-main" style="font-size: 28px;" id="met-wind-speed">--</div>
+                            <div class="w-value-sub">km/h</div>
+                        </div>
+                        <div class="wind-dial"><div class="wind-arrow" id="wind-direction-arrow"></div></div>
                     </div>
-                    <div class="form-group">
-                        <label>نوع الانتهاك البيئي:</label>
-                        <select id="violation-type" class="form-control">
-                            <option value="تلوث هوائي وانبعاثات غازية">تلوث هوائي وانبعاثات غازية</option>
-                            <option value="تلوث مائي وصرف صحي">تلوث مائي وصرف صحي</option>
-                            <option value="تجريف تربة وتصحر">تجريف تربة وتصحر</option>
-                            <option value="تلوث ضوضائي (مقالع/معدات)">تلوث ضوضائي (مقالع/معدات)</option>
-                        </select>
+                </div>
+
+                <div class="w-card">
+                    <div class="w-card-title"><span>Humidity</span> <i class="fas fa-droplet"></i></div>
+                    <div class="w-value-main" id="met-hum">--%</div>
+                    <div class="progress-bg"><div class="progress-fill" id="hum-bar" style="width: 0%;"></div></div>
+                </div>
+
+                <div class="w-card">
+                    <div class="w-card-title"><span>Dew Point</span> <i class="fas fa-temperature-arrow-down"></i></div>
+                    <div class="w-value-main" id="met-dew">--°C</div>
+                    <div class="w-value-sub" style="margin-top: 10px;">Condensation point</div>
+                </div>
+
+                <div class="w-card">
+                    <div class="w-card-title"><span>Precipitation</span> <i class="fas fa-cloud-showers-heavy"></i></div>
+                    <div class="w-value-main" id="met-precip">-- mm</div>
+                    <div class="w-value-sub" style="margin-top: 10px;">Expected today</div>
+                </div>
+
+                <div class="w-card">
+                    <div class="w-card-title"><span>Cloud & Visibility</span> <i class="fas fa-eye"></i></div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                        <div><div class="w-value-main" style="font-size: 20px;" id="met-cloud">--%</div><div class="w-value-sub">Clouds</div></div>
+                        <div><div class="w-value-main" style="font-size: 20px;" id="met-vis">-- km</div><div class="w-value-sub">Visibility</div></div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>التقرير الجيولوجي الميداني والتوصيات:</label>
-                    <textarea id="violation-notes" class="form-control" rows="3" placeholder="اكتب وصفاً دقيقاً للمشاهدات الحقلية..."></textarea>
+
+                <div class="w-card">
+                    <div class="w-card-title"><span>UV & Air Quality</span> <i class="fas fa-sun"></i></div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                        <div><div class="w-value-main" style="font-size: 24px;" id="met-uv">--</div><div class="w-value-sub">UV Index</div></div>
+                        <div><div class="w-value-main" style="font-size: 24px; color: #10b981;" id="met-aqi">--</div><div class="w-value-sub">AQI</div></div>
+                    </div>
+                </div>
+
+                <div class="w-card">
+                    <div class="w-card-title"><span>Sun & Moon</span> <i class="fas fa-moon"></i></div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                        <div><div class="w-value-main" style="font-size: 14px;" id="met-sunrise">--:--</div><div class="w-value-sub">Sunrise</div></div>
+                        <div><div class="w-value-main" style="font-size: 14px;" id="met-sunset">--:--</div><div class="w-value-sub">Sunset</div></div>
+                    </div>
+                    <div class="w-value-sub" style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 5px;" id="met-moonphase">Phase: --</div>
                 </div>
             </div>
 
-            <!-- 2. التوثيق المكاني وخرائط Windy -->
-            <div class="section-card">
-                <h2 class="section-title">2. التوثيق المكاني والتتبع المناخي (Windy Maps)</h2>
-                <button class="btn" id="api-btn" onclick="startGPS()">📍 التقاط الإحداثيات وتفعيل خريطة Windy</button>
-                <div class="status-box" id="gps-status">بانتظار التقاط الموقع...</div>
-                
-                <!-- خريطة Windy ستظهر هنا -->
-                <div id="windy-container">
-                    <iframe id="windy-iframe" src="" allowfullscreen></iframe>
+            <h2 class="section-title" style="margin-top: 30px;">Live Weather Radar (Global)</h2>
+            <div class="radar-container">
+                <iframe id="windy-iframe" width="100%" height="100%" src="https://embed.windy.com/embed2.html?lat=33.315&lon=44.366&detailLat=33.315&detailLon=44.366&width=650&height=450&zoom=5&level=surface&overlay=rain&product=ecmwf&menu=&message=&marker=true&calendar=now&city=&type=map&location=coordinates&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1" frameborder="0"></iframe>
+            </div>
+        </div>
+
+        <div id="climate" class="section-container">
+            <h2 class="section-title">Climate Trends & Historical Data (45 Days)</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Displays historical and forecasted Maximum (Red) and Minimum (Blue) temperatures for your coordinates.</p>
+            <div class="chart-container">
+                <canvas id="climateChart"></canvas>
+            </div>
+        </div>
+
+        <div id="seismology" class="section-container">
+            <h2 class="section-title">Global Tectonic & Seismic Activity</h2>
+            <div class="grid-2">
+                <div id="map"></div>
+                <div class="w-card" style="height: 500px; overflow-y: auto; padding: 10px;">
+                    <h3 style="margin: 10px;">Live Feed (Today)</h3>
+                    <div id="quake-feed" style="font-size: 14px;">Loading USGS data...</div>
                 </div>
             </div>
-
-            <!-- 3. القياسات الحقلية -->
-            <div class="section-card">
-                <h2 class="section-title">3. القياسات الحقلية الميدانية</h2>
-                
-                <!-- الكاميرا -->
-                <div class="form-group">
-                    <label>📷 التحليل البصري (عينة تربة / مياه / انبعاثات)</label>
-                    <video id="video-stream" autoplay playsinline></video>
-                    <canvas id="photo-canvas"></canvas>
-                    <div class="status-box" id="camera-status">الكاميرا متوقفة...</div>
-                    <button class="btn" id="start-cam-btn" onclick="startCamera()">فتح الكاميرا</button>
-                    <button class="btn btn-orange" id="snap-btn" style="display:none;" onclick="takeSnapshot()">التقاط العينة البصرية</button>
-                </div>
-
-                <hr style="border:0; border-top:1px solid #eee; margin: 20px 0;">
-
-                <!-- الميكروفون -->
-                <div class="form-group">
-                    <label>🎤 تحليل التلوث الضوضائي</label>
-                    <div class="status-box" id="audio-status">الميكروفون متوقف...</div>
-                    <button class="btn" id="start-mic-btn" onclick="startMicrophone()">بدء القياس بالديسيبل (dB)</button>
-                    <button class="btn btn-orange" id="stop-mic-btn" style="display:none;" onclick="stopMicrophone()">إيقاف وتثبيت القياس</button>
-                </div>
-            </div>
-
-            <!-- زر إصدار الـ PDF -->
-            <button class="btn btn-orange" style="padding: 15px; font-size: 16px; margin-bottom: 40px;" onclick="triggerNativePDF()">📄 إصدار التقرير الجيولوجي الشامل (PDF)</button>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- قالب التقرير النهائي (يظهر فقط في الطباعة) -->
-    <!-- ========================================== -->
-    <div id="printable-report">
-        <div class="pdf-header">
-            <h2>نظام شندل للمسح الميداني الجيولوجي</h2>
-            <h3 style="margin:10px 0;">التقرير الفني للرصد والإشراف البيئي</h3>
-            <p id="pdf-date"></p>
         </div>
 
-        <h3 style="color:#0b1d3a; border-bottom: 2px solid #ccc; padding-bottom: 5px;">أولاً: البيانات الأساسية والمكانية</h3>
-        <table class="pdf-table">
-            <tr><th>إعداد وتدقيق الجيولوجي</th><td id="pdf-inspector"></td></tr>
-            <tr><th>تصنيف الانتهاك البيئي</th><td id="pdf-type"></td></tr>
-            <tr><th>الإحداثيات الجغرافية (GPS)</th><td id="pdf-gps"></td></tr>
-        </table>
-
-        <h3 style="color:#0b1d3a; border-bottom: 2px solid #ccc; padding-bottom: 5px;">ثانياً: التقرير الفني والقياسات الحقلية</h3>
-        <table class="pdf-table">
-            <tr><th>التلوث الضوضائي (Max dB)</th><td id="pdf-audio"></td></tr>
-            <tr><th>التحليل البصري / اللوني</th><td id="pdf-color"></td></tr>
-            <tr><th>الملاحظات والتوصيات</th><td id="pdf-notes"></td></tr>
-        </table>
-
-        <h3 style="color:#0b1d3a; text-align: center;">التوثيق البصري للانتهاك الميداني</h3>
-        <div class="pdf-image-container">
-            <img id="pdf-captured-image" src="" alt="لم يتم التقاط صورة">
+        <div id="dashboard" class="section-container">
+            <h2 class="section-title">System Overview</h2>
+            <div class="w-card"><p>Welcome to GeoQuake Pro. Use the sidebar to navigate to specialized modules.</p></div>
         </div>
 
-        <div class="pdf-qr" id="pdf-qrcode"></div>
+    </main>
 
-        <div class="pdf-footer">
-            وثيقة رسمية مستخرجة من البنية التحتية لنظام شندل للمسح الميداني.<br>
-            جميع الإحداثيات والبيانات موثقة حقلياً ومشفرة لضمان الموثوقية العالية.
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- أكواد الجافاسكريبت (المنطق والعمليات)      -->
-    <!-- ========================================== -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        let finalLat = 0, finalLng = 0;
-        let capturedImageBase64 = "";
-        let acousticResult = "لم يتم إجراء القياس الضوضائي";
-        let opticalResult = "لم يتم التقاط عينة بصرية";
+        let myClimateChart = null; // Chart variable
 
-        // ----------------------------------------------------
-        // 1. تفعيل الـ GPS وتشغيل خريطة Windy
-        // ----------------------------------------------------
-        function startGPS() {
-            const btn = document.getElementById('api-btn');
-            const status = document.getElementById('gps-status');
-            btn.innerText = "⏳ جاري الاتصال بالأقمار الصناعية...";
+        // Navigation
+        function switchSection(sectionId) {
+            document.querySelectorAll('.section-container').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            if(sectionId === 'seismology') setTimeout(() => map.invalidateSize(), 100);
+            if(sectionId === 'climate' && myClimateChart) myClimateChart.update();
+        }
+
+        setInterval(() => document.getElementById('live-clock').innerText = new Date().toLocaleString('en-US'), 1000);
+
+        // Astronomical Algorithm for Moon Phase
+        function getMoonPhase(date) {
+            let year = date.getFullYear(), month = date.getMonth() + 1, day = date.getDate();
+            if (month < 3) { year--; month += 12; }
+            ++month;
+            let c = 365.25 * year, e = 30.6 * month;
+            let jd = c + e + day - 694039.09;
+            let b = Math.round((jd / 29.5305882 - parseInt(jd / 29.5305882)) * 8);
+            if (b >= 8) b = 0;
+            const phases = ['New Moon', 'Waxing Crescent', 'First Quarter', 'Waxing Gibbous', 'Full Moon', 'Waning Gibbous', 'Third Quarter', 'Waning Crescent'];
+            return phases[b];
+        }
+
+        // Main Geolocation & Data Engine
+        function detectLocation() {
+            const btn = document.querySelector('.btn-locate');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
             
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    finalLat = position.coords.latitude;
-                    finalLng = position.coords.longitude;
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
                     
-                    status.innerText = `✅ تم تثبيت الموقع:\nخط العرض: ${finalLat.toFixed(5)} | خط الطول: ${finalLng.toFixed(5)}`;
-                    
-                    // تفعيل خريطة Windy وتوجيهها لإحداثيات الجيولوجي
-                    const windyContainer = document.getElementById('windy-container');
-                    const windyIframe = document.getElementById('windy-iframe');
-                    
-                    // رابط Windy مع وضع الـ GPS كمركز للخريطة (طبقة الرياح والتلوث)
-                    let windyUrl = `https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=°C&metricWind=km/h&zoom=9&overlay=pm2p5&product=ecmwf&level=surface&lat=${finalLat}&lon=${finalLng}`;
-                    
-                    windyIframe.src = windyUrl;
-                    windyContainer.style.display = 'block';
+                    // 1. City Name
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            const city = data.address.city || data.address.town || data.address.state || "Unknown Location";
+                            document.getElementById('display-city').innerText = `${city}, ${data.address.country || ""}`;
+                            btn.innerHTML = '<i class="fas fa-location-arrow"></i> Update Location';
+                        }).catch(() => document.getElementById('display-city').innerText = "Coordinates Found");
 
-                    btn.innerText = "✅ تم استكمال التوثيق وتحديث الخريطة";
-                    btn.style.backgroundColor = "var(--primary-blue)";
-                }, (error) => {
-                    status.innerText = "❌ تعذر الحصول على الموقع. يرجى تفعيل الـ GPS.";
-                    btn.innerText = "📍 إعادة المحاولة";
-                }, { enableHighAccuracy: true });
+                    // 2. Advanced Weather API (Now includes past 30 days + 14 days forecast for the chart)
+                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,cloud_cover,surface_pressure,wind_speed_10m,wind_direction_10m&hourly=visibility,dew_point_2m&daily=temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_sum,sunrise,sunset&past_days=30&forecast_days=14&timezone=auto`;
+                    
+                    fetch(weatherUrl).then(res => res.json()).then(data => {
+                        // The "Today" index is 30 because we requested 30 past days
+                        const todayIdx = 30; 
+
+                        // Populate Meteorology Cards
+                        document.getElementById('met-temp').innerText = `${Math.round(data.current.temperature_2m)}°C`;
+                        document.getElementById('met-feels').innerText = `Feels like: ${Math.round(data.current.apparent_temperature)}°C`;
+                        document.getElementById('met-minmax').innerText = `H: ${Math.round(data.daily.temperature_2m_max[todayIdx])}° | L: ${Math.round(data.daily.temperature_2m_min[todayIdx])}°`;
+                        
+                        document.getElementById('met-wind-speed').innerText = data.current.wind_speed_10m;
+                        document.getElementById('wind-direction-arrow').style.transform = `rotate(${data.current.wind_direction_10m}deg)`;
+
+                        document.getElementById('met-hum').innerText = `${data.current.relative_humidity_2m}%`;
+                        document.getElementById('hum-bar').style.width = `${data.current.relative_humidity_2m}%`;
+                        document.getElementById('met-dew').innerText = `${data.hourly.dew_point_2m[0]}°C`;
+
+                        document.getElementById('met-precip').innerText = `${data.daily.precipitation_sum[todayIdx]} mm`;
+                        
+                        document.getElementById('met-cloud').innerText = `${data.current.cloud_cover}%`;
+                        document.getElementById('met-vis').innerText = `${(data.hourly.visibility[0] / 1000).toFixed(1)}`;
+                        document.getElementById('met-uv').innerText = data.daily.uv_index_max[todayIdx];
+
+                        // Sun & Moon
+                        const sr = new Date(data.daily.sunrise[todayIdx]).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'});
+                        const ss = new Date(data.daily.sunset[todayIdx]).toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'});
+                        document.getElementById('met-sunrise').innerText = sr;
+                        document.getElementById('met-sunset').innerText = ss;
+                        document.getElementById('met-moonphase').innerText = `Moon Phase: ${getMoonPhase(new Date())}`;
+
+                        // 3. Draw Climate Trends Chart (Chart.js)
+                        drawClimateChart(data.daily.time, data.daily.temperature_2m_max, data.daily.temperature_2m_min);
+                    });
+
+                    // 4. Air Quality
+                    fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=european_aqi`)
+                        .then(res => res.json()).then(data => document.getElementById('met-aqi').innerText = data.current.european_aqi);
+
+                    // 5. Update Maps
+                    document.getElementById('windy-iframe').src = `https://embed.windy.com/embed2.html?lat=${lat}&lon=${lon}&detailLat=${lat}&detailLon=${lon}&width=650&height=450&zoom=6&level=surface&overlay=rain&product=ecmwf&menu=&marker=true&type=map&location=coordinates&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`;
+                    map.setView([lat, lon], 4);
+
+                }, () => alert("Location access denied."));
             }
         }
 
-        // ----------------------------------------------------
-        // 2. الكاميرا والتحليل البصري
-        // ----------------------------------------------------
-        let video = document.getElementById('video-stream');
-        let canvas = document.getElementById('photo-canvas');
-        let ctx = canvas.getContext('2d');
-        let stream;
-
-        async function startCamera() {
-            try {
-                video.style.display = 'block'; canvas.style.display = 'none';
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-                video.srcObject = stream;
-                document.getElementById('start-cam-btn').style.display = 'none';
-                document.getElementById('snap-btn').style.display = 'block';
-                document.getElementById('camera-status').innerText = "الكاميرا تعمل، وجهها نحو الانتهاك...";
-            } catch(e) { alert("خطأ في فتح الكاميرا: " + e); }
-        }
-
-        function takeSnapshot() {
-            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            video.style.display = 'none'; canvas.style.display = 'block';
-            stream.getTracks().forEach(t => t.stop()); 
-            document.getElementById('snap-btn').style.display = 'none';
-            document.getElementById('start-cam-btn').style.display = 'block';
-            document.getElementById('start-cam-btn').innerText = "إعادة التقاط الصورة";
-
-            // تحليل بصري بسيط
-            let imgD = ctx.getImageData(canvas.width/2-25, canvas.height/2-25, 50, 50).data;
-            let r=0, g=0, b=0, px=imgD.length/4;
-            for(let i=0; i<imgD.length; i+=4){ r+=imgD[i]; g+=imgD[i+1]; b+=imgD[i+2]; }
-            r = Math.round(r/px); g = Math.round(g/px); b = Math.round(b/px);
+        // --- Climate Chart Rendering Engine ---
+        function drawClimateChart(dates, maxTemps, minTemps) {
+            const ctx = document.getElementById('climateChart').getContext('2d');
+            if (myClimateChart) myClimateChart.destroy(); // Clear old chart
             
-            opticalResult = `مؤشر لوني (RGB: ${r}, ${g}, ${b}) - تم توثيق العينة`;
-            document.getElementById('camera-status').innerText = "✅ " + opticalResult;
-            
-            // تحويل الصورة لداتا جاهزة للـ PDF
-            capturedImageBase64 = canvas.toDataURL('image/jpeg', 0.8);
-        }
-
-        // ----------------------------------------------------
-        // 3. الميكروفون
-        // ----------------------------------------------------
-        let audioCtx, analyser, mic, processor, maxDb = 0;
-        async function startMicrophone() {
-            try {
-                let micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioCtx.createAnalyser(); mic = audioCtx.createMediaStreamSource(micStream);
-                processor = audioCtx.createScriptProcessor(2048, 1, 1);
-                analyser.fftSize = 1024; mic.connect(analyser); analyser.connect(processor); processor.connect(audioCtx.destination);
-
-                document.getElementById('start-mic-btn').style.display = 'none';
-                document.getElementById('stop-mic-btn').style.display = 'block';
-                maxDb = 0;
-
-                processor.onaudioprocess = () => {
-                    let arr = new Uint8Array(analyser.frequencyBinCount);
-                    analyser.getByteFrequencyData(arr);
-                    let sum = arr.reduce((a, b) => a + b, 0);
-                    let currentDb = Math.round((sum / arr.length) * 1.5);
-                    if(currentDb > maxDb) maxDb = currentDb;
-                    document.getElementById('audio-status').innerText = `المستوى: ${currentDb} dB | الأقصى: ${maxDb} dB`;
-                };
-            } catch(e) { alert("تعذر تشغيل الميكروفون."); }
-        }
-
-        function stopMicrophone() {
-            if(audioCtx) {
-                audioCtx.close();
-                document.getElementById('stop-mic-btn').style.display = 'none';
-                document.getElementById('start-mic-btn').style.display = 'block';
-                document.getElementById('start-mic-btn').innerText = "إعادة القياس";
-                acousticResult = `أقصى مستوى مسجل: ${maxDb} ديسيبل (dB)`;
-                document.getElementById('audio-status').innerText = "✅ " + acousticResult;
-            }
-        }
-
-        // ----------------------------------------------------
-        // 4. الحل الجذري للـ PDF (الطباعة الأصلية للمتصفح)
-        // ----------------------------------------------------
-        function triggerNativePDF() {
-            // تعبئة البيانات في قالب التقرير
-            document.getElementById('pdf-date').innerText = "تاريخ التوثيق: " + new Date().toLocaleString('ar-IQ');
-            document.getElementById('pdf-inspector').innerText = document.getElementById('inspector-name').value || "غير محدد";
-            document.getElementById('pdf-type').innerText = document.getElementById('violation-type').value;
-            document.getElementById('pdf-notes').innerText = document.getElementById('violation-notes').value || "لا توجد ملاحظات.";
-            
-            document.getElementById('pdf-gps').innerText = finalLat !== 0 ? `خط العرض: ${finalLat.toFixed(6)} | خط الطول: ${finalLng.toFixed(6)}` : "لم يتم التحديد";
-            document.getElementById('pdf-audio').innerText = acousticResult;
-            document.getElementById('pdf-color').innerText = opticalResult;
-
-            // إدراج الصورة
-            let imgElement = document.getElementById('pdf-captured-image');
-            if(capturedImageBase64 !== "") {
-                imgElement.src = capturedImageBase64;
-                imgElement.style.display = 'inline-block';
-            } else {
-                imgElement.style.display = 'none';
-            }
-
-            // توليد الـ QR
-            document.getElementById("pdf-qrcode").innerHTML = "";
-            new QRCode(document.getElementById("pdf-qrcode"), {
-                text: `Shandal System\nGeologist: ${document.getElementById('inspector-name').value}\nLoc: ${finalLat}, ${finalLng}`,
-                width: 100, height: 100
+            myClimateChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        { label: 'Max Temp (°C)', data: maxTemps, borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', borderWidth: 2, tension: 0.4, fill: true, pointRadius: 0 },
+                        { label: 'Min Temp (°C)', data: minTemps, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderWidth: 2, tension: 0.4, fill: true, pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8', maxTicksLimit: 10 } },
+                        y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+                    },
+                    plugins: { legend: { labels: { color: '#f8fafc' } } }
+                }
             });
-
-            // استدعاء نافذة الطباعة الأصلية للمتصفح (وهي التي ستحفظ الـ PDF بشكل مثالي)
-            window.print();
         }
+
+        // --- Seismology Engine (USGS) ---
+        const map = L.map('map').setView([20, 0], 2);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+        let quakeLayer = L.layerGroup().addTo(map);
+
+        function getEarthquakes() {
+            const today = new Date(); today.setHours(0,0,0,0);
+            fetch(`https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${today.toISOString()}`)
+                .then(res => res.json())
+                .then(data => {
+                    quakeLayer.clearLayers();
+                    let html = '';
+                    data.features.forEach(q => {
+                        const mag = q.properties.mag ? q.properties.mag.toFixed(1) : 0;
+                        const coords = [q.geometry.coordinates[1], q.geometry.coordinates[0]];
+                        const color = mag > 5 ? '#ef4444' : '#3b82f6';
+                        
+                        L.circleMarker(coords, { radius: mag*2, color: color, fillOpacity: 0.6 })
+                         .bindPopup(`Mag: ${mag}<br>${q.properties.place}`).addTo(quakeLayer);
+                         
+                        html += `<div style="padding: 10px; border-bottom: 1px solid #334155;">
+                                    <strong style="color:${color}; background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px;">M ${mag}</strong>
+                                    <span style="margin-left: 10px;">${q.properties.place}</span>
+                                 </div>`;
+                    });
+                    document.getElementById('quake-feed').innerHTML = html;
+                });
+        }
+        
+        getEarthquakes();
+        setInterval(getEarthquakes, 60000);
     </script>
 </body>
 </html>
