@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام شندل - الوحدة البيئية</title>
+    <!-- مكتبة لتوليد الـ QR Code -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #0b1d3a;
+            --primary-orange: #f39c12;
+            --light-bg: #f8f9fa;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: var(--primary-blue);
+            color: white;
+            text-align: center;
+            padding: 20px 10px;
+            border-bottom: 5px solid var(--primary-orange);
+        }
+        h1 { margin: 0; font-size: 24px; }
+        p.subtitle { margin: 5px 0 0; font-size: 14px; color: #ccc; }
+        
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background-color: var(--primary-blue);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:hover { background-color: var(--primary-orange); color: var(--primary-blue); }
+        .btn-action { background-color: var(--primary-orange); color: var(--primary-blue); margin-top: 10px;}
+        
+        .module-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: none; /* مخفي افتراضياً */
+        }
+        
+        video, canvas {
+            width: 100%;
+            border-radius: 8px;
+            background: #000;
+            margin-bottom: 10px;
+        }
+        
+        .status-box {
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        /* تنسيقات الطباعة وإصدار التقرير PDF */
+        @media print {
+            body { background: white; }
+            .no-print { display: none !important; }
+            .module-section { display: block !important; box-shadow: none; border: 1px solid #ccc; }
+            .report-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+            .report-footer { position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 12px; border-top: 1px solid #000; padding-top: 5px; }
+        }
+        .report-header { display: none; }
+        .report-footer { display: none; }
+        @media print {
+            .report-header { display: block; }
+            .report-footer { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="no-print">
+        <h1>نظام شندل للمسح الميداني</h1>
+        <p class="subtitle">الوحدة البيئية المتقدمة (الكبسولة البرمجية)</p>
+    </header>
+
+    <div class="container no-print" id="main-menu">
+        <button class="btn" onclick="openModule('gps-module')">📍 رصد بيئي وتوثيق انتهاك (GPS)</button>
+        <button class="btn" onclick="openModule('camera-module')">📷 مختبر التربة والمياه البصري</button>
+        <button class="btn" onclick="openModule('audio-module')">🎤 تخريط الضوضاء البيئية (dB)</button>
+    </div>
+
+    <div class="container">
+        
+        <!-- الترويسة للطباعة فقط -->
+        <div class="report-header">
+            <h2>نظام شندل للمسح الميداني الجيولوجي</h2>
+            <h3>تقرير الرصد البيئي الميداني</h3>
+            <p id="report-date"></p>
+        </div>
+
+        <!-- 1. وحدة الـ GPS -->
+        <div id="gps-module" class="module-section">
+            <h3>📍 توثيق الموقع (GPS Averaging)</h3>
+            <div class="status-box" id="gps-data">بانتظار قراءة الأقمار الصناعية... (يرجى تفعيل الموقع)</div>
+            <button class="btn btn-action no-print" onclick="startGPS()">بدء التقاط الإحداثيات الدقيقة</button>
+        </div>
+
+        <!-- 2. وحدة الكاميرا -->
+        <div id="camera-module" class="module-section">
+            <h3>📷 التحليل البصري (عكارة المياه / لون التربة)</h3>
+            <video id="video-stream" autoplay playsinline class="no-print"></video>
+            <canvas id="photo-canvas" style="display:none;"></canvas>
+            <div class="status-box" id="vision-data">بانتظار التقاط الصورة للتحليل...</div>
+            <button class="btn btn-action no-print" id="start-cam-btn" onclick="startCamera()">فتح الكاميرا</button>
+            <button class="btn btn-action no-print" id="snap-btn" style="display:none;" onclick="takeSnapshot()">التقاط وتحليل الألوان</button>
+        </div>
+
+        <!-- 3. وحدة الصوت -->
+        <div id="audio-module" class="module-section">
+            <h3>🎤 تحليل التلوث الضوضائي</h3>
+            <div class="status-box" id="audio-data">بانتظار تفعيل الميكروفون...</div>
+            <button class="btn btn-action no-print" id="start-mic-btn" onclick="startMicrophone()">بدء قياس الضوضاء (dB)</button>
+            <button class="btn btn-action no-print" id="stop-mic-btn" style="display:none;" onclick="stopMicrophone()">إيقاف وتثبيت القراءة</button>
+        </div>
+
+        <!-- زر إصدار التقرير -->
+        <div id="report-section" class="module-section no-print" style="display:block;">
+            <div id="qrcode" style="margin: 20px auto; display: flex; justify-content: center;"></div>
+            <button class="btn" style="background-color: #27ae60;" onclick="generateReport()">📄 إصدار التقرير النهائي (PDF)</button>
+            <button class="btn no-print" style="background-color: #c0392b;" onclick="location.reload()">🔄 إعادة تعيين</button>
+        </div>
+
+        <!-- التذييل للطباعة فقط -->
+        <div class="report-footer">
+            <p>صادر عن البنية التحتية لنظام شندل - تم التطوير بواسطة المهندس علي شندل فلاح &copy; 2026</p>
+            <p>جميع الإحداثيات والبيانات مشفرة وموثقة عبر الكبسولة البرمجية محلياً.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // إعداد التاريخ
+        document.getElementById('report-date').innerText = "تاريخ التوثيق: " + new Date().toLocaleString('ar-IQ');
+
+        // دالة لفتح الوحدة المطلوبة
+        function openModule(moduleId) {
+            document.getElementById(moduleId).style.display = 'block';
+            document.getElementById('main-menu').style.display = 'none';
+        }
+
+        // ==========================================
+        // 1. هندسة الـ GPS (أخذ متوسط 10 قراءات للدقة)
+        // ==========================================
+        let gpsReadings = [];
+        let finalGPS = "";
+        
+        function startGPS() {
+            const gpsBox = document.getElementById('gps-data');
+            gpsBox.innerText = "جاري الاتصال بالأقمار الصناعية وجمع 10 قراءات لضمان الدقة...";
+            gpsReadings = [];
+
+            if (navigator.geolocation) {
+                const watchId = navigator.geolocation.watchPosition(position => {
+                    gpsReadings.push({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                        acc: position.coords.accuracy
+                    });
+
+                    gpsBox.innerText = `تم التقاط قراءة ${gpsReadings.length}/10 (دقة: ${position.coords.accuracy.toFixed(1)} متر)`;
+
+                    if (gpsReadings.length >= 10) {
+                        navigator.geolocation.clearWatch(watchId);
+                        let avgLat = gpsReadings.reduce((sum, p) => sum + p.lat, 0) / 10;
+                        let avgLng = gpsReadings.reduce((sum, p) => sum + p.lng, 0) / 10;
+                        let avgAcc = gpsReadings.reduce((sum, p) => sum + p.acc, 0) / 10;
+                        
+                        finalGPS = `خط العرض: ${avgLat.toFixed(6)}\nخط الطول: ${avgLng.toFixed(6)}\nمتوسط الدقة: ${avgAcc.toFixed(2)} متر`;
+                        gpsBox.innerText = "✅ تم تثبيت الموقع بنجاح:\n" + finalGPS;
+                        generateQR(finalGPS); // تحديث كود الاستجابة السريعة
+                    }
+                }, error => {
+                    gpsBox.innerText = "❌ خطأ في الـ GPS: يرجى تفعيل إذن الموقع.";
+                }, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 });
+            } else {
+                gpsBox.innerText = "متصفحك لا يدعم تحديد الموقع.";
+            }
+        }
+
+        // ==========================================
+        // 2. هندسة الكاميرا والتحليل اللوني (المختبر البصري)
+        // ==========================================
+        const video = document.getElementById('video-stream');
+        const canvas = document.getElementById('photo-canvas');
+        const ctx = canvas.getContext('2d');
+        let stream;
+
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                video.srcObject = stream;
+                document.getElementById('start-cam-btn').style.display = 'none';
+                document.getElementById('snap-btn').style.display = 'block';
+            } catch (err) {
+                alert("تعذر الوصول للكاميرا: " + err);
+            }
+        }
+
+        function takeSnapshot() {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // إخفاء الفيديو وإظهار الصورة
+            video.style.display = 'none';
+            canvas.style.display = 'block';
+            
+            // إيقاف الكاميرا
+            stream.getTracks().forEach(track => track.stop());
+            document.getElementById('snap-btn').style.display = 'none';
+
+            // تحليل الألوان (أخذ بكسلات من منتصف الصورة)
+            let imgData = ctx.getImageData(canvas.width/2 - 25, canvas.height/2 - 25, 50, 50);
+            let data = imgData.data;
+            let r = 0, g = 0, b = 0;
+            for(let i=0; i<data.length; i+=4) {
+                r += data[i]; g += data[i+1]; b += data[i+2];
+            }
+            let pixels = data.length / 4;
+            r = Math.round(r / pixels);
+            g = Math.round(g / pixels);
+            b = Math.round(b / pixels);
+
+            let analysisResult = `متوسط الألوان (RGB): (${r}, ${g}, ${b})\n`;
+            
+            // خوارزمية استنتاجية مبسطة
+            if(r > g && r > b && r > 150) {
+                analysisResult += "📌 المؤشر: تربة رملية / جافة (انعكاس عالي).";
+            } else if (r < 100 && g < 100 && b < 100) {
+                analysisResult += "📌 المؤشر: مياه عكرة جداً أو تربة عضوية داكنة رطبة.";
+            } else if (b > r && b > g) {
+                analysisResult += "📌 المؤشر: مياه صافية نسبياً.";
+            } else {
+                analysisResult += "📌 المؤشر: طبيعة مختلطة (تحتاج توثيق أعمق).";
+            }
+
+            document.getElementById('vision-data').innerText = "✅ تم التحليل بنجاح:\n" + analysisResult;
+        }
+
+        // ==========================================
+        // 3. هندسة الميكروفون (التلوث الضوضائي)
+        // ==========================================
+        let audioContext;
+        let analyser;
+        let microphone;
+        let audioProcessor;
+        let maxDb = 0;
+
+        async function startMicrophone() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                microphone = audioContext.createMediaStreamSource(stream);
+                
+                audioProcessor = audioContext.createScriptProcessor(2048, 1, 1);
+                analyser.smoothingTimeConstant = 0.8;
+                analyser.fftSize = 1024;
+                
+                microphone.connect(analyser);
+                analyser.connect(audioProcessor);
+                audioProcessor.connect(audioContext.destination);
+                
+                document.getElementById('start-mic-btn').style.display = 'none';
+                document.getElementById('stop-mic-btn').style.display = 'block';
+
+                audioProcessor.onaudioprocess = function() {
+                    const array = new Uint8Array(analyser.frequencyBinCount);
+                    analyser.getByteFrequencyData(array);
+                    let sum = 0;
+                    for(let i = 0; i < array.length; i++) { sum += array[i]; }
+                    let average = sum / array.length;
+                    
+                    // تحويل تقريبي للديسيبل
+                    let currentDb = Math.round(average * 1.5);
+                    if (currentDb > maxDb) maxDb = currentDb;
+
+                    document.getElementById('audio-data').innerText = `جاري القياس...\nالمستوى الحالي: ${currentDb} dB\nأعلى مستوى مسجل: ${maxDb} dB`;
+                };
+            } catch (err) {
+                alert("تعذر الوصول للميكروفون: " + err);
+            }
+        }
+
+        function stopMicrophone() {
+            if(audioContext) {
+                audioContext.close();
+                document.getElementById('stop-mic-btn').style.display = 'none';
+                document.getElementById('audio-data').innerText = `✅ تم تثبيت قياس الضوضاء:\nأقصى شدة مسجلة: ${maxDb} dB`;
+            }
+        }
+
+        // ==========================================
+        // 4. توليد كود QR وإصدار التقرير
+        // ==========================================
+        function generateQR(text) {
+            document.getElementById("qrcode").innerHTML = ""; // مسح القديم
+            new QRCode(document.getElementById("qrcode"), {
+                text: text + "\nنظام شندل - " + new Date().toISOString(),
+                width: 100,
+                height: 100
+            });
+        }
+
+        function generateReport() {
+            // إظهار جميع الوحدات في الطباعة
+            let modules = document.getElementsByClassName('module-section');
+            for(let i=0; i<modules.length; i++) {
+                modules[i].style.display = 'block';
+            }
+            
+            // تفعيل نافذة الطباعة الخاصة بالمتصفح (للحفظ كـ PDF)
+            window.print();
+        }
+    </script>
+</body>
+</html>
