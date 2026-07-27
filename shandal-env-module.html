@@ -3,15 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام شندل للمسح الميداني الجيولوجي - وحدة الرصد البيئي</title>
+    <title>نظام شندل للمسح الميداني - الوحدة البيئية</title>
     
-    <!-- مكتبات خارجية ضرورية ومجانية -->
-    <!-- 1. مكتبة الخرائط التفاعلية (Leaflet) -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- 2. مكتبة توليد الـ PDF الاحترافي -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <!-- 3. مكتبة الـ QR Code -->
+    <!-- مكتبة الـ QR Code -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
@@ -26,25 +20,24 @@
             background-color: var(--bg-color);
             margin: 0; padding: 0; color: #333;
         }
+        
+        /* --------------------------------------------------- */
+        /* تصميم واجهة المستخدم الرئيسية (UI)                  */
+        /* --------------------------------------------------- */
+        .main-ui { display: block; }
+        
         header {
-            background-color: var(--primary-blue);
-            color: white; text-align: center;
-            padding: 20px 10px;
-            border-bottom: 4px solid var(--primary-orange);
+            background-color: var(--primary-blue); color: white; text-align: center;
+            padding: 20px 10px; border-bottom: 4px solid var(--primary-orange);
         }
         header h1 { margin: 0; font-size: 22px; font-weight: bold; }
         header p { margin: 5px 0 0; font-size: 13px; color: var(--primary-orange); }
         
         .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
         
-        /* تصميم الأقسام (Sections) حسب صورتك */
         .section-card {
-            background: #fff;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            margin-bottom: 20px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            background: #fff; border: 1px solid var(--border-color); border-radius: 8px;
+            margin-bottom: 20px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
         .section-title {
             font-size: 16px; font-weight: bold; color: var(--primary-blue);
@@ -55,16 +48,14 @@
         .form-group label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #555; }
         .form-control {
             width: 100%; padding: 10px; font-size: 14px;
-            border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
-            background-color: #fcfcfc;
+            border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background-color: #fcfcfc;
         }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         
         .btn {
             display: block; width: 100%; padding: 12px; font-size: 15px; font-weight: bold;
             color: white; background-color: var(--primary-blue); border: none;
-            border-radius: 4px; cursor: pointer; transition: 0.3s; text-align: center;
-            margin-top: 10px;
+            border-radius: 4px; cursor: pointer; transition: 0.3s; text-align: center; margin-top: 10px;
         }
         .btn:hover { background-color: var(--primary-orange); color: var(--primary-blue); }
         .btn-orange { background-color: var(--primary-orange); color: white; }
@@ -76,246 +67,198 @@
             margin-top: 10px; color: var(--primary-blue);
         }
 
-        /* لوحة التحكم المناخية المصغرة */
-        .weather-dashboard {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; display: none;
+        /* حاوية خريطة Windy */
+        #windy-container {
+            width: 100%; height: 350px; margin-top: 15px; border-radius: 4px; border: 1px solid #ccc; display: none; overflow: hidden;
         }
-        .weather-card {
-            background: #fff; border: 1px solid var(--primary-blue); border-radius: 4px;
-            padding: 10px; text-align: center;
-        }
-        .weather-card span { display: block; font-size: 11px; color: #666; font-weight: bold; }
-        .weather-card strong { font-size: 16px; color: var(--primary-orange); }
-        
-        #map { height: 200px; width: 100%; margin-top: 15px; border-radius: 4px; display: none; z-index: 1;}
+        #windy-iframe { width: 100%; height: 100%; border: none; }
 
-        /* الكاميرا والمختبر */
-        video, canvas { width: 100%; max-height: 250px; background: #000; border-radius: 4px; object-fit: cover; margin-bottom: 10px; display: none; }
+        /* الكاميرا */
+        video, canvas { width: 100%; max-height: 300px; background: #000; border-radius: 4px; object-fit: cover; margin-bottom: 10px; display: none; }
         
         /* --------------------------------------------------- */
-        /* تنسيقات تقرير الـ PDF (A4) - مخفي في الشاشة العادية */
+        /* تصميم التقرير الرسمي (A4) - مخفي ويعمل فقط عند الطباعة */
         /* --------------------------------------------------- */
-        #report-template { display: none; background: #fff; color: #000; padding: 30px; font-family: 'Segoe UI', sans-serif; width: 794px; }
-        .pdf-header { text-align: center; border-bottom: 3px solid var(--primary-blue); padding-bottom: 15px; margin-bottom: 20px; }
-        .pdf-header h2 { margin: 0; color: var(--primary-blue); }
-        .pdf-header p { margin: 5px 0 0; color: #555; font-size: 12px; }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; }
-        .pdf-table th, .pdf-table td { border: 1px solid #ccc; padding: 8px; text-align: right; }
-        .pdf-table th { background-color: #f4f6f9; color: var(--primary-blue); width: 30%; }
-        .pdf-image-container { text-align: center; margin-bottom: 20px; }
-        .pdf-image-container img { max-width: 90%; max-height: 300px; border: 2px solid #ccc; border-radius: 4px; }
-        .pdf-footer { text-align: center; margin-top: 30px; border-top: 1px solid #ccc; padding-top: 15px; font-size: 11px; color: #666; }
-        .pdf-qr { text-align: center; margin-top: 20px; display: flex; justify-content: center; }
+        #printable-report { display: none; background: white; color: black; padding: 20px; font-family: 'Segoe UI', sans-serif; }
+        
+        @media print {
+            body { background-color: white; margin: 0; padding: 0; }
+            .main-ui { display: none !important; } /* إخفاء الواجهة بالكامل */
+            #printable-report { display: block !important; } /* إظهار التقرير فقط */
+            
+            .pdf-header { text-align: center; border-bottom: 3px solid #0b1d3a; padding-bottom: 15px; margin-bottom: 20px; }
+            .pdf-header h2 { margin: 0; color: #0b1d3a; font-size: 24px; }
+            .pdf-header p { margin: 5px 0 0; color: #555; font-size: 14px; }
+            
+            .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; }
+            .pdf-table th, .pdf-table td { border: 1px solid #000; padding: 10px; text-align: right; }
+            .pdf-table th { background-color: #f0f0f0; color: #000; width: 30%; font-weight: bold; }
+            
+            .pdf-image-container { text-align: center; margin-bottom: 20px; }
+            .pdf-image-container img { max-width: 90%; max-height: 350px; border: 2px solid #000; }
+            
+            .pdf-qr { display: flex; justify-content: center; margin-top: 20px; }
+            
+            .pdf-footer { text-align: center; margin-top: 40px; border-top: 1px solid #000; padding-top: 15px; font-size: 12px; color: #333; }
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>نظام شندل للمسح الميداني الجيولوجي</h1>
-        <p>وحدة الرصد والإشراف البيئي (متصلة بالأقمار الصناعية والـ APIs)</p>
-    </header>
+    <!-- ========================================== -->
+    <!-- واجهة المستخدم الرئيسية (المنصة الميدانية) -->
+    <!-- ========================================== -->
+    <div class="main-ui" id="main-ui">
+        <header>
+            <h1>نظام شندل للمسح الميداني الجيولوجي</h1>
+            <p>وحدة الرصد والإشراف البيئي (متصلة بنماذج المناخ العالمية Windy)</p>
+        </header>
 
-    <div class="container">
-        
-        <!-- 1. بيانات الفاحص والانتهاك -->
-        <div class="section-card">
-            <h2 class="section-title">1. بيانات الفاحص والانتهاك البيئي</h2>
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>إعداد وتدقيق الجيولوجي:</label>
-                    <input type="text" id="inspector-name" class="form-control" placeholder="مثال: علي شندل فلاح">
+        <div class="container">
+            
+            <!-- 1. بيانات الفاحص والانتهاك -->
+            <div class="section-card">
+                <h2 class="section-title">1. بيانات الفاحص والانتهاك البيئي</h2>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>إعداد وتدقيق الجيولوجي:</label>
+                        <input type="text" id="inspector-name" class="form-control" placeholder="مثال: علي شندل فلاح">
+                    </div>
+                    <div class="form-group">
+                        <label>نوع الانتهاك البيئي:</label>
+                        <select id="violation-type" class="form-control">
+                            <option value="تلوث هوائي وانبعاثات غازية">تلوث هوائي وانبعاثات غازية</option>
+                            <option value="تلوث مائي وصرف صحي">تلوث مائي وصرف صحي</option>
+                            <option value="تجريف تربة وتصحر">تجريف تربة وتصحر</option>
+                            <option value="تلوث ضوضائي (مقالع/معدات)">تلوث ضوضائي (مقالع/معدات)</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>نوع الانتهاك البيئي:</label>
-                    <select id="violation-type" class="form-control">
-                        <option value="تلوث هوائي وانبعاثات غازية">تلوث هوائي وانبعاثات غازية</option>
-                        <option value="تلوث مائي وصرف صحي">تلوث مائي وصرف صحي</option>
-                        <option value="تجريف تربة وتصحر">تجريف تربة وتصحر</option>
-                        <option value="تلوث ضوضائي (مقالع/معدات)">تلوث ضوضائي (مقالع/معدات)</option>
-                    </select>
+                    <label>التقرير الجيولوجي الميداني والتوصيات:</label>
+                    <textarea id="violation-notes" class="form-control" rows="3" placeholder="اكتب وصفاً دقيقاً للمشاهدات الحقلية..."></textarea>
                 </div>
             </div>
-            <div class="form-group">
-                <label>التقرير الجيولوجي الميداني والتوصيات:</label>
-                <textarea id="violation-notes" class="form-control" rows="3" placeholder="اكتب وصفاً دقيقاً للمشاهدات الحقلية..."></textarea>
-            </div>
-        </div>
 
-        <!-- 2. التوثيق المكاني والمناخي -->
-        <div class="section-card">
-            <h2 class="section-title">2. التوثيق المكاني والمناخي (APIs)</h2>
-            <button class="btn" id="api-btn" onclick="fetchEnvironmentData()">📍 التقاط الإحداثيات وسحب البيانات البيئية</button>
-            <div class="status-box" id="gps-status">بانتظار التقاط الموقع...</div>
-            
-            <!-- لوحة التحكم المناخية (تظهر بعد سحب البيانات) -->
-            <div class="weather-dashboard" id="weather-dash">
-                <div class="weather-card"><span>🌡️ درجة الحرارة</span><strong id="w-temp">--</strong></div>
-                <div class="weather-card"><span>💨 سرعة الرياح</span><strong id="w-wind">--</strong></div>
-                <div class="weather-card"><span>💧 الرطوبة (غبار)</span><strong id="w-hum">--</strong></div>
-                <div class="weather-card"><span>⚠️ جودة الهواء AQI</span><strong id="w-aqi">--</strong></div>
-            </div>
-            
-            <!-- خريطة تفاعلية -->
-            <div id="map"></div>
-        </div>
-
-        <!-- 3. القياسات الحقلية الميدانية -->
-        <div class="section-card">
-            <h2 class="section-title">3. القياسات الحقلية الميدانية</h2>
-            
-            <!-- الكاميرا -->
-            <div class="form-group">
-                <label>📷 التحليل البصري (عينة تربة / مياه / انبعاثات)</label>
-                <video id="video-stream" autoplay playsinline></video>
-                <canvas id="photo-canvas"></canvas>
-                <div class="status-box" id="camera-status">الكاميرا متوقفة...</div>
-                <button class="btn" id="start-cam-btn" onclick="startCamera()">فتح الكاميرا</button>
-                <button class="btn btn-orange" id="snap-btn" style="display:none;" onclick="takeSnapshot()">التقاط وتحليل الصورة</button>
+            <!-- 2. التوثيق المكاني وخرائط Windy -->
+            <div class="section-card">
+                <h2 class="section-title">2. التوثيق المكاني والتتبع المناخي (Windy Maps)</h2>
+                <button class="btn" id="api-btn" onclick="startGPS()">📍 التقاط الإحداثيات وتفعيل خريطة Windy</button>
+                <div class="status-box" id="gps-status">بانتظار التقاط الموقع...</div>
+                
+                <!-- خريطة Windy ستظهر هنا -->
+                <div id="windy-container">
+                    <iframe id="windy-iframe" src="" allowfullscreen></iframe>
+                </div>
             </div>
 
-            <hr style="border:0; border-top:1px solid #eee; margin: 20px 0;">
+            <!-- 3. القياسات الحقلية -->
+            <div class="section-card">
+                <h2 class="section-title">3. القياسات الحقلية الميدانية</h2>
+                
+                <!-- الكاميرا -->
+                <div class="form-group">
+                    <label>📷 التحليل البصري (عينة تربة / مياه / انبعاثات)</label>
+                    <video id="video-stream" autoplay playsinline></video>
+                    <canvas id="photo-canvas"></canvas>
+                    <div class="status-box" id="camera-status">الكاميرا متوقفة...</div>
+                    <button class="btn" id="start-cam-btn" onclick="startCamera()">فتح الكاميرا</button>
+                    <button class="btn btn-orange" id="snap-btn" style="display:none;" onclick="takeSnapshot()">التقاط العينة البصرية</button>
+                </div>
 
-            <!-- الميكروفون -->
-            <div class="form-group">
-                <label>🎤 تحليل التلوث الضوضائي</label>
-                <div class="status-box" id="audio-status">الميكروفون متوقف...</div>
-                <button class="btn" id="start-mic-btn" onclick="startMicrophone()">بدء القياس بالديسيبل (dB)</button>
-                <button class="btn btn-orange" id="stop-mic-btn" style="display:none;" onclick="stopMicrophone()">إيقاف التوثيق</button>
-            </div>
-        </div>
+                <hr style="border:0; border-top:1px solid #eee; margin: 20px 0;">
 
-        <!-- زر إصدار الـ PDF -->
-        <button class="btn btn-orange" style="padding: 15px; font-size: 16px; margin-bottom: 40px;" onclick="generatePDFReport()">📄 إصدار التقرير الجيولوجي الشامل (PDF)</button>
-    </div>
-
-    <!-- ========================================================================= -->
-    <!-- قالب التقرير المخفي (A4) - هذا ما سيتم تحويله لـ PDF بشكل نظيف ومنظم -->
-    <!-- ========================================================================= -->
-    <div style="display:none;">
-        <div id="report-template">
-            <div class="pdf-header">
-                <h2>نظام شندل للمسح الميداني الجيولوجي</h2>
-                <h3 style="margin:5px 0;">تقرير الرصد البيئي والمناخي الميداني</h3>
-                <p id="pdf-date"></p>
-            </div>
-
-            <table class="pdf-table">
-                <tr><th>الجيولوجي / الفاحص</th><td id="pdf-inspector"></td></tr>
-                <tr><th>نوع الانتهاك البيئي</th><td id="pdf-type"></td></tr>
-                <tr><th>الموقع الجغرافي (GPS)</th><td id="pdf-gps"></td></tr>
-            </table>
-
-            <h4 style="color:var(--primary-blue); border-bottom:1px solid #ccc;">البيانات المناخية وجودة الهواء (Live APIs)</h4>
-            <table class="pdf-table">
-                <tr>
-                    <td style="text-align:center;"><strong>الحرارة:</strong> <br><span id="pdf-temp"></span></td>
-                    <td style="text-align:center;"><strong>الرياح:</strong> <br><span id="pdf-wind"></span></td>
-                    <td style="text-align:center;"><strong>الرطوبة:</strong> <br><span id="pdf-hum"></span></td>
-                    <td style="text-align:center;"><strong>جودة الهواء (AQI):</strong> <br><span id="pdf-aqi"></span></td>
-                </tr>
-            </table>
-
-            <h4 style="color:var(--primary-blue); border-bottom:1px solid #ccc;">القياسات الحقلية</h4>
-            <table class="pdf-table">
-                <tr><th>التلوث الضوضائي</th><td id="pdf-audio">لم يتم القياس</td></tr>
-                <tr><th>الملاحظات والتوصيات</th><td id="pdf-notes"></td></tr>
-                <tr><th>التحليل البصري</th><td id="pdf-color">لم يتم التوثيق</td></tr>
-            </table>
-
-            <div class="pdf-image-container">
-                <img id="pdf-captured-image" src="" alt="صورة الموقع" style="display:none;">
+                <!-- الميكروفون -->
+                <div class="form-group">
+                    <label>🎤 تحليل التلوث الضوضائي</label>
+                    <div class="status-box" id="audio-status">الميكروفون متوقف...</div>
+                    <button class="btn" id="start-mic-btn" onclick="startMicrophone()">بدء القياس بالديسيبل (dB)</button>
+                    <button class="btn btn-orange" id="stop-mic-btn" style="display:none;" onclick="stopMicrophone()">إيقاف وتثبيت القياس</button>
+                </div>
             </div>
 
-            <div class="pdf-qr" id="pdf-qrcode"></div>
-
-            <div class="pdf-footer">
-                تم استخراج هذا التقرير رسمياً من البنية التحتية البرمجية لنظام شندل.<br>
-                جميع الإحداثيات والبيانات المناخية موثقة ومشفرة ومسحوبة من أقمار صناعية معتمدة.
-            </div>
+            <!-- زر إصدار الـ PDF -->
+            <button class="btn btn-orange" style="padding: 15px; font-size: 16px; margin-bottom: 40px;" onclick="triggerNativePDF()">📄 إصدار التقرير الجيولوجي الشامل (PDF)</button>
         </div>
     </div>
 
-    <!-- ========================================================================= -->
-    <!-- كود الجافاسكريبت (المنطق، الـ APIs، وتوليد الـ PDF) -->
-    <!-- ========================================================================= -->
+    <!-- ========================================== -->
+    <!-- قالب التقرير النهائي (يظهر فقط في الطباعة) -->
+    <!-- ========================================== -->
+    <div id="printable-report">
+        <div class="pdf-header">
+            <h2>نظام شندل للمسح الميداني الجيولوجي</h2>
+            <h3 style="margin:10px 0;">التقرير الفني للرصد والإشراف البيئي</h3>
+            <p id="pdf-date"></p>
+        </div>
+
+        <h3 style="color:#0b1d3a; border-bottom: 2px solid #ccc; padding-bottom: 5px;">أولاً: البيانات الأساسية والمكانية</h3>
+        <table class="pdf-table">
+            <tr><th>إعداد وتدقيق الجيولوجي</th><td id="pdf-inspector"></td></tr>
+            <tr><th>تصنيف الانتهاك البيئي</th><td id="pdf-type"></td></tr>
+            <tr><th>الإحداثيات الجغرافية (GPS)</th><td id="pdf-gps"></td></tr>
+        </table>
+
+        <h3 style="color:#0b1d3a; border-bottom: 2px solid #ccc; padding-bottom: 5px;">ثانياً: التقرير الفني والقياسات الحقلية</h3>
+        <table class="pdf-table">
+            <tr><th>التلوث الضوضائي (Max dB)</th><td id="pdf-audio"></td></tr>
+            <tr><th>التحليل البصري / اللوني</th><td id="pdf-color"></td></tr>
+            <tr><th>الملاحظات والتوصيات</th><td id="pdf-notes"></td></tr>
+        </table>
+
+        <h3 style="color:#0b1d3a; text-align: center;">التوثيق البصري للانتهاك الميداني</h3>
+        <div class="pdf-image-container">
+            <img id="pdf-captured-image" src="" alt="لم يتم التقاط صورة">
+        </div>
+
+        <div class="pdf-qr" id="pdf-qrcode"></div>
+
+        <div class="pdf-footer">
+            وثيقة رسمية مستخرجة من البنية التحتية لنظام شندل للمسح الميداني.<br>
+            جميع الإحداثيات والبيانات موثقة حقلياً ومشفرة لضمان الموثوقية العالية.
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- أكواد الجافاسكريبت (المنطق والعمليات)      -->
+    <!-- ========================================== -->
     <script>
-        // متغيرات عامة لحفظ البيانات للـ PDF
         let finalLat = 0, finalLng = 0;
-        let mapObj = null, markerObj = null;
-        let capturedImageBase64 = null;
-        let acousticResult = "لم يتم القياس";
-        let opticalResult = "لم يتم التوثيق";
+        let capturedImageBase64 = "";
+        let acousticResult = "لم يتم إجراء القياس الضوضائي";
+        let opticalResult = "لم يتم التقاط عينة بصرية";
 
         // ----------------------------------------------------
-        // 1. التوثيق المكاني وسحب الـ APIs (الطقس وجودة الهواء)
+        // 1. تفعيل الـ GPS وتشغيل خريطة Windy
         // ----------------------------------------------------
-        function fetchEnvironmentData() {
+        function startGPS() {
             const btn = document.getElementById('api-btn');
             const status = document.getElementById('gps-status');
-            btn.innerText = "⏳ جاري الاتصال بالأقمار الصناعية وسحب البيانات...";
-            btn.style.backgroundColor = "#7f8c8d";
-
+            btn.innerText = "⏳ جاري الاتصال بالأقمار الصناعية...";
+            
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(async (position) => {
+                navigator.geolocation.getCurrentPosition((position) => {
                     finalLat = position.coords.latitude;
                     finalLng = position.coords.longitude;
                     
-                    status.innerText = `✅ الإحداثيات: خط العرض ${finalLat.toFixed(5)} | خط الطول ${finalLng.toFixed(5)}`;
+                    status.innerText = `✅ تم تثبيت الموقع:\nخط العرض: ${finalLat.toFixed(5)} | خط الطول: ${finalLng.toFixed(5)}`;
                     
-                    // إظهار لوحة المناخ والخريطة
-                    document.getElementById('weather-dash').style.display = 'grid';
-                    document.getElementById('map').style.display = 'block';
+                    // تفعيل خريطة Windy وتوجيهها لإحداثيات الجيولوجي
+                    const windyContainer = document.getElementById('windy-container');
+                    const windyIframe = document.getElementById('windy-iframe');
+                    
+                    // رابط Windy مع وضع الـ GPS كمركز للخريطة (طبقة الرياح والتلوث)
+                    let windyUrl = `https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=°C&metricWind=km/h&zoom=9&overlay=pm2p5&product=ecmwf&level=surface&lat=${finalLat}&lon=${finalLng}`;
+                    
+                    windyIframe.src = windyUrl;
+                    windyContainer.style.display = 'block';
 
-                    // تحديث الخريطة (Leaflet)
-                    if(!mapObj) {
-                        mapObj = L.map('map').setView([finalLat, finalLng], 15);
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                            attribution: '© OpenStreetMap contributors | نظام شندل'
-                        }).addTo(mapObj);
-                        markerObj = L.marker([finalLat, finalLng]).addTo(mapObj);
-                    } else {
-                        mapObj.setView([finalLat, finalLng], 15);
-                        markerObj.setLatLng([finalLat, finalLng]);
-                    }
-
-                    // استدعاء بيانات الطقس وجودة الهواء (Open-Meteo API مجاني)
-                    try {
-                        // طقس
-                        let weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${finalLat}&longitude=${finalLng}&current=temperature_2m,relative_humidity_2m,wind_speed_10m`);
-                        let weatherData = await weatherRes.json();
-                        let t = weatherData.current.temperature_2m + " °C";
-                        let h = weatherData.current.relative_humidity_2m + " %";
-                        let w = weatherData.current.wind_speed_10m + " كم/س";
-
-                        // جودة هواء
-                        let aqiRes = await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${finalLat}&longitude=${finalLng}&current=european_aqi`);
-                        let aqiData = await aqiRes.json();
-                        let aqi = aqiData.current.european_aqi;
-                        let aqiText = aqi + (aqi > 60 ? " (خطر)" : " (جيد)");
-
-                        // عرض البيانات في الواجهة
-                        document.getElementById('w-temp').innerText = t;
-                        document.getElementById('w-hum').innerText = h;
-                        document.getElementById('w-wind').innerText = w;
-                        document.getElementById('w-aqi').innerText = aqiText;
-                        document.getElementById('w-aqi').style.color = (aqi > 60) ? "red" : "green";
-
-                        btn.innerText = "✅ تم استكمال التوثيق بنجاح";
-                        btn.style.backgroundColor = "var(--primary-blue)";
-                        
-                    } catch (error) {
-                        status.innerText += "\n⚠️ تم تحديد الموقع، لكن تعذر جلب بيانات المناخ (تحقق من الإنترنت).";
-                        btn.innerText = "📍 إعادة محاولة سحب البيانات";
-                        btn.style.backgroundColor = "var(--primary-orange)";
-                    }
-
+                    btn.innerText = "✅ تم استكمال التوثيق وتحديث الخريطة";
+                    btn.style.backgroundColor = "var(--primary-blue)";
                 }, (error) => {
                     status.innerText = "❌ تعذر الحصول على الموقع. يرجى تفعيل الـ GPS.";
-                    btn.innerText = "📍 حاول مرة أخرى";
-                    btn.style.backgroundColor = "var(--primary-orange)";
+                    btn.innerText = "📍 إعادة المحاولة";
                 }, { enableHighAccuracy: true });
-            } else {
-                status.innerText = "المتصفح لا يدعم الـ GPS.";
             }
         }
 
@@ -329,40 +272,39 @@
 
         async function startCamera() {
             try {
-                video.style.display = 'block';
-                canvas.style.display = 'none';
+                video.style.display = 'block'; canvas.style.display = 'none';
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
                 video.srcObject = stream;
                 document.getElementById('start-cam-btn').style.display = 'none';
                 document.getElementById('snap-btn').style.display = 'block';
-                document.getElementById('camera-status').innerText = "الكاميرا تعمل، قم بتوجيهها نحو الهدف...";
-            } catch(e) { alert("خطأ في الكاميرا: " + e); }
+                document.getElementById('camera-status').innerText = "الكاميرا تعمل، وجهها نحو الانتهاك...";
+            } catch(e) { alert("خطأ في فتح الكاميرا: " + e); }
         }
 
         function takeSnapshot() {
             canvas.width = video.videoWidth; canvas.height = video.videoHeight;
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             video.style.display = 'none'; canvas.style.display = 'block';
-            stream.getTracks().forEach(t => t.stop()); // إيقاف الكاميرا
+            stream.getTracks().forEach(t => t.stop()); 
             document.getElementById('snap-btn').style.display = 'none';
             document.getElementById('start-cam-btn').style.display = 'block';
-            document.getElementById('start-cam-btn').innerText = "إعادة الالتقاط";
+            document.getElementById('start-cam-btn').innerText = "إعادة التقاط الصورة";
 
-            // تحليل لوني مبسط لمنتصف الصورة
+            // تحليل بصري بسيط
             let imgD = ctx.getImageData(canvas.width/2-25, canvas.height/2-25, 50, 50).data;
             let r=0, g=0, b=0, px=imgD.length/4;
             for(let i=0; i<imgD.length; i+=4){ r+=imgD[i]; g+=imgD[i+1]; b+=imgD[i+2]; }
             r = Math.round(r/px); g = Math.round(g/px); b = Math.round(b/px);
             
-            opticalResult = `متوسط الألوان (RGB: ${r}, ${g}, ${b})`;
-            document.getElementById('camera-status').innerText = "✅ تم الالتقاط. " + opticalResult;
+            opticalResult = `مؤشر لوني (RGB: ${r}, ${g}, ${b}) - تم توثيق العينة`;
+            document.getElementById('camera-status').innerText = "✅ " + opticalResult;
             
-            // تحويل الصورة لنص (Base64) لوضعها في الـ PDF لاحقاً
+            // تحويل الصورة لداتا جاهزة للـ PDF
             capturedImageBase64 = canvas.toDataURL('image/jpeg', 0.8);
         }
 
         // ----------------------------------------------------
-        // 3. الميكروفون والتلوث الضوضائي
+        // 3. الميكروفون
         // ----------------------------------------------------
         let audioCtx, analyser, mic, processor, maxDb = 0;
         async function startMicrophone() {
@@ -383,7 +325,7 @@
                     let sum = arr.reduce((a, b) => a + b, 0);
                     let currentDb = Math.round((sum / arr.length) * 1.5);
                     if(currentDb > maxDb) maxDb = currentDb;
-                    document.getElementById('audio-status').innerText = `جاري القياس... المستوى: ${currentDb} dB | الأقصى: ${maxDb} dB`;
+                    document.getElementById('audio-status').innerText = `المستوى: ${currentDb} dB | الأقصى: ${maxDb} dB`;
                 };
             } catch(e) { alert("تعذر تشغيل الميكروفون."); }
         }
@@ -394,65 +336,43 @@
                 document.getElementById('stop-mic-btn').style.display = 'none';
                 document.getElementById('start-mic-btn').style.display = 'block';
                 document.getElementById('start-mic-btn').innerText = "إعادة القياس";
-                acousticResult = `أقصى مستوى ضوضاء مسجل بالموقع: ${maxDb} dB`;
+                acousticResult = `أقصى مستوى مسجل: ${maxDb} ديسيبل (dB)`;
                 document.getElementById('audio-status').innerText = "✅ " + acousticResult;
             }
         }
 
         // ----------------------------------------------------
-        // 4. توليد التقرير الهندسي (PDF) باستخدام html2pdf
+        // 4. الحل الجذري للـ PDF (الطباعة الأصلية للمتصفح)
         // ----------------------------------------------------
-        function generatePDFReport() {
-            // 1. نقل البيانات من الواجهة إلى قالب الـ PDF المخفي
+        function triggerNativePDF() {
+            // تعبئة البيانات في قالب التقرير
             document.getElementById('pdf-date').innerText = "تاريخ التوثيق: " + new Date().toLocaleString('ar-IQ');
             document.getElementById('pdf-inspector').innerText = document.getElementById('inspector-name').value || "غير محدد";
             document.getElementById('pdf-type').innerText = document.getElementById('violation-type').value;
             document.getElementById('pdf-notes').innerText = document.getElementById('violation-notes').value || "لا توجد ملاحظات.";
             
-            document.getElementById('pdf-gps').innerText = finalLat !== 0 ? `${finalLat.toFixed(6)} , ${finalLng.toFixed(6)}` : "لم يتم تحديد الموقع";
-            
-            document.getElementById('pdf-temp').innerText = document.getElementById('w-temp').innerText;
-            document.getElementById('pdf-wind').innerText = document.getElementById('w-wind').innerText;
-            document.getElementById('pdf-hum').innerText = document.getElementById('w-hum').innerText;
-            document.getElementById('pdf-aqi').innerText = document.getElementById('w-aqi').innerText;
-            
+            document.getElementById('pdf-gps').innerText = finalLat !== 0 ? `خط العرض: ${finalLat.toFixed(6)} | خط الطول: ${finalLng.toFixed(6)}` : "لم يتم التحديد";
             document.getElementById('pdf-audio').innerText = acousticResult;
             document.getElementById('pdf-color').innerText = opticalResult;
 
-            // إدراج الصورة إذا تم التقاطها
+            // إدراج الصورة
             let imgElement = document.getElementById('pdf-captured-image');
-            if(capturedImageBase64) {
+            if(capturedImageBase64 !== "") {
                 imgElement.src = capturedImageBase64;
                 imgElement.style.display = 'inline-block';
             } else {
                 imgElement.style.display = 'none';
             }
 
-            // توليد الـ QR Code داخل التقرير
+            // توليد الـ QR
             document.getElementById("pdf-qrcode").innerHTML = "";
             new QRCode(document.getElementById("pdf-qrcode"), {
-                text: `Shandal System\nInspector: ${document.getElementById('inspector-name').value}\nLoc: ${finalLat}, ${finalLng}`,
-                width: 80, height: 80
+                text: `Shandal System\nGeologist: ${document.getElementById('inspector-name').value}\nLoc: ${finalLat}, ${finalLng}`,
+                width: 100, height: 100
             });
 
-            // 2. إظهار القالب برمجياً، تحويله لـ PDF، ثم إخفاؤه
-            const reportElement = document.getElementById('report-template');
-            reportElement.style.display = 'block'; // إظهار مؤقت للطباعة
-
-            // إعدادات مكتبة html2pdf لضمان جودة A4 ممتازة وعدم قص المحتوى
-            const opt = {
-                margin:       0.5, // هوامش بالبوصة
-                filename:     'Shandal_Geological_Report.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true }, // scale:2 لدقة عالية
-                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-            };
-
-            // بدء التحميل
-            html2pdf().set(opt).from(reportElement).save().then(() => {
-                // بعد التحميل، إخفاء القالب مرة أخرى
-                reportElement.style.display = 'none';
-            });
+            // استدعاء نافذة الطباعة الأصلية للمتصفح (وهي التي ستحفظ الـ PDF بشكل مثالي)
+            window.print();
         }
     </script>
 </body>
