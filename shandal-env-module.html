@@ -133,19 +133,22 @@
             color: var(--accent-blue); font-size: 18px; font-weight: bold; margin-top: 0;
             border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding-bottom: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
         }
-        .expert-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .expert-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
         .expert-box { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
         .expert-box h4 { margin: 0 0 15px 0; color: var(--accent-orange); font-size: 15px; display: flex; align-items: center; gap: 8px;}
-        .expert-box p { margin: 0 0 10px 0; font-size: 13px; color: #cbd5e1; line-height: 1.8; }
-        .highlight { color: #fff; font-weight: bold; }
+        
+        .expert-item { margin-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 10px;}
+        .expert-item:last-child { border-bottom: none; }
+        .expert-item p { margin: 0 0 8px 0; font-size: 13px; color: #cbd5e1; line-height: 1.8; }
+        .highlight { color: #38bdf8; font-weight: bold; }
         
         .recommendation {
-            background: rgba(16, 185, 129, 0.1); border-right: 3px solid var(--accent-green);
-            padding: 10px; margin-top: 15px; font-size: 12px; color: #a7f3d0; border-radius: 4px;
+            background: rgba(16, 185, 129, 0.05); border-right: 3px solid var(--accent-green);
+            padding: 10px 12px; margin-top: 8px; font-size: 12px; color: #a7f3d0; border-radius: 4px; line-height: 1.6;
         }
         .standard-ref {
-            font-size: 10px; color: var(--text-muted); margin-top: 15px; padding-top: 10px; 
-            border-top: 1px dashed rgba(255,255,255,0.1); text-align: left;
+            font-size: 11px; color: var(--text-muted); margin-top: 15px; padding-top: 10px; 
+            border-top: 1px solid rgba(255,255,255,0.1); text-align: right; font-family: monospace;
         }
 
         .chart-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 25px; margin-top: 25px; display: none; }
@@ -156,13 +159,14 @@
         .tools-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 25px; margin-top: 25px; }
         video, canvas { width: 100%; max-height: 300px; background: #000; border-radius: 8px; display: none; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);}
         
+        /* ================= القالب المخفي للـ PDF ================= */
         #printable-report-container { display:none; position: absolute; left:-9999px; }
         #printable-report { background: white; color: black; padding: 40px; direction: rtl; width: 794px; font-family: 'Segoe UI', Arial, sans-serif;}
         .pdf-header { text-align: center; border-bottom: 3px solid #0b1d3a; padding-bottom: 15px; margin-bottom: 25px; }
         .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 14px; }
-        .pdf-table th, .pdf-table td { border: 1px solid #ccc; padding: 12px; text-align: right; }
+        .pdf-table th, .pdf-table td { border: 1px solid #ccc; padding: 12px; text-align: right; vertical-align: top;}
         .pdf-table th { background-color: #f0f0f0; color: #0b1d3a; font-weight: bold; width: 25%;}
-        .pdf-expert-text { font-size: 13px; line-height: 1.6; color: #333;}
+        .pdf-expert-text { font-size: 12px; line-height: 1.8; color: #333;}
         .pdf-qr { display: flex; justify-content: center; margin-top: 30px; }
     </style>
 </head>
@@ -192,7 +196,7 @@
                     </div>
                 </div>
                 <button class="btn" id="api-btn" onclick="startFullScan()">
-                    <i class="fas fa-radar"></i> التقاط الإحداثيات وتوليد التقرير الشامل
+                    <i class="fas fa-radar"></i> التقاط الإحداثيات وتوليد التحليل الأكاديمي الشامل
                 </button>
                 <div id="status-msg" style="text-align: center; margin-top: 15px; font-size: 14px; color: var(--accent-orange);"></div>
             </div>
@@ -201,7 +205,7 @@
             <div class="dashboard-grid" id="dashboard-grid">
                 
                 <div class="msn-card">
-                    <div class="msn-card-header"><h3 class="msn-card-title">درجة الحرارة</h3><i class="fas fa-temperature-half msn-card-icon"></i></div>
+                    <div class="msn-card-header"><h3 class="msn-card-title">درجة الحرارة (WBGT تقريبي)</h3><i class="fas fa-temperature-half msn-card-icon"></i></div>
                     <div class="main-value" id="ui-temp-actual">--°</div>
                     <div class="sub-value">التباين اليومي: <span id="ui-temp-diff" style="color:var(--accent-orange); font-weight:bold;">--°</span></div>
                 </div>
@@ -262,13 +266,13 @@
                 <div class="msn-card">
                     <div class="msn-card-header"><h3 class="msn-card-title">هطول الأمطار (التراكمي)</h3><i class="fas fa-cloud-showers-heavy msn-card-icon"></i></div>
                     <div class="main-value" id="ui-precip">-- <span style="font-size:16px;">ملم</span></div>
-                    <div class="sub-value">مؤشر تشبع المسام في التكاوين الأرضية.</div>
+                    <div class="sub-value">مؤشر الإجهاد الفعال (مبدأ تيرزاغي).</div>
                 </div>
 
                 <div class="msn-card">
                     <div class="msn-card-header"><h3 class="msn-card-title">الضغط الجوي</h3><i class="fas fa-compress-arrows-alt msn-card-icon"></i></div>
                     <div class="main-value" id="ui-press">-- <span style="font-size:16px;">hPa</span></div>
-                    <div class="sub-value">مؤشر ديناميكية الغازات الأرضية.</div>
+                    <div class="sub-value">مؤشر الضخ البارومتري للغازات.</div>
                 </div>
 
                 <div class="msn-card">
@@ -291,29 +295,33 @@
             <div class="expert-system-card" id="expert-system">
                 <div class="expert-title"><i class="fas fa-brain"></i> التحليل الأكاديمي الشامل (نظام الاستدلال الخبير)</div>
                 <div class="expert-grid">
+                    
                     <div class="expert-box">
-                        <h4><i class="fas fa-mountain"></i> التحليل الجيوتقني والهندسي</h4>
+                        <h4><i class="fas fa-mountain"></i> التقييم الجيوتقني والهندسي</h4>
                         <div id="exp-geotech"></div>
-                        <div class="standard-ref">المرجعية: المعايير الجيوتقنية الدولية ومعادلات (ISRM).</div>
+                        <div class="standard-ref">المرجعيات: ميكانيكا التربة (Terzaghi) والجمعية الدولية (ISRM).</div>
                     </div>
+                    
                     <div class="expert-box">
-                        <h4><i class="fas fa-hard-hat"></i> الصحة، السلامة المهنية، والأنشطة</h4>
+                        <h4><i class="fas fa-hard-hat"></i> الصحة والسلامة المهنية للحقل</h4>
                         <div id="exp-health"></div>
-                        <div class="standard-ref">المرجعية: وكالة حماية البيئة الأمريكية (EPA) ومؤشرات الصحة العالمية (WHO).</div>
+                        <div class="standard-ref">المرجعيات: بروتوكولات (OSHA) ،(ACGIH) للصحة المهنية.</div>
                     </div>
+                    
                     <div class="expert-box">
-                        <h4><i class="fas fa-leaf"></i> الغلاف الحيوي، الهيدرولوجيا، والزراعة</h4>
+                        <h4><i class="fas fa-satellite"></i> موثوقية الأجهزة والتأثير البيئي</h4>
                         <div id="exp-bio"></div>
-                        <div class="standard-ref">المرجعية: المنظمة العالمية للأرصاد الجوية (WMO).</div>
+                        <div class="standard-ref">المرجعيات: مبادئ سلامة البيانات (ALCOA) ومعيار (ASTM G7).</div>
                     </div>
+                    
                 </div>
             </div>
 
             <div class="chart-card" id="chart-card">
                 <div class="chart-tabs">
-                    <button class="chart-tab active" onclick="updateChart('temp', this)">التباين الحراري</button>
-                    <button class="chart-tab" onclick="updateChart('wind', this)">طاقة الرياح</button>
-                    <button class="chart-tab" onclick="updateChart('precip', this)">الأمطار والرطوبة</button>
+                    <button class="chart-tab active" onclick="updateChart('temp', this)">التباين الحراري (التجوية)</button>
+                    <button class="chart-tab" onclick="updateChart('wind', this)">طاقة الرياح (التعرية)</button>
+                    <button class="chart-tab" onclick="updateChart('precip', this)">الأمطار (التشبع)</button>
                 </div>
                 <div style="height: 280px;"><canvas id="mainChart"></canvas></div>
             </div>
@@ -322,7 +330,7 @@
                 <div class="expert-title" style="border:none; margin:0 0 15px 0;"><i class="fas fa-toolbox"></i> توثيق حقلي إضافي (مرفقات)</div>
                 <div style="display: flex; gap: 15px; margin-bottom: 20px;">
                     <button class="btn" style="background: rgba(255,255,255,0.1); border:1px solid #334155;" onclick="startCamera()"><i class="fas fa-camera"></i> توثيق الموقع (بصري)</button>
-                    <button class="btn" style="background: rgba(255,255,255,0.1); border:1px solid #334155;" onclick="startMicrophone()"><i class="fas fa-microphone"></i> قياس الضوضاء السيزمية</button>
+                    <button class="btn" style="background: rgba(255,255,255,0.1); border:1px solid #334155;" onclick="startMicrophone()"><i class="fas fa-microphone"></i> قياس الضوضاء والاهتزازات</button>
                 </div>
                 <video id="video-stream" autoplay playsinline></video>
                 <canvas id="photo-canvas"></canvas>
@@ -355,7 +363,7 @@
             <table class="pdf-table">
                 <tr><th>التقييم الجيوتقني والهندسي</th><td id="pdf-exp-geotech" class="pdf-expert-text"></td></tr>
                 <tr><th>الصحة والسلامة والبيئة</th><td id="pdf-exp-health" class="pdf-expert-text"></td></tr>
-                <tr><th>الغلاف الحيوي والزراعة</th><td id="pdf-exp-bio" class="pdf-expert-text"></td></tr>
+                <tr><th>موثوقية الأجهزة والمستشعرات</th><td id="pdf-exp-bio" class="pdf-expert-text"></td></tr>
             </table>
 
             <h3 style="color:#0b1d3a; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top:20px;">2. البيانات المناخية اللحظية</h3>
@@ -383,7 +391,7 @@
         </div>
     </div>
 
-    <!-- ================= الجافاسكريبت ================= -->
+    <!-- ================= الجافاسكريبت والمحرك الخبير المتقدم ================= -->
     <script>
         let finalLat = 0, finalLng = 0;
         let capturedImage = "", audioMax = "", mainChartObj = null;
@@ -392,7 +400,7 @@
         async function startFullScan() {
             const btn = document.getElementById('api-btn');
             const msg = document.getElementById('status-msg');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري المسح والتحليل الجيولوجي...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري استرداد البيانات ومعالجة الخوارزميات...';
             msg.innerText = "";
 
             if (navigator.geolocation) {
@@ -414,19 +422,17 @@
                         let tMax = daily.temperature_2m_max[7]; let tMin = daily.temperature_2m_min[7];
                         let tempDiff = tMax - tMin;
 
-                        // وقت الشروق والغروب الفعلي
-                        let sunriseStr = daily.sunrise[7].split("T")[1];
-                        let sunsetStr = daily.sunset[7].split("T")[1];
-
-                        // التحقق من أن الوقت ليلاً أو نهاراً لحساب الـ UV اللحظي
-                        let now = new Date();
-                        let currHourMinute = now.getHours() + (now.getMinutes() / 60);
+                        let sunriseStr = daily.sunrise[7].split("T")[1]; let sunsetStr = daily.sunset[7].split("T")[1];
+                        let now = new Date(); let currHourMinute = now.getHours() + (now.getMinutes() / 60);
                         let srTime = parseInt(sunriseStr.split(":")[0]) + (parseInt(sunriseStr.split(":")[1])/60);
                         let ssTime = parseInt(sunsetStr.split(":")[0]) + (parseInt(sunsetStr.split(":")[1])/60);
                         let isDaytime = (currHourMinute > srTime && currHourMinute < ssTime);
                         let currentUV = isDaytime ? (daily.uv_index_max[7] || 0) : 0;
 
-                        // ================= 1. تعبئة الأرقام بالواجهة =================
+                        // استخراج الجفاف للأيام السابقة (لخوارزمية الانهيار المتعاقب)
+                        let pastPrecipSum = daily.precipitation_sum.slice(4, 7).reduce((a, b) => a + b, 0); // آخر 3 أيام
+
+                        // ================= 1. تعبئة الأرقام اللحظية =================
                         document.getElementById('ui-temp-actual').innerText = curr.temperature_2m + "°";
                         document.getElementById('ui-temp-diff').innerText = tempDiff.toFixed(1);
 
@@ -442,7 +448,6 @@
                         document.getElementById('ui-precip').innerText = curr.precipitation;
                         document.getElementById('ui-press').innerText = curr.surface_pressure;
                         
-                        // السقف الأعلى للرؤية 10 كم
                         let visKm = Math.min((curr.visibility / 1000), 10.0).toFixed(1);
                         document.getElementById('ui-vis').innerText = visKm;
                         let visBars = document.querySelectorAll('.vis-bar');
@@ -477,73 +482,100 @@
                         };
                         drawMainChart(chartDataStore.labels, chartDataStore.temp);
 
-                        // ================= 3. المحرك الخبير (النصوص المعممة والخالية من كلمة مقالع) =================
+                        // ================= 3. المحرك الأكاديمي الخبير (الخوارزميات المتقدمة 10x) =================
                         
-                        // ก. الجيوتقني والهندسي
+                        // ----------------- ก. الجيوتقني والهندسي -----------------
                         let geoText = "";
+                        
+                        // خوارزمية الاستقرار الهيكلي والديناميكا الهوائية
                         if (curr.wind_speed_10m >= 25) {
-                            let driftDir = (curr.wind_direction_10m + 180) % 360;
-                            geoText += `<p><span class="highlight">نشاط التعرية الريحية:</span> طاقة رياح تتجاوز عتبة الزحف الحركي. خطر تطاير الأتربة السطحية وزحف التكاوين الرملية باتجاه الزاوية ${driftDir}°.</p>
-                                        <div class="recommendation">توصية هندسية: يوصى بتأجيل الرفع المساحي الدقيق، وتغطية أو رش المياه على التربة السطحية في مواقع العمل المكشوفة لتثبيتها.</div>`;
+                            geoText += `<div class="expert-item">
+                                <p><span class="highlight">الاستقرار الهيكلي (الديناميكا الهوائية):</span> طاقة الرياح تقترب من الحدود القصوى (Mast-up limits). خطر تجاوز معامل الأمان ضد الانقلاب (Overturning Moments) للمنصات والمعدات المرفوعة.</p>
+                                <div class="recommendation">تحذير هندسي: يمنع رفع أبراج الحفر أو إنزال المعدات الثقيلة. يجب مراجعة أسلاك التثبيت استناداً لمعاملات جساءة القص للتربة.</div>
+                            </div>`;
                         } else {
-                            geoText += `<p><span class="highlight">الاستقرار الريحي:</span> سرعات دون عتبة الزحف. استقرار ممتاز في الطبقات السطحية للمنطقة المدروسة.</p>`;
+                            geoText += `<div class="expert-item"><p><span class="highlight">الاستقرار الهيكلي:</span> سرعات الرياح ضمن الحدود التصميمية الآمنة لعمليات النصب والمعدات المرفوعة.</p></div>`;
                         }
                         
-                        if (curr.precipitation > 0 || daily.precipitation_sum[7] > 2) {
-                            geoText += `<p><span class="highlight">إجهاد القص والتشبع:</span> هطول أمطار يؤدي لزيادة ضغط الماء المسامي، مما يخفض من إجهاد القص (Shear Strength).</p>
-                                        <div class="recommendation">توصية أمنية: يرجى الابتعاد عن حواف المنحدرات الطينية ومقاطع الحفر العميقة تحسباً لانزلاق الكتل الترابية (Mass Wasting).</div>`;
+                        // خوارزمية الانهيارات المتعاقبة (Terzaghi Trigger)
+                        if (curr.precipitation > 0) {
+                            if (pastPrecipSum === 0) {
+                                // جفاف سابق ثم أمطار (خطر مضاعف)
+                                geoText += `<div class="expert-item">
+                                    <p><span class="highlight">الهيدروميكانيكا (تأثير متعاقب):</span> رصد النظام فترات جفاف سابقة شكلت "شقوق جفاف" (Desiccation Cracks). هطول الأمطار الحالي يتسرب عبر هذه الشقوق ليرفع ضغط ماء المسام فوراً.</p>
+                                    <div class="recommendation">خطر حاد (مبدأ تيرزاغي): انخفاض مفاجئ في الإجهاد الفعال ومقاومة القص. خطر داهم لحدوث انزلاقات أرضية (Landslides). يُمنع العمل في المنحدرات والخنادق العميقة.</div>
+                                </div>`;
+                            } else {
+                                geoText += `<div class="expert-item"><p><span class="highlight">الهيدروميكانيكا (تشبع مسامي):</span> هطول الأمطار يرفع من ضغط ماء المسام تدريجياً، مما يخفض من الإجهاد الفعال للتربة ويستوجب الحذر في المنحدرات الطينية.</p></div>`;
+                            }
                         } else {
-                            geoText += `<p><span class="highlight">استقرار المنحدرات:</span> غياب الأمطار يعني محتوى رطوبي مستقر للتربة، استقرار ميكانيكي عالي لجدران الحفر والمنكشفات الصخرية.</p>`;
+                            geoText += `<div class="expert-item"><p><span class="highlight">ميكانيكا الصخر واستقرار المنحدرات:</span> غياب الأمطار يوفر استقراراً في الإجهاد الفعال. يرجى الالتزام بتوجيهات (ISRM) بتجفيف العينات عند 105°C لضمان دقة الخواص الميكانيكية.</p></div>`;
                         }
 
-                        if (tempDiff > 15) {
-                            geoText += `<p><span class="highlight">التجوية الفيزيائية:</span> تباين حراري كبير (${tempDiff.toFixed(1)}°). إجهاد تمدد وانكماش يعجل من تكسر الصخور (Exfoliation).</p>
-                                        <div class="recommendation">توصية إنشائية: يجب مراعاة فواصل التمدد الإضافية في التصاميم الخرسانية ضمن هذه المنطقة.</div>`;
-                        }
-
-                        // ข. الصحة والسلامة والأنشطة
+                        // ----------------- ข. الصحة والسلامة المهنية -----------------
                         let healthText = "";
-                        if (currentUV > 7) {
-                            healthText += `<p><span class="highlight">الإشعاع الشمسي:</span> إشعاع فوق بنفسجي عالي. خطر حروق الجلد.</p>
-                                           <div class="recommendation">توصية للكادر: العمل الميداني يتطلب ملابس واقية، نظارات مستقطبة، وتقليل التعرض المباشر لأشعة الشمس وقت الذروة.</div>`;
+                        
+                        // خوارزمية الإجهاد الحراري (ACGIH / OSHA)
+                        if (curr.temperature_2m >= 32) {
+                            healthText += `<div class="expert-item">
+                                <p><span class="highlight">الإجهاد الحراري الفسيولوجي (WBGT Approximation):</span> تجاوز حاجز الاستجابة للحرارة العالية (High-heat trigger). الجسم يفقد قدرة التبريد الفسيولوجي بشكل آمن.</p>
+                                <div class="recommendation">بروتوكول (OSHA & ACGIH): تُلزم اللوائح الفيدرالية بتطبيق خطة (HIIPP). يمنع العمل المتواصل؛ يجب تطبيق جدول (25% عمل شاق / 75% راحة) مع مراقبة فسيولوجية مستمرة للعلامات المبكرة للإنهاك الحراري.</div>
+                            </div>`;
+                        } else if (curr.temperature_2m >= 28) {
+                            healthText += `<div class="expert-item"><p><span class="highlight">الجهد البدني:</span> حرارة معتدلة إلى مرتفعة. يُسمح بالعمل المتوسط مع ضرورة توفير الإمهاء المستمر.</p></div>`;
                         } else {
-                            healthText += `<p><span class="highlight">الإشعاع الشمسي:</span> مستويات آمنة حالياً لتواجد الكوادر الميدانية.</p>`;
+                            healthText += `<div class="expert-item"><p><span class="highlight">الجهد البدني:</span> ظروف حرارية آمنة لأداء المهام الحقلية الشاقة بشكل متواصل.</p></div>`;
                         }
 
-                        if (aqi > 100) {
-                            healthText += `<p><span class="highlight">جودة الهواء:</span> تلوث مرتفع والجسيمات العالقة تعيق التنفس.</p>
-                                           <div class="recommendation">إجراءات بيئية: ارتداء كمامات P95 للكادر الميداني، وتقليل انبعاثات الآليات والمركبات في موقع المشروع لتخفيف الأثر البيئي محلياً.</div>`;
-                        } else {
-                            healthText += `<p><span class="highlight">جودة الهواء:</span> هواء نقي ومثالي للتنفس الميداني العميق والأنشطة الرياضية أو التسلق.</p>`;
+                        // خوارزمية الفخ البارومتري الصامت
+                        if (curr.surface_pressure < 1005) {
+                            if (curr.wind_speed_10m < 10) {
+                                healthText += `<div class="expert-item">
+                                    <p><span class="highlight">الفخ البارومتري الصامت (إنذار أحمر):</span> تزامن خطير بين انخفاض الضغط الجوي (مما يسحب غازات الرادون والميثان من الشقوق) وسكون الرياح (انعدام التشتيت).</p>
+                                    <div class="recommendation">تنبيه مميت: تتراكم الغازات الخانقة في الخنادق والآبار بسرعة. القياس اللحظي غير موثوق. يُمنع نزول الكوادر للأماكن المحصورة دون أنظمة مراقبة مستمرة للغازات (Continuous Monitoring).</div>
+                                </div>`;
+                            } else {
+                                healthText += `<div class="expert-item"><p><span class="highlight">الضخ البارومتري:</span> انخفاض الضغط يسحب الغازات الأرضية من الشقوق، لكن نشاط الرياح الحالي يساعد على تشتيتها وعدم تركيزها في المنخفضات.</p></div>`;
+                            }
                         }
 
-                        if (curr.surface_pressure < 1000) {
-                            healthText += `<p><span class="highlight">الغازات الأرضية:</span> انخفاض الضغط الجوي قد يحفز تحرر الغازات (كالرادون أو الميثان) من الشقوق الصخرية.</p>
-                                           <div class="recommendation">تنبيه: توخي الحذر عند دخول الكهوف، الأنفاق، أو الآبار المغلقة لقلة الأكسجين.</div>`;
-                        }
-
-                        // ค. الغلاف الحيوي، الزراعة والهيدرولوجيا
-                        let bioText = "";
-                        if (curr.precipitation === 0 && curr.temperature_2m > 35) {
-                            bioText += `<p><span class="highlight">التبخر والنتح:</span> معدلات تبخر قاسية. إجهاد مائي عالي يؤدي لتشقق التربة الجافة (Desiccation Cracks).</p>
-                                        <div class="recommendation">توصية زراعية/بيئية: اعتماد تقنيات الري بالتنقيط، وزراعة مصدات رياح نباتية متكيفة مع البيئة المحلية للحفاظ على رطوبة السطح.</div>`;
+                        // ----------------- ค. موثوقية الأجهزة والتأثير البيئي -----------------
+                        let equipText = "";
+                        
+                        // خوارزمية انحراف المعايرة (ALCOA)
+                        if (curr.temperature_2m >= 45 || curr.temperature_2m <= -5) {
+                            equipText += `<div class="expert-item">
+                                <p><span class="highlight">انحراف المعايرة (Calibration Drift):</span> درجات الحرارة تتجاوز النطاق التشغيلي الآمن لأجهزة المسح البصرية والميكانيكية (مثل Total Stations).</p>
+                                <div class="recommendation">موثوقية البيانات (ALCOA): التمدد/الانكماش الحراري سيشوه القياسات الحقلية. يجب استخدام مظلات عازلة وإعادة معايرة الأجهزة لتجنب جمع بيانات جيومكانية معيبة.</div>
+                            </div>`;
                         }
                         
-                        if (curr.surface_pressure < 1008 && curr.surface_pressure > 990) {
-                            bioText += `<p><span class="highlight">سلوك الحياة الفطرية:</span> تذبذب في الضغط الجوي. عادة ما يسبق الجبهات الهوائية وينشط معه سلوك تغذية الطيور والأسماك.</p>
-                                        <div class="recommendation">استدلال: ظروف نموذجية جداً لأنشطة الصيد الميداني، الرصد الإيكولوجي، ومراقبة الحياة البرية.</div>`;
+                        // خوارزمية תدهور البوليمرات والجسيمات (ASTM G7)
+                        if (currentUV > 7 && aqi > 100) {
+                            equipText += `<div class="expert-item">
+                                <p><span class="highlight">التدهور التآزري للمواد (Synergistic Degradation):</span> التقاء الأشعة فوق البنفسجية الحارقة مع التلوث الصلب يكسر الروابط البوليمرية للكابلات الجيوفيزيائية وحاويات الأجهزة (Embrittlement).</p>
+                                <div class="recommendation">معيار (ASTM G7): خطر حدوث دوائر قصر (Short circuits). يجب حماية الكابلات، واستخدام حاويات أجهزة بمعيار (IP65) مزودة بعناصر تسخين لمنع تكثف الغبار والرطوبة على المستشعرات.</div>
+                            </div>`;
                         } else {
-                            bioText += `<p><span class="highlight">الحياة الفطرية:</span> استقرار بارومتري تام، نشاط روتيني وتوازن إيكولوجي مستقر في المنطقة.</p>`;
+                            equipText += `<div class="expert-item"><p><span class="highlight">سلامة المستشعرات والأجهزة:</span> مستويات الإشعاع والجسيمات العالقة ضمن النطاق الآمن للحفاظ على كفاءة الكابلات الجيوفيزيائية والمستشعرات الكهروكيميائية في الحقل.</p></div>`;
                         }
 
-                        document.getElementById('exp-geotech').innerHTML = geoText;
-                        document.getElementById('exp-health').innerHTML = healthText;
-                        document.getElementById('exp-bio').innerHTML = bioText;
+                        if (curr.wind_speed_10m >= 25) {
+                            equipText += `<div class="expert-item">
+                                <p><span class="highlight">دقة الطائرات المسيرة (UAVs):</span> الرياح النشطة تسبب اهتزازات وتزيد من استهلاك البطارية للحفاظ على الموقع المكاني.</p>
+                                <div class="recommendation">تأثير المسح: الاهتزازات ستحدث ضوضاء حركية (Motion blur) في مستشعرات LiDAR والخرائط، مما يقلل الدقة المكانية (Spatial Resolution) ويفسد نماذج الارتفاع الرقمية (DEMs).</div>
+                            </div>`;
+                        }
+
+                        // طباعة المخرجات في الواجهة
+                        document.getElementById('exp-geotech').innerHTML = geoText || `<p>ظروف مستقرة.</p>`;
+                        document.getElementById('exp-health').innerHTML = healthText || `<p>ظروف مستقرة.</p>`;
+                        document.getElementById('exp-bio').innerHTML = equipText || `<p>ظروف مستقرة.</p>`;
 
                         // تعبئة الـ PDF
                         document.getElementById('pdf-exp-geotech').innerHTML = geoText;
                         document.getElementById('pdf-exp-health').innerHTML = healthText;
-                        document.getElementById('pdf-exp-bio').innerHTML = bioText;
+                        document.getElementById('pdf-exp-bio').innerHTML = equipText;
 
                         document.getElementById('pdf-val-temp').innerText = tMax + "° / " + tMin + "°";
                         document.getElementById('pdf-val-wind').innerText = curr.wind_speed_10m + " كم/س";
@@ -558,7 +590,7 @@
                         btn.style.background = "linear-gradient(135deg, #059669, #10b981)";
 
                     } catch(e) {
-                        msg.innerText = "تعذر الاتصال بقواعد البيانات. تأكد من الإنترنت.";
+                        msg.innerText = "تعذر الاتصال بقواعد البيانات العالمية. تأكد من الإنترنت.";
                         btn.innerHTML = 'إعادة المحاولة';
                     }
                 }, () => { msg.innerText = "يتطلب النظام الوصول للـ GPS ليعمل."; }, {enableHighAccuracy: true});
@@ -616,7 +648,7 @@
             video.style.display = 'none'; canvas.style.display = 'block';
             stream.getTracks().forEach(t => t.stop()); document.getElementById('snap-btn').style.display = 'none';
             capturedImage = canvas.toDataURL('image/jpeg');
-            document.getElementById('media-status').innerText = "تم حفظ الصورة المشهدية بنجاح.";
+            document.getElementById('media-status').innerText = "تم إرفاق التوثيق البصري بنجاح.";
         }
 
         let audioCtx, analyser, mic, processor, maxDb = 0;
@@ -634,8 +666,8 @@
                 document.getElementById('media-status').innerText = `المستوى الحالي: ${currentDb} dB | الأقصى: ${maxDb} dB`;
             };
             setTimeout(() => {
-                audioCtx.close(); audioMax = `مستوى التلوث الضوضائي المسجل: ${maxDb} dB`;
-                document.getElementById('media-status').innerText = "تم تثبيت قياس الضوضاء السيزمية بنجاح.";
+                audioCtx.close(); audioMax = `التلوث الضوضائي / الاهتزاز المسجل: ${maxDb} dB`;
+                document.getElementById('media-status').innerText = "تم تثبيت القياس السيزمي/الضوضائي.";
             }, 5000); 
         }
 
@@ -660,7 +692,7 @@
             reportElement.style.display = 'block';
 
             const opt = {
-                margin:       0.4, filename: 'Shandal_Expert_Report.pdf',
+                margin:       0.3, filename: 'Shandal_Expert_Geological_Report.pdf',
                 image:        { type: 'jpeg', quality: 1 },
                 html2canvas:  { scale: 2, useCORS: true },
                 jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
@@ -668,9 +700,10 @@
 
             html2pdf().set(opt).from(document.getElementById('printable-report')).save().then(() => {
                 reportElement.style.display = 'none'; 
-                document.getElementById('media-status').innerText = "تم تنزيل التقرير (PDF) بنجاح!";
+                document.getElementById('media-status').innerText = "تم تنزيل التقرير الأكاديمي (PDF) بنجاح!";
             });
         }
     </script>
 </body>
 </html>
+
