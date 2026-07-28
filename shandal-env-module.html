@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام شندل للمسح الميداني - لوحة القيادة البيئية المتقدمة</title>
+    <title>نظام شندل للمسح الميداني - المنصة الجيولوجية الشاملة</title>
     
     <!-- مكتبات خارجية مجانية وقوية -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -13,18 +13,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* ================= الألوان وفلسفة MSN المتطورة ================= */
+        /* ================= الألوان وفلسفة التصميم ================= */
         :root {
-            --bg-main: #0b1121; 
-            --card-bg: linear-gradient(145deg, #1e293b, #111827); 
+            --bg-main: #060d1a; 
+            --card-bg: linear-gradient(145deg, #162235, #0d1522); 
             --text-light: #f8fafc;
             --text-muted: #94a3b8;
             --accent-blue: #38bdf8;
             --accent-orange: #fbbf24;
             --accent-green: #10b981;
             --accent-red: #ef4444;
-            --border-color: rgba(255, 255, 255, 0.05);
-            --card-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --card-shadow: 0 12px 25px rgba(0,0,0,0.4);
         }
 
         body {
@@ -32,48 +32,51 @@
             background-color: var(--bg-main);
             color: var(--text-light);
             margin: 0; padding: 0;
+            line-height: 1.6;
         }
 
-        .main-ui { padding-bottom: 50px; }
+        .main-ui { padding-bottom: 60px; }
         
         header {
             text-align: center; padding: 25px 15px;
-            background: linear-gradient(to right, #0f172a, #1e293b, #0f172a);
+            background: linear-gradient(to bottom, #0f172a, var(--bg-main));
             border-bottom: 2px solid var(--accent-orange);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
         }
-        header h1 { margin: 0; font-size: 26px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        header p { margin: 8px 0 0; color: var(--accent-blue); font-weight: 600; }
+        header h1 { margin: 0; font-size: 28px; text-shadow: 0 2px 5px rgba(0,0,0,0.8); letter-spacing: 1px;}
+        header p { margin: 8px 0 0; color: var(--accent-blue); font-weight: 600; font-size: 14px;}
 
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .container { max-width: 1250px; margin: 30px auto; padding: 0 20px; }
 
-        /* أزرار التحكم والإدخال (Control Card) */
+        /* ================= أزرار التحكم ================= */
         .controls-card {
             background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 20px; margin-bottom: 20px;
+            border-radius: 14px; padding: 25px; margin-bottom: 25px;
             box-shadow: var(--card-shadow);
         }
         .form-control {
-            width: 100%; padding: 12px; font-size: 14px; color: #fff;
-            border: 1px solid rgba(255,255,255,0.2); border-radius: 6px;
-            background-color: rgba(0,0,0,0.2); box-sizing: border-box; margin-bottom: 15px;
+            width: 100%; padding: 14px; font-size: 15px; color: #fff;
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
+            background-color: rgba(0,0,0,0.3); box-sizing: border-box; margin-bottom: 15px;
+            transition: all 0.3s ease;
         }
-        .form-control:focus { border-color: var(--accent-blue); outline: none; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-control:focus { border-color: var(--accent-blue); outline: none; background-color: rgba(0,0,0,0.5);}
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         
         .btn {
             display: block; width: 100%; padding: 16px; font-size: 16px; font-weight: bold;
-            color: #fff; background: linear-gradient(45deg, #2563eb, #0ea5e9);
+            color: #fff; background: linear-gradient(135deg, #2563eb, #0ea5e9);
             border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
         }
-        .btn:hover { background: linear-gradient(45deg, #1d4ed8, #0284c7); box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
-        .btn-orange { background: linear-gradient(45deg, #d97706, #fbbf24); color: #000; margin-top: 20px;}
-        .btn-orange:hover { background: linear-gradient(45deg, #b45309, #f59e0b); color: #fff; }
+        .btn:hover { background: linear-gradient(135deg, #1d4ed8, #0284c7); transform: translateY(-2px); }
+        .btn-orange { background: linear-gradient(135deg, #d97706, #fbbf24); color: #000; margin-top: 25px;}
+        .btn-orange:hover { background: linear-gradient(135deg, #b45309, #f59e0b); color: #fff; }
 
-        /* ================= شبكة البطاقات 3×3 ================= */
+        /* ================= شبكة البيانات (Data Grid) ================= */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
             gap: 20px;
             margin-top: 25px;
             display: none; 
@@ -82,113 +85,99 @@
         .msn-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 20px;
+            border-radius: 14px; padding: 22px;
             box-shadow: var(--card-shadow); position: relative;
             display: flex; flex-direction: column; justify-content: space-between;
         }
+        .msn-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-3px); transition: all 0.3s ease;}
         
         .msn-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .msn-card-title { margin: 0; font-size: 15px; font-weight: 600; color: var(--text-light); }
-        .msn-card-icon { font-size: 20px; color: var(--accent-blue); opacity: 0.8; }
+        .msn-card-title { margin: 0; font-size: 14px; font-weight: bold; color: var(--text-light); }
+        .msn-card-icon { font-size: 20px; color: var(--accent-blue); opacity: 0.9; }
 
-        .main-value { font-size: 38px; font-weight: bold; line-height: 1; margin-bottom: 5px; }
-        .sub-value { font-size: 13px; color: var(--text-muted); }
-        
-        .geo-insight {
-            font-size: 11px; color: var(--text-muted); line-height: 1.5;
-            margin-top: 15px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1);
-        }
-        .geo-insight i { color: var(--accent-orange); margin-left: 3px; }
+        .main-value { font-size: 36px; font-weight: bold; line-height: 1.1; margin-bottom: 5px; font-family: system-ui, -apple-system, sans-serif;}
+        .sub-value { font-size: 12px; color: var(--text-muted); }
 
-        /* ================= الرسوميات (SVG & CSS) ================= */
-        
-        .cloud-circle {
-            width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.1);
-            margin: 0 auto; display: flex; align-items: center; justify-content: center;
-            border: 2px dashed rgba(255,255,255,0.3);
-        }
-        .cloud-circle i { font-size: 40px; color: #cbd5e1; }
-
-        .temp-slider { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin: 15px 0; position: relative; }
-        .temp-slider-thumb { position: absolute; width: 14px; height: 14px; background: var(--accent-blue); border-radius: 50%; top: -4px; box-shadow: 0 0 5px var(--accent-blue); }
-
-        .hum-bars { display: flex; gap: 4px; height: 50px; align-items: flex-end; justify-content: flex-start; margin-top: 10px;}
-        .hum-bar { width: 10px; background: rgba(255,255,255,0.1); border-radius: 3px; transition: 0.5s; }
-        .hum-bar.active { background: var(--accent-blue); }
+        /* ================= الرسوميات والأقواس الثابتة (SVG) ================= */
+        .svg-gauge-container { display: flex; justify-content: center; align-items: center; height: 100px; position: relative; margin-top: 10px;}
+        .svg-gauge { width: 100%; height: 100%; overflow: visible; }
+        .svg-arc-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 14; stroke-linecap: round; }
+        .svg-arc-val { fill: none; stroke-width: 14; stroke-linecap: round; stroke-dasharray: 157; stroke-dashoffset: 157; transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .arc-value { position: absolute; bottom: 5px; font-size: 32px; font-weight: bold; }
 
         .wind-compass-container { display: flex; justify-content: center; align-items: center; margin: 10px 0; }
         .wind-compass {
-            width: 110px; height: 110px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.1);
-            position: relative; display: flex; align-items: center; justify-content: center;
+            width: 110px; height: 110px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.08);
+            position: relative; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.2);
         }
-        .wind-compass::before { content: 'ش'; position: absolute; top: 2px; font-size: 10px; color: var(--text-muted); }
-        .wind-compass::after { content: 'ج'; position: absolute; bottom: 2px; font-size: 10px; color: var(--text-muted); }
-        .wind-compass .label-e { position: absolute; right: 4px; font-size: 10px; color: var(--text-muted); }
-        .wind-compass .label-w { position: absolute; left: 4px; font-size: 10px; color: var(--text-muted); }
+        .wind-compass::before { content: 'ش'; position: absolute; top: 4px; font-size: 11px; color: var(--text-muted); }
+        .wind-compass::after { content: 'ج'; position: absolute; bottom: 4px; font-size: 11px; color: var(--text-muted); }
+        .wind-compass .label-e { position: absolute; right: 6px; font-size: 11px; color: var(--text-muted); }
+        .wind-compass .label-w { position: absolute; left: 6px; font-size: 11px; color: var(--text-muted); }
         .wind-arrow {
-            position: absolute; font-size: 24px; color: var(--accent-green);
-            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center;
+            position: absolute; font-size: 26px; color: var(--accent-orange);
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
         }
-        .wind-speed-text { font-size: 22px; font-weight: bold; z-index: 2; text-align: center; line-height: 1.1;}
-        .wind-speed-text small { font-size: 10px; font-weight: normal; color: var(--text-muted);}
+        .wind-speed-text { font-size: 20px; font-weight: bold; z-index: 2; text-align: center; line-height: 1.1;}
+        .wind-speed-text small { font-size: 11px; font-weight: normal; color: var(--text-muted);}
 
-        .precip-circle {
-            width: 90px; height: 90px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.1);
-            margin: 0 auto; display: flex; align-items: center; justify-content: center; flex-direction: column;
-        }
-        .precip-circle .val { font-size: 24px; font-weight: bold; }
-        .precip-circle .unit { font-size: 12px; color: var(--text-muted); }
-
-        .vis-bars { display: flex; flex-direction: column; gap: 4px; align-items: center; margin-top: 10px; }
+        .vis-bars { display: flex; flex-direction: column; gap: 5px; align-items: center; margin-top: 10px; }
         .vis-bar { height: 6px; background: var(--accent-green); border-radius: 3px; transition: 0.5s; }
-        .vis-bar:nth-child(1) { width: 40%; }
-        .vis-bar:nth-child(2) { width: 60%; }
-        .vis-bar:nth-child(3) { width: 80%; }
-        .vis-bar:nth-child(4) { width: 100%; }
-
-        /* ====== الحل الجذري للأقواس باستخدام SVG ====== */
-        .svg-gauge-container { display: flex; justify-content: center; align-items: center; height: 90px; position: relative; margin-top: 10px;}
-        .svg-gauge { width: 140px; height: 70px; overflow: hidden; }
-        .svg-arc-bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 12; stroke-linecap: round; }
-        .svg-arc-val { fill: none; stroke-width: 12; stroke-linecap: round; stroke-dasharray: 157; stroke-dashoffset: 157; transition: stroke-dashoffset 1.5s ease-out; }
-        .arc-value { position: absolute; bottom: 0; font-size: 28px; font-weight: bold; }
+        
+        .hum-bars { display: flex; gap: 4px; height: 40px; align-items: flex-end; margin-top: 10px;}
+        .hum-bar { width: 10px; background: rgba(255,255,255,0.1); border-radius: 2px; transition: 0.5s; }
+        .hum-bar.active { background: var(--accent-blue); }
 
         .astro-path {
-            width: 100%; height: 50px; border-bottom: 1px solid rgba(255,255,255,0.2);
-            border-radius: 100% 100% 0 0; border-top: 2px solid; position: relative; margin-top: 20px;
+            width: 100%; height: 50px; border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-radius: 100% 100% 0 0; border-top: 2px dashed var(--accent-orange); position: relative; margin-top: 20px;
         }
-        .sun-path { border-top-color: var(--accent-orange); }
-        .moon-path { border-top-color: #cbd5e1; }
-        .astro-icon { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 18px; }
-        .sun-icon { color: var(--accent-orange); text-shadow: 0 0 8px var(--accent-orange); }
-        .moon-icon { color: #cbd5e1; text-shadow: 0 0 8px #cbd5e1; }
-        .astro-times { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 5px; }
+        .astro-icon { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 22px; color: var(--accent-orange); text-shadow: 0 0 10px var(--accent-orange);}
+        .astro-times { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 8px; }
 
-        .press-slider { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin: 15px 0; position: relative; }
-        .press-slider-thumb { position: absolute; width: 14px; height: 14px; background: #a855f7; border-radius: 50%; top: -4px; box-shadow: 0 0 5px #a855f7; }
+        /* ================= نظام التحليل الجيولوجي الخبير (Expert System UI) ================= */
+        .expert-system-card {
+            background: linear-gradient(145deg, #0f172a, #020617);
+            border: 1px solid var(--accent-blue); border-radius: 14px;
+            padding: 25px; margin-top: 30px; box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
+            display: none;
+        }
+        .expert-title {
+            color: var(--accent-blue); font-size: 18px; font-weight: bold; margin-top: 0;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding-bottom: 12px; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .expert-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .expert-box { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        .expert-box h4 { margin: 0 0 10px 0; color: var(--accent-orange); font-size: 14px; display: flex; align-items: center; gap: 8px;}
+        .expert-box p { margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.7; }
+        .highlight { color: #fff; font-weight: bold; }
 
         /* ================= الرسم البياني متعدد التبويبات ================= */
         .chart-card {
             background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 20px; margin-top: 20px; box-shadow: var(--card-shadow);
+            border-radius: 14px; padding: 25px; margin-top: 25px; box-shadow: var(--card-shadow);
             display: none; 
         }
-        .chart-tabs { display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
-        .chart-tab { background: none; border: none; color: var(--text-muted); font-size: 14px; font-weight: bold; cursor: pointer; padding: 5px 10px; }
-        .chart-tab.active { color: var(--accent-blue); border-bottom: 2px solid var(--accent-blue); }
+        .chart-tabs { display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; overflow-x: auto;}
+        .chart-tab { background: none; border: none; color: var(--text-muted); font-size: 15px; font-weight: bold; cursor: pointer; padding: 8px 15px; white-space: nowrap;}
+        .chart-tab.active { color: var(--accent-blue); border-bottom: 3px solid var(--accent-blue); }
 
-        .tools-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-top: 20px; box-shadow: var(--card-shadow); }
-        video, canvas { width: 100%; max-height: 250px; background: #000; border-radius: 8px; display: none; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.1);}
+        /* ================= أدوات الحقل ================= */
+        .tools-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 25px; margin-top: 25px; }
+        video, canvas { width: 100%; max-height: 300px; background: #000; border-radius: 8px; display: none; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);}
         
-        /* ================= القالب المخفي للـ PDF ================= */
-        #printable-report { display: none; background: white; color: black; padding: 40px; direction: rtl; width: 800px; font-family: 'Segoe UI', sans-serif;}
-        .pdf-header { text-align: center; border-bottom: 3px solid #0b1d3a; padding-bottom: 15px; margin-bottom: 20px; }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; }
-        .pdf-table th, .pdf-table td { border: 1px solid #ccc; padding: 10px; text-align: right; }
+        /* ================= القالب المخفي للـ PDF (A4) ================= */
+        #printable-report-container { display:none; position: absolute; left:-9999px; }
+        #printable-report { background: white; color: black; padding: 40px; direction: rtl; width: 794px; font-family: 'Segoe UI', Arial, sans-serif;}
+        .pdf-header { text-align: center; border-bottom: 3px solid #0b1d3a; padding-bottom: 15px; margin-bottom: 25px; }
+        .pdf-header h2 { margin: 0; font-size: 24px; color: #0b1d3a;}
+        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 14px; }
+        .pdf-table th, .pdf-table td { border: 1px solid #ccc; padding: 12px; text-align: right; }
         .pdf-table th { background-color: #f0f0f0; color: #0b1d3a; font-weight: bold; width: 25%;}
-        .pdf-qr { display: flex; justify-content: center; margin-top: 20px; }
-        .pdf-img-box { text-align: center; margin: 15px 0;}
-        .pdf-img-box img { max-height: 250px; border: 2px solid #000;}
+        .pdf-expert-text { font-size: 13px; line-height: 1.6; color: #333;}
+        .pdf-qr { display: flex; justify-content: center; margin-top: 30px; }
     </style>
 </head>
 <body>
@@ -196,7 +185,7 @@
     <div class="main-ui" id="main-ui">
         <header>
             <h1>نظام شندل للمسح الميداني الجيولوجي</h1>
-            <p><i class="fas fa-satellite-dish"></i> لوحة الرصد البيئي والمناخي المتقدمة</p>
+            <p><i class="fas fa-microchip"></i> وحدة الرصد البيئي والمحرك الجيولوجي الخبير</p>
         </header>
 
         <div class="container">
@@ -208,257 +197,203 @@
                         <input type="text" id="inspector-name" class="form-control" value="علي شندل فلاح">
                     </div>
                     <div class="form-group">
-                        <label>الهدف من المسح:</label>
+                        <label>الهدف الرئيسي للمسح:</label>
                         <select id="violation-type" class="form-control">
-                            <option value="تقييم التجوية والتعرية">تقييم التجوية والتعرية</option>
-                            <option value="رصد الانبعاثات والمقالع">رصد الانبعاثات والمقالع</option>
-                            <option value="دراسة هيدرولوجية">دراسة هيدرولوجية</option>
+                            <option value="التقييم الجيوتقني والتعرية">التقييم الجيوتقني والتعرية</option>
+                            <option value="رصد التلوث والمقالع">رصد التلوث والمقالع الصناعية</option>
+                            <option value="مسح هيدرولوجي وبيئي">مسح هيدرولوجي وبيئي</option>
                         </select>
                     </div>
                 </div>
                 <button class="btn" id="api-btn" onclick="startFullScan()">
-                    <i class="fas fa-crosshairs"></i> التقاط الإحداثيات وتوليد اللوحة البيئية
+                    <i class="fas fa-radar"></i> التقاط الإحداثيات وتوليد التقرير الشامل
                 </button>
-                <div id="status-msg" style="text-align: center; margin-top: 10px; font-size: 13px; color: var(--accent-orange);"></div>
+                <div id="status-msg" style="text-align: center; margin-top: 15px; font-size: 14px; color: var(--accent-orange);"></div>
             </div>
 
-            <!-- ================= شبكة MSN ================= -->
+            <!-- ================= شبكة الأرقام ================= -->
             <div class="dashboard-grid" id="dashboard-grid">
                 
                 <div class="msn-card">
-                    <div class="msn-card-header">
-                        <h3 class="msn-card-title">غطاء سحابي</h3>
-                        <i class="fas fa-cloud msn-card-icon"></i>
-                    </div>
-                    <div class="cloud-circle"><i class="fas fa-cloud-sun"></i></div>
-                    <div style="text-align: center; margin-top: 10px;">
-                        <div class="main-value" style="font-size: 24px;" id="ui-cloud-cov">--%</div>
-                        <div class="sub-value" id="ui-cloud-desc">--</div>
-                    </div>
-                    <div class="geo-insight" id="geo-cloud"><i class="fas fa-microscope"></i> تحليل التشميس والصخور.</div>
-                </div>
-
-                <div class="msn-card">
-                    <div class="msn-card-header">
-                        <h3 class="msn-card-title">يبدو (المحسوسة)</h3>
-                        <i class="fas fa-temperature-half msn-card-icon"></i>
-                    </div>
-                    <div class="main-value" id="ui-temp-feels">--°</div>
-                    <div class="sub-value">العامل: <span id="ui-temp-factor">--</span></div>
-                    <div class="temp-slider"><div class="temp-slider-thumb" id="ui-temp-thumb" style="left: 50%;"></div></div>
-                    <div class="geo-insight" id="geo-temp"><i class="fas fa-microscope"></i> تحليل التمدد الحراري.</div>
-                </div>
-
-                <div class="msn-card">
-                    <div class="msn-card-header">
-                        <h3 class="msn-card-title">درجة الحرارة</h3>
-                        <i class="fas fa-thermometer-three-quarters msn-card-icon"></i>
-                    </div>
+                    <div class="msn-card-header"><h3 class="msn-card-title">درجة الحرارة</h3><i class="fas fa-temperature-half msn-card-icon"></i></div>
                     <div class="main-value" id="ui-temp-actual">--°</div>
-                    <div class="sub-value">تصل الصغرى إلى <span id="ui-temp-min">--°</span></div>
-                    <div class="geo-insight" id="geo-temp-diff"><i class="fas fa-microscope"></i> التباين والتجوية الفيزيائية.</div>
+                    <div class="sub-value">التباين: <span id="ui-temp-diff" style="color:var(--accent-orange); font-weight:bold;">--°</span> (بين العظمى والصغرى)</div>
                 </div>
 
                 <div class="msn-card">
-                    <div class="msn-card-header">
-                        <h3 class="msn-card-title">الرطوبة</h3>
-                        <i class="fas fa-droplet msn-card-icon"></i>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                        <div>
-                            <div class="main-value" id="ui-hum">--%</div>
-                            <div class="sub-value">الندى: <span id="ui-dew">--°</span></div>
-                        </div>
-                        <div class="hum-bars" id="ui-hum-bars"></div>
-                    </div>
-                    <div class="geo-insight" id="geo-hum"><i class="fas fa-microscope"></i> التجوية الكيميائية.</div>
-                </div>
-
-                <div class="msn-card">
-                    <div class="msn-card-header">
-                        <h3 class="msn-card-title">الرياح</h3>
-                        <i class="fas fa-wind msn-card-icon"></i>
-                    </div>
+                    <div class="msn-card-header"><h3 class="msn-card-title">الرياح والزوابع</h3><i class="fas fa-wind msn-card-icon"></i></div>
                     <div class="wind-compass-container">
                         <div class="wind-compass">
                             <span class="label-e">ق</span><span class="label-w">غ</span>
-                            <i class="fas fa-caret-up wind-arrow" id="ui-wind-arrow"></i>
+                            <i class="fas fa-long-arrow-alt-up wind-arrow" id="ui-wind-arrow"></i>
                             <div class="wind-speed-text" id="ui-wind-speed">--<br><small>كم/س</small></div>
                         </div>
                     </div>
-                    <div class="sub-value" style="text-align: center; margin-top: 5px;">زوابع: <span id="ui-wind-gust">--</span> كم/س</div>
-                    <div class="geo-insight" id="geo-wind"><i class="fas fa-microscope"></i> التعرية وزحف الملوثات.</div>
                 </div>
 
                 <div class="msn-card">
-                    <div class="msn-card-header">
-                        <h3 class="msn-card-title">هطول الأمطار</h3>
-                        <i class="fas fa-cloud-rain msn-card-icon"></i>
+                    <div class="msn-card-header"><h3 class="msn-card-title">الرطوبة النسبية</h3><i class="fas fa-droplet msn-card-icon"></i></div>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                        <div class="main-value" id="ui-hum">--%</div>
+                        <div class="hum-bars" id="ui-hum-bars"></div>
                     </div>
-                    <div class="precip-circle">
-                        <span class="val" id="ui-precip">0</span>
-                        <span class="unit">ملم</span>
-                    </div>
-                    <div class="sub-value" style="text-align: center; margin-top: 10px;">خلال 24 ساعة</div>
-                    <div class="geo-insight" id="geo-precip"><i class="fas fa-microscope"></i> الانزلاقات الطينية.</div>
+                    <div class="sub-value">نقطة الندى: <span id="ui-dew">--°</span></div>
                 </div>
 
                 <div class="msn-card">
-                    <div class="msn-card-header">
-                        <h3 class="msn-card-title">إمكانية الرؤية</h3>
-                        <i class="fas fa-eye msn-card-icon"></i>
-                    </div>
-                    <div class="vis-bars" id="ui-vis-bars">
-                        <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
-                    </div>
-                    <div style="text-align: center; margin-top: 15px;">
-                        <div class="main-value" style="font-size: 28px;"><span id="ui-vis">--</span> <span style="font-size: 14px;">كم</span></div>
-                    </div>
-                    <div class="geo-insight" id="geo-vis"><i class="fas fa-microscope"></i> الرصد البصري.</div>
-                </div>
-
-                <!-- إصلاح جذرى لقوس AQI بواسطة SVG -->
-                <div class="msn-card">
-                    <div class="msn-card-header">
-                        <h3 class="msn-card-title">مؤشر جودة الهواء (AQI)</h3>
-                        <i class="fas fa-smog msn-card-icon"></i>
-                    </div>
+                    <div class="msn-card-header"><h3 class="msn-card-title">مؤشر جودة الهواء (AQI)</h3><i class="fas fa-smog msn-card-icon"></i></div>
                     <div class="svg-gauge-container">
                         <svg viewBox="0 0 100 50" class="svg-gauge">
                             <defs>
                                 <linearGradient id="aqiGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                                     <stop offset="0%" stop-color="#10b981"/>
-                                    <stop offset="50%" stop-color="#fbbf24"/>
+                                    <stop offset="33%" stop-color="#fbbf24"/>
+                                    <stop offset="66%" stop-color="#f97316"/>
                                     <stop offset="100%" stop-color="#ef4444"/>
                                 </linearGradient>
                             </defs>
-                            <path class="svg-arc-bg" d="M 10 45 A 35 35 0 0 1 90 45" />
-                            <path class="svg-arc-val" id="svg-aqi-path" stroke="url(#aqiGrad)" d="M 10 45 A 35 35 0 0 1 90 45" />
+                            <path class="svg-arc-bg" d="M 10 40 A 30 30 0 0 1 90 40" />
+                            <path class="svg-arc-val" id="svg-aqi-path" stroke="url(#aqiGrad)" d="M 10 40 A 30 30 0 0 1 90 40" />
                         </svg>
-                        <div class="arc-value" id="ui-aqi">--</div>
+                        <div class="arc-value" id="ui-aqi" style="color:var(--text-light);">--</div>
                     </div>
-                    <div class="geo-insight" id="geo-aqi"><i class="fas fa-microscope"></i> الجسيمات العالقة.</div>
                 </div>
 
-                <!-- إصلاح جذرى لقوس UV بواسطة SVG -->
                 <div class="msn-card">
-                    <div class="msn-card-header">
-                        <h3 class="msn-card-title">أشعة فوق البنفسجية</h3>
-                        <i class="fas fa-sun msn-card-icon" style="color: var(--accent-orange);"></i>
-                    </div>
+                    <div class="msn-card-header"><h3 class="msn-card-title">الأشعة فوق البنفسجية</h3><i class="fas fa-sun msn-card-icon" style="color:var(--accent-orange);"></i></div>
                     <div class="svg-gauge-container">
                         <svg viewBox="0 0 100 50" class="svg-gauge">
                             <defs>
                                 <linearGradient id="uvGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                                     <stop offset="0%" stop-color="#10b981"/>
-                                    <stop offset="33%" stop-color="#fbbf24"/>
-                                    <stop offset="66%" stop-color="#ef4444"/>
+                                    <stop offset="50%" stop-color="#fbbf24"/>
                                     <stop offset="100%" stop-color="#a855f7"/>
                                 </linearGradient>
                             </defs>
-                            <path class="svg-arc-bg" d="M 10 45 A 35 35 0 0 1 90 45" />
-                            <path class="svg-arc-val" id="svg-uv-path" stroke="url(#uvGrad)" d="M 10 45 A 35 35 0 0 1 90 45" />
+                            <path class="svg-arc-bg" d="M 10 40 A 30 30 0 0 1 90 40" />
+                            <path class="svg-arc-val" id="svg-uv-path" stroke="url(#uvGrad)" d="M 10 40 A 30 30 0 0 1 90 40" />
                         </svg>
                         <div class="arc-value" id="ui-uv">--</div>
                     </div>
-                    <div class="geo-insight" id="geo-uv"><i class="fas fa-microscope"></i> الإشعاع الشمسي.</div>
                 </div>
 
                 <div class="msn-card">
-                    <div class="msn-card-header"><h3 class="msn-card-title">الشمس</h3></div>
-                    <div class="astro-path sun-path"><i class="fas fa-sun astro-icon sun-icon"></i></div>
+                    <div class="msn-card-header"><h3 class="msn-card-title">هطول الأمطار (التراكمي)</h3><i class="fas fa-cloud-showers-heavy msn-card-icon"></i></div>
+                    <div class="main-value" id="ui-precip">-- <span style="font-size:16px;">ملم</span></div>
+                    <div class="sub-value">التأثير المباشر على إجهاد القص للتربة.</div>
+                </div>
+
+                <div class="msn-card">
+                    <div class="msn-card-header"><h3 class="msn-card-title">الضغط الجوي</h3><i class="fas fa-compress-arrows-alt msn-card-icon"></i></div>
+                    <div class="main-value" id="ui-press">-- <span style="font-size:16px;">hPa</span></div>
+                    <div class="sub-value">مؤشر ديناميكية الغازات الأرضية.</div>
+                </div>
+
+                <div class="msn-card">
+                    <div class="msn-card-header"><h3 class="msn-card-title">الرؤية الأفقية</h3><i class="fas fa-eye msn-card-icon"></i></div>
+                    <div class="vis-bars" id="ui-vis-bars">
+                        <div class="vis-bar" style="width:40%"></div><div class="vis-bar" style="width:60%"></div>
+                        <div class="vis-bar" style="width:80%"></div><div class="vis-bar" style="width:100%"></div>
+                    </div>
+                    <div class="main-value" style="text-align:center; margin-top:10px;" id="ui-vis">-- <span style="font-size:16px;">كم</span></div>
+                </div>
+
+                <div class="msn-card">
+                    <div class="msn-card-header"><h3 class="msn-card-title">مسار الشمس (التشميس)</h3><i class="fas fa-clock msn-card-icon"></i></div>
+                    <div class="astro-path"><i class="fas fa-sun astro-icon"></i></div>
                     <div class="astro-times"><span>الغروب: <span id="ui-sunset">--</span></span><span>الشروق: <span id="ui-sunrise">--</span></span></div>
                 </div>
+            </div>
 
-                <div class="msn-card">
-                    <div class="msn-card-header"><h3 class="msn-card-title">القمر</h3></div>
-                    <div class="astro-path moon-path"><i class="fas fa-moon astro-icon moon-icon"></i></div>
-                    <div class="astro-times"><span>أفول: <span id="ui-moonset">--</span></span><span>طلوع: <span id="ui-moonrise">--</span></span></div>
-                </div>
-
-                <div class="msn-card">
-                    <div class="msn-card-header"><h3 class="msn-card-title">الضغط الجوي</h3></div>
-                    <div class="press-slider"><div class="press-slider-thumb" id="ui-press-thumb" style="left: 50%;"></div></div>
-                    <div style="text-align: center; margin-top: 15px;">
-                        <div class="main-value" style="font-size: 28px;" id="ui-press">--</div>
-                        <div class="sub-value">مليبار (hPa)</div>
+            <!-- ================= المحرك الجيولوجي الخبير (Expert System) ================= -->
+            <div class="expert-system-card" id="expert-system">
+                <div class="expert-title"><i class="fas fa-brain"></i> التحليل الجيولوجي والبيئي الآلي (النظام الخبير)</div>
+                <div class="expert-grid">
+                    <div class="expert-box">
+                        <h4><i class="fas fa-mountain"></i> الاستدلال الجيوتقني والهندسي</h4>
+                        <p id="exp-geotech">جاري معالجة البيانات وبناء المصفوفة...</p>
                     </div>
-                    <div class="geo-insight" id="geo-press"><i class="fas fa-microscope"></i> الغازات الأرضية.</div>
+                    <div class="expert-box">
+                        <h4><i class="fas fa-hard-hat"></i> الصحة والسلامة المهنية للحقل</h4>
+                        <p id="exp-health">جاري معالجة البيانات وبناء المصفوفة...</p>
+                    </div>
+                    <div class="expert-box">
+                        <h4><i class="fas fa-leaf"></i> الغلاف الحيوي والأنشطة (صيد/زراعة)</h4>
+                        <p id="exp-bio">جاري معالجة البيانات وبناء المصفوفة...</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- ================= الرسم البياني الشامل (الماضي والمستقبل) ================= -->
+            <!-- ================= الرسم البياني الشامل ================= -->
             <div class="chart-card" id="chart-card">
                 <div class="chart-tabs">
-                    <button class="chart-tab active" onclick="updateChart('temp', this)">درجات الحرارة</button>
-                    <button class="chart-tab" onclick="updateChart('wind', this)">سرعة الرياح</button>
-                    <button class="chart-tab" onclick="updateChart('precip', this)">الأمطار والرطوبة</button>
+                    <button class="chart-tab active" onclick="updateChart('temp', this)">التباين الحراري (التجوية)</button>
+                    <button class="chart-tab" onclick="updateChart('wind', this)">سرعة الرياح (التعرية)</button>
+                    <button class="chart-tab" onclick="updateChart('precip', this)">الأمطار (القص والانزلاق)</button>
                 </div>
-                <div style="height: 250px;">
-                    <canvas id="mainChart"></canvas>
-                </div>
+                <div style="height: 280px;"><canvas id="mainChart"></canvas></div>
             </div>
 
+            <!-- ================= أدوات الحقل ================= -->
             <div class="tools-card">
-                <h3 class="msn-card-title" style="margin-top:0;"><i class="fas fa-toolbox"></i> توثيق حقلي إضافي</h3>
-                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                    <button class="btn" style="background: #334155; padding: 10px;" onclick="startCamera()"><i class="fas fa-camera"></i> صورة</button>
-                    <button class="btn" style="background: #334155; padding: 10px;" onclick="startMicrophone()"><i class="fas fa-microphone"></i> ضوضاء</button>
+                <div class="expert-title"><i class="fas fa-toolbox"></i> توثيق حقلي إضافي (مرفقات التقرير)</div>
+                <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                    <button class="btn" style="background: rgba(255,255,255,0.1); border:1px solid #334155;" onclick="startCamera()"><i class="fas fa-camera"></i> التقاط صورة للانتهاك</button>
+                    <button class="btn" style="background: rgba(255,255,255,0.1); border:1px solid #334155;" onclick="startMicrophone()"><i class="fas fa-microphone"></i> قياس التلوث الضوضائي</button>
                 </div>
                 <video id="video-stream" autoplay playsinline></video>
                 <canvas id="photo-canvas"></canvas>
-                <button class="btn btn-orange" id="snap-btn" style="display:none; margin-top:0;" onclick="takeSnapshot()">التقاط</button>
-                <div id="media-status" style="font-size: 13px; color: var(--accent-green); margin-top: 5px;"></div>
+                <button class="btn btn-orange" id="snap-btn" style="display:none; margin-top:0;" onclick="takeSnapshot()">تثبيت الصورة</button>
+                <div id="media-status" style="font-size: 14px; color: var(--accent-green); margin-top: 10px; font-weight:bold;"></div>
             </div>
 
-            <button class="btn btn-orange" style="margin-bottom: 40px; padding: 18px;" onclick="generateSilentPDF()">
-                <i class="fas fa-file-pdf"></i> تحميل التقرير الجيولوجي المباشر (PDF)
+            <button class="btn btn-orange" style="margin-bottom: 40px; padding: 20px; font-size:18px;" onclick="generateSilentPDF()">
+                <i class="fas fa-file-pdf"></i> حفظ وتنزيل التقرير الأكاديمي (PDF) صامتاً
             </button>
         </div>
     </div>
 
-    <!-- ================= التقرير الرسمي (الذي سيتم تحويله لـ PDF بصمت) ================= -->
-    <div id="printable-report-container" style="display:none; position: absolute; left:-9999px;">
+    <!-- ================= القالب المخفي للـ PDF ================= -->
+    <div id="printable-report-container">
         <div id="printable-report">
             <div class="pdf-header">
                 <h2>نظام شندل للمسح الميداني الجيولوجي</h2>
-                <h3 style="margin:5px 0;">التقرير البيئي والمناخي الشامل</h3>
-                <p id="pdf-date"></p>
+                <h3 style="margin:8px 0; color:#555;">تقرير الرصد الجيوتقني والبيئي الشامل</h3>
+                <p id="pdf-date" style="font-size:12px; color:#777;"></p>
             </div>
 
             <table class="pdf-table">
                 <tr><th>الجيولوجي المسؤول</th><td id="pdf-inspector"></td></tr>
-                <tr><th>الهدف من المسح</th><td id="pdf-type"></td></tr>
+                <tr><th>نطاق المسح</th><td id="pdf-type"></td></tr>
                 <tr><th>الإحداثيات الجغرافية</th><td id="pdf-gps"></td></tr>
             </table>
 
-            <h3 style="color:#0b1d3a; border-bottom: 1px solid #ccc; padding-bottom: 5px;">التفسير الجيولوجي الآلي</h3>
-            <table class="pdf-table" style="font-size: 12px;">
-                <tr><th>التجوية والتباين الحراري</th><td id="pdf-note-temp"></td></tr>
-                <tr><th>التعرية الريحية وزحف الملوثات</th><td id="pdf-note-wind"></td></tr>
-                <tr><th>التجوية الكيميائية والانزلاقات</th><td id="pdf-note-hum"></td></tr>
-                <tr><th>الرؤية المساحية وجودة الهواء</th><td id="pdf-note-aqi"></td></tr>
+            <h3 style="color:#0b1d3a; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top:30px;">1. تحليل النظام الخبير (AI Expert Analysis)</h3>
+            <table class="pdf-table">
+                <tr><th>الاستدلال الجيوتقني والهندسي</th><td id="pdf-exp-geotech" class="pdf-expert-text"></td></tr>
+                <tr><th>الصحة والسلامة المهنية</th><td id="pdf-exp-health" class="pdf-expert-text"></td></tr>
+                <tr><th>التأثير على الغلاف الحيوي</th><td id="pdf-exp-bio" class="pdf-expert-text"></td></tr>
             </table>
 
-            <h3 style="color:#0b1d3a; border-bottom: 1px solid #ccc; padding-bottom: 5px;">البيانات المناخية الخام (Raw Data)</h3>
+            <h3 style="color:#0b1d3a; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top:30px;">2. البيانات المناخية الخام (Raw Data)</h3>
             <table class="pdf-table" style="text-align: center;">
                 <tr>
-                    <td><strong>الحرارة:</strong> <br><span id="pdf-val-temp"></span></td>
-                    <td><strong>الرياح:</strong> <br><span id="pdf-val-wind"></span></td>
-                    <td><strong>الرطوبة:</strong> <br><span id="pdf-val-hum"></span></td>
-                    <td><strong>جودة الهواء:</strong> <br><span id="pdf-val-aqi"></span></td>
+                    <td><strong>الحرارة العظمى/الصغرى:</strong> <br><span id="pdf-val-temp"></span></td>
+                    <td><strong>الرياح وزحف الملوثات:</strong> <br><span id="pdf-val-wind"></span></td>
+                    <td><strong>الرطوبة النسبية:</strong> <br><span id="pdf-val-hum"></span></td>
+                    <td><strong>جودة الهواء (AQI):</strong> <br><span id="pdf-val-aqi"></span></td>
                 </tr>
                 <tr>
-                    <td><strong>الرؤية:</strong> <br><span id="pdf-val-vis"></span></td>
+                    <td><strong>الرؤية المساحية:</strong> <br><span id="pdf-val-vis"></span></td>
                     <td><strong>الضغط الجوي:</strong> <br><span id="pdf-val-press"></span></td>
-                    <td><strong>الأمطار:</strong> <br><span id="pdf-val-precip"></span></td>
-                    <td><strong>الأشعة (UV):</strong> <br><span id="pdf-val-uv"></span></td>
+                    <td><strong>الأمطار (القص):</strong> <br><span id="pdf-val-precip"></span></td>
+                    <td><strong>الإشعاع (UV):</strong> <br><span id="pdf-val-uv"></span></td>
                 </tr>
             </table>
 
             <div class="pdf-img-box">
                 <img id="pdf-img" src="" style="display: none;">
-                <p id="pdf-audio" style="font-size: 12px; margin-top: 5px; font-weight:bold;"></p>
+                <p id="pdf-audio" style="font-size: 14px; margin-top: 10px; font-weight:bold; color:#d97706;"></p>
             </div>
             
             <div class="pdf-qr" id="pdf-qrcode"></div>
@@ -471,12 +406,12 @@
         let capturedImage = "";
         let audioMax = "";
         let mainChartObj = null;
-        let chartDataStore = {}; // لتخزين بيانات المرتسمات
+        let chartDataStore = {}; 
 
         async function startFullScan() {
             const btn = document.getElementById('api-btn');
             const msg = document.getElementById('status-msg');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري المسح وجمع البيانات...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري المسح وتحليل البيانات الجيولوجية...';
             msg.innerText = "";
 
             if (navigator.geolocation) {
@@ -485,11 +420,11 @@
                     finalLng = position.coords.longitude;
                     
                     document.getElementById('dashboard-grid').style.display = 'grid';
+                    document.getElementById('expert-system').style.display = 'block';
                     document.getElementById('chart-card').style.display = 'block';
 
                     try {
-                        // طلب 7 أيام سابقة + 7 أيام قادمة
-                        let weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${finalLat}&longitude=${finalLng}&current=temperature_2m,apparent_temperature,relative_humidity_2m,dew_point_2m,precipitation,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_direction_10m,wind_gusts_10m&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_sum,wind_speed_10m_max&timezone=auto&past_days=7&forecast_days=7`);
+                        let weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${finalLat}&longitude=${finalLng}&current=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation,surface_pressure,cloud_cover,visibility,wind_speed_10m,wind_direction_10m,wind_gusts_10m&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_sum,wind_speed_10m_max&timezone=auto&past_days=7&forecast_days=7`);
                         let wData = await weatherRes.json();
                         
                         let aqiRes = await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${finalLat}&longitude=${finalLng}&current=european_aqi`);
@@ -497,34 +432,29 @@
 
                         let curr = wData.current;
                         let daily = wData.daily;
+                        let tMax = daily.temperature_2m_max[7];
+                        let tMin = daily.temperature_2m_min[7];
+                        let tempDiff = tMax - tMin;
 
-                        // ================= 1. تعبئة الواجهة (UI) =================
-                        document.getElementById('ui-cloud-cov').innerText = curr.cloud_cover + "%";
-                        document.getElementById('ui-cloud-desc').innerText = curr.cloud_cover > 50 ? "غائم" : "صافية";
-
+                        // ================= 1. تعبئة الأرقام بالواجهة =================
                         document.getElementById('ui-temp-actual').innerText = curr.temperature_2m + "°";
-                        document.getElementById('ui-temp-feels').innerText = curr.apparent_temperature + "°";
-                        document.getElementById('ui-temp-min').innerText = daily.temperature_2m_min[7] + "°"; // اندكس 7 هو اليوم الحالي
-                        document.getElementById('ui-temp-factor').innerText = curr.wind_speed_10m > 15 ? "الرياح" : "الرطوبة";
-                        document.getElementById('ui-temp-thumb').style.left = Math.min(Math.max((curr.temperature_2m + 10) / 60 * 100, 0), 100) + "%";
+                        document.getElementById('ui-temp-diff').innerText = tempDiff.toFixed(1);
 
                         document.getElementById('ui-hum').innerText = curr.relative_humidity_2m + "%";
                         document.getElementById('ui-dew').innerText = curr.dew_point_2m + "°";
                         let humBarsHtml = '';
-                        let filledBars = Math.round(curr.relative_humidity_2m / 10);
-                        for(let i=0; i<10; i++) {
-                            humBarsHtml += `<div class="hum-bar ${i < filledBars ? 'active' : ''}" style="height: ${20 + (i*3)}px"></div>`;
-                        }
+                        let filledBars = Math.round(curr.relative_humidity_2m / 20); // 5 bars
+                        for(let i=0; i<5; i++) humBarsHtml += `<div class="hum-bar ${i < filledBars ? 'active' : ''}" style="height: ${20 + (i*5)}px"></div>`;
                         document.getElementById('ui-hum-bars').innerHTML = humBarsHtml;
 
                         document.getElementById('ui-wind-speed').innerHTML = `${curr.wind_speed_10m}<br><small>كم/س</small>`;
-                        document.getElementById('ui-wind-gust').innerText = curr.wind_gusts_10m || curr.wind_speed_10m;
                         document.getElementById('ui-wind-arrow').style.transform = `rotate(${curr.wind_direction_10m + 180}deg)`;
 
                         document.getElementById('ui-precip').innerText = curr.precipitation;
+                        document.getElementById('ui-press').innerText = curr.surface_pressure;
+                        
                         let visKm = (curr.visibility / 1000).toFixed(1);
                         document.getElementById('ui-vis').innerText = visKm;
-                        
                         let visBars = document.querySelectorAll('.vis-bar');
                         visBars.forEach(b => b.style.backgroundColor = 'rgba(255,255,255,0.1)');
                         if(visKm > 2) visBars[0].style.backgroundColor = 'var(--accent-green)';
@@ -532,66 +462,96 @@
                         if(visKm > 8) visBars[2].style.backgroundColor = 'var(--accent-green)';
                         if(visKm > 10) visBars[3].style.backgroundColor = 'var(--accent-green)';
 
-                        // معالجة أقواس SVG
+                        // SVG AQI Logic (EPA standard colors approximation)
                         let aqi = aqiData.current.european_aqi;
                         document.getElementById('ui-aqi').innerText = aqi;
-                        let aqiOffset = 157 - (157 * Math.min(aqi, 200) / 200); // Max scale 200
+                        let aqiOffset = 157 - (157 * Math.min(aqi, 150) / 150);
                         document.getElementById('svg-aqi-path').style.strokeDashoffset = aqiOffset;
 
+                        // SVG UV Logic
                         let uv = daily.uv_index_max[7] || 0;
                         document.getElementById('ui-uv').innerText = uv;
-                        let uvOffset = 157 - (157 * Math.min(uv, 12) / 12); // Max scale 12
+                        let uvOffset = 157 - (157 * Math.min(uv, 11) / 11);
                         document.getElementById('svg-uv-path').style.strokeDashoffset = uvOffset;
 
                         document.getElementById('ui-sunrise').innerText = daily.sunrise[7].split("T")[1];
                         document.getElementById('ui-sunset').innerText = daily.sunset[7].split("T")[1];
-                        document.getElementById('ui-moonrise').innerText = "18:45"; 
-                        document.getElementById('ui-moonset').innerText = "05:30";
 
-                        document.getElementById('ui-press').innerText = curr.surface_pressure;
-                        document.getElementById('ui-press-thumb').style.left = Math.min(Math.max((curr.surface_pressure - 980) / 60 * 100, 0), 100) + "%";
-
-                        // ================= 2. تخزين بيانات الرسم البياني =================
-                        // تمييز يوم "اليوم" في التسميات
-                        let labels = daily.time.map((d, index) => index === 7 ? "اليوم" : d.substring(5)); 
-                        
+                        // ================= 2. بيانات المرتسم البياني =================
+                        let labels = daily.time.map((d, idx) => idx === 7 ? "اليوم" : d.substring(5)); 
                         chartDataStore = {
                             labels: labels,
                             temp: [
-                                { label: 'العظمى (°C)', data: daily.temperature_2m_max, borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)' },
-                                { label: 'الصغرى (°C)', data: daily.temperature_2m_min, borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.1)' }
+                                { label: 'العظمى (°C)', data: daily.temperature_2m_max, borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.15)' },
+                                { label: 'الصغرى (°C)', data: daily.temperature_2m_min, borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.15)' }
                             ],
-                            wind: [
-                                { label: 'أقصى سرعة رياح (كم/س)', data: daily.wind_speed_10m_max, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)' }
-                            ],
-                            precip: [
-                                { label: 'هطول الأمطار التراكمي (ملم)', data: daily.precipitation_sum, borderColor: '#fbbf24', backgroundColor: 'rgba(251, 191, 36, 0.1)' }
-                            ]
+                            wind: [ { label: 'أقصى سرعة (كم/س)', data: daily.wind_speed_10m_max, borderColor: '#fbbf24', backgroundColor: 'rgba(251, 191, 36, 0.15)' } ],
+                            precip: [ { label: 'هطول الأمطار (ملم)', data: daily.precipitation_sum, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.15)' } ]
                         };
-                        
-                        // رسم الافتراضي (الحرارة)
                         drawMainChart(chartDataStore.labels, chartDataStore.temp);
 
-                        // ================= 3. المحرك الجيولوجي =================
-                        let diff = daily.temperature_2m_max[7] - daily.temperature_2m_min[7];
-                        let noteTemp = diff > 15 ? `تباين حراري عالي (${diff}°). يعجل من تكسر الصخور (Physical Weathering).` : "تباين حراري ضمن المعدل الطبيعي.";
-                        let noteWind = curr.wind_speed_10m > 15 ? `نشاط ريحي. خطر التعرية الريحية (Aeolian) وارد. اتجاه زحف الملوثات نحو الزاوية ${curr.wind_direction_10m}°.` : "سرعة الرياح مستقرة. لا خطر لزحف الكثبان.";
-                        let noteHum = curr.relative_humidity_2m > 60 || curr.precipitation > 0 ? "رطوبة متوفرة. تنشيط للتجوية الكيميائية (التأكسد/الإذابة). تحذير من انخفاض القص للتربة." : "سيادة الجفاف. التجوية الميكانيكية هي السائدة.";
-                        let noteAqi = aqi > 50 || visKm < 5 ? `مستوى الملوثات يعيق الرؤية (${visKm} كم). ظروف غير مثالية للرفع المساحي.` : `جودة هواء ممتازة ورؤية واضحة (${visKm} كم). ظروف مثالية للمسح.`;
+                        // ================= 3. النظام الخبير (التصحيح العلمي الدقيق) =================
                         
-                        document.getElementById('geo-temp-diff').innerHTML = `<i class="fas fa-microscope"></i> ${noteTemp}`;
-                        document.getElementById('geo-wind').innerHTML = `<i class="fas fa-microscope"></i> ${noteWind}`;
-                        document.getElementById('geo-hum').innerHTML = `<i class="fas fa-microscope"></i> ${noteHum}`;
-                        document.getElementById('geo-vis').innerHTML = `<i class="fas fa-microscope"></i> ${noteAqi}`;
-                        
-                        // بيانات الـ PDF
-                        document.getElementById('pdf-note-temp').innerText = noteTemp;
-                        document.getElementById('pdf-note-wind').innerText = noteWind;
-                        document.getElementById('pdf-note-hum').innerText = noteHum;
-                        document.getElementById('pdf-note-aqi').innerText = noteAqi;
-                        
-                        document.getElementById('pdf-val-temp').innerText = curr.temperature_2m + "°";
-                        document.getElementById('pdf-val-wind').innerText = curr.wind_speed_10m + " كم/س";
+                        // ก. الجيوتقني والهندسي (Geotechnical)
+                        let geoText = "";
+                        // 1. التعرية الريحية (Aeolian)
+                        if (curr.wind_speed_10m >= 25) {
+                            let driftDir = (curr.wind_direction_10m + 180) % 360;
+                            geoText += `<span class="highlight">التعرية الريحية:</span> طاقة رياح عالية تتجاوز عتبة الحركة. خطر زحف الرمال وتطاير الملوثات باتجاه الزاوية ${driftDir}°. يوصى بتأجيل الرفع المساحي الدقيق.<br><br>`;
+                        } else {
+                            geoText += `<span class="highlight">التعرية الريحية:</span> سرعة الرياح دون عتبة الزحف، استقرار في الطبقة السطحية للمقالع.<br><br>`;
+                        }
+                        // 2. إجهاد القص والانزلاقات (Shear Strength - Precipitation)
+                        if (curr.precipitation > 0 || daily.precipitation_sum[7] > 2) {
+                            geoText += `<span class="highlight">إجهاد القص:</span> هطول أمطار مسجل. تشبع مسامي متوقع للتربة يؤدي لانخفاض حاد في إجهاد القص. تحذير من انزلاقات الكتل الترابية (Mass Movement) في المنحدرات ومقاطع الحفر.<br><br>`;
+                        } else {
+                            geoText += `<span class="highlight">إجهاد القص:</span> لا يوجد هطول أمطار. محتوى رطوبي منخفض في التربة، استقرار ميكانيكي عالي لجدران المقالع.<br><br>`;
+                        }
+                        // 3. التجوية الفيزيائية (Physical Weathering - Temp Diff)
+                        if (tempDiff > 15) {
+                            geoText += `<span class="highlight">التجوية الفيزيائية:</span> تباين حراري كبير جداً (${tempDiff.toFixed(1)}°). إجهاد تمدد وانكماش حاد يعجل من تكسر الصخور والمنشآت الخرسانية.`;
+                        }
+
+                        // ข. الصحة والسلامة المهنية (Health & Safety)
+                        let healthText = "";
+                        if (uv > 8 && curr.cloud_cover < 30) {
+                            healthText += `<span class="highlight">الإشعاع الشمسي:</span> إشعاع فوق بنفسجي حارق (UV=${uv}). خطر حروق الجلد خلال وقت قصير. العمل الحقلي يتطلب ملابس واقية ونظارات مستقطبة.<br><br>`;
+                        }
+                        if (aqi > 100 && curr.surface_pressure > 1010 && curr.wind_speed_10m < 10) {
+                            healthText += `<span class="highlight">الانحباس الحراري:</span> ضغط مرتفع وسكون بالرياح. ظاهرة الانقلاب الحراري تحبس الجسيمات السامة (PM10) قرب السطح. خطر تنفسي عالٍ، وجوب استخدام كمامات P95 للكوادر.<br><br>`;
+                        } else if (aqi <= 50) {
+                            healthText += `<span class="highlight">جودة الهواء:</span> هواء نقي ومثالي للتنفس الميداني العميق.<br><br>`;
+                        }
+                        // الغازات الأرضية (Radon/Methane)
+                        if (curr.surface_pressure < 1000) {
+                            healthText += `<span class="highlight">الغازات الأرضية:</span> هبوط في الضغط الجوي. قد يحفز هذا الانخفاض تحرر غازات الرادون أو الميثان من الشقوق، خطر في الأماكن المغلقة كالأنفاق والآبار.`;
+                        } else {
+                            healthText += `<span class="highlight">الغازات الأرضية:</span> ضغط جوي مستقر، استقرار في انبعاثات الشقوق الصخرية.`;
+                        }
+
+                        // ค. الغلاف الحيوي والزراعة (Biosphere)
+                        let bioText = "";
+                        if (curr.precipitation === 0 && curr.temperature_2m > 35) {
+                            bioText += `<span class="highlight">التبخر والنتح:</span> معدلات تبخر قاسية. إجهاد مائي عالي على الغطاء النباتي، تفاقم الجفاف السطحي وزيادة تشققات التربة (Desiccation Cracks).<br><br>`;
+                        }
+                        if (curr.surface_pressure < 1008 && curr.surface_pressure > 990) {
+                            bioText += `<span class="highlight">الحياة الفطرية:</span> تذبذب/هبوط في الضغط الجوي. نشاط عالي متوقع في سلوك تغذية الأسماك والحيوانات البرية (فرصة استكشاف/صيد ممتازة).`;
+                        } else {
+                            bioText += `<span class="highlight">الحياة الفطرية:</span> استقرار بارومتري، نشاط روتيني للحياة الفطرية في المنطقة.`;
+                        }
+
+                        // طباعة المخرجات
+                        document.getElementById('exp-geotech').innerHTML = geoText;
+                        document.getElementById('exp-health').innerHTML = healthText;
+                        document.getElementById('exp-bio').innerHTML = bioText;
+
+                        // تجهيز بيانات الـ PDF
+                        document.getElementById('pdf-exp-geotech').innerHTML = geoText;
+                        document.getElementById('pdf-exp-health').innerHTML = healthText;
+                        document.getElementById('pdf-exp-bio').innerHTML = bioText;
+
+                        document.getElementById('pdf-val-temp').innerText = tMax + "° / " + tMin + "°";
+                        document.getElementById('pdf-val-wind').innerText = curr.wind_speed_10m + " كم/س (زحف لـ " + ((curr.wind_direction_10m + 180) % 360) + "°)";
                         document.getElementById('pdf-val-hum').innerText = curr.relative_humidity_2m + "%";
                         document.getElementById('pdf-val-aqi').innerText = aqi + " AQI";
                         document.getElementById('pdf-val-vis').innerText = visKm + " كم";
@@ -599,58 +559,42 @@
                         document.getElementById('pdf-val-precip').innerText = curr.precipitation + " ملم";
                         document.getElementById('pdf-val-uv').innerText = uv + " UV";
 
-                        btn.innerHTML = '<i class="fas fa-check-circle"></i> تم بناء اللوحة بنجاح';
-                        btn.style.background = "linear-gradient(45deg, #059669, #10b981)";
+                        btn.innerHTML = '<i class="fas fa-check-circle"></i> اكتمل التحليل الأكاديمي الشامل';
+                        btn.style.background = "linear-gradient(135deg, #059669, #10b981)";
 
                     } catch(e) {
-                        msg.innerText = "خطأ في الاتصال بالخوادم.";
+                        msg.innerText = "خطأ في الاتصال بقواعد البيانات العالمية.";
                         btn.innerHTML = 'إعادة المحاولة';
                     }
-                }, () => { msg.innerText = "يرجى تفعيل GPS."; }, {enableHighAccuracy: true});
+                }, () => { msg.innerText = "يرجى تفعيل صلاحية الـ GPS."; }, {enableHighAccuracy: true});
             }
         }
 
-        // دالة تحديث التبويبات للرسم البياني
         function updateChart(type, btnElement) {
             document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
             btnElement.classList.add('active');
             drawMainChart(chartDataStore.labels, chartDataStore[type]);
         }
 
-        // دالة رسم Chart.js
         function drawMainChart(labels, datasets) {
             const ctx = document.getElementById('mainChart').getContext('2d');
             if(mainChartObj) mainChartObj.destroy();
             
-            // إضافة خاصية تلوين لمنطقة "اليوم" عبر بلجن بسيط
             const todayPlugin = {
                 id: 'todayPlugin',
                 beforeDraw: (chart) => {
                     const ctx = chart.canvas.getContext('2d');
                     const xAxis = chart.scales.x;
                     const yAxis = chart.scales.y;
-                    const todayIndex = 7; // الاندكس 7 هو اليوم
-                    if(xAxis.getPixelForTick(todayIndex)) {
-                        const x = xAxis.getPixelForTick(todayIndex);
-                        ctx.save();
-                        ctx.beginPath();
-                        ctx.moveTo(x, yAxis.top);
-                        ctx.lineTo(x, yAxis.bottom);
-                        ctx.lineWidth = 2;
-                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-                        ctx.setLineDash([5, 5]);
-                        ctx.stroke();
-                        ctx.restore();
+                    if(xAxis.getPixelForTick(7)) {
+                        const x = xAxis.getPixelForTick(7);
+                        ctx.save(); ctx.beginPath(); ctx.moveTo(x, yAxis.top); ctx.lineTo(x, yAxis.bottom);
+                        ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'; ctx.setLineDash([5, 5]); ctx.stroke(); ctx.restore();
                     }
                 }
             };
 
-            // تفعيل fill للـ datasets
-            let mappedDatasets = datasets.map(ds => {
-                ds.fill = true;
-                ds.tension = 0.4;
-                return ds;
-            });
+            let mappedDatasets = datasets.map(ds => { ds.fill = true; ds.tension = 0.4; return ds; });
 
             mainChartObj = new Chart(ctx, {
                 type: 'line',
@@ -667,7 +611,7 @@
             });
         }
 
-        // أدوات الحقل
+        // ================= الكاميرا والصوت =================
         let video = document.getElementById('video-stream');
         let canvas = document.getElementById('photo-canvas');
         let ctxCamera = canvas.getContext('2d');
@@ -683,7 +627,7 @@
             video.style.display = 'none'; canvas.style.display = 'block';
             stream.getTracks().forEach(t => t.stop()); document.getElementById('snap-btn').style.display = 'none';
             capturedImage = canvas.toDataURL('image/jpeg');
-            document.getElementById('media-status').innerText = "تم إرفاق الصورة للتقرير.";
+            document.getElementById('media-status').innerText = "تم حفظ الصورة المشهدية بنجاح.";
         }
 
         let audioCtx, analyser, mic, processor, maxDb = 0;
@@ -700,59 +644,48 @@
                 let sum = arr.reduce((a, b) => a + b, 0);
                 let currentDb = Math.round((sum / arr.length) * 1.5);
                 if(currentDb > maxDb) maxDb = currentDb;
-                document.getElementById('media-status').innerText = `جاري القياس: ${currentDb} dB | الأقصى: ${maxDb} dB`;
+                document.getElementById('media-status').innerText = `المستوى الحالي: ${currentDb} dB | الأقصى: ${maxDb} dB`;
             };
             setTimeout(() => {
-                audioCtx.close();
-                audioMax = `أقصى مستوى ضوضاء مسجل بالموقع: ${maxDb} dB`;
-                document.getElementById('media-status').innerText = "تم تثبيت القياس وإرفاقه.";
+                audioCtx.close(); audioMax = `مستوى التلوث الضوضائي المسجل: ${maxDb} dB`;
+                document.getElementById('media-status').innerText = "تم تثبيت قياس الضوضاء بنجاح.";
             }, 5000); 
         }
 
         // ================= التوليد الصامت للـ PDF =================
         function generateSilentPDF() {
-            document.getElementById('media-status').innerText = "جاري تجميع التقرير وإنشاء الـ PDF... يرجى الانتظار ثواني";
+            document.getElementById('media-status').innerText = "جاري تجميع التقرير الهندسي وتنزيل الـ PDF بصمت... يرجى الانتظار.";
             
-            // تحديث بيانات التقرير
-            document.getElementById('pdf-date').innerText = "تاريخ التوثيق: " + new Date().toLocaleString('ar-IQ');
+            document.getElementById('pdf-date').innerText = "تاريخ التوثيق الأكاديمي: " + new Date().toLocaleString('ar-IQ');
             document.getElementById('pdf-inspector').innerText = document.getElementById('inspector-name').value;
             document.getElementById('pdf-type').innerText = document.getElementById('violation-type').value;
             document.getElementById('pdf-gps').innerText = finalLat !== 0 ? `${finalLat.toFixed(6)}, ${finalLng.toFixed(6)}` : "لم يحدد";
             
-            if(capturedImage) {
-                document.getElementById('pdf-img').src = capturedImage;
-                document.getElementById('pdf-img').style.display = 'inline-block';
-            }
-            if(audioMax) {
-                document.getElementById('pdf-audio').innerText = audioMax;
-            }
+            if(capturedImage) { document.getElementById('pdf-img').src = capturedImage; document.getElementById('pdf-img').style.display = 'inline-block'; }
+            if(audioMax) { document.getElementById('pdf-audio').innerText = audioMax; }
 
             document.getElementById("pdf-qrcode").innerHTML = "";
             new QRCode(document.getElementById("pdf-qrcode"), {
-                text: `Shandal System\nGeo: ${document.getElementById('inspector-name').value}\nLoc: ${finalLat}, ${finalLng}`,
+                text: `Shandal Geo-System\nInspector: ${document.getElementById('inspector-name').value}\nLoc: ${finalLat}, ${finalLng}`,
                 width: 90, height: 90
             });
 
-            // إظهار العنصر مؤقتاً للـ html2pdf (خارج الشاشة)
             const reportElement = document.getElementById('printable-report-container');
             reportElement.style.display = 'block';
 
-            // إعدادات مكتبة html2pdf
             const opt = {
-                margin:       0.3,
-                filename:     'Shandal_Geological_Report.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
+                margin:       0.4,
+                filename:     'Shandal_Expert_Geological_Report.pdf',
+                image:        { type: 'jpeg', quality: 1 },
                 html2canvas:  { scale: 2, useCORS: true },
                 jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
 
-            // بدء التوليد الصامت
             html2pdf().set(opt).from(document.getElementById('printable-report')).save().then(() => {
-                reportElement.style.display = 'none'; // إخفاء القالب مرة أخرى
-                document.getElementById('media-status').innerText = "تم تحميل التقرير (PDF) بنجاح!";
+                reportElement.style.display = 'none'; 
+                document.getElementById('media-status').innerText = "تم تنزيل التقرير الأكاديمي (PDF) بنجاح!";
             });
         }
     </script>
 </body>
 </html>
-
