@@ -7,7 +7,6 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -21,7 +20,6 @@
             --card-shadow: 0 12px 25px rgba(0,0,0,0.4);
         }
 
-        /* تم إضافة overflow-x: hidden لمنع اهتزاز الصفحة */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-main); color: var(--text-light); margin: 0; padding: 0; line-height: 1.6; overflow-x: hidden; }
         .main-ui { padding-bottom: 60px; }
         
@@ -65,8 +63,6 @@
         .msn-card-icon { font-size: 22px; color: var(--accent-blue); opacity: 0.9; }
         .main-value { font-size: 32px; font-weight: bold; line-height: 1.1; margin-bottom: 5px; font-family: system-ui, sans-serif;}
         .sub-value { font-size: 11px; color: var(--text-muted); }
-
-        /* تم إزالة transform لمنع الاهتزاز عند التمرير */
         .msn-card:hover { border-color: rgba(255,255,255,0.15); transition: all 0.3s ease;}
 
         /* الرسوميات المصغرة */
@@ -103,24 +99,57 @@
         .chart-tabs { display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; overflow-x: auto;}
         .chart-tab { background: none; border: none; color: var(--text-muted); font-size: 14px; font-weight: bold; cursor: pointer; padding: 8px 15px; white-space: nowrap;}
         .chart-tab.active { color: var(--accent-blue); border-bottom: 3px solid var(--accent-blue); }
-        
-        /* تم إضافة overflow: hidden لحل مشكلة اهتزاز الرسم البياني نهائياً */
         .chart-container { height: 300px; width: 100%; position: relative; overflow: hidden;}
 
-        /* ================= المختبر الحقلي المطور ================= */
+        /* ================= المختبر الحقلي ================= */
         .field-lab-card { display: none; border: 1px solid var(--accent-green); }
         .lab-gauge-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.05); margin-top: 15px;}
         .lab-analysis-box { background: rgba(16, 185, 129, 0.05); border-right: 4px solid var(--accent-green); padding: 15px; border-radius: 4px; margin-top: 15px; font-size: 13px; color: #e2e8f0; line-height: 1.7; display: none; text-align: right;}
         
         video, canvas { width: 100%; max-height: 300px; background: #000; border-radius: 8px; display: none; margin-bottom: 15px;}
         
-        /* القالب المخفي */
-        #printable-report-container { display:none; position: absolute; left:-9999px; }
-        #printable-report { background: white; color: black; padding: 40px; direction: rtl; width: 794px; font-family: 'Segoe UI', Arial, sans-serif;}
-        .pdf-header { text-align: center; border-bottom: 3px solid #0b1d3a; padding-bottom: 15px; margin-bottom: 25px; }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 13px; }
-        .pdf-table th, .pdf-table td { border: 1px solid #ccc; padding: 10px; text-align: right; vertical-align: top;}
-        .pdf-table th { background-color: #f0f0f0; color: #0b1d3a; width: 25%;}
+        /* ================= إعدادات الطباعة الأكاديمية الصارمة (لحل مشكلة الـ PDF) ================= */
+        #printable-report-container { display:none; }
+        
+        @media print {
+            body { 
+                background-color: white !important; 
+                color: black !important; 
+                overflow: visible !important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;
+            }
+            /* إخفاء واجهة التطبيق المظلمة تماماً عند الطباعة */
+            .main-ui { display: none !important; }
+            
+            /* إظهار تقرير الـ PDF الأبيض المنظم */
+            #printable-report-container { 
+                display: block !important; 
+                position: static !important; 
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            #printable-report { 
+                background: white !important; 
+                color: black !important; 
+                padding: 20px !important; 
+                direction: rtl !important; 
+                width: 100% !important; 
+                font-family: 'Segoe UI', Tahoma, Arial, sans-serif !important;
+            }
+            .pdf-header { text-align: center; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+            .pdf-header h2 { color: #000 !important; font-size: 22px; margin-bottom: 5px;}
+            .pdf-header h3 { color: #333 !important; font-size: 16px;}
+            
+            .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 14px; page-break-inside: avoid;}
+            .pdf-table th, .pdf-table td { border: 1px solid #000 !important; padding: 10px !important; text-align: right !important; color: #000 !important;}
+            .pdf-table th { background-color: #f0f0f0 !important; font-weight: bold; width: 30%;}
+            
+            h3 { color: #000 !important; border-bottom: 1px solid #000; padding-bottom: 5px; font-size: 18px;}
+            .pdf-expert-text { font-size: 13px; line-height: 1.6;}
+            .pdf-qr { text-align: center; margin-top: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -141,8 +170,8 @@
                     </div>
                     <div class="form-group">
                         <label>نطاق الدراسة الميدانية:</label>
-                        <select class="form-control">
-                            <option>مسح جيوتقني، بيئي، وهيدرولوجي شامل</option>
+                        <select class="form-control" id="violation-type">
+                            <option value="مسح جيوتقني، بيئي، وهيدرولوجي شامل">مسح جيوتقني، بيئي، وهيدرولوجي شامل</option>
                         </select>
                     </div>
                 </div>
@@ -164,8 +193,8 @@
                         </div>
                         <div class="flip-card-back">
                             <h4><i class="fas fa-microscope"></i> التحليل الأكاديمي (الحرارة)</h4>
-                            <p><strong>المعنى:</strong> قياس الطاقة الحركية لجزيئات الهواء المحيط.</p>
-                            <p><strong>التأثير الميداني:</strong> الارتفاع الشديد يزيد من إجهاد التمدد الحراري للأجهزة. التباين اليومي العالي (الفرق بين العظمى والصغرى) يسرع من عملية "التجوية الفيزيائية" وتكسر الصخور (Exfoliation).</p>
+                            <p><strong>المعنى:</strong> قياس الطاقة الحركية لجزيئات الهواء.</p>
+                            <p><strong>التأثير الميداني:</strong> التباين اليومي العالي (بين العظمى والصغرى) يسرع من "التجوية الفيزيائية" وتكسر الصخور. كما يسبب تمدداً في معدات الرفع المساحي الدقيقة.</p>
                             <div class="ref">المرجعية: ميكانيكا التجوية الصخرية.</div>
                         </div>
                     </div>
@@ -181,9 +210,9 @@
                         </div>
                         <div class="flip-card-back">
                             <h4><i class="fas fa-hard-hat"></i> بروتوكول السلامة (WBGT)</h4>
-                            <p><strong>المعنى:</strong> درجة حرارة البصيلة الرطبة الكروية؛ تدمج الحرارة، الرطوبة، الإشعاع، وسرعة الرياح.</p>
-                            <p><strong>التأثير:</strong> يحدد قدرة الجسم على تبريد نفسه. تجاوز العتبة يمنع الجري، تسلق الجبال، أو الحفر اليدوي الشاق لتفادي صدمات الإنهاك الحراري.</p>
-                            <div class="ref">المرجعية: OSHA & ACGIH الفيدرالية.</div>
+                            <p><strong>المعنى:</strong> مؤشر يدمج الحرارة، الرطوبة، الإشعاع، والرياح.</p>
+                            <p><strong>التأثير:</strong> يحدد قدرة جسم الجيولوجي على التبريد. تجاوز العتبة يمنع التسلق والحفر اليدوي الشاق لتفادي صدمات الإنهاك الحراري.</p>
+                            <div class="ref">المرجعية: بروتوكول OSHA الفيدرالي.</div>
                         </div>
                     </div>
                 </div>
@@ -197,8 +226,8 @@
                         </div>
                         <div class="flip-card-back">
                             <h4><i class="fas fa-fan"></i> الديناميكا الهوائية</h4>
-                            <p><strong>المعنى:</strong> القوة الحركية للكتل الهوائية واتجاهها.</p>
-                            <p><strong>التأثير الهندسي:</strong> السرعات العالية (أكثر من 25 كم/س) تزيد عزم الانقلاب لحفارات الآبار. وتسبب ضوضاء حركية (Motion Blur) تعيق دقة المسح بالطائرات (UAVs) والرفع الطبوغرافي.</p>
+                            <p><strong>المعنى:</strong> القوة الحركية للكتل الهوائية.</p>
+                            <p><strong>التأثير:</strong> الرياح العالية تزيد عزم الانقلاب لحفارات الآبار، وتسبب ضوضاء حركية (Motion Blur) تفسد دقة المسح الطبوغرافي بالطائرات المسيرة (UAVs).</p>
                             <div class="ref">المرجعية: الديناميكا الهندسية.</div>
                         </div>
                     </div>
@@ -213,9 +242,9 @@
                             <div style="font-size:9px; color:var(--text-muted); text-align:center; margin-top:10px;"><i class="fas fa-hand-pointer"></i> انقر للتفسير الأكاديمي</div>
                         </div>
                         <div class="flip-card-back">
-                            <h4><i class="fas fa-cloud-meatball"></i> التأثير الهيدرولوجي</h4>
-                            <p><strong>المعنى:</strong> نسبة تشبع الهواء ببخار الماء.</p>
-                            <p><strong>التأثير:</strong> الارتفاع المفرط ينشط "التجوية الكيميائية" (التأكسد/الإذابة) للصخور. كما يؤدي لتكثف الماء داخل الدوائر الإلكترونية للمستشعرات مما يوجب تفعيل عوازل (IP65).</p>
+                            <h4><i class="fas fa-water"></i> التأثير الهيدرولوجي</h4>
+                            <p><strong>المعنى:</strong> نسبة تشبع الهواء بالماء.</p>
+                            <p><strong>التأثير:</strong> الارتفاع ينشط "التجوية الكيميائية" للصخور. وتسبب تكثف الماء داخل مستشعرات الغاز البيئية مما يوجب تفعيل عوازل الحماية.</p>
                             <div class="ref">المرجعية: الكيمياء الجيولوجية.</div>
                         </div>
                     </div>
@@ -230,8 +259,8 @@
                         </div>
                         <div class="flip-card-back">
                             <h4><i class="fas fa-mask"></i> التلوث المادي</h4>
-                            <p><strong>المعنى:</strong> تركيز الجسيمات العالقة الدقيقة (PM2.5 / PM10).</p>
-                            <p><strong>التأثير:</strong> العواصف الترابية تشل المسح البصري. التدهور يتطلب ارتداء أجهزة تنفس (Respirators) ويهدد بانسداد مضخات أجهزة أخذ العينات البيئية مما يتسبب بـ (Zero-Drift).</p>
+                            <p><strong>المعنى:</strong> تركيز الجسيمات العالقة (PM2.5/PM10).</p>
+                            <p><strong>التأثير:</strong> العواصف الترابية تشل المسح البصري، وتتطلب أجهزة تنفس واقية، وتهدد بانسداد مضخات أجهزة أخذ العينات.</p>
                             <div class="ref">المرجعية: حماية البيئة EPA.</div>
                         </div>
                     </div>
@@ -247,8 +276,8 @@
                         </div>
                         <div class="flip-card-back">
                             <h4><i class="fas fa-binoculars"></i> المسح الطبوغرافي</h4>
-                            <p><strong>المعنى:</strong> أقصى مسافة يمكن للعين البشرية أو الأجهزة البصرية إدراكها بوضوح.</p>
-                            <p><strong>التأثير:</strong> انخفاض الرؤية يمنع الرفع المساحي باستخدام المحطات الشاملة (Total Stations)، ويزيد من خطورة التنقل الميداني بالمركبات في البيئات الوعرة أو الصحراوية.</p>
+                            <p><strong>المعنى:</strong> مسافة الإدراك البصري.</p>
+                            <p><strong>التأثير:</strong> انخفاض الرؤية يمنع الرفع المساحي الدقيق (Total Stations)، ويزيد من خطورة تنقل الفرق الميدانية في الصحاري والوديان.</p>
                             <div class="ref">المرجعية: بروتوكولات المساحة.</div>
                         </div>
                     </div>
@@ -264,8 +293,8 @@
                         </div>
                         <div class="flip-card-back">
                             <h4><i class="fas fa-water"></i> الهيدروميكانيكا</h4>
-                            <p><strong>المعنى:</strong> كمية المياه الساقطة المسببة للتشبع المسامي.</p>
-                            <p><strong>التأثير الجيوتقني:</strong> وفقاً لـ (مبدأ تيرزاغي)، زيادة ضغط ماء المسام تخفض "الإجهاد الفعال" للتربة بشكل حاد، مما يؤدي لانهيار المنحدرات الطينية (Landslides) وخنادق الحفر العميقة.</p>
+                            <p><strong>المعنى:</strong> كمية المياه الساقطة والمسببة للتشبع.</p>
+                            <p><strong>التأثير:</strong> زيادة ضغط ماء المسام تخفض "الإجهاد الفعال" للتربة (مبدأ تيرزاغي)، مؤدية لانهيار المنحدرات الطينية (Landslides).</p>
                             <div class="ref">المرجعية: ميكانيكا التربة Terzaghi.</div>
                         </div>
                     </div>
@@ -281,8 +310,8 @@
                         </div>
                         <div class="flip-card-back">
                             <h4><i class="fas fa-sort-amount-down"></i> انتقال الغازات</h4>
-                            <p><strong>المعنى:</strong> وزن عمود الهواء. تقلباته تحرك ظاهرة "الضخ البارومتري".</p>
-                            <p><strong>التأثير الميداني:</strong> الهبوط المفاجئ يسحب الغازات السامة (الرادون والميثان) من مسامات القشرة باتجاه السطح والأماكن المغلقة كالآبار. يمنع الدخول لها دون مراقبة مستمرة للغازات.</p>
+                            <p><strong>المعنى:</strong> وزن عمود الهواء.</p>
+                            <p><strong>التأثير:</strong> الهبوط المفاجئ يفعّل "الضخ البارومتري" ساحباً غازات الرادون والميثان من باطن الأرض نحو الآبار والخنادق المغلقة.</p>
                             <div class="ref">المرجعية: ديناميكا الغازات الأرضية.</div>
                         </div>
                     </div>
@@ -298,8 +327,8 @@
                         </div>
                         <div class="flip-card-back">
                             <h4><i class="fas fa-project-diagram"></i> التنبؤ بمسار التلوث</h4>
-                            <p><strong>المعنى:</strong> (Gaussian Plume Dispersion Model) نموذج رياضي يتنبأ بمسار السحب الدخانية والغازية.</p>
-                            <p><strong>التأثير:</strong> أداة استباقية حاسمة. تحدد بدقة متى وبأي اتجاه سيتحرك التلوث المنبعث من أقرب مصنع أو حقل نفطي، مما يتيح إخلاء الفريق الميداني قبل وصول الخطر.</p>
+                            <p><strong>المعنى:</strong> نموذج رياضي يتنبأ بمسار السحب السامة.</p>
+                            <p><strong>التأثير:</strong> يحدد بدقة اتجاه زحف التلوث من المصانع/الحقول النفطية القريبة ليتيح إخلاء الكوادر عكس اتجاه الخطر.</p>
                             <div class="ref">المرجعية: النمذجة البيئية.</div>
                         </div>
                     </div>
@@ -315,9 +344,9 @@
                         </div>
                         <div class="flip-card-back">
                             <h4><i class="fas fa-skull-crossbones"></i> السمية والانبعاثات</h4>
-                            <p><strong>المعنى:</strong> تراكيز الغازات الناتجة عن احتراق الوقود الأحفوري وحرق الغاز المصاحب (Flaring).</p>
-                            <p><strong>التأثير:</strong> تراكيزها العالية مميتة وتسبب أمراضاً تنفسية حادة. رصدها الفضائي (عبر Sentinel-5P) يوفر "عيناً في السماء" تكشف التلوث الكيميائي غير المرئي في مواقع العمل النفطية.</p>
-                            <div class="ref">المرجعية: وكالة الفضاء (ESA).</div>
+                            <p><strong>المعنى:</strong> تراكيز الغازات الناتجة عن احتراق الوقود وحرق الغاز المصاحب (Flaring).</p>
+                            <p><strong>التأثير:</strong> تراكيز عالية تسبب أمراضاً تنفسية حادة. رصدها الفضائي يكشف الخطر غير المرئي بمواقع العمل.</p>
+                            <div class="ref">المرجعية: بيانات Sentinel-5P.</div>
                         </div>
                     </div>
                 </div>
@@ -332,8 +361,8 @@
                         <div class="flip-card-back">
                             <h4><i class="fas fa-shield-alt"></i> تدهور البوليمرات</h4>
                             <p><strong>المعنى:</strong> كثافة الإشعاع الشمسي فوق البنفسجي.</p>
-                            <p><strong>التأثير المادي:</strong> وفقاً للمعيار (ASTM G7)، تكسر الأشعة الروابط البوليمرية لكابلات الأجهزة الجيوفيزيائية مؤدية لتقصفها وحدوث دوائر قصر. فسيولوجياً تسبب حروقاً شديدة للباحثين في المواقع المكشوفة.</p>
-                            <div class="ref">المرجعية: ASTM G7.</div>
+                            <p><strong>التأثير:</strong> يكسر الروابط البوليمرية لكابلات الأجهزة (دوائر قصر). فسيولوجياً يسبب حروقاً شديدة للباحثين.</p>
+                            <div class="ref">المرجعية: معيار ASTM G7.</div>
                         </div>
                     </div>
                 </div>
@@ -348,8 +377,8 @@
                         </div>
                         <div class="flip-card-back">
                             <h4><i class="fas fa-compass"></i> الجدولة المكانية</h4>
-                            <p><strong>المعنى:</strong> التوقيت الفلكي لحركة التشميس السطحي.</p>
-                            <p><strong>التأثير:</strong> يحدد "نوافذ العمل الآمنة" لتجنب ذروة الإشعاع. هندسياً، السفوح الجبلية المواجهة للشمس تتعرض لتباين حراري أعلى، مما يغير من طبيعة تماسكها الصخري مقارنة بالسفوح المظللة.</p>
+                            <p><strong>المعنى:</strong> التوقيت الفلكي لحركة التشميس.</p>
+                            <p><strong>التأثير:</strong> يحدد نوافذ العمل الآمنة. هندسياً، السفوح المواجهة للشمس تتعرض لتباين حراري أعلى يغير طبيعة تماسكها الصخري.</p>
                             <div class="ref">المرجعية: الجيومورفولوجيا.</div>
                         </div>
                     </div>
@@ -363,17 +392,17 @@
                     
                     <div class="expert-box">
                         <h4><i class="fas fa-mountain"></i> التقييم الجيوتقني والهندسي</h4>
-                        <div id="exp-geotech">جاري معالجة البيانات...</div>
+                        <div id="exp-geotech">جاري التحليل...</div>
                     </div>
                     
                     <div class="expert-box">
                         <h4><i class="fas fa-hard-hat"></i> الصحة والسلامة المهنية للحقل</h4>
-                        <div id="exp-health">جاري معالجة البيانات...</div>
+                        <div id="exp-health">جاري التحليل...</div>
                     </div>
                     
                     <div class="expert-box">
                         <h4><i class="fas fa-satellite"></i> موثوقية الأجهزة والتأثير البيئي</h4>
-                        <div id="exp-bio">جاري معالجة البيانات...</div>
+                        <div id="exp-bio">جاري التحليل...</div>
                     </div>
                     
                 </div>
@@ -409,7 +438,7 @@
                     </div>
 
                     <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
-                        <div style="font-size: 15px; color: var(--accent-orange); margin-bottom: 15px;"><i class="fas fa-tree"></i> ديناميكية التصحر (MEDALUS ESAI)</div>
+                        <div style="font-size: 15px; color: var(--accent-orange); margin-bottom: 15px;"><i class="fas fa-tree"></i> ديناميكية التصحر (MEDALUS)</div>
                         <select id="inp-sqi" class="form-control">
                             <option value="1.1">جودة التربة: جيدة جداً (متماسكة/خصبة)</option>
                             <option value="1.5">جودة التربة: متوسطة (بعض الجفاف)</option>
@@ -443,8 +472,8 @@
                 </div>
             </div>
 
-            <button class="btn btn-orange" style="margin-bottom: 40px; padding: 20px; font-size:18px; display:none;" id="pdf-btn" onclick="window.print()">
-                <i class="fas fa-print"></i> حفظ الصفحة وتصدير التقرير (Print PDF)
+            <button class="btn btn-orange" style="margin-bottom: 40px; padding: 20px; font-size:18px; display:none;" id="pdf-btn" onclick="prepareAndPrintPDF()">
+                <i class="fas fa-print"></i> تصدير التقرير الأكاديمي الرسمي (PDF)
             </button>
         </div>
     </div>
@@ -453,25 +482,26 @@
         <div id="printable-report">
             <div class="pdf-header">
                 <h2>نظام شندل للنمذجة البيئية والمسح الجيولوجي</h2>
-                <h3 style="margin:8px 0; color:#555;">التقرير الأكاديمي (الاستدلال الميداني والفضائي)</h3>
-                <p id="pdf-date" style="font-size:12px; color:#777;"></p>
+                <h3>التقرير الأكاديمي الشامل (الاستدلال الميداني والفضائي)</h3>
+                <p id="pdf-date" style="font-size:12px; color:#555;"></p>
             </div>
 
             <table class="pdf-table">
                 <tr><th>الباحث / الجيولوجي</th><td id="pdf-inspector"></td></tr>
+                <tr><th>نطاق الدراسة</th><td id="pdf-type"></td></tr>
                 <tr><th>الإحداثيات الجغرافية</th><td id="pdf-gps"></td></tr>
-                <tr><th>مؤشر المختبر (WQI)</th><td id="pdf-wqi-score">لم يتم الإدخال</td></tr>
-                <tr><th>مؤشر المختبر (ESAI)</th><td id="pdf-esai-score">لم يتم الإدخال</td></tr>
+                <tr><th>مؤشر جودة المياه (WQI)</th><td id="pdf-wqi-score">لم يتم الإدخال</td></tr>
+                <tr><th>مؤشر حساسية التصحر (ESAI)</th><td id="pdf-esai-score">لم يتم الإدخال</td></tr>
             </table>
 
-            <h3 style="color:#0b1d3a; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top:20px;">1. التحليل الأكاديمي الخبير (Expert System)</h3>
+            <h3>1. التحليل الأكاديمي الخبير (Expert System)</h3>
             <table class="pdf-table">
                 <tr><th>التقييم الجيوتقني والهندسي</th><td id="pdf-exp-geotech" class="pdf-expert-text"></td></tr>
                 <tr><th>الصحة والسلامة المهنية للحقل</th><td id="pdf-exp-health" class="pdf-expert-text"></td></tr>
                 <tr><th>موثوقية الأجهزة والتأثير البيئي</th><td id="pdf-exp-bio" class="pdf-expert-text"></td></tr>
             </table>
 
-            <h3 style="color:#0b1d3a; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top:20px;">2. البيانات المناخية والفضائية</h3>
+            <h3>2. البيانات المناخية والفضائية اللحظية</h3>
             <table class="pdf-table" style="text-align: center;">
                 <tr>
                     <td><strong>الحرارة العظمى/الصغرى:</strong> <br><span id="pdf-val-temp"></span></td>
@@ -486,6 +516,8 @@
                     <td><strong>الأمطار:</strong> <br><span id="pdf-val-precip"></span></td>
                 </tr>
             </table>
+            
+            <div class="pdf-qr" id="pdf-qrcode"></div>
         </div>
     </div>
 
@@ -494,6 +526,7 @@
         let mainChartObj = null;
         let chartDataStore = {}; 
         let sysData = { temp:0, wind:0, windDir:0, hum:0, press:0, precip:0, pastPrecip:0, uv:0, no2:0, so2:0 };
+        let manualData = { wqiResult: null, esaiResult: null, wqiLabel: "", esaiLabel: "" };
 
         async function startFullScan() {
             const btn = document.getElementById('api-btn');
@@ -537,7 +570,7 @@
                         sysData.so2 = aqiData.current.sulphur_dioxide || 0;
                         let aqiVal = aqiData.current.european_aqi || 20;
 
-                        // ================= 1. تعبئة البطاقات =================
+                        // تعبئة البطاقات الـ 12
                         document.getElementById('ui-temp-actual').innerText = sysData.temp + "°";
                         document.getElementById('ui-temp-diff').innerText = (tMax - tMin).toFixed(1) + "°";
                         
@@ -579,7 +612,7 @@
                         document.getElementById('ui-sunrise').innerText = daily.sunrise ? daily.sunrise[7].split("T")[1] : "06:00";
                         document.getElementById('ui-sunset').innerText = daily.sunset ? daily.sunset[7].split("T")[1] : "18:00";
 
-                        // ================= 2. الرسم البياني =================
+                        // الرسم البياني 
                         let labels = daily.time ? daily.time.map((d, idx) => idx === 7 ? "اليوم" : d.substring(5)) : ["1","2","3","4","5","6","7","اليوم","9","10","11","12","13","14"]; 
                         
                         chartDataStore = {
@@ -591,7 +624,7 @@
                         };
                         drawMainChart(chartDataStore.labels, chartDataStore.temp);
 
-                        // ================= 3. تشغيل النظام الخبير الأساسي =================
+                        // تشغيل النظام الخبير الأساسي
                         runMainExpertSystem();
 
                         btn.innerHTML = '<i class="fas fa-check-circle"></i> اكتمل الرصد والنمذجة بنجاح';
@@ -606,7 +639,7 @@
             }
         }
 
-        // ================= النظام الخبير =================
+        // ================= النظام الخبير الأكاديمي =================
         function runMainExpertSystem() {
             let geoText = ""; let healthText = ""; let bioText = "";
             let dangerDir = (sysData.windDir + 180) % 360;
@@ -653,7 +686,7 @@
             document.getElementById('exp-bio').innerHTML = bioText;
         }
 
-        // ================= دوال الرسم البياني =================
+        // ================= الرسم البياني =================
         function updateChart(type, btnElement) {
             document.querySelectorAll('.chart-tab').forEach(b => b.classList.remove('active'));
             btnElement.classList.add('active');
@@ -683,9 +716,8 @@
             mainChartObj = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: mappedDatasets }, plugins: [todayPlugin], options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#f8fafc' } } }, scales: { x: { ticks: { color: '#94a3b8' } }, y: { ticks: { color: '#94a3b8' } } } } });
         }
 
-        // ================= المختبر الحقلي الميداني =================
+        // ================= المختبر الحقلي =================
         function calculateFieldLab() {
-            // WQI Calculation
             let ph = parseFloat(document.getElementById('inp-ph').value) || 7;
             let doVal = parseFloat(document.getElementById('inp-do').value) || 8;
             let turb = parseFloat(document.getElementById('inp-turb').value) || 5;
@@ -695,26 +727,27 @@
             let turbScore = Math.max(0, 100 - turb * 2); 
             let wqi = (phScore * 0.4) + (doScore * 0.4) + (turbScore * 0.2);
             
-            let wqiLabel = wqi > 80 ? "ممتازة" : wqi > 60 ? "مقبولة" : "ملوثة/رديئة";
+            manualData.wqiResult = wqi;
+            manualData.wqiLabel = wqi > 80 ? "ممتازة" : wqi > 60 ? "مقبولة" : "ملوثة/رديئة";
             let wqiColor = wqi > 80 ? "var(--accent-blue)" : wqi > 60 ? "var(--accent-orange)" : "var(--accent-red)";
             
             document.getElementById('res-val-wqi').innerText = wqi.toFixed(1);
-            document.getElementById('res-lbl-wqi').innerText = wqiLabel;
+            document.getElementById('res-lbl-wqi').innerText = manualData.wqiLabel;
             document.getElementById('res-val-wqi').style.color = wqiColor;
             document.getElementById('gauge-box-wqi').style.display = "block";
 
-            // ESAI Calculation
             let sqi = parseFloat(document.getElementById('inp-sqi').value);
             let vqi = parseFloat(document.getElementById('inp-vqi').value);
             let mqi = parseFloat(document.getElementById('inp-mqi').value);
             let cqi = (sysData.precip === 0 && sysData.temp > 30) ? 2.0 : 1.5; 
             
             let esai = Math.pow((sqi * vqi * mqi * cqi), 0.25);
-            let esaiLabel = esai < 1.2 ? "غير مهددة" : esai < 1.4 ? "هشة/حساسة" : "متصحرة";
+            manualData.esaiResult = esai;
+            manualData.esaiLabel = esai < 1.2 ? "غير مهددة" : esai < 1.4 ? "هشة/حساسة" : "متصحرة";
             let esaiColor = esai < 1.2 ? "var(--accent-green)" : esai < 1.4 ? "var(--accent-orange)" : "var(--accent-red)";
 
             document.getElementById('res-val-esai').innerText = esai.toFixed(2);
-            document.getElementById('res-lbl-esai').innerText = esaiLabel;
+            document.getElementById('res-lbl-esai').innerText = manualData.esaiLabel;
             document.getElementById('res-val-esai').style.color = esaiColor;
             document.getElementById('gauge-box-esai').style.display = "block";
 
@@ -735,6 +768,42 @@
             document.getElementById('lab-analysis-box').style.display = "block";
             document.getElementById('field-lab-card').style.boxShadow = "0 0 20px rgba(16, 185, 129, 0.4)";
         }
+
+        // ================= الطباعة والـ PDF (معدلة لتعمل بشكل ممتاز) =================
+        function prepareAndPrintPDF() {
+            // تحديث بيانات الـ PDF المخفية قبل الطباعة
+            document.getElementById('pdf-date').innerText = "تاريخ التوثيق الأكاديمي: " + new Date().toLocaleString('ar-IQ');
+            document.getElementById('pdf-inspector').innerText = document.getElementById('inspector-name').value;
+            document.getElementById('pdf-type').innerText = document.getElementById('violation-type').value;
+            document.getElementById('pdf-gps').innerText = finalLat !== 0 ? `${finalLat.toFixed(6)}, ${finalLng.toFixed(6)}` : "لم يحدد";
+            
+            document.getElementById('pdf-wqi-score').innerText = manualData.wqiResult ? manualData.wqiResult.toFixed(1) + ` (${manualData.wqiLabel})` : "لم يتم الإدخال";
+            document.getElementById('pdf-esai-score').innerText = manualData.esaiResult ? manualData.esaiResult.toFixed(2) + ` (${manualData.esaiLabel})` : "لم يتم الإدخال";
+
+            document.getElementById('pdf-val-temp').innerText = sysData.temp + "°";
+            document.getElementById('pdf-val-wind').innerText = sysData.wind + " كم/س";
+            document.getElementById('pdf-val-hum').innerText = sysData.hum + "%";
+            document.getElementById('pdf-val-uv').innerText = sysData.uv;
+            document.getElementById('pdf-val-gas').innerText = `${sysData.no2} NO2 | ${sysData.so2} SO2`;
+            document.getElementById('pdf-val-plume').innerText = `باتجاه ${(sysData.windDir + 180) % 360}°`;
+            document.getElementById('pdf-val-press').innerText = sysData.press + " hPa";
+            document.getElementById('pdf-val-precip').innerText = sysData.precip + " ملم";
+
+            // جلب نصوص التحليل الأكاديمي للطباعة
+            document.getElementById('pdf-exp-geotech').innerHTML = document.getElementById('exp-geotech').innerHTML;
+            document.getElementById('pdf-exp-health').innerHTML = document.getElementById('exp-health').innerHTML;
+            document.getElementById('pdf-exp-bio').innerHTML = document.getElementById('exp-bio').innerHTML;
+
+            document.getElementById("pdf-qrcode").innerHTML = "";
+            new QRCode(document.getElementById("pdf-qrcode"), {
+                text: `Shandal Geo-System\nInspector: ${document.getElementById('inspector-name').value}\nLoc: ${finalLat}, ${finalLng}`,
+                width: 90, height: 90
+            });
+
+            // استدعاء نافذة الطباعة الافتراضية (سيعمل كود @media print السحري هنا)
+            window.print();
+        }
     </script>
 </body>
 </html>
+
