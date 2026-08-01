@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shandal System - Modern Stratigraphic Column</title>
+    <title>Shandal System - Advanced Stratigraphic Column Generator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -18,7 +18,7 @@
         .lang-toggle { background: rgba(14, 165, 233, 0.15); border: 2px solid var(--accent-blue); color: var(--text-light); padding: 8px 18px; border-radius: 25px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
         .lang-toggle:hover { background: var(--accent-blue); color: var(--bg-dark); }
         
-        .main-container { display: grid; grid-template-columns: 420px 1fr; gap: 30px; max-width: 1600px; margin: 30px auto; padding: 0 25px; }
+        .main-container { display: grid; grid-template-columns: 420px 1fr; gap: 30px; max-width: 1600px; margin: 30px auto; padding: 0 25px; align-items: start;}
         @media (max-width: 1100px) { .main-container { grid-template-columns: 1fr; } }
         
         .panel { background: var(--card-bg); border-radius: 12px; padding: 25px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
@@ -30,11 +30,11 @@
         .form-control:focus { outline: none; border-color: var(--accent-blue); }
         
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .checkbox-card { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px; margin-bottom: 16px; }
+        .checkbox-card { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.05);}
         .checkbox-card input { width: 18px; height: 18px; cursor: pointer; }
         
         .btn { width: 100%; padding: 14px; font-size: 15px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-add { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; }
+        .btn-add { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; margin-top:20px;}
         .btn-add:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(14,165,233,0.3); }
         .btn-export { background: #0d9488; color: white; margin-top: 10px; }
         .btn-clear { background: #e11d48; color: white; margin-top: 10px; }
@@ -59,12 +59,25 @@
 
     <div class="main-container">
         <div class="panel">
-            <h3 class="panel-title"><i class="fas fa-edit"></i> <span id="lbl-panel-inputs">Geological Settings</span></h3>
+            <h3 class="panel-title"><i class="fas fa-edit"></i> <span id="lbl-panel-inputs">Log Header & Settings</span></h3>
             
             <div class="grid-2">
                 <div class="form-group">
+                    <label id="lbl-geologist">Geologist Name:</label>
+                    <input type="text" id="in-geologist" class="form-control" placeholder="e.g., Ali Shandal">
+                </div>
+                <div class="form-group">
+                    <label id="lbl-col-title">Column Title:</label>
+                    <input type="text" id="in-col-title" class="form-control" placeholder="e.g., Section A - Outcrop 1">
+                </div>
+            </div>
+
+            <h3 class="panel-title" style="margin-top:10px;"><i class="fas fa-layer-group"></i> <span id="lbl-layer-inputs">Add New Bed (Top to Bottom)</span></h3>
+
+            <div class="grid-2">
+                <div class="form-group">
                     <label id="lbl-formation">Formation Name:</label>
-                    <input type="text" id="in-formation" class="form-control" placeholder="e.g., Dammam">
+                    <input type="text" id="in-formation" class="form-control" placeholder="e.g., Dammam Fm.">
                 </div>
                 <div class="form-group">
                     <label id="lbl-age">Geological Age (Optional):</label>
@@ -74,7 +87,7 @@
 
             <div class="grid-2">
                 <div class="form-group">
-                    <label id="lbl-litho-type">Lithology Type:</label>
+                    <label id="lbl-litho-type">Lithology Category:</label>
                     <select id="sel-litho-type" class="form-control" onchange="loadRockTypes()">
                         <option value="Sedimentary">Sedimentary (رسوبية)</option>
                         <option value="Igneous">Igneous (نارية)</option>
@@ -83,28 +96,28 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label id="lbl-rock-name">Rock Name:</label>
+                    <label id="lbl-rock-name">Primary Rock:</label>
                     <select id="sel-rock-name" class="form-control"></select>
                 </div>
             </div>
 
             <div class="grid-2">
                 <div class="form-group">
-                    <label id="lbl-bg-color">Rock Base Color:</label>
-                    <input type="color" id="in-bg-color" class="form-control" value="#fef08a" style="padding:0; height:40px;">
+                    <label id="lbl-bg-color">Base Color:</label>
+                    <input type="color" id="in-bg-color" class="form-control" value="#fef08a" style="padding:0; height:38px;">
                 </div>
                 <div class="form-group">
-                    <label id="lbl-pattern-color">Hatch/Pattern Color:</label>
-                    <input type="color" id="in-pattern-color" class="form-control" value="#475569" style="padding:0; height:40px;">
+                    <label id="lbl-pattern-color">Pattern Color:</label>
+                    <input type="color" id="in-pattern-color" class="form-control" value="#000000" style="padding:0; height:38px;">
                 </div>
             </div>
 
             <div class="checkbox-card">
                 <input type="checkbox" id="chk-has-interbed" onchange="toggleInterbedRow()">
-                <label for="chk-has-interbed" id="lbl-chk-interbed" style="margin:0; color:#fff; cursor:pointer;">Has Interbedded Component</label>
+                <label for="chk-has-interbed" id="lbl-chk-interbed" style="margin:0; color:#fff; cursor:pointer;">Contains Interbedded / Mixed Lithology</label>
             </div>
 
-            <div id="row-interbed" style="display: none; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 6px; margin-bottom:16px;">
+            <div id="row-interbed" style="display: none; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 6px; margin-bottom:16px; border: 1px solid var(--accent-gold);">
                 <div class="grid-2">
                     <div class="form-group">
                         <label id="lbl-sec-rock">Secondary Rock:</label>
@@ -113,53 +126,52 @@
                     <div class="form-group">
                         <label id="lbl-interbed-style">Relationship Style:</label>
                         <select id="sel-interbed-style" class="form-control">
-                            <option value="interbedded">Interbedded (تعاقب)</option>
-                            <option value="mixed">Mixed Lithology (تداخل مشترك)</option>
+                            <option value="mixed">Mixed (تداخل في نفس الطبقة)</option>
+                            <option value="interbedded">Interbedded (تعاقب حزمي)</option>
                         </select>
                     </div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label id="lbl-thickness">Thickness (Meters):</label>
+                    <input type="number" id="in-thickness" class="form-control" value="5" min="0.5" step="0.5">
+                </div>
+                <div class="form-group">
+                    <label id="lbl-hardness">Hardness Profile (1-5):</label>
+                    <input type="number" id="in-hardness" class="form-control" value="3" min="1" max="5">
                 </div>
             </div>
 
             <div class="form-group">
                 <label id="lbl-contact">Bottom Bed Contact:</label>
                 <select id="sel-contact" class="form-control">
-                    <option value="sharp">Sharp / Planar (حد فاصل مستقيم)</option>
-                    <option value="erosional">Erosional / Unconformity (حد تعريتي متعرج)</option>
-                    <option value="gradational">Gradational (حد فاصل متدرج)</option>
+                    <option value="sharp">Sharp (حد فاصل مستقيم)</option>
+                    <option value="erosional">Erosional / Unconformity (متعرج / عدم توافق)</option>
+                    <option value="gradational">Gradational (متدرج)</option>
                 </select>
-            </div>
-
-            <div class="grid-2">
-                <div class="form-group">
-                    <label id="lbl-thickness">Thickness (Meters):</label>
-                    <input type="number" id="in-thickness" class="form-control" value="8" min="0.5" step="0.5">
-                </div>
-                <div class="form-group">
-                    <label id="lbl-hardness">Weathering Resistance (1-5):</label>
-                    <input type="number" id="in-hardness" class="form-control" value="3" min="1" max="5">
-                </div>
             </div>
 
             <div class="checkbox-card">
                 <input type="checkbox" id="chk-has-desc" checked>
-                <label for="chk-has-desc" id="lbl-chk-desc" style="margin:0; color:#fff; cursor:pointer;">Include Auto Technical Description</label>
+                <label for="chk-has-desc" id="lbl-chk-desc" style="margin:0; color:#fff; cursor:pointer;">Include Technical Description</label>
             </div>
 
-            <button class="btn btn-add" onclick="pushLayer()"><i class="fas fa-draw-polygon"></i> <span id="btn-txt-add">Plot Layer Log</span></button>
+            <button class="btn btn-add" onclick="pushLayer()"><i class="fas fa-arrow-down"></i> <span id="btn-txt-add">Plot Layer (Top to Bottom)</span></button>
             <button class="btn btn-export" onclick="downloadLog()"><i class="fas fa-file-image"></i> <span id="btn-txt-export">Export PNG Chart</span></button>
-            <button class="btn btn-clear" onclick="resetApp()"><i class="fas fa-undo"></i> <span id="btn-txt-clear">Reset Laboratory</span></button>
+            <button class="btn btn-clear" onclick="resetApp()"><i class="fas fa-trash-alt"></i> <span id="btn-txt-clear">Reset Laboratory</span></button>
         </div>
 
-        <div class="panel">
-            <h3 class="panel-title"><i class="fas fa-chart-line"></i> <span id="lbl-panel-output">Stratigraphic Column Output</span></h3>
+        <div class="output-panel">
+            <h3 class="panel-title" style="border:none;"><i class="fas fa-chart-line"></i> <span id="lbl-panel-output">Stratigraphic Column Output</span></h3>
             <div class="canvas-area">
-                <canvas id="mainCanvas" width="900" height="550"></canvas>
+                <canvas id="mainCanvas" width="900" height="600"></canvas>
             </div>
         </div>
     </div>
 
     <script>
-        // الدليل الشامل لجميع صخور العالم الجيولوجية ومكتبة شندل
         const rockWorldData = {
             Sedimentary: ["Sandstone", "Shale", "Limestone", "Conglomerate", "Breccia", "Siltstone", "Claystone", "Marl", "Dolostone", "Chalk"],
             Igneous: ["Basalt", "Granite", "Gabbro", "Obsidian", "Rhyolite", "Diorite", "Pumice", "Andesite"],
@@ -175,21 +187,23 @@
         const translationMap = {
             en: {
                 title: "Shandal System for Geological Field Survey", subtitle: "Modern Stratigraphic Column Laboratory",
-                panelInputs: "Geological Settings", formation: "Formation Name:", age: "Geological Age (Optional):",
-                lithoType: "Lithology Type:", rockName: "Rock Name:", bgColor: "Rock Base Color:",
-                patternColor: "Hatch/Pattern Color:", chkInterbed: "Has Interbedded Component", secRock: "Secondary Rock:",
-                interbedStyle: "Relationship Style:", contact: "Bottom Bed Contact:", thickness: "Thickness (Meters):",
-                hardness: "Weathering Resistance (1-5):", chkDesc: "Include Auto Technical Description",
-                btnAdd: "Plot Layer Log", btnExport: "Export PNG Chart", btnClear: "Reset Laboratory", panelOutput: "Stratigraphic Column Output"
+                panelInputs: "Log Header & Settings", geologist: "Geologist Name:", colTitle: "Column Title:",
+                layerInputs: "Add New Bed (Top to Bottom)", formation: "Formation Name:", age: "Geological Age (Optional):",
+                lithoType: "Lithology Category:", rockName: "Primary Rock:", bgColor: "Base Color:",
+                patternColor: "Pattern Color:", chkInterbed: "Contains Interbedded / Mixed Lithology", secRock: "Secondary Rock:",
+                interbedStyle: "Relationship Style:", thickness: "Thickness (Meters):", hardness: "Hardness Profile (1-5):",
+                contact: "Bottom Bed Contact:", chkDesc: "Include Technical Description",
+                btnAdd: "Plot Layer (Top to Bottom)", btnExport: "Export PNG Chart", btnClear: "Reset Laboratory", panelOutput: "Stratigraphic Column Output"
             },
             ar: {
-                title: "نظام شندل للمسح الميداني الجيولوجي", subtitle: "العمود الطباقي الجيولوجي الحديث",
-                panelInputs: "محددات الطبقات الجيولوجية الحقلية", formation: "اسم التكوين الجيولوجي:", age: "العمر الجيولوجي (اختياري):",
-                lithoType: "تصنيف الليثولوجي الأساسي:", rockName: "اسم الصخرة المحددة:", bgColor: "اللون الجيولوجي للصخرة:",
-                patternColor: "لون نقش التظليل (Hatch):", chkInterbed: "تحتوي الطبقة على تعاقب أو تداخل صخري ثانٍ", secRock: "الصخرة الثانوية المتداخلة:",
-                interbedStyle: "نوع العلاقة الطباقية:", contact: "طبيعة الحد الفاصل السفلي للطبقة:", thickness: "سمك الطبقة الكامل (Thickness):",
-                hardness: "مقاومة بروفايل التجوية والصلابة (1-5):", chkDesc: "إدراج وصف فني علمي تلقائي",
-                btnAdd: "إسقاط ورسم الطبقة الحقلية", btnExport: "تصدير المخطط الجيولوجي كـ PNG", btnClear: "إعادة تهيئة مختبر شندل", panelOutput: "لوحة عرض العمود الطباقي الهندسي الرصين"
+                title: "نظام شندل للمسح الميداني الجيولوجي", subtitle: "المختبر الحديث للعمود الطباقي الجيولوجي",
+                panelInputs: "بيانات وعنوان المخطط", geologist: "اسم الجيولوجي المستكشف:", colTitle: "عنوان المخطط الطباقي:",
+                layerInputs: "إضافة طبقة صخرية (من الأعلى للأسفل)", formation: "اسم التكوين الجيولوجي:", age: "العمر الجيولوجي (اختياري):",
+                lithoType: "التصنيف الصخري:", rockName: "اسم الصخرة الأساسية:", bgColor: "لون خلفية الصخرة:",
+                patternColor: "لون النقش (الرموز):", chkInterbed: "تحتوي الطبقة على تداخل أو تعاقب صخري", secRock: "الصخرة المتداخلة الثانية:",
+                interbedStyle: "طبيعة التداخل:", thickness: "السمك (Thickness) بالأمتار:", hardness: "بروفايل الصلابة والتجوية (1-5):",
+                contact: "الحد الفاصل السفلي:", chkDesc: "إدراج وصف فني علمي للطبقة",
+                btnAdd: "رسم الطبقة (من السطح للأسفل)", btnExport: "تصدير المخطط (PNG)", btnClear: "تهيئة المختبر بالكامل", panelOutput: "لوحة عرض العمود الطباقي الرصين"
             }
         };
 
@@ -202,18 +216,21 @@
             document.getElementById('app-title').innerText = translationMap[currentLanguage].title;
             document.getElementById('app-subtitle').innerHTML = `<i class="fas fa-layer-group"></i> ${translationMap[currentLanguage].subtitle}`;
             document.getElementById('lbl-panel-inputs').innerText = translationMap[currentLanguage].panelInputs;
+            document.getElementById('lbl-geologist').innerText = translationMap[currentLanguage].geologist;
+            document.getElementById('lbl-col-title').innerText = translationMap[currentLanguage].colTitle;
+            document.getElementById('lbl-layer-inputs').innerText = translationMap[currentLanguage].layerInputs;
             document.getElementById('lbl-formation').innerText = translationMap[currentLanguage].formation;
             document.getElementById('lbl-age').innerText = translationMap[currentLanguage].age;
-            document.getElementById('lbl-text-litho-type' || 'lbl-litho-type').innerText = translationMap[currentLanguage].lithoType;
+            document.getElementById('lbl-litho-type').innerText = translationMap[currentLanguage].lithoType;
             document.getElementById('lbl-rock-name').innerText = translationMap[currentLanguage].rockName;
             document.getElementById('lbl-bg-color').innerText = translationMap[currentLanguage].bgColor;
             document.getElementById('lbl-pattern-color').innerText = translationMap[currentLanguage].patternColor;
             document.getElementById('lbl-chk-interbed').innerText = translationMap[currentLanguage].chkInterbed;
             document.getElementById('lbl-sec-rock').innerText = translationMap[currentLanguage].secRock;
             document.getElementById('lbl-interbed-style').innerText = translationMap[currentLanguage].interbedStyle;
-            document.getElementById('lbl-contact').innerText = translationMap[currentLanguage].contact;
             document.getElementById('lbl-thickness').innerText = translationMap[currentLanguage].thickness;
             document.getElementById('lbl-hardness').innerText = translationMap[currentLanguage].hardness;
+            document.getElementById('lbl-contact').innerText = translationMap[currentLanguage].contact;
             document.getElementById('lbl-chk-desc').innerText = translationMap[currentLanguage].chkDesc;
             document.getElementById('btn-txt-add').innerText = translationMap[currentLanguage].btnAdd;
             document.getElementById('btn-txt-export').innerText = translationMap[currentLanguage].btnExport;
@@ -228,9 +245,7 @@
             const primaryDropdown = document.getElementById('sel-rock-name');
             const secondaryDropdown = document.getElementById('sel-sec-rock');
             
-            primaryDropdown.innerHTML = "";
-            secondaryDropdown.innerHTML = "";
-            
+            primaryDropdown.innerHTML = ""; secondaryDropdown.innerHTML = "";
             rockWorldData[currentMainType].forEach(rock => {
                 primaryDropdown.innerHTML += `<option value="${rock}">${rock}</option>`;
                 secondaryDropdown.innerHTML += `<option value="${rock}">${rock}</option>`;
@@ -242,186 +257,244 @@
             document.getElementById('row-interbed').style.display = active ? 'block' : 'none';
         }
 
-        // محرك الأنسجة الجيولوجية المتقدم (Advanced Canvas Hatching Engine)
-        function compileGeologicalPattern(type, patColor, baseBgColor) {
+        // محرك الأنسجة الجيولوجية المتقدم (خلفية شفافة لتمكين التداخل)
+        function compileGeologicalPattern(type, patColor, isBgTransparent) {
             const bufferCanvas = document.createElement('canvas');
             const bCtx = bufferCanvas.getContext('2d');
-            bufferCanvas.width = 30; bufferCanvas.height = 30;
+            bufferCanvas.width = 40; bufferCanvas.height = 40;
 
-            bCtx.fillStyle = baseBgColor;
-            bCtx.fillRect(0, 0, 30, 30);
-            bCtx.strokeStyle = patColor; bCtx.fillStyle = patColor; bCtx.lineWidth = 1;
+            if(!isBgTransparent) {
+                bCtx.fillStyle = "#ffffff"; // خلفية بيضاء افتراضية
+                bCtx.fillRect(0, 0, 40, 40);
+            }
 
-            if (type === "Sandstone") { // نقاط رملية متناسقة دقيقة
-                bCtx.fillRect(5, 5, 1.5, 1.5); bCtx.fillRect(20, 10, 1.5, 1.5);
-                bCtx.fillRect(12, 22, 1.5, 1.5); bCtx.fillRect(25, 25, 1.5, 1.5);
-            } else if (type === "Limestone") { // نقش الطابوق القياسي للحجر الجيري
-                bCtx.strokeRect(0, 0, 30, 15); bCtx.strokeRect(-15, 15, 30, 15); bCtx.strokeRect(15, 15, 30, 15);
-            } else if (type === "Shale") { // خطوط أفقية طينية متوازية
-                bCtx.beginPath(); bCtx.moveTo(0, 10); bCtx.lineTo(30, 10); bCtx.moveTo(0, 20); bCtx.lineTo(30, 20); bCtx.stroke();
-            } else if (type === "Conglomerate") { // دوائر ورصيص حصوي
-                bCtx.beginPath(); bCtx.arc(8, 10, 4, 0, Math.PI*2); bCtx.arc(22, 20, 5, 0, Math.PI*2); bCtx.stroke();
-            } else if (type === "Breccia") { // شظايا ومثلثات حادة
-                bCtx.beginPath(); bCtx.moveTo(5, 5); bCtx.lineTo(12, 18); bCtx.lineTo(2, 15); bCtx.closePath();
-                bCtx.moveTo(20, 15); bCtx.lineTo(28, 22); bCtx.lineTo(18, 28); bCtx.closePath(); bCtx.stroke();
-            } else if (type === "Gypsum" || type === "Anhydrite") { // خطوط مائلة متبخرات
-                bCtx.beginPath(); bCtx.moveTo(0, 30); bCtx.lineTo(30, 0); bCtx.stroke();
-            } else { // نقش افتراضي لباقي الصخور
-                bCtx.beginPath(); bCtx.moveTo(0,0); bCtx.lineTo(30,30); bCtx.stroke();
+            bCtx.strokeStyle = patColor; bCtx.fillStyle = patColor; bCtx.lineWidth = 1.5;
+
+            if (type === "Sandstone") { // نقاط (رمل)
+                bCtx.beginPath(); bCtx.arc(10, 10, 1.5, 0, Math.PI*2); bCtx.arc(30, 20, 1.5, 0, Math.PI*2); bCtx.arc(15, 35, 1.5, 0, Math.PI*2); bCtx.fill();
+            } else if (type === "Limestone" || type === "Dolostone") { // طابوق (جيري)
+                bCtx.strokeRect(0, 0, 40, 20); bCtx.strokeRect(-20, 20, 40, 20); bCtx.strokeRect(20, 20, 40, 20);
+                if(type === "Dolostone") { bCtx.beginPath(); bCtx.moveTo(0,40); bCtx.lineTo(40,0); bCtx.stroke(); }
+            } else if (type === "Shale" || type === "Claystone") { // خطوط أفقية متقطعة (طين)
+                bCtx.setLineDash([8, 6]); bCtx.beginPath(); bCtx.moveTo(0, 10); bCtx.lineTo(40, 10); bCtx.moveTo(0, 30); bCtx.lineTo(40, 30); bCtx.stroke();
+            } else if (type === "Siltstone") { // مزيج نقاط وخطوط
+                bCtx.setLineDash([4, 4]); bCtx.beginPath(); bCtx.moveTo(0, 20); bCtx.lineTo(40, 20); bCtx.stroke(); bCtx.beginPath(); bCtx.arc(20, 10, 1, 0, Math.PI*2); bCtx.fill();
+            } else if (type === "Conglomerate") { // دوائر مختلفة (حصى)
+                bCtx.beginPath(); bCtx.arc(12, 12, 6, 0, Math.PI*2); bCtx.arc(30, 25, 8, 0, Math.PI*2); bCtx.stroke();
+            } else if (type === "Breccia") { // مثلثات (شظايا)
+                bCtx.beginPath(); bCtx.moveTo(10, 5); bCtx.lineTo(18, 18); bCtx.lineTo(2, 15); bCtx.closePath();
+                bCtx.moveTo(30, 20); bCtx.lineTo(38, 35); bCtx.lineTo(22, 30); bCtx.closePath(); bCtx.stroke();
+            } else if (type === "Gypsum" || type === "Anhydrite" || type === "Marl") { // خطوط مائلة
+                bCtx.beginPath(); bCtx.moveTo(0, 40); bCtx.lineTo(40, 0); bCtx.stroke();
+            } else { // علامات + للصخور النارية والمتحولة (Granite, Basalt...)
+                bCtx.beginPath(); bCtx.moveTo(20, 15); bCtx.lineTo(20, 25); bCtx.moveTo(15, 20); bCtx.lineTo(25, 20); bCtx.stroke();
             }
             return ctx.createPattern(bufferCanvas, 'repeat');
         }
 
         function pushLayer() {
             const dataLayer = {
-                formation: document.getElementById('in-formation').value || "Fm.",
+                formation: document.getElementById('in-formation').value || "-",
                 age: document.getElementById('in-age').value || "",
                 rockType: document.getElementById('sel-rock-name').value,
                 isInterbed: document.getElementById('chk-has-interbed').checked,
                 secRock: document.getElementById('sel-sec-rock').value,
                 interbedStyle: document.getElementById('sel-interbed-style').value,
                 contact: document.getElementById('sel-contact').value,
-                thickness: parseFloat(document.getElementById('in-thickness').value) || 5,
+                thickness: parseFloat(document.getElementById('in-thickness').value) || 1,
                 hardness: parseInt(document.getElementById('in-hardness').value) || 3,
                 bgColor: document.getElementById('in-bg-color').value,
                 patColor: document.getElementById('in-pattern-color').value,
                 needDesc: document.getElementById('chk-has-desc').checked
             };
-            fieldLayers.unshift(dataLayer); // الترتيب من الأحدث في الأعلى للأقدم في الأسفل
+            
+            // إضافة الطبقة (push) لكي تبدأ الطبقة الأولى من الأعلى وتمتد للأسفل (Top to Bottom)
+            fieldLayers.push(dataLayer); 
             renderStratigraphyCanvas();
         }
 
         function renderStratigraphyCanvas() {
-            // تصفية اللوحة بالكامل
+            // حساب الطول الديناميكي
+            let sumThickness = fieldLayers.reduce((s, x) => s + x.thickness, 0) || 1;
+            let reqHeight = 250 + (sumThickness * 30); // 30 بيكسل لكل متر
+            canvas.height = Math.max(reqHeight, 550);
+
+            // تصفية اللوحة
             ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // ترويسة اللوحة الرسمية والأكاديمية للنظام
-            ctx.fillStyle = "#0a0f1d"; ctx.font = "bold 16px Arial, Helvetica";
-            const mainHeaderStr = currentLanguage === "ar" ? "نظام شندل للمسح الميداني الجيولوجي - مخطط السجل الطباقي الحديث" : "SHANDAL SYSTEM FOR GEOLOGICAL FIELD SURVEY - MODERN STRATIGRAPHIC COLUMN";
-            ctx.fillText(mainHeaderStr, 40, 45);
+            // استدعاء القيم من الهيدر
+            let sysNameStr = "Shandal System for Geological Field Survey"; // الاسم الإنجليزي الحقيقي الثابت
+            let colTitle = document.getElementById('in-col-title').value || "Standard Stratigraphic Column";
+            let geoName = document.getElementById('in-geologist').value || "Unknown";
 
-            // رسم الإطار الخارجي والمسارات الفنية للجداول ( tracks )
+            // ترويسة اللوحة
+            ctx.fillStyle = "#000000"; 
+            ctx.font = "bold 20px Arial"; ctx.textAlign = "center";
+            ctx.fillText(sysNameStr, canvas.width/2, 40);
+            ctx.font = "bold 16px Arial";
+            ctx.fillText(colTitle, canvas.width/2, 65);
+
+            ctx.textAlign = "left"; // إعادة التوجيه لليسار
+            
+            // رسم الإطار والأعمدة (Tracks)
+            let trackFmX = 150;      // Formation / Age
+            let trackColX = 380;     // Lithology & Hardness Profile
+            let trackThickX = 460;   // Thickness
+            let trackLegendX = 720;  // Legend / Accessories
+            
+            let startY = 100;
+            let endY = canvas.height - 80;
+
             ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.5;
-            ctx.strokeRect(30, 80, canvas.width - 60, canvas.height - 120);
-
-            let trackFmX = 140;      // تراك التكوين والعمر
-            let trackColX = 360;     // تراك المخطط العمودي نفسه
-            let trackThickX = 460;   // تراك السمك (Thickness)
-
+            ctx.strokeRect(30, startY, canvas.width - 60, endY - startY);
+            
             ctx.beginPath();
-            ctx.moveTo(trackFmX, 80); ctx.lineTo(trackFmX, canvas.height - 40);
-            ctx.moveTo(trackColX, 80); ctx.lineTo(trackColX, canvas.height - 40);
-            ctx.moveTo(trackThickX, 80); ctx.lineTo(trackThickX, canvas.height - 40);
+            ctx.moveTo(trackFmX, startY); ctx.lineTo(trackFmX, endY);
+            ctx.moveTo(trackColX, startY); ctx.lineTo(trackColX, endY);
+            ctx.moveTo(trackThickX, startY); ctx.lineTo(trackThickX, endY);
+            ctx.moveTo(trackLegendX, startY); ctx.lineTo(trackLegendX, endY);
             ctx.stroke();
 
-            // طباعة العناوين الصارمة للأعمدة باللغة المختارة
-            ctx.font = "bold 12px Arial";
-            ctx.fillText(currentLanguage === "ar" ? "التكوين والعمر" : "Formation / Age", 40, 105);
-            ctx.fillText(currentLanguage === "ar" ? "العمود الليثولوجي والصلابة" : "Lithology & Hardness Profile", trackFmX + 15, 105);
-            ctx.fillText(currentLanguage === "ar" ? "Thickness" : "Thickness", trackColX + 12, 105);
-            ctx.fillText(currentLanguage === "ar" ? "الوصف الجيولوجي والدليل" : "Technical Description & Legend", trackThickX + 15, 105);
+            // العناوين
+            ctx.font = "bold 13px Arial";
+            ctx.fillText("Formation", 45, startY + 25);
+            ctx.fillText("Age", 45, startY + 45);
+            ctx.fillText("Lithology Profile", trackFmX + 15, startY + 35);
+            ctx.fillText("Thickness", trackColX + 10, startY + 35);
+            ctx.fillText("Description", trackThickX + 15, startY + 35);
+            ctx.fillText("Legend", trackLegendX + 20, startY + 35);
 
-            ctx.beginPath(); ctx.moveTo(30, 120); ctx.lineTo(canvas.width - 30, 120); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(30, startY + 60); ctx.lineTo(canvas.width - 30, startY + 60); ctx.stroke();
 
             if (fieldLayers.length === 0) return;
 
-            let currentY = 120;
-            let drawHeightTotal = canvas.height - 160;
-            let sumThickness = fieldLayers.reduce((s, x) => s + x.thickness, 0);
-            let pixelRatioFactor = drawHeightTotal / sumThickness;
+            let currentY = startY + 60;
 
-            fieldLayers.forEach(layer => {
-                let currentBedH = layer.thickness * pixelRatioFactor;
-                let calculatedW = 120 + (layer.hardness * 16); // العرض متغير علمياً لمحاكاة التجوية الطبيعية للمنحدر الجيولوجي
+            fieldLayers.forEach((layer, index) => {
+                let currentBedH = layer.thickness * 30; // Scale: 1m = 30px
+                let calculatedW = 80 + (layer.hardness * 25); // البروفايل المتدرج بناء على الصلابة (Weathering Profile)
 
-                // رسم النسيج الجيولوجي الأساسي للطبقة الصخرية المحددة
-                let primaryHatch = compileGeologicalPattern(layer.rockType, layer.patColor, layer.bgColor);
+                // 1. رسم لون الخلفية
+                ctx.fillStyle = layer.bgColor;
+                ctx.fillRect(trackFmX + 1, currentY, calculatedW, currentBedH);
+                
+                // 2. رسم النقش الأساسي (شفاف)
+                let primaryHatch = compileGeologicalPattern(layer.rockType, layer.patColor, true);
                 ctx.fillStyle = primaryHatch;
-                ctx.fillRect(trackFmX + 5, currentY, calculatedW, currentBedH);
-                ctx.strokeRect(trackFmX + 5, currentY, calculatedW, currentBedH);
+                ctx.fillRect(trackFmX + 1, currentY, calculatedW, currentBedH);
 
-                // معالجة ورسم التعاقب (Interbedded) أو التداخل البصري المشترك
+                // 3. معالجة التداخل والتعاقب (Mixed / Interbedded)
                 if (layer.isInterbed) {
-                    let secondaryHatch = compileGeologicalPattern(layer.secRock, layer.patColor, "#ffffff");
-                    ctx.save();
-                    ctx.beginPath(); ctx.rect(trackFmX + 5, currentY, calculatedW, currentBedH); ctx.clip();
+                    let secondaryHatch = compileGeologicalPattern(layer.secRock, "#000000", true);
                     
-                    if (layer.interbedStyle === "interbedded") {
-                        // محاكاة الخط المائل الحقيقي الفاصل في منتصف الطبقة للتعبير الجيولوجي القياسي عن التعاقب الخطي
-                        ctx.beginPath();
-                        ctx.moveTo(trackFmX + 5, currentY); ctx.lineTo(trackFmX + 5 + calculatedW, currentY + currentBedH);
-                        ctx.strokeStyle = "#000000"; ctx.lineWidth = 2; ctx.stroke();
-                    } else {
-                        // تداخل مشترك ممتزج
-                        ctx.fillStyle = "rgba(0,0,0,0.06)"; ctx.fillRect(trackFmX + 5, currentY + (currentBedH / 2), calculatedW, currentBedH / 2);
+                    if (layer.interbedStyle === "mixed") {
+                        // تداخل مشترك في نفس الطبقة (دمج النقشين فوق بعض)
+                        ctx.fillStyle = secondaryHatch;
+                        ctx.fillRect(trackFmX + 1, currentY, calculatedW, currentBedH);
+                    } else if (layer.interbedStyle === "interbedded") {
+                        // تعاقب (حزم أفقية متبادلة)
+                        ctx.save();
+                        ctx.beginPath(); ctx.rect(trackFmX + 1, currentY, calculatedW, currentBedH); ctx.clip();
+                        ctx.fillStyle = secondaryHatch;
+                        // رسم حزم كل 15 بيكسل
+                        for(let i=0; i<currentBedH; i+=30) {
+                            ctx.fillRect(trackFmX + 1, currentY + i + 15, calculatedW, 15);
+                            // خطوط فصل الحزم
+                            ctx.beginPath(); ctx.moveTo(trackFmX + 1, currentY + i + 15); ctx.lineTo(trackFmX + 1 + calculatedW, currentY + i + 15);
+                            ctx.strokeStyle = "rgba(0,0,0,0.5)"; ctx.lineWidth = 1; ctx.stroke();
+                        }
+                        ctx.restore();
                     }
-                    ctx.restore();
                 }
 
-                // رسم معالجة وطبيعة الحدود الفاصلة السفلية (Bottom Bed Contacts)
-                ctx.save(); ctx.lineWidth = 2; ctx.beginPath();
+                // 4. رسم حدود الطبقة (يمين، يسار، وتحت) لإنشاء البروفايل المتدرج
+                ctx.strokeStyle = "#000000"; ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                // الخط الأيمن (الصلابة)
+                ctx.moveTo(trackFmX + 1 + calculatedW, currentY);
+                ctx.lineTo(trackFmX + 1 + calculatedW, currentY + currentBedH);
+                
+                // الخط السفلي (الحد الفاصل Contact)
                 if (layer.contact === "sharp") {
-                    ctx.setLineDash([]); ctx.moveTo(trackFmX + 5, currentY + currentBedH); ctx.lineTo(trackFmX + 5 + calculatedW, currentY + currentBedH);
+                    ctx.setLineDash([]); ctx.lineTo(trackFmX + 1, currentY + currentBedH);
                 } else if (layer.contact === "gradational") {
-                    ctx.setLineDash([6, 5]); ctx.moveTo(trackFmX + 5, currentY + currentBedH); ctx.lineTo(trackFmX + 5 + calculatedW, currentY + currentBedH);
+                    ctx.setLineDash([8, 6]); ctx.lineTo(trackFmX + 1, currentY + currentBedH);
                 } else if (layer.contact === "erosional") {
                     ctx.setLineDash([]);
-                    let startX = trackFmX + 5; ctx.moveTo(startX, currentY + currentBedH);
-                    while(startX < (trackFmX + 5 + calculatedW)) {
-                        startX += 8;
-                        ctx.lineTo(startX, currentY + currentBedH + (Math.sin(startX) * 4));
+                    let curX = trackFmX + 1 + calculatedW;
+                    while(curX > trackFmX + 1) {
+                        curX -= 10;
+                        ctx.lineTo(curX, currentY + currentBedH + (Math.random() * 6 - 3)); // خط متعرج عشوائي
                     }
+                    ctx.lineTo(trackFmX + 1, currentY + currentBedH);
                 }
-                ctx.strokeStyle = "#000000"; ctx.stroke(); ctx.restore();
+                ctx.stroke(); ctx.setLineDash([]);
 
-                // طباعة نصوص التكوين والعمر الجيولوجي بشكل منفصل ومحاذي تماماً
-                ctx.fillStyle = "#000000"; ctx.font = "bold 11px Arial";
-                ctx.fillText(layer.formation, 38, currentY + 25);
-                if (layer.age !== "") {
-                    ctx.font = "italic 10px Arial"; ctx.fillStyle = "#4b5563";
-                    ctx.fillText(`(${layer.age})`, 38, currentY + 40);
+                // إغلاق الحافة في حال كان هناك انتقال بالصلابة بين هذه الطبقة والتي تليها
+                if (index < fieldLayers.length - 1) {
+                    let nextW = 80 + (fieldLayers[index+1].hardness * 25);
+                    ctx.beginPath(); ctx.moveTo(trackFmX + 1 + calculatedW, currentY + currentBedH); ctx.lineTo(trackFmX + 1 + nextW, currentY + currentBedH); ctx.stroke();
                 }
 
-                // طباعة كلمة السمك والوصف الرسمي الفني والـ Legend للطبقة
+                // 5. كتابة التكوين والعمر
+                ctx.fillStyle = "#000000"; ctx.font = "bold 12px Arial";
+                ctx.fillText(layer.formation, 38, currentY + (currentBedH/2));
+                if(layer.age) {
+                    ctx.font = "italic 11px Arial"; ctx.fillStyle = "#4b5563";
+                    ctx.fillText(`(${layer.age})`, 38, currentY + (currentBedH/2) + 15);
+                }
+
+                // 6. كتابة السمك (Thickness)
                 ctx.fillStyle = "#000000"; ctx.font = "12px Arial";
-                ctx.fillText(`${layer.thickness} m`, trackColX + 12, currentY + (currentBedH / 2) + 4);
+                ctx.fillText(`${layer.thickness} m`, trackColX + 12, currentY + (currentBedH / 2) + 5);
 
-                let logTechnicalText = layer.rockType;
-                if(layer.isInterbed) {
-                    logTechnicalText += layer.interbedStyle === "interbedded" ? ` Interbedded with ${layer.secRock}` : ` Mixed with ${layer.secRock}`;
-                }
-                
-                ctx.font = "bold 11px Arial"; ctx.fillText(logTechnicalText, trackThickX + 15, currentY + 22);
-                
-                // الوصف الفني التلقائي إذا كان مفعلاً
-                if (layer.needDesc) {
-                    ctx.font = "10px Arial"; ctx.fillStyle = "#374151";
-                    let autoDesc = currentLanguage === "ar" ? `طبقة صخرية رصينة ذات مقاومة تجوية تعادل ${layer.hardness}/5.` : `Standard lithology beds showing weathering resistance index of ${layer.hardness}/5.`;
-                    ctx.fillText(autoDesc, trackThickX + 15, currentY + 38);
+                // 7. كتابة الوصف (Description)
+                if(layer.needDesc) {
+                    let descText = layer.rockType;
+                    if(layer.isInterbed) {
+                        descText += layer.interbedStyle === "interbedded" ? ` interbedded with ${layer.secRock}` : ` mixed with ${layer.secRock}`;
+                    }
+                    ctx.fillText(descText, trackThickX + 15, currentY + (currentBedH / 2) + 5);
                 }
 
-                // رسم صندوق الدليل المصغر التابع (Mini Legend Cell) بجانب الوصف لكل طبقة منفصلة
+                // 8. رسم الدليل الجانبي المنفصل (Legend)
                 ctx.save();
-                ctx.fillStyle = primaryHatch; ctx.fillRect(canvas.width - 95, currentY + 10, 50, 20);
-                ctx.strokeRect(canvas.width - 95, currentY + 10, 50, 20);
+                ctx.fillStyle = layer.bgColor; ctx.fillRect(trackLegendX + 15, currentY + (currentBedH/2) - 15, 40, 30);
+                ctx.fillStyle = primaryHatch; ctx.fillRect(trackLegendX + 15, currentY + (currentBedH/2) - 15, 40, 30);
+                if(layer.isInterbed) {
+                    let secH = compileGeologicalPattern(layer.secRock, "#000000", true);
+                    ctx.fillStyle = secH; ctx.fillRect(trackLegendX + 15, currentY + (currentBedH/2) - 15, 40, 30);
+                }
+                ctx.strokeRect(trackLegendX + 15, currentY + (currentBedH/2) - 15, 40, 30);
+                
+                ctx.fillStyle = "#000000"; ctx.font = "10px Arial";
+                ctx.fillText(layer.rockType, trackLegendX + 65, currentY + (currentBedH/2) + 4);
                 ctx.restore();
 
                 currentY += currentBedH;
             });
+
+            // 9. كتابة تذييل اللوحة (Footer: Date and Author)
+            let dateString = new Date().toLocaleString('en-US');
+            ctx.fillStyle = "#000000"; ctx.font = "italic 12px Arial";
+            ctx.fillText(`By: ${geoName}`, 30, endY + 25);
+            ctx.textAlign = "right";
+            ctx.fillText(`Date: ${dateString}`, canvas.width - 30, endY + 25);
         }
 
         function downloadLog() {
             if (fieldLayers.length === 0) return;
             const captureLink = document.createElement('a');
-            captureLink.download = 'Shandal_Premium_Stratigraphy.png';
-            captureLink.href = canvas.toDataURL(); captureLink.click();
+            captureLink.download = 'Stratigraphic_Column.png';
+            captureLink.href = canvas.toDataURL('image/png', 1.0); // جودة عالية
+            captureLink.click();
         }
 
         function resetApp() {
             fieldLayers = []; renderStratigraphyCanvas();
         }
 
-        // إقلاع النظام التلقائي الأول للمختبر
+        // بدء التشغيل
         loadRockTypes();
         renderStratigraphyCanvas();
     </script>
