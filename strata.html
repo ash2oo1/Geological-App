@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام شندل - العمود الطباقي الجيولوجي الحديث</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #060d1a; --card-bg: rgba(22, 34, 53, 0.85); 
+            --text-light: #f8fafc; --text-muted: #94a3b8;
+            --accent-blue: #38bdf8; --accent-orange: #fbbf24;
+            --accent-green: #10b981; --accent-red: #ef4444;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-main); color: var(--text-light); margin: 0; padding: 0; }
+        
+        header { text-align: center; padding: 25px 15px; background: linear-gradient(to bottom, #0f172a, var(--bg-main)); border-bottom: 2px solid var(--accent-orange); box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
+        header h1 { margin: 0; font-size: 26px; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+        header p { margin: 8px 0 0; color: var(--accent-blue); font-weight: bold; font-size: 16px;}
+
+        .container { display: grid; grid-template-columns: 350px 1fr; gap: 20px; max-width: 1400px; margin: 30px auto; padding: 0 20px; align-items: start;}
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+
+        .panel { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .panel-title { color: var(--accent-blue); font-size: 18px; margin-top: 0; border-bottom: 1px dashed var(--border-color); padding-bottom: 10px; margin-bottom: 20px; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 5px; }
+        .form-control { width: 100%; padding: 10px; font-size: 14px; color: #fff; background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; }
+        .form-control:focus { outline: none; border-color: var(--accent-orange); }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .btn { width: 100%; padding: 12px; font-weight: bold; color: #fff; background: linear-gradient(135deg, #2563eb, #0ea5e9); border: none; border-radius: 6px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(14, 165, 233, 0.4); }
+        .btn-green { background: linear-gradient(135deg, #059669, #10b981); }
+        .btn-red { background: linear-gradient(135deg, #dc2626, #ef4444); }
+
+        .canvas-container { overflow-x: auto; background: #fff; border-radius: 8px; padding: 20px; text-align: center; }
+        canvas { background: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.2); max-width: 100%; }
+
+        .expert-box { margin-top: 20px; background: rgba(16, 185, 129, 0.05); border-right: 4px solid var(--accent-green); padding: 15px; border-radius: 6px; color: #e2e8f0; font-size: 14px; line-height: 1.8; }
+        .expert-box span { color: var(--accent-orange); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>نظام شندل للمسح الميداني الجيولوجي</h1>
+        <p><i class="fas fa-layer-group"></i> العمود الطباقي الجيولوجي الحديث (المختبر التفاعلي)</p>
+    </header>
+
+    <div class="container">
+        <div class="panel">
+            <h3 class="panel-title"><i class="fas fa-plus-circle"></i> إضافة طبقة صخرية</h3>
+            
+            <div class="form-group">
+                <label>اسم التكوين (Formation) / العصر:</label>
+                <input type="text" id="formation" class="form-control" placeholder="مثال: تكوين الدمام - الإيوسين">
+            </div>
+            
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>اسم الطبقة (Lithology):</label>
+                    <input type="text" id="lithoName" class="form-control" placeholder="مثال: حجر جيري رملي">
+                </div>
+                <div class="form-group">
+                    <label>السمك (بالمتر):</label>
+                    <input type="number" id="thickness" class="form-control" value="10" min="1">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>صلابة الصخر / حجم الحبيبات (1 ضعيف - 5 صلب):</label>
+                    <input type="range" id="hardness" class="form-control" min="1" max="5" value="3" style="padding:0;">
+                </div>
+                <div class="form-group">
+                    <label>التركيب الرسوبي / الرموز:</label>
+                    <select id="accessory" class="form-control">
+                        <option value="">بدون رموز</option>
+                        <option value="fossils">متحجرات (Fossils)</option>
+                        <option value="crossbed">تطبق متقاطع (Cross-bedding)</option>
+                        <option value="ripple">علامات النيم (Ripple Marks)</option>
+                        <option value="roots">جذور / آثار حياة (Bioturbation)</option>
+                        <option value="water">مستوى المياه (Water Table)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>نوع التماس الطباقي السفلي (Contact):</label>
+                <select id="contact" class="form-control">
+                    <option value="sharp">مستقيم (Sharp - ترسيب مستمر)</option>
+                    <option value="erosional">متعرج (Erosional - عدم توافق)</option>
+                    <option value="gradational">متدرج / متقطع (Gradational)</option>
+                </select>
+            </div>
+
+            <h3 class="panel-title" style="margin-top:20px; font-size:15px;"><i class="fas fa-paint-brush"></i> تصميم النسيج الأساسي</h3>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>شكل النسيج (Pattern):</label>
+                    <select id="patternType" class="form-control">
+                        <option value="none">سادة (بدون نسيج)</option>
+                        <option value="dots">نقاط (رمل - Sandstone)</option>
+                        <option value="dashed">خطوط متقطعة (طين - Shale)</option>
+                        <option value="bricks">طابوقي (جيري - Limestone)</option>
+                        <option value="circles">دوائر (رصيص - Conglomerate)</option>
+                        <option value="triangles">مثلثات (بريشيا - Breccia)</option>
+                        <option value="slashes">خطوط مائلة (دولومايت/متبخرات)</option>
+                        <option value="vertical">خطوط عمودية</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>لون النسيج:</label>
+                    <input type="color" id="patternColor" class="form-control" value="#000000" style="padding:0; height:38px;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>لون خلفية الطبقة:</label>
+                <input type="color" id="bgColor" class="form-control" value="#fde68a" style="padding:0; height:38px;">
+            </div>
+
+            <div class="form-group">
+                <label>تداخل أو تعاقب (Interbedded / Mixed):</label>
+                <select id="beddingStyle" class="form-control" onchange="toggleSecondary()">
+                    <option value="massive">طبقة كتلية اعتيادية (Massive)</option>
+                    <option value="interbedded">تعاقب مائل (Interbedded)</option>
+                </select>
+            </div>
+
+            <div id="secondary-style" style="display: none; border-top: 1px dashed var(--border-color); padding-top: 10px;">
+                <label style="color:var(--accent-orange); font-size:12px; margin-bottom:10px; display:block;">إعدادات الطبقة المتداخلة (الثانوية):</label>
+                <div class="grid-2">
+                    <div class="form-group"><select id="secPattern" class="form-control"><option value="dashed">خطوط متقطعة (طين)</option><option value="dots">نقاط</option><option value="slashes">مائلة</option><option value="none">سادة</option></select></div>
+                    <div class="form-group"><input type="color" id="secBgColor" class="form-control" value="#94a3b8" style="padding:0; height:38px;"></div>
+                </div>
+            </div>
+
+            <button class="btn" onclick="addLayer()"><i class="fas fa-layer-group"></i> إضافة الطبقة ورسم العمود</button>
+            <button class="btn btn-green" onclick="exportCanvas()"><i class="fas fa-download"></i> تصدير المخطط (صورة)</button>
+            <button class="btn btn-red" onclick="clearAll()"><i class="fas fa-trash"></i> مسح المختبر</button>
+        </div>
+
+        <div class="panel">
+            <h3 class="panel-title"><i class="fas fa-map"></i> المخطط الجيولوجي</h3>
+            <div class="canvas-container">
+                <canvas id="strataCanvas" width="800" height="100"></canvas>
+            </div>
+
+            <div id="expert-analysis" class="expert-box" style="display:none;">
+                <h4><i class="fas fa-brain"></i> التحليل الاستدلالي الآلي للتتابع الطباقي:</h4>
+                <div id="analysis-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let layers = [];
+        const canvas = document.getElementById('strataCanvas');
+        const ctx = canvas.getContext('2d');
+        const pixelsPerMeter = 10; // المقياس
+        const baseWidth = 150; // عرض الطبقة الأدنى
+        const leftMargin = 200; // هامش العمر والتكوين
+
+        function toggleSecondary() {
+            const style = document.getElementById('beddingStyle').value;
+            document.getElementById('secondary-style').style.display = (style === 'interbedded') ? 'block' : 'none';
+        }
+
+        // إنشاء الأنسجة (Patterns) باستخدام Offscreen Canvas
+        function createPatternCanvas(type, pColor, bgColor) {
+            const pCan = document.createElement('canvas');
+            const pCtx = pCan.getContext('2d');
+            pCan.width = 20; pCan.height = 20;
+
+            // رسم الخلفية
+            pCtx.fillStyle = bgColor;
+            pCtx.fillRect(0, 0, 20, 20);
+
+            pCtx.fillStyle = pColor;
+            pCtx.strokeStyle = pColor;
+            pCtx.lineWidth = 1;
+
+            if (type === 'dots') {
+                pCtx.beginPath(); pCtx.arc(10, 10, 1.5, 0, Math.PI*2); pCtx.fill();
+                pCtx.beginPath(); pCtx.arc(0, 0, 1.5, 0, Math.PI*2); pCtx.fill();
+            } else if (type === 'dashed') {
+                pCtx.setLineDash([5, 5]);
+                pCtx.beginPath(); pCtx.moveTo(0, 10); pCtx.lineTo(20, 10); pCtx.stroke();
+            } else if (type === 'bricks') {
+                pCan.width = 30; pCan.height = 20;
+                pCtx.fillStyle = bgColor; pCtx.fillRect(0,0,30,20);
+                pCtx.strokeStyle = pColor;
+                pCtx.strokeRect(0,0,30,10);
+                pCtx.strokeRect(-15,10,30,10); pCtx.strokeRect(15,10,30,10);
+            } else if (type === 'circles') {
+                pCtx.beginPath(); pCtx.arc(10, 10, 4, 0, Math.PI*2); pCtx.stroke();
+            } else if (type === 'triangles') {
+                pCtx.beginPath(); pCtx.moveTo(10, 4); pCtx.lineTo(16, 16); pCtx.lineTo(4, 16); pCtx.closePath(); pCtx.stroke();
+            } else if (type === 'slashes') {
+                pCtx.beginPath(); pCtx.moveTo(0, 20); pCtx.lineTo(20, 0); pCtx.stroke();
+            } else if (type === 'vertical') {
+                pCtx.beginPath(); pCtx.moveTo(10, 0); pCtx.lineTo(10, 20); pCtx.stroke();
+            }
+            
+            return ctx.createPattern(pCan, 'repeat');
+        }
+
+        function addLayer() {
+            const layer = {
+                formation: document.getElementById('formation').value || 'غير محدد',
+                name: document.getElementById('lithoName').value || 'طبقة',
+                thickness: parseFloat(document.getElementById('thickness').value),
+                hardness: parseInt(document.getElementById('hardness').value),
+                accessory: document.getElementById('accessory').value,
+                contact: document.getElementById('contact').value,
+                pType: document.getElementById('patternType').value,
+                pColor: document.getElementById('patternColor').value,
+                bgColor: document.getElementById('bgColor').value,
+                bedStyle: document.getElementById('beddingStyle').value,
+                secPType: document.getElementById('secPattern').value,
+                secBgColor: document.getElementById('secBgColor').value
+            };
+            
+            layers.unshift(layer); // الإضافة من الأعلى (الترسيب الأحدث فوق الأقدم)
+            drawColumn();
+            runExpertAnalysis();
+        }
+
+        function drawColumn() {
+            let totalHeight = layers.reduce((sum, l) => sum + (l.thickness * pixelsPerMeter), 0);
+            canvas.height = Math.max( totalHeight + 150, 400 ); // مساحة للترويسة
+            
+            // خلفية بيضاء نقية
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // رسم الترويسة (Header)
+            ctx.fillStyle = "#0f172a";
+            ctx.font = "bold 20px 'Segoe UI'";
+            ctx.fillText("نظام شندل - العمود الطباقي الجيولوجي الميداني", 250, 40);
+            ctx.font = "14px 'Segoe UI'";
+            ctx.fillText("المقياس: كل 1 سم يعادل 1 متر تقريباً", 250, 65);
+            ctx.fillText(`تاريخ الإنشاء: ${new Date().toLocaleDateString('ar-IQ')}`, 250, 85);
+            
+            ctx.beginPath(); ctx.moveTo(50, 100); ctx.lineTo(750, 100); ctx.stroke();
+
+            let currentY = 120;
+            let currentDepth = 0;
+
+            // رسم عناوين الأعمدة
+            ctx.font = "bold 14px 'Segoe UI'";
+            ctx.fillText("العصر / التكوين", 50, 115);
+            ctx.fillText("العمود الطباقي والصلابة", leftMargin, 115);
+            ctx.fillText("السمك", leftMargin + 260, 115);
+            ctx.fillText("الوصف والتركيب", leftMargin + 320, 115);
+
+            for (let i = 0; i < layers.length; i++) {
+                const l = layers[i];
+                const h = l.thickness * pixelsPerMeter;
+                const w = baseWidth + (l.hardness * 25); // البروفايل المتعرج للصلابة
+
+                // 1. رسم بيانات التكوين (Formation)
+                ctx.fillStyle = "#334155";
+                ctx.font = "14px Arial";
+                ctx.fillText(l.formation, 50, currentY + (h/2));
+
+                // 2. إعداد النسيج (Pattern)
+                const pat1 = createPatternCanvas(l.pType, l.pColor, l.bgColor);
+                
+                // مسار الطبقة
+                ctx.beginPath();
+                ctx.moveTo(leftMargin, currentY);
+                ctx.lineTo(leftMargin + w, currentY);
+                ctx.lineTo(leftMargin + w, currentY + h);
+                ctx.lineTo(leftMargin, currentY + h);
+                ctx.closePath();
+
+                if (l.bedStyle === 'massive') {
+                    ctx.fillStyle = pat1;
+                    ctx.fill();
+                    ctx.stroke();
+                } else if (l.bedStyle === 'interbedded') {
+                    // تعاقب (Interbedded) - خط مائل يقطع الطبقة
+                    ctx.fillStyle = pat1;
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    const pat2 = createPatternCanvas(l.secPType, l.pColor, l.secBgColor);
+                    ctx.beginPath();
+                    ctx.moveTo(leftMargin, currentY);
+                    ctx.lineTo(leftMargin + w, currentY + h);
+                    ctx.lineTo(leftMargin, currentY + h);
+                    ctx.closePath();
+                    ctx.fillStyle = pat2;
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // رسم الخط القاطع بوضوح
+                    ctx.beginPath();
+                    ctx.moveTo(leftMargin, currentY);
+                    ctx.lineTo(leftMargin + w, currentY + h);
+                    ctx.strokeStyle = "#000";
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                }
+
+                // 3. رسم التماس السفلي (Bottom Contact)
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                if (l.contact === 'sharp') {
+                    ctx.setLineDash([]);
+                    ctx.moveTo(leftMargin, currentY + h); ctx.lineTo(leftMargin + w, currentY + h);
+                } else if (l.contact === 'gradational') {
+                    ctx.setLineDash([8, 6]);
+                    ctx.moveTo(leftMargin, currentY + h); ctx.lineTo(leftMargin + w, currentY + h);
+                } else if (l.contact === 'erosional') {
+                    ctx.setLineDash([]);
+                    let zx = leftMargin;
+                    ctx.moveTo(zx, currentY + h);
+                    while (zx < leftMargin + w) {
+                        zx += 10;
+                        ctx.lineTo(zx, currentY + h + (Math.random() > 0.5 ? 5 : -5));
+                    }
+                }
+                ctx.stroke();
+                ctx.setLineDash([]); // Reset
+
+                // الخط الأيسر المستقيم للعمود
+                ctx.beginPath(); ctx.moveTo(leftMargin, currentY); ctx.lineTo(leftMargin, currentY+h); ctx.stroke();
+
+                // 4. النصوص والإضافات الجانبية
+                ctx.fillStyle = "#000";
+                ctx.fillText(l.thickness + "m", leftMargin + 260, currentY + (h/2));
+                ctx.fillText(l.name, leftMargin + 320, currentY + (h/2));
+
+                // رسم الرموز (Accessories)
+                if (l.accessory !== "") {
+                    ctx.font = "20px Arial";
+                    let icon = "";
+                    if(l.accessory === "fossils") icon = "🐚";
+                    if(l.accessory === "crossbed") icon = "///";
+                    if(l.accessory === "ripple") icon = "〰️";
+                    if(l.accessory === "roots") icon = "🌿";
+                    if(l.accessory === "water") icon = "💧";
+                    ctx.fillText(icon, leftMargin + w + 10, currentY + 20);
+                }
+
+                currentY += h;
+                currentDepth += l.thickness;
+            }
+        }
+
+        function runExpertAnalysis() {
+            if(layers.length < 2) return;
+            
+            const analysisBox = document.getElementById('expert-analysis');
+            const analysisText = document.getElementById('analysis-text');
+            analysisBox.style.display = 'block';
+
+            let text = "";
+            let finingUpward = 0; let coarseningUpward = 0;
+
+            // تذكر أن layers[0] هي الأحدث (الأعلى)، و layers[length-1] هي الأقدم (الأسفل)
+            for (let i = 0; i < layers.length - 1; i++) {
+                if (layers[i].hardness < layers[i+1].hardness) finingUpward++;
+                if (layers[i].hardness > layers[i+1].hardness) coarseningUpward++;
+            }
+
+            if (finingUpward > coarseningUpward) {
+                text += "<p><span>التحليل السحني (Sequence Stratigraphy):</span> يظهر التتابع العام تناقصاً في حجم الحبيبات وصلابة الصخور نحو الأعلى (Fining Upward). هذا يدل أيكولوجياً على <b>طغيان بحري (Transgression)</b> وارتفاع تدريجي في مستوى سطح البحر، أو انتقال البيئة من قنوات نهرية نشطة إلى سهول فيضية هادئة.</p>";
+            } else if (coarseningUpward > finingUpward) {
+                text += "<p><span>التحليل السحني (Sequence Stratigraphy):</span> يظهر التتابع تزايداً في حجم الحبيبات نحو الأعلى (Coarsening Upward). هذا يدل على <b>انحسار بحري (Regression)</b>، أو تقدم دلتاوي (Progradation) نحو حوض الترسيب.</p>";
+            } else {
+                text += "<p><span>التحليل السحني:</span> بيئة ترسيبية مستقرة نسبياً مع تذبذب موضعي في مستوى الطاقة الحركية لحوض الترسيب.</p>";
+            }
+
+            // تحليل عدم التوافق
+            let unconformity = layers.some(l => l.contact === 'erosional');
+            if(unconformity) {
+                text += "<p><span>الهندسة البنيوية:</span> تم رصد أسطح <b>عدم توافق (Unconformity) أو تعرية</b>. هذا يدل على فترات انقطاع في الترسيب أو حركات تكتونية أدت لرفع الطبقات وتعريتها قبل استئناف الترسيب.</p>";
+            }
+
+            // تحليل الرموز
+            let hasWater = layers.some(l => l.accessory === 'water');
+            if(hasWater) text += "<p><span>هيدرولوجياً:</span> تم تحديد مستوى المياه الجوفية، مما يستوجب الحذر عند التصميم الجيوتقني للأساسات العميقة في هذا الموقع.</p>";
+
+            analysisText.innerHTML = text;
+        }
+
+        function exportCanvas() {
+            if(layers.length === 0) { alert("المختبر فارغ! قم بإضافة طبقات أولاً."); return; }
+            const link = document.createElement('a');
+            link.download = 'Shandal_Stratigraphic_Column.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function clearAll() {
+            layers = [];
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('expert-analysis').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
