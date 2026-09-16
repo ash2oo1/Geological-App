@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام شندل - المختبر الجيوفيزيائي الفضائي</title>
+    <title>نظام شندل - المختبر الطبوغرافي الفضائي</title>
     
     <!-- مكتبة الخرائط Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -87,7 +87,7 @@
     <header>
         <div class="brand">
             <h1 id="appTitle">نظام شندل للمسح الميداني الجيولوجي</h1>
-            <p id="appSubtitle"><i class="fas fa-satellite"></i> المختبر الجيوفيزيائي الفضائي والخرائط الإقليمية</p>
+            <p id="appSubtitle"><i class="fas fa-satellite"></i> الرفع الطبوغرافي ونماذج الارتفاعات الرقمية</p>
         </div>
         <button class="lang-toggle" onclick="toggleLanguage()">
             <span id="langText">English</span> <i class="fas fa-arrow-right"></i>
@@ -105,11 +105,9 @@
             </button>
 
             <div class="form-group">
-                <label id="lblDataType">نوع المسح الجيوفيزيائي المطلوب:</label>
+                <label id="lblDataType">البيانات المتاحة للرفع الفضائي:</label>
                 <select class="form-control" id="dataType">
                     <option value="topo" id="optTopo" selected>البيانات الطبوغرافية الحقيقية (SRTM DEM)</option>
-                    <option value="magnetic" id="optMag">بيانات الشذوذ المغناطيسي (Magnetic Anomaly)</option>
-                    <option value="gravity" id="optGrav">بيانات الشذوذ الجذبي (Bouguer Gravity)</option>
                 </select>
             </div>
 
@@ -161,7 +159,7 @@
     </div>
 
     <footer>
-        <span id="footerText">جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026 - قسم الاستكشاف الجيوفيزيائي</span>
+        <span id="footerText">جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026 - قسم الرفع الطبوغرافي</span>
     </footer>
 
     <script>
@@ -172,14 +170,12 @@
         const translations = {
             en: {
                 appTitle: "Shandal System for Geological Field Survey",
-                appSubtitle: "<i class='fas fa-satellite'></i> Geophysical Spatial Lab & Regional Mapping",
+                appSubtitle: "<i class='fas fa-satellite'></i> Topographic Surveying & DEM",
                 langText: "العربية",
                 panelTitle: "<i class='fas fa-cogs'></i> Data Extraction Settings",
                 lblBtnBox: "Show Selection Bounding Box",
                 lblBtnBoxHide: "Hide Selection Bounding Box",
-                lblDataType: "Geophysical Survey Type:",
-                optMag: "Magnetic Anomaly Data (EMAG2)",
-                optGrav: "Bouguer Gravity Anomaly (ICGEM)",
+                lblDataType: "Available Spatial Data:",
                 optTopo: "Real Topographic Data (SRTM DEM)",
                 lblResolution: "Grid Resolution:",
                 optResHigh: "Very High (High point density)",
@@ -192,18 +188,16 @@
                 statusErrorArea: "Geological Alert: Selected area is too small (< 2 sq km). Please zoom out to avoid data pixelation.",
                 lblBtnDownload: "Export Data File (CSV Format)",
                 lblViewfinder: "Area of Interest (Drag map to adjust)",
-                footerText: "All Rights Reserved to Geologist Ali Shandal Al-Janabi © 2026 - Geophysical Exploration Dept."
+                footerText: "All Rights Reserved to Geologist Ali Shandal Al-Janabi © 2026 - Topographic Surveying Dept."
             },
             ar: {
                 appTitle: "نظام شندل للمسح الميداني الجيولوجي",
-                appSubtitle: "<i class='fas fa-satellite'></i> المختبر الجيوفيزيائي الفضائي والخرائط الإقليمية",
+                appSubtitle: "<i class='fas fa-satellite'></i> الرفع الطبوغرافي ونماذج الارتفاعات الرقمية",
                 langText: "English",
                 panelTitle: "<i class='fas fa-cogs'></i> إعدادات استخراج البيانات",
                 lblBtnBox: "إظهار مستطيل التحديد (زون الدراسة)",
                 lblBtnBoxHide: "إخفاء مستطيل التحديد",
-                lblDataType: "نوع المسح الجيوفيزيائي المطلوب:",
-                optMag: "بيانات الشذوذ المغناطيسي (Magnetic Anomaly)",
-                optGrav: "بيانات الشذوذ الجذبي (Bouguer Gravity)",
+                lblDataType: "البيانات المتاحة للرفع الفضائي:",
                 optTopo: "البيانات الطبوغرافية الحقيقية (SRTM DEM)",
                 lblResolution: "دقة الشبكة (Grid Resolution):",
                 optResHigh: "عالية جداً (High - كثافة نقاط دقيقة)",
@@ -216,7 +210,7 @@
                 statusErrorArea: "تنبيه جيولوجي فني: مساحة الدراسة صغيرة جداً (أقل من 2 كم²). لا يجوز علمياً استخدام الرفع الفضائي SRTM لهذه المساحة لتجنب التشوه (Pixelation). يرجى تصغير الخريطة.",
                 lblBtnDownload: "تصدير الملف (CSV Format)",
                 lblViewfinder: "نطاق السحب والإسقاط (اسحب الخريطة لضبط الموقع)",
-                footerText: "جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026 - قسم الاستكشاف الجيوفيزيائي"
+                footerText: "جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026 - قسم الرفع الطبوغرافي"
             }
         };
 
@@ -234,8 +228,6 @@
             document.getElementById('lblBtnBox').innerText = (boxDisplay === 'block') ? t.lblBtnBoxHide : t.lblBtnBox;
             
             document.getElementById('lblDataType').innerText = t.lblDataType;
-            document.getElementById('optMag').innerText = t.optMag;
-            document.getElementById('optGrav').innerText = t.optGrav;
             document.getElementById('optTopo').innerText = t.optTopo;
             
             document.getElementById('lblResolution').innerText = t.lblResolution;
@@ -326,8 +318,7 @@
             const statusText = document.getElementById('statusText');
             const loader = document.getElementById('loader');
             const btnDownload = document.getElementById('btnDownload');
-            const dataType = document.getElementById('dataType').value;
-
+            
             if (box.style.display === 'none' || box.style.display === '') {
                 statusText.innerText = t.statusErrorBox;
                 statusText.style.color = "#ef4444";
@@ -349,49 +340,35 @@
             };
 
             // حاجز الحماية الجيولوجي (Area Validation)
-            if (dataType === 'topo') {
-                const widthKm = getDistanceFromLatLonInKm(bounds.north, bounds.west, bounds.north, bounds.east);
-                const heightKm = getDistanceFromLatLonInKm(bounds.north, bounds.west, bounds.south, bounds.west);
-                const areaSqKm = widthKm * heightKm;
+            const widthKm = getDistanceFromLatLonInKm(bounds.north, bounds.west, bounds.north, bounds.east);
+            const heightKm = getDistanceFromLatLonInKm(bounds.north, bounds.west, bounds.south, bounds.west);
+            const areaSqKm = widthKm * heightKm;
 
-                if (areaSqKm < 2.0) {
-                    statusText.innerText = t.statusErrorArea;
-                    statusText.style.color = "#ef4444";
-                    return;
-                }
+            if (areaSqKm < 2.0) {
+                statusText.innerText = t.statusErrorArea;
+                statusText.style.color = "#ef4444";
+                return;
             }
 
             statusText.style.color = "#cbd5e1";
             loader.style.display = 'block';
             btnDownload.style.display = 'none';
 
-            if (dataType === 'topo') {
-                try {
-                    // تشغيل المحرك الآمن جداً
-                    finalCSVData = await fetchRealElevationData(bounds, statusText);
-                    
-                    loader.style.display = 'none';
-                    statusText.style.color = "var(--success)";
-                    const successMsg = currentLang === 'ar' ? "تم سحب الإحداثيات والبيانات الحقيقية بنجاح! الملف جاهز." : "Coordinates Fetched Successfully! Grid is ready.";
-                    statusText.innerHTML = `<strong>${successMsg}</strong><br><span style='font-size:12px; color:#94a3b8;'>Bounds: [${bounds.south.toFixed(4)} N, ${bounds.west.toFixed(4)} E] to [${bounds.north.toFixed(4)} N, ${bounds.east.toFixed(4)} E]</span>`;
-                    
-                    btnDownload.style.display = 'flex';
-                } catch (error) {
-                    loader.style.display = 'none';
-                    statusText.style.color = "#ef4444";
-                    statusText.innerHTML = (currentLang === 'ar') ? "<strong>❌ حدث خطأ في الاتصال</strong><br><span style='font-size:12px;'>قامت السيرفرات العالمية برفض الطلب بسبب حظر الـ IP المؤقت (Rate Limit). يرجى إطفاء جهاز الإنترنت (الراوتر) ثم تشغيله للحصول على IP جديد، والمحاولة.</span>" : "<strong>❌ Connection Error</strong><br><span style='font-size:12px;'>Global servers blocked the request due to IP rate limits. Please restart your router for a new IP and try again.</span>";
-                    console.error("Critical API Error:", error);
-                }
-            } else {
-                statusText.innerText = (currentLang === 'ar') ? "جاري تجهيز البيانات..." : "Processing Data...";
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                    statusText.style.color = "var(--warning)";
-                    const warnMsg = currentLang === 'ar' ? "تم تجهيز الملف (ملاحظة: البيانات الجذبية والمغناطيسية حالياً في طور ربط الـ API - تم توليد قيم اختبارية)" : "Data ready (Note: Gravity/Magnetic API pending - mock data generated)";
-                    statusText.innerHTML = `<strong>${warnMsg}</strong><br><span style='font-size:12px; color:#94a3b8;'>Bounds: [${bounds.south.toFixed(4)} N, ${bounds.west.toFixed(4)} E] to [${bounds.north.toFixed(4)} N, ${bounds.east.toFixed(4)} E]</span>`;
-                    finalCSVData = generateMockGeophysicalData(bounds, dataType);
-                    btnDownload.style.display = 'flex';
-                }, 2000);
+            try {
+                // تشغيل المحرك الآمن جداً
+                finalCSVData = await fetchRealElevationData(bounds, statusText);
+                
+                loader.style.display = 'none';
+                statusText.style.color = "var(--success)";
+                const successMsg = currentLang === 'ar' ? "تم سحب الإحداثيات والبيانات الحقيقية بنجاح! الملف جاهز." : "Coordinates Fetched Successfully! Grid is ready.";
+                statusText.innerHTML = `<strong>${successMsg}</strong><br><span style='font-size:12px; color:#94a3b8;'>Bounds: [${bounds.south.toFixed(4)} N, ${bounds.west.toFixed(4)} E] to [${bounds.north.toFixed(4)} N, ${bounds.east.toFixed(4)} E]</span>`;
+                
+                btnDownload.style.display = 'flex';
+            } catch (error) {
+                loader.style.display = 'none';
+                statusText.style.color = "#ef4444";
+                statusText.innerHTML = (currentLang === 'ar') ? "<strong>❌ حدث خطأ في الاتصال</strong><br><span style='font-size:12px;'>قامت السيرفرات العالمية برفض الطلب بسبب حظر الـ IP المؤقت (Rate Limit). يرجى إطفاء جهاز الإنترنت (الراوتر) ثم تشغيله للحصول على IP جديد، والمحاولة.</span>" : "<strong>❌ Connection Error</strong><br><span style='font-size:12px;'>Global servers blocked the request due to IP rate limits. Please restart your router for a new IP and try again.</span>";
+                console.error("Critical API Error:", error);
             }
         }
 
@@ -410,7 +387,7 @@
                 }
             }
 
-            // تم إرجاع الحزمة إلى 20 نقطة فقط (طول الرابط حوالي 400 حرف) وهذا يقبله أي سيرفر في العالم ولن يرفضه إطلاقاً بسبب الطول.
+            // حزمة 20 نقطة لضمان استقرار الاتصال
             const chunkSize = 20; 
             let chunks = [];
             for (let i = 0; i < points.length; i += chunkSize) {
@@ -426,12 +403,12 @@
                 const latsMeteo = chunk.map(p => p.lat).join(',');
                 const lngsMeteo = chunk.map(p => p.lng).join(',');
                 
-                // الاعتماد على سيرفر Open-Meteo الرسمي والموثوق
+                // الاعتماد على سيرفر Open-Meteo الرسمي
                 const url = `https://api.open-meteo.com/v1/elevation?latitude=${latsMeteo}&longitude=${lngsMeteo}`;
                 
                 let success = false;
                 let retryCount = 0;
-                const maxRetries = 5; // السماح بـ 5 محاولات صبر في حال انقطاع النت
+                const maxRetries = 5; 
                 
                 while (!success && retryCount < maxRetries) {
                     try {
@@ -451,7 +428,6 @@
                         results.push({ chunk, elevations: data.elevation });
                         success = true; 
 
-                        // فترة راحة صارمة وإجبارية (ثانيتين) لتجنب حظر IP السيرفر
                         await new Promise(resolve => setTimeout(resolve, 2000));
                         
                     } catch (error) {
@@ -460,7 +436,6 @@
                             throw new Error("فشل نهائي في الاتصال بالسيرفر"); 
                         }
                         
-                        // في حال رفض السيرفر، يتوقف النظام لمدة 10 ثواني كاملة عقاباً ليستعيد السيرفر وعيه
                         if(currentLang === 'ar') {
                             statusTextElement.innerHTML = `<span style='color:#f59e0b;'><i class='fas fa-exclamation-circle'></i> جدار الحماية العالمي قيد الانتظار...</span><br><span style='font-size:12px; color:#ef4444;'>إعادة المحاولة للخطوة ${i + 1} بعد 10 ثوانٍ (محاولة ${retryCount} من ${maxRetries})</span>`;
                         } else {
@@ -483,39 +458,14 @@
             return csv;
         }
 
-        // دالة توليد البيانات الوهمية (للجاذبية والمغناطيسية)
-        function generateMockGeophysicalData(bounds, type) {
-            let csv = "Longitude(X),Latitude(Y),Value(Z)\n";
-            const resolutionConfig = document.getElementById('resolution').value;
-            let steps = resolutionConfig === 'high' ? 40 : (resolutionConfig === 'medium' ? 25 : 15);
-            
-            let latStep = (bounds.north - bounds.south) / steps;
-            let lngStep = (bounds.east - bounds.west) / steps;
-
-            for (let lat = bounds.south; lat <= bounds.north; lat += latStep) {
-                for (let lng = bounds.west; lng <= bounds.east; lng += lngStep) {
-                    let zValue = 0;
-                    let noise = (Math.random() * 2) - 1;
-                    if (type === 'magnetic') {
-                        zValue = (Math.sin(lat * 5) * 150) + (Math.cos(lng * 5) * 100) + (noise * 10) + 50;
-                    } else if (type === 'gravity') {
-                        zValue = -40 + (Math.sin(lat * 3) * 20) + (Math.cos(lng * 2) * 15) + (noise * 2);
-                    }
-                    csv += `${lng.toFixed(6)},${lat.toFixed(6)},${zValue.toFixed(2)}\n`;
-                }
-            }
-            return csv;
-        }
-
         // ==========================================
         // 5. تحميل الملف والتصدير (File Export)
         // ==========================================
         function downloadCSV() {
             if (!finalCSVData) return;
             
-            const dataType = document.getElementById('dataType').value;
             const date = new Date().toISOString().split('T')[0];
-            const fileName = `Shandal_GeoData_${dataType}_${date}.csv`;
+            const fileName = `Shandal_GeoData_Topo_${date}.csv`;
 
             const blob = new Blob([finalCSVData], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
