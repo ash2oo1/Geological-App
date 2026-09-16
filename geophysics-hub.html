@@ -107,18 +107,18 @@
             <div class="form-group">
                 <label id="lblDataType">نوع المسح الجيوفيزيائي المطلوب:</label>
                 <select class="form-control" id="dataType">
+                    <option value="topo" id="optTopo" selected>البيانات الطبوغرافية الحقيقية (SRTM DEM)</option>
                     <option value="magnetic" id="optMag">بيانات الشذوذ المغناطيسي (Magnetic Anomaly)</option>
                     <option value="gravity" id="optGrav">بيانات الشذوذ الجذبي (Bouguer Gravity)</option>
-                    <option value="topo" id="optTopo">البيانات الطبوغرافية (Topography/DEM)</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label id="lblResolution">دقة الشبكة (Grid Resolution):</label>
                 <select class="form-control" id="resolution">
-                    <option value="high" id="optResHigh">عالية جداً (High - 1km)</option>
-                    <option value="medium" id="optResMed" selected>متوسطة (Medium - 5km)</option>
-                    <option value="low" id="optResLow">منخفضة للخرائط الإقليمية (Low - 10km)</option>
+                    <option value="high" id="optResHigh">عالية جداً (High - كثافة نقاط عالية)</option>
+                    <option value="medium" id="optResMed" selected>متوسطة (Medium - كثافة قياسية)</option>
+                    <option value="low" id="optResLow">منخفضة للخرائط الإقليمية (Low)</option>
                 </select>
             </div>
 
@@ -180,14 +180,13 @@
                 lblDataType: "Geophysical Survey Type:",
                 optMag: "Magnetic Anomaly Data (EMAG2)",
                 optGrav: "Bouguer Gravity Anomaly (ICGEM)",
-                optTopo: "Topographic Data (DEM)",
+                optTopo: "Real Topographic Data (SRTM DEM)",
                 lblResolution: "Grid Resolution:",
-                optResHigh: "Very High (1km)",
-                optResMed: "Medium (5km)",
-                optResLow: "Low / Regional (10km)",
+                optResHigh: "Very High (High point density)",
+                optResMed: "Medium (Standard density)",
+                optResLow: "Low (Regional Mapping)",
                 lblBtnFetch: "Connect & Fetch Coordinates (X,Y,Z)",
                 statusIdle: "System is idle. Select area on map first.",
-                statusFetching: "Connecting to Global Servers... Extracting X,Y,Z...",
                 statusSuccess: "Coordinates Fetched Successfully! Grid is ready.",
                 statusError: "Please show the selection box first.",
                 lblBtnDownload: "Export Data File (CSV Format)",
@@ -204,15 +203,14 @@
                 lblDataType: "نوع المسح الجيوفيزيائي المطلوب:",
                 optMag: "بيانات الشذوذ المغناطيسي (Magnetic Anomaly)",
                 optGrav: "بيانات الشذوذ الجذبي (Bouguer Gravity)",
-                optTopo: "البيانات الطبوغرافية (Topography/DEM)",
+                optTopo: "البيانات الطبوغرافية الحقيقية (SRTM DEM)",
                 lblResolution: "دقة الشبكة (Grid Resolution):",
-                optResHigh: "عالية جداً (High - 1km)",
-                optResMed: "متوسطة (Medium - 5km)",
-                optResLow: "منخفضة للخرائط الإقليمية (Low - 10km)",
+                optResHigh: "عالية جداً (High - كثافة نقاط عالية)",
+                optResMed: "متوسطة (Medium - كثافة قياسية)",
+                optResLow: "منخفضة للخرائط الإقليمية (Low)",
                 lblBtnFetch: "الاتصال وجلب الإحداثيات (X,Y,Z)",
                 statusIdle: "النظام في وضع الاستعداد. قم بتحديد المنطقة على الخريطة أولاً.",
-                statusFetching: "جاري الاتصال بالسيرفرات العالمية... واستخراج البيانات...",
-                statusSuccess: "تم سحب الإحداثيات والبيانات بنجاح! الملف جاهز.",
+                statusSuccess: "تم سحب الإحداثيات والبيانات الحقيقية بنجاح! الملف جاهز.",
                 statusError: "يرجى إظهار مستطيل التحديد على الخريطة أولاً.",
                 lblBtnDownload: "تصدير الملف (CSV Format)",
                 lblViewfinder: "نطاق السحب والإسقاط (اسحب الخريطة لضبط الموقع)",
@@ -230,7 +228,6 @@
             document.getElementById('langText').innerText = t.langText;
             document.getElementById('panelTitle').innerHTML = t.panelTitle;
             
-            // Handle Box Button Text Based on State
             const boxDisplay = document.getElementById('viewfinder').style.display;
             document.getElementById('lblBtnBox').innerText = (boxDisplay === 'block') ? t.lblBtnBoxHide : t.lblBtnBox;
             
@@ -249,7 +246,6 @@
             document.getElementById('lblViewfinder').innerText = t.lblViewfinder;
             document.getElementById('footerText').innerText = t.footerText;
             
-            // Reset Status
             document.getElementById('statusText').innerText = t.statusIdle;
             document.getElementById('btnDownload').style.display = 'none';
         }
@@ -259,36 +255,27 @@
         // ==========================================
         let map;
         document.addEventListener("DOMContentLoaded", () => {
-            // تهيئة الخريطة بمركز افتراضي (بغداد)
             map = L.map('map', {
-                zoomControl: false // سنضيف أداة التقريب بمكان مخصص إن أردنا، حالياً الاعتماد على الماوس
+                zoomControl: false
             }).setView([33.3152, 44.3661], 6);
 
-            // إضافة طبقة الأقمار الصناعية (Esri Satellite)
             L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: 'Tiles &copy; Esri & Shandal System',
                 maxZoom: 18
             }).addTo(map);
 
-            // إضافة طبقة حدود الدول والشوارع فوق الأقمار الصناعية لسهولة التوجيه
             L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lines/{z}/{x}/{y}{r}.png', {
                 attribution: '',
                 opacity: 0.5,
                 maxZoom: 18
             }).addTo(map);
 
-            // إضافة مقياس الرسم (Scale) في الزاوية السفلية
             L.control.scale({ position: 'bottomright', metric: true, imperial: false }).addTo(map);
         });
 
-        // ==========================================
-        // 3. أدوات الخريطة (الذهاب للموقع والتحديد)
-        // ==========================================
-        
-        // دالة الذهاب لموقع الجيولوجي الحالي
         function goToMyLocation() {
             if (navigator.geolocation) {
-                map.locate({setView: true, maxZoom: 12});
+                map.locate({setView: true, maxZoom: 14});
                 map.on('locationfound', function(e) {
                     L.circleMarker(e.latlng, { radius: 8, fillColor: "#0ea5e9", color: "#fff", weight: 2, fillOpacity: 1 }).addTo(map)
                      .bindPopup(currentLang === 'ar' ? "موقعك الحالي" : "Your Location").openPopup();
@@ -299,7 +286,6 @@
             }
         }
 
-        // إظهار/إخفاء مستطيل التحديد
         function toggleSelectionBox() {
             const box = document.getElementById('viewfinder');
             const btnText = document.getElementById('lblBtnBox');
@@ -317,11 +303,12 @@
         }
 
         // ==========================================
-        // 4. محرك استخراج البيانات (Data Extraction Engine)
+        // 4. محرك استخراج البيانات المحدث (Real API Fetching)
         // ==========================================
-        let finalCSVData = ""; // متغير لحفظ البيانات وتصديرها
+        let finalCSVData = ""; 
 
-        function startDataExtraction() {
+        // تحويل الدالة إلى async لتدعم الاتصال الحقيقي بالسيرفر
+        async function startDataExtraction() {
             const t = translations[currentLang];
             const box = document.getElementById('viewfinder');
             const statusText = document.getElementById('statusText');
@@ -329,23 +316,19 @@
             const btnDownload = document.getElementById('btnDownload');
             const dataType = document.getElementById('dataType').value;
 
-            // التأكد من أن المستطيل ظاهر على الشاشة
             if (box.style.display === 'none' || box.style.display === '') {
                 statusText.innerText = t.statusError;
                 statusText.style.color = "#ef4444";
                 return;
             }
 
-            // 1. حساب إحداثيات (البوكس) جغرافياً من الخريطة
             const rect = box.getBoundingClientRect();
-            // الحصول على إحداثيات الزوايا نسبة لحاوية الخريطة
             const nwPoint = L.point(rect.left - map.getContainer().getBoundingClientRect().left, rect.top - map.getContainer().getBoundingClientRect().top);
             const sePoint = L.point(rect.right - map.getContainer().getBoundingClientRect().left, rect.bottom - map.getContainer().getBoundingClientRect().top);
             
             const nwLatLng = map.containerPointToLatLng(nwPoint);
             const seLatLng = map.containerPointToLatLng(sePoint);
 
-            // Bounding Box (LatMin, LonMin, LatMax, LonMax)
             const bounds = {
                 south: seLatLng.lat,
                 north: nwLatLng.lat,
@@ -353,29 +336,97 @@
                 east: seLatLng.lng
             };
 
-            // 2. بدء محاكاة الاتصال والتحميل (UX Simulation)
             statusText.style.color = "#cbd5e1";
-            statusText.innerText = t.statusFetching;
             loader.style.display = 'block';
             btnDownload.style.display = 'none';
 
-            // محاكاة تأخير السيرفر (3.5 ثوانٍ) ثم توليد البيانات
-            setTimeout(() => {
-                loader.style.display = 'none';
-                statusText.style.color = "var(--success)";
-                statusText.innerHTML = `<strong>${t.statusSuccess}</strong><br><span style="font-size:12px; color:#94a3b8;">Bounds: [${bounds.south.toFixed(2)} N, ${bounds.west.toFixed(2)} E] to [${bounds.north.toFixed(2)} N, ${bounds.east.toFixed(2)} E]</span>`;
+            if (dataType === 'topo') {
+                statusText.innerText = (currentLang === 'ar') ? "جاري الاتصال بقواعد بيانات (SRTM)... وسحب الارتفاعات الحقيقية..." : "Connecting to Global SRTM DB... Fetching Real Elevations...";
                 
-                // توليد مصفوفة البيانات (Grid Data Generation)
-                finalCSVData = generateMockGeophysicalData(bounds, dataType);
-                
-                btnDownload.style.display = 'flex';
-            }, 3500);
+                try {
+                    // استدعاء دالة الـ API الحقيقية
+                    finalCSVData = await fetchRealElevationData(bounds);
+                    
+                    loader.style.display = 'none';
+                    statusText.style.color = "var(--success)";
+                    statusText.innerHTML = `<strong>${t.statusSuccess}</strong><br><span style="font-size:12px; color:#94a3b8;">Bounds: [${bounds.south.toFixed(4)} N, ${bounds.west.toFixed(4)} E] to [${bounds.north.toFixed(4)} N, ${bounds.east.toFixed(4)} E]</span>`;
+                    
+                    btnDownload.style.display = 'flex';
+                } catch (error) {
+                    loader.style.display = 'none';
+                    statusText.style.color = "#ef4444";
+                    statusText.innerText = (currentLang === 'ar') ? "❌ حدث خطأ في الاتصال بالسيرفر العالمي. يرجى المحاولة لاحقاً." : "❌ Error connecting to global server. Try again.";
+                    console.error("API Error:", error);
+                }
+            } else {
+                // بقاء الجاذبية والمغناطيسية على وضع المحاكاة لحين ربط الـ API الخاص بهما
+                statusText.innerText = (currentLang === 'ar') ? "جاري تجهيز البيانات..." : "Processing Data...";
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    statusText.style.color = "var(--warning)";
+                    statusText.innerHTML = `<strong>تم تجهيز الملف</strong> (ملاحظة: البيانات الجذبية والمغناطيسية حالياً في طور ربط الـ API - تم توليد قيم اختبارية)<br><span style="font-size:12px; color:#94a3b8;">Bounds: [${bounds.south.toFixed(4)} N, ${bounds.west.toFixed(4)} E] to [${bounds.north.toFixed(4)} N, ${bounds.east.toFixed(4)} E]</span>`;
+                    finalCSVData = generateMockGeophysicalData(bounds, dataType);
+                    btnDownload.style.display = 'flex';
+                }, 2000);
+            }
         }
 
-        // دالة توليد بيانات جيوفيزيائية (X, Y, Z) بناءً على النطاق المحدد
+        // الدالة الجديدة: استخراج الارتفاعات الحقيقية من Open-Meteo SRTM 
+        async function fetchRealElevationData(bounds) {
+            const resolutionConfig = document.getElementById('resolution').value;
+            // دقة الشبكة: تقسيم المنطقة إلى صفوف وأعمدة
+            let steps = resolutionConfig === 'high' ? 40 : (resolutionConfig === 'medium' ? 25 : 15);
+            
+            let latStep = (bounds.north - bounds.south) / steps;
+            let lngStep = (bounds.east - bounds.west) / steps;
+
+            let points = [];
+            for (let lat = bounds.south; lat <= bounds.north; lat += latStep) {
+                for (let lng = bounds.west; lng <= bounds.east; lng += lngStep) {
+                    points.push({ lat: lat.toFixed(5), lng: lng.toFixed(5) });
+                }
+            }
+
+            // تقسيم النقاط إلى حزم (Chunks) كل حزمة 100 نقطة لأن السيرفر لا يقبل أكثر في الطلب الواحد
+            const chunkSize = 100;
+            let chunks = [];
+            for (let i = 0; i < points.length; i += chunkSize) {
+                chunks.push(points.slice(i, i + chunkSize));
+            }
+
+            let csv = "Longitude(X),Latitude(Y),Elevation(Z)\n";
+            
+            // إرسال الطلبات للسيرفر العالمي بشكل متوازي وسريع
+            const fetchPromises = chunks.map(async (chunk) => {
+                const lats = chunk.map(p => p.lat).join(',');
+                const lngs = chunk.map(p => p.lng).join(',');
+                // رابط الـ API المفتوح للارتفاعات الطبوغرافية
+                const url = `https://api.open-meteo.com/v1/elevation?latitude=${lats}&longitude=${lngs}`;
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("API Fetch Error");
+                const data = await response.json();
+                return { chunk, elevations: data.elevation };
+            });
+
+            // انتظار جميع الاستجابات
+            const results = await Promise.all(fetchPromises);
+            
+            // دمج النتائج في ملف الـ CSV
+            results.forEach(res => {
+                for (let i = 0; i < res.chunk.length; i++) {
+                    // إذا كان الارتفاع غير متوفر يتم وضع 0
+                    let z = res.elevations[i] !== null ? res.elevations[i].toFixed(2) : "0.00";
+                    csv += `${res.chunk[i].lng},${res.chunk[i].lat},${z}\n`;
+                }
+            });
+
+            return csv;
+        }
+
+        // دالة توليد البيانات الوهمية (بقيت كما هي للاختبار فقط للجاذبية والمغناطيسية)
         function generateMockGeophysicalData(bounds, type) {
             let csv = "Longitude(X),Latitude(Y),Value(Z)\n";
-            // تحديد عدد النقاط في الشبكة بناءً على الدقة
             const resolutionConfig = document.getElementById('resolution').value;
             let steps = resolutionConfig === 'high' ? 40 : (resolutionConfig === 'medium' ? 25 : 15);
             
@@ -385,22 +436,12 @@
             for (let lat = bounds.south; lat <= bounds.north; lat += latStep) {
                 for (let lng = bounds.west; lng <= bounds.east; lng += lngStep) {
                     let zValue = 0;
-                    
-                    // توليد قيم تقريبية رياضية تعطي شكل خريطة كفافية (Contour-like) عند رسمها
                     let noise = (Math.random() * 2) - 1;
-                    
                     if (type === 'magnetic') {
-                        // قيم شذوذ مغناطيسي (nT) تتراوح بين -200 و +300
                         zValue = (Math.sin(lat * 5) * 150) + (Math.cos(lng * 5) * 100) + (noise * 10) + 50;
                     } else if (type === 'gravity') {
-                        // قيم شذوذ بوجير (mGal) تتراوح غالباً في القيم السالبة للأعماق القارية
                         zValue = -40 + (Math.sin(lat * 3) * 20) + (Math.cos(lng * 2) * 15) + (noise * 2);
-                    } else if (type === 'topo') {
-                        // ارتفاعات طبوغرافية (متر)
-                        zValue = 100 + (Math.sin(lat * 10) * 400) + (Math.cos(lng * 10) * 200) + Math.abs(noise * 50);
-                        if (zValue < 0) zValue = Math.random() * 10; // لا يوجد ارتفاع تحت الصفر هنا كمثال
                     }
-
                     csv += `${lng.toFixed(6)},${lat.toFixed(6)},${zValue.toFixed(2)}\n`;
                 }
             }
@@ -417,7 +458,6 @@
             const date = new Date().toISOString().split('T')[0];
             const fileName = `Shandal_GeoData_${dataType}_${date}.csv`;
 
-            // إنشاء Blob وإنشاء رابط تحميل
             const blob = new Blob([finalCSVData], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             
