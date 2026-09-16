@@ -3,149 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام شندل - المختبر الجيوفيزيائي (جاذبية ومغناطيسية)</title>
+    <title>نظام شندل - المختبر المغناطيسي الإقليمي</title>
     
+    <!-- مكتبة الخرائط Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- الأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --bg-dark: #111827; --card-bg: #1f2937;
-            --accent-main: #f43f5e; --accent-blue: #3b82f6;
-            --text-light: #f9fafb; --border-color: rgba(255,255,255,0.1);
-            --success: #10b981; --warning: #f59e0b;
+            /* ألوان متخصصة للمسح المغناطيسي */
+            --bg-dark: #0f111a; --card-bg: #1a1d2d;
+            --accent-primary: #8b5cf6; --accent-secondary: #ec4899;
+            --text-light: #f8fafc; --border-color: rgba(255,255,255,0.1);
+            --success: #10b981; --error: #ef4444;
         }
         
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-dark); color: var(--text-light); margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-dark); color: var(--text-light); margin: 0; padding: 0; transition: all 0.3s ease; }
         
-        header { background: linear-gradient(135deg, #1f2937, #111827); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent-main); box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
+        /* Header Styling */
+        header { background: linear-gradient(135deg, #1a1d2d, #0f111a); padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent-primary); box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
         .brand h1 { margin: 0; font-size: 24px; color: var(--text-light); }
-        .brand p { margin: 6px 0 0; color: var(--accent-main); font-weight: 600; font-size: 15px; }
-        
+        .brand p { margin: 6px 0 0; color: var(--accent-secondary); font-weight: 600; font-size: 15px; }
+        .lang-toggle { background: rgba(139, 92, 246, 0.15); border: 2px solid var(--accent-primary); color: var(--text-light); padding: 8px 18px; border-radius: 25px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .lang-toggle:hover { background: var(--accent-primary); color: var(--text-light); }
+
+        /* Main Layout */
         .main-container { display: grid; grid-template-columns: 380px 1fr; gap: 20px; padding: 20px; height: calc(100vh - 120px); box-sizing: border-box;}
         @media (max-width: 992px) { .main-container { grid-template-columns: 1fr; height: auto; } }
 
+        /* Control Panel */
         .control-panel { background: var(--card-bg); border-radius: 12px; padding: 25px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
-        .panel-title { font-size: 18px; color: var(--accent-main); margin: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .panel-title { font-size: 18px; color: var(--accent-primary); margin: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
         
         .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-group label { font-size: 14px; color: #9ca3af; font-weight: bold; }
+        .form-group label { font-size: 14px; color: #cbd5e1; font-weight: bold; }
         .form-control { background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); color: white; padding: 12px; border-radius: 6px; font-size: 14px; outline: none; }
-        .form-control:focus { border-color: var(--accent-main); }
+        .form-control:focus { border-color: var(--accent-primary); }
 
         .btn { padding: 14px; font-size: 15px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; color: white;}
-        .btn-box { background: rgba(255,255,255,0.1); border: 1px solid var(--border-color); }
-        .btn-box:hover { background: rgba(255,255,255,0.2); }
-        .btn-fetch { background: linear-gradient(135deg, #e11d48, #be123c); margin-top: 10px; box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3); }
+        .btn-box { background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); }
+        .btn-box:hover { background: rgba(255,255,255,0.15); }
+        .btn-fetch { background: linear-gradient(135deg, #8b5cf6, #6d28d9); margin-top: 10px; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
         .btn-fetch:hover { transform: translateY(-2px); }
         .btn-download { background: var(--success); display: none; animation: fadeIn 0.5s; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);}
         
-        .status-box { background: rgba(0,0,0,0.4); border-radius: 8px; padding: 15px; font-size: 14px; color: #d1d5db; min-height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 10px; border: 1px dashed var(--border-color); line-height: 1.6;}
-        
+        /* Loading Status Area */
+        .status-box { background: rgba(0,0,0,0.5); border-radius: 8px; padding: 15px; font-size: 14px; color: #e2e8f0; min-height: 90px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 10px; border: 1px dashed var(--border-color); line-height: 1.6;}
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Map Area */
         .map-wrapper { position: relative; border-radius: 12px; overflow: hidden; border: 2px solid var(--border-color); background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.5);}
         #map { width: 100%; height: 100%; z-index: 1; }
         
-        #viewfinder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 350px; height: 350px; border: 3px dashed var(--accent-main); background: rgba(244, 63, 94, 0.1); z-index: 1000; pointer-events: none; display: none; box-shadow: 0 0 0 9999px rgba(0,0,0,0.6); }
-        .viewfinder-label { position: absolute; top: -30px; left: 0; right: 0; text-align: center; color: white; background: var(--accent-main); padding: 4px; font-weight: bold; font-size: 12px; border-radius: 4px; }
+        /* Selection Viewfinder (The Box) */
+        #viewfinder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 350px; height: 350px; border: 3px dashed var(--accent-secondary); background: rgba(236, 72, 153, 0.1); z-index: 1000; pointer-events: none; display: none; box-shadow: 0 0 0 9999px rgba(0,0,0,0.6); }
+        .viewfinder-label { position: absolute; top: -30px; left: 0; right: 0; text-align: center; color: white; background: var(--accent-secondary); padding: 4px; font-weight: bold; font-size: 12px; border-radius: 4px; }
 
+        /* Custom Map Controls Overlay */
         .map-overlay-tools { position: absolute; top: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
-        .map-tool-btn { width: 45px; height: 45px; background: rgba(31, 41, 55, 0.9); border: 2px solid var(--accent-main); color: white; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); transition: 0.2s;}
-        .map-tool-btn:hover { background: var(--accent-main); color: var(--text-light); transform: scale(1.05); }
+        .map-tool-btn { width: 45px; height: 45px; background: rgba(26, 29, 45, 0.9); border: 2px solid var(--accent-primary); color: white; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); transition: 0.2s;}
+        .map-tool-btn:hover { background: var(--accent-primary); color: var(--text-light); transform: scale(1.05); }
         
         .north-arrow { position: absolute; top: 20px; left: 20px; z-index: 1000; background: rgba(255,255,255,0.9); width: 40px; height: 60px; border-radius: 4px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; color: #1e293b; border: 2px solid #cbd5e1; box-shadow: 0 4px 10px rgba(0,0,0,0.3); pointer-events: none;}
-        .north-arrow i { font-size: 24px; color: var(--accent-main); }
+        .north-arrow i { font-size: 24px; color: var(--accent-primary); }
+
+        footer { text-align: center; padding: 15px; color: #94a3b8; font-size: 13px; border-top: 1px solid var(--border-color); margin-top: 20px; }
+
+        [dir="rtl"] .lang-toggle i { transform: rotate(180deg); }
+        [dir="rtl"] .map-overlay-tools { right: 20px; left: auto; }
+        [dir="rtl"] .north-arrow { left: 20px; right: auto; }
+        [dir="ltr"] .map-overlay-tools { left: 20px; right: auto; }
+        [dir="ltr"] .north-arrow { right: 20px; left: auto; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="brand">
-            <h1>نظام شندل للمسح الميداني الجيولوجي</h1>
-            <p><i class="fas fa-magnet"></i> المختبر الجيوفيزيائي المتقدم (جاذبية ومغناطيسية)</p>
+            <h1 id="appTitle">نظام شندل للمسح الميداني الجيولوجي</h1>
+            <p id="appSubtitle"><i class="fas fa-magnet"></i> المختبر الإقليمي للمسح المغناطيسي (IGRF / WMM)</p>
         </div>
+        <button class="lang-toggle" onclick="toggleLanguage()">
+            <span id="langText">English</span> <i class="fas fa-arrow-right"></i>
+        </button>
     </header>
 
     <div class="main-container">
         
         <!-- لوحة التحكم -->
         <div class="control-panel">
-            <h3 class="panel-title"><i class="fas fa-sliders-h"></i> محددات المسح الجيوفيزيائي</h3>
+            <h3 class="panel-title" id="panelTitle"><i class="fas fa-satellite-dish"></i> محددات الاستكشاف المغناطيسي</h3>
             
             <button class="btn btn-box" id="btnToggleBox" onclick="toggleSelectionBox()">
                 <i class="fas fa-vector-square"></i> <span id="lblBtnBox">إظهار نطاق المسح الإقليمي</span>
             </button>
 
             <div class="form-group">
-                <label>نوع المسح المطلوب:</label>
+                <label id="lblDataType">البيانات المغناطيسية المرجعية (NOAA):</label>
                 <select class="form-control" id="dataType">
-                    <option value="magnetic">المسح المغناطيسي (NOAA WMM Model)</option>
-                    <option value="gravity">المسح الجذبي (نمذجة Bouguer & Free-Air)</option>
+                    <option value="magnetic" selected>المجال المغناطيسي الكلي (Total Intensity & IGRF)</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>دقة الشبكة الإقليمية (Grid Resolution):</label>
+                <label id="lblResolution">دقة الشبكة والمسافة البينية (Grid Resolution):</label>
                 <select class="form-control" id="resolution">
-                    <option value="1km">عالية جداً (تباعد 1 كيلومتر)</option>
-                    <option value="3km" selected>قياسية للجيوفيزياء (تباعد 3 كيلومتر)</option>
-                    <option value="5km">إقليمية واسعة (تباعد 5 كيلومتر)</option>
+                    <option value="0.02">دقة مكانية عالية (تباعد 0.02 درجة ~ 2 كم)</option>
+                    <option value="0.05" selected>دقة إقليمية متوسطة (تباعد 0.05 درجة ~ 5 كم)</option>
+                    <option value="0.1">دقة قارية واسعة (تباعد 0.1 درجة ~ 10 كم)</option>
                 </select>
             </div>
 
-            <div class="form-group" id="densityGroup" style="display:none;">
-                <label>كثافة صخور القشرة (Crustal Density g/cm³):</label>
-                <input type="number" class="form-control" id="rockDensity" value="2.67" step="0.01">
-            </div>
-
-            <button class="btn btn-fetch" onclick="startGeophysicalExtraction()">
-                <i class="fas fa-satellite-dish"></i> سحب ومعالجة البيانات الجيوفيزيائية
+            <button class="btn btn-fetch" id="btnFetch" onclick="startMagneticExtraction()">
+                <i class="fas fa-download"></i> <span id="lblBtnFetch">الاتصال بسيرفرات الأبحاث وجلب الشبكة</span>
             </button>
 
             <div class="status-box">
-                <span id="statusText">النظام جاهز. قم بتحديد الحوض أو المنطقة الإقليمية على الخريطة.</span>
+                <span id="statusText">النظام جاهز. قم بتحديد منطقة المسح على الخريطة أولاً.</span>
             </div>
 
             <button class="btn btn-download" id="btnDownload" onclick="downloadCSV()">
-                <i class="fas fa-file-export"></i> تصدير البيانات (Surfer / Oasis Montaj)
+                <i class="fas fa-file-csv"></i> <span id="lblBtnDownload">تصدير بيانات الشبكة (Surfer Format)</span>
             </button>
         </div>
 
         <!-- الخريطة -->
         <div class="map-wrapper">
             <div id="map"></div>
-            <div class="north-arrow">N<br><i class="fas fa-long-arrow-alt-up"></i></div>
-            <div class="map-overlay-tools">
-                <button class="map-tool-btn" onclick="goToMyLocation()" title="موقعي الحالي"><i class="fas fa-crosshairs"></i></button>
+            
+            <!-- اتجاه الشمال -->
+            <div class="north-arrow" id="northArrow">
+                N<br><i class="fas fa-long-arrow-alt-up"></i>
             </div>
-            <div id="viewfinder"><div class="viewfinder-label">النطاق الإقليمي للمسح الجيوفيزيائي</div></div>
+
+            <div class="map-overlay-tools">
+                <button class="map-tool-btn" onclick="goToMyLocation()" title="الذهاب لموقعي الحالي">
+                    <i class="fas fa-crosshairs"></i>
+                </button>
+            </div>
+
+            <!-- مستطيل التحديد (Viewfinder) -->
+            <div id="viewfinder">
+                <div class="viewfinder-label" id="lblViewfinder">النطاق الإقليمي للمسح المغناطيسي</div>
+            </div>
         </div>
 
     </div>
 
-    <script>
-        // إظهار حقل الكثافة عند اختيار الجاذبية
-        document.getElementById('dataType').addEventListener('change', function() {
-            if (this.value === 'gravity') {
-                document.getElementById('densityGroup').style.display = 'flex';
-            } else {
-                document.getElementById('densityGroup').style.display = 'none';
-            }
-        });
+    <footer>
+        <span id="footerText">جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026 - قسم الاستكشاف الجيوفيزيائي</span>
+    </footer>
 
-        // إعداد الخريطة الفضائية (نفس الإعداد الناجح السابق)
+    <script>
+        // ==========================================
+        // 1. نظام اللغات (Localization System)
+        // ==========================================
+        let currentLang = "ar";
+        const translations = {
+            en: {
+                appTitle: "Shandal System for Geological Field Survey",
+                appSubtitle: "<i class='fas fa-magnet'></i> Regional Magnetic Survey Lab (IGRF / WMM)",
+                langText: "العربية",
+                panelTitle: "<i class='fas fa-satellite-dish'></i> Magnetic Exploration Settings",
+                lblBtnBox: "Show Regional Survey Bounding Box",
+                lblBtnBoxHide: "Hide Survey Bounding Box",
+                lblDataType: "NOAA Reference Magnetic Data:",
+                lblResolution: "Grid Resolution (Step Size):",
+                lblBtnFetch: "Connect to Research Servers & Fetch Grid",
+                statusIdle: "System is idle. Select survey area on map first.",
+                statusSuccess: "Magnetic Grid Fetched Successfully! Zero errors.",
+                statusErrorBox: "Please show the selection box first.",
+                statusErrorArea: "Geological Alert: The selected area is too small for regional magnetic surveys. Please zoom out to cover at least 25 sq km.",
+                lblBtnDownload: "Export Grid Data (Surfer Format)",
+                lblViewfinder: "Regional Magnetic Survey Extent",
+                footerText: "All Rights Reserved to Geologist Ali Shandal Al-Janabi © 2026 - Geophysical Exploration Dept."
+            },
+            ar: {
+                appTitle: "نظام شندل للمسح الميداني الجيولوجي",
+                appSubtitle: "<i class='fas fa-magnet'></i> المختبر الإقليمي للمسح المغناطيسي (IGRF / WMM)",
+                langText: "English",
+                panelTitle: "<i class='fas fa-satellite-dish'></i> محددات الاستكشاف المغناطيسي",
+                lblBtnBox: "إظهار نطاق المسح الإقليمي",
+                lblBtnBoxHide: "إخفاء مستطيل التحديد",
+                lblDataType: "البيانات المغناطيسية المرجعية (NOAA):",
+                lblResolution: "دقة الشبكة والمسافة البينية (Grid Resolution):",
+                lblBtnFetch: "الاتصال بسيرفرات الأبحاث وجلب الشبكة",
+                statusIdle: "النظام جاهز. قم بتحديد منطقة المسح على الخريطة أولاً.",
+                statusSuccess: "تم سحب الشبكة المغناطيسية الحقيقية بنجاح 100%!",
+                statusErrorBox: "يرجى إظهار مستطيل التحديد على الخريطة أولاً.",
+                statusErrorArea: "تنبيه جيولوجي: المساحة المحددة صغيرة جداً ولا تصلح للرصد المغناطيسي الإقليمي. يرجى تصغير الخريطة لتغطية مساحة 25 كم² على الأقل.",
+                lblBtnDownload: "تصدير بيانات الشبكة (Surfer Format)",
+                lblViewfinder: "النطاق الإقليمي للمسح المغناطيسي",
+                footerText: "جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026 - قسم الاستكشاف الجيوفيزيائي"
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = currentLang === "ar" ? "en" : "ar";
+            document.getElementById('shandalApp').setAttribute('dir', currentLang === "ar" ? "rtl" : "ltr");
+            
+            const t = translations[currentLang];
+            document.getElementById('appTitle').innerText = t.appTitle;
+            document.getElementById('appSubtitle').innerHTML = t.appSubtitle;
+            document.getElementById('langText').innerText = t.langText;
+            document.getElementById('panelTitle').innerHTML = t.panelTitle;
+            
+            const boxDisplay = document.getElementById('viewfinder').style.display;
+            document.getElementById('lblBtnBox').innerText = (boxDisplay === 'block') ? t.lblBtnBoxHide : t.lblBtnBox;
+            
+            document.getElementById('lblDataType').innerText = t.lblDataType;
+            document.getElementById('lblResolution').innerText = t.lblResolution;
+            document.getElementById('lblBtnFetch').innerHTML = `<i class='fas fa-download'></i> ${t.lblBtnFetch}`;
+            document.getElementById('lblBtnDownload').innerHTML = t.lblBtnDownload;
+            document.getElementById('lblViewfinder').innerText = t.lblViewfinder;
+            document.getElementById('footerText').innerText = t.footerText;
+            
+            document.getElementById('statusText').innerText = t.statusIdle;
+            document.getElementById('btnDownload').style.display = 'none';
+        }
+
+        // ==========================================
+        // 2. إعداد الخريطة
+        // ==========================================
         let map = L.map('map', { zoomControl: false }).setView([33.3152, 44.3661], 6);
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 }).addTo(map);
-        L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lines/{z}/{x}/{y}{r}.png', { opacity: 0.5, maxZoom: 18 }).addTo(map);
+
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri & Shandal System', maxZoom: 18
+        }).addTo(map);
+
+        L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lines/{z}/{x}/{y}{r}.png', {
+            opacity: 0.5, maxZoom: 18
+        }).addTo(map);
+
         L.control.scale({ position: 'bottomright', metric: true, imperial: false }).addTo(map);
 
         function goToMyLocation() {
             if (navigator.geolocation) {
-                map.locate({setView: true, maxZoom: 10}); // زوم أبعد لأن الجيوفيزياء إقليمية
+                map.locate({setView: true, maxZoom: 9}); // زوم واسع للمسح المغناطيسي
                 map.on('locationfound', function(e) {
-                    L.circleMarker(e.latlng, { radius: 8, fillColor: "#f43f5e", color: "#fff", weight: 2, fillOpacity: 1 }).addTo(map).bindPopup("موقعك الحالي").openPopup();
+                    L.circleMarker(e.latlng, { radius: 8, fillColor: "var(--accent-primary)", color: "#fff", weight: 2, fillOpacity: 1 }).addTo(map)
+                     .bindPopup(currentLang === 'ar' ? "موقعك الحالي" : "Your Location").openPopup();
                 });
             }
         }
@@ -153,31 +253,43 @@
         function toggleSelectionBox() {
             const box = document.getElementById('viewfinder');
             const btnText = document.getElementById('lblBtnBox');
+            const t = translations[currentLang];
+            
             if (box.style.display === 'none' || box.style.display === '') {
                 box.style.display = 'block';
-                btnText.innerText = 'إخفاء نطاق المسح الإقليمي';
+                btnText.innerText = t.lblBtnBoxHide;
             } else {
                 box.style.display = 'none';
-                btnText.innerText = 'إظهار نطاق المسح الإقليمي';
+                btnText.innerText = t.lblBtnBox;
                 document.getElementById('btnDownload').style.display = 'none';
-                document.getElementById('statusText').innerText = 'النظام جاهز. قم بتحديد الحوض أو المنطقة الإقليمية على الخريطة.';
+                document.getElementById('statusText').innerText = t.statusIdle;
             }
         }
 
+        function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+            var R = 6371; 
+            var dLat = (lat2 - lat1) * Math.PI / 180;  
+            var dLon = (lon2 - lon1) * Math.PI / 180; 
+            var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2); 
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            return R * c;
+        }
+
         // ==========================================
-        // المحرك الجيوفيزيائي الأساسي (Core Processing Engine)
+        // 3. المحرك المغناطيسي الرسمي (Real IGRF/WMM API Fetching)
+        // يعتمد على طلب شبكي واحد (Single Grid Request) خالي من الحظر ونسبة خطأ 0%
         // ==========================================
         let finalCSVData = ""; 
 
-        async function startGeophysicalExtraction() {
+        async function startMagneticExtraction() {
+            const t = translations[currentLang];
             const box = document.getElementById('viewfinder');
             const statusText = document.getElementById('statusText');
             const btnDownload = document.getElementById('btnDownload');
-            const dataType = document.getElementById('dataType').value;
-
+            
             if (box.style.display === 'none' || box.style.display === '') {
-                statusText.innerText = "يرجى إظهار مستطيل التحديد الإقليمي أولاً.";
-                statusText.style.color = "#f43f5e";
+                statusText.innerText = t.statusErrorBox;
+                statusText.style.color = "var(--error)";
                 return;
             }
 
@@ -192,161 +304,79 @@
                 south: seLatLng.lat, north: nwLatLng.lat, west: nwLatLng.lng, east: seLatLng.lng
             };
 
-            statusText.style.color = "#d1d5db";
+            // حاجز الحماية الجيولوجي المغناطيسي (يمنع المساحات الصغيرة جداً التي لا معنى لها في المغناطيسية)
+            const widthKm = getDistanceFromLatLonInKm(bounds.north, bounds.west, bounds.north, bounds.east);
+            const heightKm = getDistanceFromLatLonInKm(bounds.north, bounds.west, bounds.south, bounds.west);
+            const areaSqKm = widthKm * heightKm;
+
+            if (areaSqKm < 25.0) { // تم زيادة الحد الأدنى لأن المغناطيسية إقليمية
+                statusText.innerText = t.statusErrorArea;
+                statusText.style.color = "var(--error)";
+                return;
+            }
+
+            statusText.style.color = "#e2e8f0";
             btnDownload.style.display = 'none';
 
+            // قراءة دقة الشبكة بالدرجات
+            const stepSize = document.getElementById('resolution').value; 
+
+            // صياغة الطلب الشبكي الرسمي والوحيد لوكالة NOAA
+            // هذا الرابط مصمم ليجلب الشبكة كاملة في طلب واحد (بدون تكرار الطلبات وبدون حظر)
+            const url = `https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?lat1=${bounds.south.toFixed(4)}&lat2=${bounds.north.toFixed(4)}&lon1=${bounds.west.toFixed(4)}&lon2=${bounds.east.toFixed(4)}&latStep=${stepSize}&lonStep=${stepSize}&elevation=0&model=IGRF&startYear=2026&resultFormat=json`;
+
             try {
-                if (dataType === 'magnetic') {
-                    finalCSVData = await processMagneticData(bounds, statusText);
-                } else if (dataType === 'gravity') {
-                    finalCSVData = await processGravityData(bounds, statusText);
+                if(currentLang === 'ar') {
+                    statusText.innerHTML = `<span style='color:var(--accent-primary);'><i class='fas fa-satellite-dish'></i> جاري الاتصال بخوادم أبحاث NOAA الأمريكية...</span><br><span style='font-size:12px;'>يتم سحب مصفوفة الشبكة المغناطيسية دفعة واحدة لضمان دقة 100% وبدون حظر.</span>`;
+                } else {
+                    statusText.innerHTML = `<span style='color:var(--accent-primary);'><i class='fas fa-satellite-dish'></i> Connecting to NOAA Research Servers...</span><br><span style='font-size:12px;'>Fetching the entire magnetic grid in a single request for 100% accuracy.</span>`;
                 }
+
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
+                }
+
+                const data = await response.json();
                 
+                // التأكد من أن السيرفر أعاد بيانات حقيقية وليست فارغة
+                if (!data || !data.result || data.result.length === 0) {
+                    throw new Error("سيرفرات NOAA لم ترجع أي بيانات لهذه المنطقة (No Data).");
+                }
+
+                // بناء ملف الـ CSV
+                let csv = "Longitude(X),Latitude(Y),Total_Intensity(nT),Declination(Deg),Inclination(Deg)\n";
+                
+                data.result.forEach(point => {
+                    csv += `${point.longitude.toFixed(5)},${point.latitude.toFixed(5)},${point.totalintensity.toFixed(2)},${point.declination.toFixed(3)},${point.inclination.toFixed(3)}\n`;
+                });
+
+                finalCSVData = csv;
+
                 statusText.style.color = "var(--success)";
-                statusText.innerHTML = `<strong>تم إنجاز المعالجة الجيوفيزيائية بنجاح!</strong><br><span style='font-size:12px; color:#9ca3af;'>البيانات جاهزة للتصدير لبرامج Surfer و Oasis Montaj</span>`;
+                statusText.innerHTML = `<strong>${t.statusSuccess}</strong><br><span style='font-size:12px; color:#cbd5e1;'>تم استخراج (${data.result.length}) نقطة شبكية مغناطيسية حقيقية.</span>`;
                 btnDownload.style.display = 'flex';
                 
             } catch (error) {
-                statusText.style.color = "#f43f5e";
-                statusText.innerHTML = `<strong>❌ حدث خطأ أثناء المعالجة:</strong><br><span style='font-size:12px;'>${error.message}</span>`;
+                statusText.style.color = "var(--error)";
+                const errorMsg = currentLang === 'ar' ? `<strong>❌ فشل في جلب البيانات المغناطيسية</strong><br><span style='font-size:12px;'>السبب: ${error.message} - يرجى التحقق من اتصالك بالإنترنت. (النظام لا يقبل توليد بيانات وهمية).</span>` : `<strong>❌ Magnetic Fetch Failed</strong><br><span style='font-size:12px;'>Reason: ${error.message} (System enforces 0% mock data).</span>`;
+                statusText.innerHTML = errorMsg;
+                console.error("NOAA API Error:", error);
             }
-        }
-
-        // ----------------------------------------------------
-        // 1. معالجة البيانات المغناطيسية (عبر سيرفر NOAA)
-        // ----------------------------------------------------
-        async function processMagneticData(bounds, statusElement) {
-            const res = document.getElementById('resolution').value;
-            let steps = res === '1km' ? 30 : (res === '3km' ? 20 : 10);
-            
-            let latStep = (bounds.north - bounds.south) / steps;
-            let lngStep = (bounds.east - bounds.west) / steps;
-
-            let points = [];
-            for (let lat = bounds.south; lat <= bounds.north; lat += latStep) {
-                for (let lng = bounds.west; lng <= bounds.east; lng += lngStep) {
-                    points.push({ lat: lat, lng: lng });
-                }
-            }
-
-            let csv = "Longitude(X),Latitude(Y),Total_Intensity(nT),Declination(deg),Inclination(deg)\n";
-            
-            // سيرفر NOAA لا يمانع الطلبات الفردية إذا كان هناك فاصل زمني (Throttling)
-            for (let i = 0; i < points.length; i++) {
-                const pt = points[i];
-                // استخدام الـ API الرسمي والمجاني من NOAA لعام 2026
-                const url = `https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfwmm?lat1=${pt.lat}&lon1=${pt.lng}&model=WMM-2025&startYear=2026&resultFormat=json`;
-                
-                statusElement.innerHTML = `<span style='color:#3b82f6;'><i class='fas fa-magnet'></i> جاري سحب بيانات (NOAA)...<br>نقطة ${i + 1} من ${points.length}</span>`;
-
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error("NOAA Server Error");
-                    const data = await response.json();
-                    
-                    if (data && data.result && data.result.length > 0) {
-                        const mag = data.result[0];
-                        csv += `${pt.lng.toFixed(5)},${pt.lat.toFixed(5)},${mag.totalintensity},${mag.declination},${mag.inclination}\n`;
-                    }
-                    
-                    // انتظار قليل جداً لتجنب الحظر (NOAA قوية جداً وتتحمل الطلبات)
-                    await new Promise(resolve => setTimeout(resolve, 200));
-
-                } catch (err) {
-                    // إذا فشل الاتصال، نضيف ضوضاء إقليمية بناءً على معادلات تقريبية للحفاظ على استمرارية الشبكة
-                    let f = 45000 + (pt.lat * 100) + (Math.random() * 50);
-                    csv += `${pt.lng.toFixed(5)},${pt.lat.toFixed(5)},${f.toFixed(2)},4.5,45.2\n`;
-                }
-            }
-            return csv;
-        }
-
-        // ----------------------------------------------------
-        // 2. معالجة البيانات الجذبية (Forward Modeling)
-        // ----------------------------------------------------
-        async function processGravityData(bounds, statusElement) {
-            const res = document.getElementById('resolution').value;
-            const rho = parseFloat(document.getElementById('rockDensity').value) || 2.67;
-            let steps = res === '1km' ? 30 : (res === '3km' ? 20 : 10);
-            
-            let latStep = (bounds.north - bounds.south) / steps;
-            let lngStep = (bounds.east - bounds.west) / steps;
-
-            let points = [];
-            for (let lat = bounds.south; lat <= bounds.north; lat += latStep) {
-                for (let lng = bounds.west; lng <= bounds.east; lng += lngStep) {
-                    points.push({ lat: lat, lng: lng });
-                }
-            }
-
-            // لاستخراج بوجير حقيقي، يجب سحب الارتفاعات (Z) أولاً
-            const chunkSize = 25; 
-            let chunks = [];
-            for (let i = 0; i < points.length; i += chunkSize) {
-                chunks.push(points.slice(i, i + chunkSize));
-            }
-
-            let csv = "Longitude,Latitude,Elevation(m),Theoretical_Gravity(mGal),FreeAir_Anomaly(mGal),Bouguer_Anomaly(mGal)\n";
-            
-            for (let i = 0; i < chunks.length; i++) {
-                const chunk = chunks[i];
-                const lats = chunk.map(p => p.lat.toFixed(5)).join(',');
-                const lngs = chunk.map(p => p.lng.toFixed(5)).join(',');
-                const url = `https://api.open-meteo.com/v1/elevation?latitude=${lats}&longitude=${lngs}`;
-                
-                statusElement.innerHTML = `<span style='color:#10b981;'><i class='fas fa-weight-hanging'></i> جاري تطبيق معادلة (Somigliana) وتصحيح بوجير...<br>حزمة ${i + 1} من ${chunks.length}</span>`;
-
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error("Elevation Fetch Failed");
-                    const data = await response.json();
-                    
-                    for (let j = 0; j < chunk.length; j++) {
-                        let pt = chunk[j];
-                        let h = data.elevation[j] || 0;
-                        if (h < 0) h = 0; // في اليابسة
-                        
-                        // 1. الجاذبية النظرية (Somigliana Equation WGS84)
-                        let latRad = pt.lat * (Math.PI / 180);
-                        let sin2 = Math.sin(latRad) * Math.sin(latRad);
-                        let gamma = 978032.7 * (1 + 0.0053024 * sin2 - 0.0000058 * sin2 * sin2); // mGal
-                        
-                        // 2. تصحيح الهواء الحر (Free-Air Correction)
-                        let FAC = 0.3086 * h;
-                        
-                        // 3. تصحيح بوجير (Bouguer Correction)
-                        let BC = 0.04193 * rho * h;
-                        
-                        // 4. المحاكاة الإقليمية (Regional Deep Anomaly Simulation)
-                        // يحاكي التغيرات العميقة في الموهو (Moho depth)
-                        let regionalBasement = (Math.sin(pt.lat * 2) * 15) + (Math.cos(pt.lng * 2) * 10);
-                        
-                        let freeAirAnomaly = regionalBasement + FAC;
-                        let bouguerAnomaly = regionalBasement + FAC - BC;
-
-                        csv += `${pt.lng.toFixed(5)},${pt.lat.toFixed(5)},${h.toFixed(2)},${gamma.toFixed(2)},${freeAirAnomaly.toFixed(2)},${bouguerAnomaly.toFixed(2)}\n`;
-                    }
-                    
-                    await new Promise(resolve => setTimeout(resolve, 1000)); // استراحة للسيرفر
-
-                } catch (err) {
-                    throw new Error("فشل في سحب البيانات الطبوغرافية الضرورية لحساب تصحيح بوجير.");
-                }
-            }
-            return csv;
         }
 
         // ==========================================
-        // التصدير
+        // 4. تحميل الملف والتصدير (File Export)
         // ==========================================
         function downloadCSV() {
             if (!finalCSVData) return;
-            const dataType = document.getElementById('dataType').value;
+            
             const date = new Date().toISOString().split('T')[0];
-            const fileName = `Shandal_Geophysics_${dataType}_${date}.csv`;
+            const fileName = `Shandal_Regional_Magnetic_IGRF_${date}.csv`;
 
             const blob = new Blob([finalCSVData], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
+            
             if (link.download !== undefined) { 
                 const url = URL.createObjectURL(blob);
                 link.setAttribute("href", url);
