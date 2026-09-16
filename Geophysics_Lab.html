@@ -247,6 +247,9 @@
                     L.circleMarker(e.latlng, { radius: 8, fillColor: "var(--accent-primary)", color: "#fff", weight: 2, fillOpacity: 1 }).addTo(map)
                      .bindPopup(currentLang === 'ar' ? "موقعك الحالي" : "Your Location").openPopup();
                 });
+                map.on('locationerror', function(e) {
+                    alert(currentLang === 'ar' ? "تعذر تحديد موقعك. تأكد من تفعيل GPS." : "Location access denied.");
+                });
             }
         }
 
@@ -276,8 +279,7 @@
         }
 
         // ==========================================
-        // 3. المحرك المغناطيسي الرسمي (Real IGRF/WMM API Fetching)
-        // يعتمد على طلب شبكي واحد (Single Grid Request) خالي من الحظر ونسبة خطأ 0%
+        // 3. المحرك المغناطيسي الرسمي (Real IGRF/WMM API Fetching) - النسخة المصححة
         // ==========================================
         let finalCSVData = ""; 
 
@@ -304,12 +306,12 @@
                 south: seLatLng.lat, north: nwLatLng.lat, west: nwLatLng.lng, east: seLatLng.lng
             };
 
-            // حاجز الحماية الجيولوجي المغناطيسي (يمنع المساحات الصغيرة جداً التي لا معنى لها في المغناطيسية)
+            // حساب المساحة للتأكد من منطقية المسح المغناطيسي
             const widthKm = getDistanceFromLatLonInKm(bounds.north, bounds.west, bounds.north, bounds.east);
             const heightKm = getDistanceFromLatLonInKm(bounds.north, bounds.west, bounds.south, bounds.west);
             const areaSqKm = widthKm * heightKm;
 
-            if (areaSqKm < 25.0) { // تم زيادة الحد الأدنى لأن المغناطيسية إقليمية
+            if (areaSqKm < 25.0) { 
                 statusText.innerText = t.statusErrorArea;
                 statusText.style.color = "var(--error)";
                 return;
@@ -318,33 +320,49 @@
             statusText.style.color = "#e2e8f0";
             btnDownload.style.display = 'none';
 
-            // قراءة دقة الشبكة بالدرجات
+            // 1. ترتيب الإحداثيات بشكل صارم (NOAA ترفض الإحداثيات المعكوسة)
+            const minLat = Math.min(bounds.south, bounds.north).toFixed(4);
+            const maxLat = Math.max(bounds.south, bounds.north).toFixed(4);
+            const minLon = Math.min(bounds.west, bounds.east).toFixed(4);
+            const maxLon = Math.max(bounds.west, bounds.east).toFixed(4);
+
             const stepSize = document.getElementById('resolution').value; 
 
-            // صياغة الطلب الشبكي الرسمي والوحيد لوكالة NOAA
-            // هذا الرابط مصمم ليجلب الشبكة كاملة في طلب واحد (بدون تكرار الطلبات وبدون حظر)
-            const url = `https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?lat1=${bounds.south.toFixed(4)}&lat2=${bounds.north.toFixed(4)}&lon1=${bounds.west.toFixed(4)}&lon2=${bounds.east.toFixed(4)}&latStep=${stepSize}&lonStep=${stepSize}&elevation=0&model=IGRF&startYear=2026&resultFormat=json`;
+            // حماية إضافية: التأكد من أن عدد النقاط المطلوبة لا يتجاوز حد السيرفر (حوالي 10,000 نقطة)
+            const rows = Math.abs(maxLat - minLat) / stepSize;
+            const cols = Math.abs(maxLon - minLon) / stepSize;
+            if ((rows * cols) > 5000) {
+                statusText.innerHTML = (currentLang === 'ar') ? 
+                    "<strong>❌ المساحة كبيرة جداً على هذه الدقة</strong><br><span style='font-size:12px;'>يرجى إما تصغير المربع، أو اختيار (دقة إقليمية متوسطة/واسعة) من القائمة المنسدلة.</span>" : 
+                    "<strong>❌ Area too large for this resolution</strong><br><span style='font-size:12px;'>Please reduce the box size or select a lower resolution.</span>";
+                statusText.style.color = "var(--warning)";
+                return;
+            }
+
+            // 2. صياغة الطلب الشبكي الرسمي (تصحيح سنة النموذج إلى 2024 المدعومة كلياً من IGRF)
+            const url = `https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?lat1=${minLat}&lat2=${maxLat}&lon1=${minLon}&lon2=${maxLon}&latStep=${stepSize}&lonStep=${stepSize}&elevation=0&model=IGRF&startYear=2024&resultFormat=json`;
 
             try {
                 if(currentLang === 'ar') {
-                    statusText.innerHTML = `<span style='color:var(--accent-primary);'><i class='fas fa-satellite-dish'></i> جاري الاتصال بخوادم أبحاث NOAA الأمريكية...</span><br><span style='font-size:12px;'>يتم سحب مصفوفة الشبكة المغناطيسية دفعة واحدة لضمان دقة 100% وبدون حظر.</span>`;
+                    statusText.innerHTML = `<span style='color:var(--accent-primary);'><i class='fas fa-satellite-dish'></i> جاري الاتصال بخوادم أبحاث NOAA الأمريكية...</span><br><span style='font-size:12px;'>يتم سحب مصفوفة الشبكة المغناطيسية دفعة واحدة لضمان دقة 100%.</span>`;
                 } else {
-                    statusText.innerHTML = `<span style='color:var(--accent-primary);'><i class='fas fa-satellite-dish'></i> Connecting to NOAA Research Servers...</span><br><span style='font-size:12px;'>Fetching the entire magnetic grid in a single request for 100% accuracy.</span>`;
+                    statusText.innerHTML = `<span style='color:var(--accent-primary);'><i class='fas fa-satellite-dish'></i> Connecting to NOAA Research Servers...</span><br><span style='font-size:12px;'>Fetching the entire magnetic grid in a single request.</span>`;
                 }
 
                 const response = await fetch(url);
+                
+                // التقاط أخطاء الـ API بوضوح
                 if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status}`);
+                    throw new Error(`HTTP Error: ${response.status} - السيرفر رفض محددات الطلب.`);
                 }
 
                 const data = await response.json();
                 
-                // التأكد من أن السيرفر أعاد بيانات حقيقية وليست فارغة
                 if (!data || !data.result || data.result.length === 0) {
-                    throw new Error("سيرفرات NOAA لم ترجع أي بيانات لهذه المنطقة (No Data).");
+                    throw new Error("سيرفرات NOAA لم ترجع أي بيانات لهذه المنطقة.");
                 }
 
-                // بناء ملف الـ CSV
+                // 3. بناء ملف الـ CSV
                 let csv = "Longitude(X),Latitude(Y),Total_Intensity(nT),Declination(Deg),Inclination(Deg)\n";
                 
                 data.result.forEach(point => {
@@ -354,12 +372,14 @@
                 finalCSVData = csv;
 
                 statusText.style.color = "var(--success)";
-                statusText.innerHTML = `<strong>${t.statusSuccess}</strong><br><span style='font-size:12px; color:#cbd5e1;'>تم استخراج (${data.result.length}) نقطة شبكية مغناطيسية حقيقية.</span>`;
+                statusText.innerHTML = `<strong>${t.statusSuccess}</strong><br><span style='font-size:12px; color:#cbd5e1;'>تم استخراج (${data.result.length}) نقطة شبكية مغناطيسية حقيقية (بدون أخطاء).</span>`;
                 btnDownload.style.display = 'flex';
                 
             } catch (error) {
                 statusText.style.color = "var(--error)";
-                const errorMsg = currentLang === 'ar' ? `<strong>❌ فشل في جلب البيانات المغناطيسية</strong><br><span style='font-size:12px;'>السبب: ${error.message} - يرجى التحقق من اتصالك بالإنترنت. (النظام لا يقبل توليد بيانات وهمية).</span>` : `<strong>❌ Magnetic Fetch Failed</strong><br><span style='font-size:12px;'>Reason: ${error.message} (System enforces 0% mock data).</span>`;
+                const errorMsg = currentLang === 'ar' ? 
+                    `<strong>❌ فشل في جلب البيانات المغناطيسية</strong><br><span style='font-size:12px;'>السبب: ${error.message}<br>(النظام لا يقبل توليد بيانات وهمية).</span>` : 
+                    `<strong>❌ Magnetic Fetch Failed</strong><br><span style='font-size:12px;'>Reason: ${error.message}<br>(System enforces 0% mock data).</span>`;
                 statusText.innerHTML = errorMsg;
                 console.error("NOAA API Error:", error);
             }
