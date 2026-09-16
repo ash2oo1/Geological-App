@@ -242,7 +242,7 @@
 
         function goToMyLocation() {
             if (navigator.geolocation) {
-                map.locate({setView: true, maxZoom: 9}); // زوم واسع للمسح المغناطيسي
+                map.locate({setView: true, maxZoom: 9}); 
                 map.on('locationfound', function(e) {
                     L.circleMarker(e.latlng, { radius: 8, fillColor: "var(--accent-primary)", color: "#fff", weight: 2, fillOpacity: 1 }).addTo(map)
                      .bindPopup(currentLang === 'ar' ? "موقعك الحالي" : "Your Location").openPopup();
@@ -279,7 +279,7 @@
         }
 
         // ==========================================
-        // 3. المحرك المغناطيسي الرسمي (Real IGRF/WMM API Fetching) - النسخة المصححة
+        // 3. المحرك المغناطيسي الرسمي (Real IGRF/WMM API Fetching) - نسخة التقريب الشبكي المتطورة
         // ==========================================
         let finalCSVData = ""; 
 
@@ -306,7 +306,6 @@
                 south: seLatLng.lat, north: nwLatLng.lat, west: nwLatLng.lng, east: seLatLng.lng
             };
 
-            // حساب المساحة للتأكد من منطقية المسح المغناطيسي
             const widthKm = getDistanceFromLatLonInKm(bounds.north, bounds.west, bounds.north, bounds.east);
             const heightKm = getDistanceFromLatLonInKm(bounds.north, bounds.west, bounds.south, bounds.west);
             const areaSqKm = widthKm * heightKm;
@@ -320,17 +319,25 @@
             statusText.style.color = "#e2e8f0";
             btnDownload.style.display = 'none';
 
-            // 1. ترتيب الإحداثيات بشكل صارم (NOAA ترفض الإحداثيات المعكوسة)
-            const minLat = Math.min(bounds.south, bounds.north).toFixed(4);
-            const maxLat = Math.max(bounds.south, bounds.north).toFixed(4);
-            const minLon = Math.min(bounds.west, bounds.east).toFixed(4);
-            const maxLon = Math.max(bounds.west, bounds.east).toFixed(4);
+            // 1. قراءة المسافة البينية المطلوبة
+            const stepSize = parseFloat(document.getElementById('resolution').value); 
 
-            const stepSize = document.getElementById('resolution').value; 
+            // 2. خوارزمية التقريب الشبكي (Snap to Grid) - السر الذي يمنع خطأ 400
+            // هذه الأسطر تجبر الإحداثيات لتكون من مضاعفات (stepSize) بشكل مثالي
+            let minLat = Math.floor(Math.min(bounds.south, bounds.north) / stepSize) * stepSize;
+            let maxLat = Math.ceil(Math.max(bounds.south, bounds.north) / stepSize) * stepSize;
+            let minLon = Math.floor(Math.min(bounds.west, bounds.east) / stepSize) * stepSize;
+            let maxLon = Math.ceil(Math.max(bounds.west, bounds.east) / stepSize) * stepSize;
 
-            // حماية إضافية: التأكد من أن عدد النقاط المطلوبة لا يتجاوز حد السيرفر (حوالي 10,000 نقطة)
-            const rows = Math.abs(maxLat - minLat) / stepSize;
-            const cols = Math.abs(maxLon - minLon) / stepSize;
+            // تنظيف الكسور العشرية الزائدة الناتجة عن لغة جافاسكريبت
+            minLat = parseFloat(minLat.toFixed(4));
+            maxLat = parseFloat(maxLat.toFixed(4));
+            minLon = parseFloat(minLon.toFixed(4));
+            maxLon = parseFloat(maxLon.toFixed(4));
+
+            const rows = Math.round((maxLat - minLat) / stepSize);
+            const cols = Math.round((maxLon - minLon) / stepSize);
+            
             if ((rows * cols) > 5000) {
                 statusText.innerHTML = (currentLang === 'ar') ? 
                     "<strong>❌ المساحة كبيرة جداً على هذه الدقة</strong><br><span style='font-size:12px;'>يرجى إما تصغير المربع، أو اختيار (دقة إقليمية متوسطة/واسعة) من القائمة المنسدلة.</span>" : 
@@ -339,7 +346,7 @@
                 return;
             }
 
-            // 2. صياغة الطلب الشبكي الرسمي (تصحيح سنة النموذج إلى 2024 المدعومة كلياً من IGRF)
+            // 3. صياغة الطلب الشبكي الرسمي (بإحداثيات رياضية مثالية وسنة نموذج 2024 مدعومة كلياً)
             const url = `https://www.ngdc.noaa.gov/geomag-web/calculators/calculateIgrfgrid?lat1=${minLat}&lat2=${maxLat}&lon1=${minLon}&lon2=${maxLon}&latStep=${stepSize}&lonStep=${stepSize}&elevation=0&model=IGRF&startYear=2024&resultFormat=json`;
 
             try {
@@ -351,9 +358,8 @@
 
                 const response = await fetch(url);
                 
-                // التقاط أخطاء الـ API بوضوح
                 if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status} - السيرفر رفض محددات الطلب.`);
+                    throw new Error(`HTTP Error: ${response.status} - السيرفر يواجه ضغطاً أو يرفض الطلب.`);
                 }
 
                 const data = await response.json();
@@ -362,7 +368,7 @@
                     throw new Error("سيرفرات NOAA لم ترجع أي بيانات لهذه المنطقة.");
                 }
 
-                // 3. بناء ملف الـ CSV
+                // 4. بناء ملف الـ CSV
                 let csv = "Longitude(X),Latitude(Y),Total_Intensity(nT),Declination(Deg),Inclination(Deg)\n";
                 
                 data.result.forEach(point => {
@@ -378,8 +384,8 @@
             } catch (error) {
                 statusText.style.color = "var(--error)";
                 const errorMsg = currentLang === 'ar' ? 
-                    `<strong>❌ فشل في جلب البيانات المغناطيسية</strong><br><span style='font-size:12px;'>السبب: ${error.message}<br>(النظام لا يقبل توليد بيانات وهمية).</span>` : 
-                    `<strong>❌ Magnetic Fetch Failed</strong><br><span style='font-size:12px;'>Reason: ${error.message}<br>(System enforces 0% mock data).</span>`;
+                    `<strong>❌ فشل في جلب البيانات المغناطيسية</strong><br><span style='font-size:12px;'>السبب: ${error.message}<br>(تأكد من اختيار منطقة يابسة/بحرية صريحة وتجنب المناطق القطبية).</span>` : 
+                    `<strong>❌ Magnetic Fetch Failed</strong><br><span style='font-size:12px;'>Reason: ${error.message}</span>`;
                 statusText.innerHTML = errorMsg;
                 console.error("NOAA API Error:", error);
             }
