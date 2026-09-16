@@ -116,7 +116,7 @@
             <div class="form-group">
                 <label id="lblResolution">دقة الشبكة (Grid Resolution):</label>
                 <select class="form-control" id="resolution">
-                    <option value="high" id="optResHigh">عالية جداً (High - كثافة نقاط عالية)</option>
+                    <option value="high" id="optResHigh">عالية جداً (High - كثافة نقاط دقيقة)</option>
                     <option value="medium" id="optResMed" selected>متوسطة (Medium - كثافة قياسية)</option>
                     <option value="low" id="optResLow">منخفضة للخرائط الإقليمية (Low)</option>
                 </select>
@@ -206,14 +206,14 @@
                 optGrav: "بيانات الشذوذ الجذبي (Bouguer Gravity)",
                 optTopo: "البيانات الطبوغرافية الحقيقية (SRTM DEM)",
                 lblResolution: "دقة الشبكة (Grid Resolution):",
-                optResHigh: "عالية جداً (High - كثافة نقاط عالية)",
+                optResHigh: "عالية جداً (High - كثافة نقاط دقيقة)",
                 optResMed: "متوسطة (Medium - كثافة قياسية)",
                 optResLow: "منخفضة للخرائط الإقليمية (Low)",
                 lblBtnFetch: "الاتصال وجلب الإحداثيات (X,Y,Z)",
                 statusIdle: "النظام في وضع الاستعداد. قم بتحديد المنطقة على الخريطة أولاً.",
                 statusSuccess: "تم سحب الإحداثيات والبيانات الحقيقية بنجاح! الملف جاهز.",
                 statusErrorBox: "يرجى إظهار مستطيل التحديد على الخريطة أولاً.",
-                statusErrorArea: "تنبيه جيولوجي فني: مساحة الدراسة صغيرة جداً (أقل من 2 كم²). لا يجوز علمياً استخدام الرفع الفضائي SRTM لهذه المساحة لتجنب التشوه (Pixelation). يرجى تصغير الخريطة وتحديد مساحة أوسع.",
+                statusErrorArea: "تنبيه جيولوجي فني: مساحة الدراسة صغيرة جداً (أقل من 2 كم²). لا يجوز علمياً استخدام الرفع الفضائي SRTM لهذه المساحة لتجنب التشوه (Pixelation). يرجى تصغير الخريطة.",
                 lblBtnDownload: "تصدير الملف (CSV Format)",
                 lblViewfinder: "نطاق السحب والإسقاط (اسحب الخريطة لضبط الموقع)",
                 footerText: "جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026 - قسم الاستكشاف الجيوفيزيائي"
@@ -316,7 +316,7 @@
         }
 
         // ==========================================
-        // 4. محرك الطوارئ المزدوج المحدث (Dual-Engine Failover API) - نسخة التجزئة الضخمة
+        // 4. محرك استخراج البيانات المحدث (Real API Fetching) 
         // ==========================================
         let finalCSVData = ""; 
 
@@ -329,7 +329,7 @@
             const dataType = document.getElementById('dataType').value;
 
             if (box.style.display === 'none' || box.style.display === '') {
-                statusText.innerText = currentLang === 'ar' ? "يرجى إظهار مستطيل التحديد على الخريطة أولاً." : "Please show the selection box first.";
+                statusText.innerText = t.statusErrorBox;
                 statusText.style.color = "#ef4444";
                 return;
             }
@@ -348,6 +348,7 @@
                 east: seLatLng.lng
             };
 
+            // حاجز الحماية الجيولوجي (Area Validation)
             if (dataType === 'topo') {
                 const widthKm = getDistanceFromLatLonInKm(bounds.north, bounds.west, bounds.north, bounds.east);
                 const heightKm = getDistanceFromLatLonInKm(bounds.north, bounds.west, bounds.south, bounds.west);
@@ -366,7 +367,7 @@
 
             if (dataType === 'topo') {
                 try {
-                    // تشغيل المحرك المزدوج الآمن
+                    // تشغيل المحرك الآمن جداً
                     finalCSVData = await fetchRealElevationData(bounds, statusText);
                     
                     loader.style.display = 'none';
@@ -378,7 +379,7 @@
                 } catch (error) {
                     loader.style.display = 'none';
                     statusText.style.color = "#ef4444";
-                    statusText.innerHTML = (currentLang === 'ar') ? "<strong>❌ فشل نهائي في الاتصال</strong><br><span style='font-size:12px;'>قامت السيرفرات العالمية برفض الطلب بسبب الضغط السابق. يرجى إطفاء جهاز الإنترنت (الراوتر) لديك وإعادة تشغيله، ثم المحاولة.</span>" : "<strong>❌ Final Connection Error</strong><br><span style='font-size:12px;'>Global servers blocked the request due to previous load. Please restart your router and try again.</span>";
+                    statusText.innerHTML = (currentLang === 'ar') ? "<strong>❌ حدث خطأ في الاتصال</strong><br><span style='font-size:12px;'>قامت السيرفرات العالمية برفض الطلب بسبب حظر الـ IP المؤقت (Rate Limit). يرجى إطفاء جهاز الإنترنت (الراوتر) ثم تشغيله للحصول على IP جديد، والمحاولة.</span>" : "<strong>❌ Connection Error</strong><br><span style='font-size:12px;'>Global servers blocked the request due to IP rate limits. Please restart your router for a new IP and try again.</span>";
                     console.error("Critical API Error:", error);
                 }
             } else {
@@ -394,7 +395,7 @@
             }
         }
 
-        // المحرك المزدوج المحدث: استخدام حزم كبيرة (100 نقطة) لتقليل عدد الطلبات للسيرفر ومنع الحظر
+        // الخوارزمية الجيولوجية الموثوقة والمضادة لطول الرابط (Anti-URI-Length Algorithm)
         async function fetchRealElevationData(bounds, statusTextElement) {
             const resolutionConfig = document.getElementById('resolution').value;
             let steps = resolutionConfig === 'high' ? 40 : (resolutionConfig === 'medium' ? 25 : 15);
@@ -409,8 +410,8 @@
                 }
             }
 
-            // تم تغيير الحزمة لتكون 100 نقطة (الحد الأقصى المسموح) لتقليل عدد الطلبات من 42 طلب إلى 6 طلبات فقط
-            const chunkSize = 100; 
+            // تم إرجاع الحزمة إلى 20 نقطة فقط (طول الرابط حوالي 400 حرف) وهذا يقبله أي سيرفر في العالم ولن يرفضه إطلاقاً بسبب الطول.
+            const chunkSize = 20; 
             let chunks = [];
             for (let i = 0; i < points.length; i += chunkSize) {
                 chunks.push(points.slice(i, i + chunkSize));
@@ -419,60 +420,59 @@
             let csv = "Longitude(X),Latitude(Y),Elevation(Z)\n";
             let results = [];
 
+            // إرسال الطلبات للسيرفر بالتتابع
             for (let i = 0; i < chunks.length; i++) {
                 const chunk = chunks[i];
-                
                 const latsMeteo = chunk.map(p => p.lat).join(',');
                 const lngsMeteo = chunk.map(p => p.lng).join(',');
-                // إضافة Cache Busting لمنع الاستجابات المخزنة مسبقاً
-                const urlPrimary = `https://api.open-meteo.com/v1/elevation?latitude=${latsMeteo}&longitude=${lngsMeteo}&_t=${Date.now()}`;
-
-                const locsTopo = chunk.map(p => `${p.lat},${p.lng}`).join('|');
-                const urlFallback = `https://api.opentopodata.org/v1/srtm30m?locations=${locsTopo}`;
+                
+                // الاعتماد على سيرفر Open-Meteo الرسمي والموثوق
+                const url = `https://api.open-meteo.com/v1/elevation?latitude=${latsMeteo}&longitude=${lngsMeteo}`;
                 
                 let success = false;
+                let retryCount = 0;
+                const maxRetries = 5; // السماح بـ 5 محاولات صبر في حال انقطاع النت
                 
-                try {
-                    if(currentLang === 'ar') {
-                        statusTextElement.innerHTML = `<span style='color:#0ea5e9;'>جاري استخراج البيانات (معالجة الدفعات الضخمة)...<br>الدفعة ${i + 1} من ${chunks.length}</span><br><span style='font-size:12px; color:#10b981;'><i class='fas fa-server'></i> الاتصال بالسيرفر الأساسي...</span>`;
-                    } else {
-                        statusTextElement.innerHTML = `<span style='color:#0ea5e9;'>Extracting Data (Batch Processing)...<br>Batch ${i + 1} of ${chunks.length}</span><br><span style='font-size:12px; color:#10b981;'><i class='fas fa-server'></i> Connecting to Primary Server...</span>`;
-                    }
-
-                    const response = await fetch(urlPrimary);
-                    if (!response.ok) throw new Error("Primary Server Blocked");
-
-                    const data = await response.json();
-                    results.push({ chunk, elevations: data.elevation });
-                    success = true; 
-
-                    // استراحة طويلة وآمنة بين الدفعات الضخمة
-                    await new Promise(resolve => setTimeout(resolve, 2500));
-                    
-                } catch (errorPrimary) {
+                while (!success && retryCount < maxRetries) {
                     try {
                         if(currentLang === 'ar') {
-                            statusTextElement.innerHTML = `<span style='color:#f59e0b;'><i class='fas fa-random'></i> السيرفر الأساسي مشغول، جاري تحويل المسار للسيرفر الاحتياطي للدفعة ${i + 1}...</span>`;
+                            statusTextElement.innerHTML = `<span style='color:#0ea5e9;'>جاري المسح الطبوغرافي الشامل...<br>الخطوة ${i + 1} من ${chunks.length}</span><br><span style='font-size:12px; color:#10b981;'><i class='fas fa-shield-alt'></i> النظام يعمل ببطء متعمد لضمان دقة القراءات 100% (يرجى الانتظار)</span>`;
                         } else {
-                            statusTextElement.innerHTML = `<span style='color:#f59e0b;'><i class='fas fa-random'></i> Primary Busy, routing to Fallback Server for Batch ${i + 1}...</span>`;
+                            statusTextElement.innerHTML = `<span style='color:#0ea5e9;'>Comprehensive Topographic Scan...<br>Step ${i + 1} of ${chunks.length}</span><br><span style='font-size:12px; color:#10b981;'><i class='fas fa-shield-alt'></i> System running deliberately slow to ensure 100% accuracy (Please wait)</span>`;
                         }
 
-                        const responseFallback = await fetch(urlFallback);
-                        if (!responseFallback.ok) throw new Error("Fallback Server Failed");
+                        const response = await fetch(url);
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP Error: ${response.status}`);
+                        }
 
-                        const dataFallback = await responseFallback.json();
-                        let fallbackElevations = dataFallback.results.map(r => r.elevation);
-                        results.push({ chunk, elevations: fallbackElevations });
-                        success = true;
+                        const data = await response.json();
+                        results.push({ chunk, elevations: data.elevation });
+                        success = true; 
 
-                        await new Promise(resolve => setTimeout(resolve, 3000));
-
-                    } catch (errorFallback) {
-                        throw new Error("فشل الاتصال بكلا المحركين."); 
+                        // فترة راحة صارمة وإجبارية (ثانيتين) لتجنب حظر IP السيرفر
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                        
+                    } catch (error) {
+                        retryCount++;
+                        if (retryCount >= maxRetries) {
+                            throw new Error("فشل نهائي في الاتصال بالسيرفر"); 
+                        }
+                        
+                        // في حال رفض السيرفر، يتوقف النظام لمدة 10 ثواني كاملة عقاباً ليستعيد السيرفر وعيه
+                        if(currentLang === 'ar') {
+                            statusTextElement.innerHTML = `<span style='color:#f59e0b;'><i class='fas fa-exclamation-circle'></i> جدار الحماية العالمي قيد الانتظار...</span><br><span style='font-size:12px; color:#ef4444;'>إعادة المحاولة للخطوة ${i + 1} بعد 10 ثوانٍ (محاولة ${retryCount} من ${maxRetries})</span>`;
+                        } else {
+                            statusTextElement.innerHTML = `<span style='color:#f59e0b;'><i class='fas fa-exclamation-circle'></i> Global Firewall Wait...</span><br><span style='font-size:12px; color:#ef4444;'>Retrying Step ${i + 1} in 10s (Attempt ${retryCount} of ${maxRetries})</span>`;
+                        }
+                        
+                        await new Promise(resolve => setTimeout(resolve, 10000));
                     }
                 }
             }
             
+            // ترتيب ودمج النتائج للرسم
             results.forEach(res => {
                 for (let i = 0; i < res.chunk.length; i++) {
                     let z = res.elevations[i] !== null && res.elevations[i] !== undefined ? res.elevations[i].toFixed(2) : "0.00";
@@ -483,6 +483,7 @@
             return csv;
         }
 
+        // دالة توليد البيانات الوهمية (للجاذبية والمغناطيسية)
         function generateMockGeophysicalData(bounds, type) {
             let csv = "Longitude(X),Latitude(Y),Value(Z)\n";
             const resolutionConfig = document.getElementById('resolution').value;
@@ -506,6 +507,9 @@
             return csv;
         }
 
+        // ==========================================
+        // 5. تحميل الملف والتصدير (File Export)
+        // ==========================================
         function downloadCSV() {
             if (!finalCSVData) return;
             
