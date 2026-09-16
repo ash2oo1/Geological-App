@@ -371,7 +371,7 @@
             }
         }
 
-        // الدالة الجديدة: استخراج الارتفاعات الحقيقية من Open-Meteo SRTM 
+        // الدالة الجديدة المحدثة: استخراج الارتفاعات الحقيقية من Open-Meteo SRTM بطريقة مستقرة
         async function fetchRealElevationData(bounds) {
             const resolutionConfig = document.getElementById('resolution').value;
             // دقة الشبكة: تقسيم المنطقة إلى صفوف وأعمدة
@@ -387,30 +387,40 @@
                 }
             }
 
-            // تقسيم النقاط إلى حزم (Chunks) كل حزمة 100 نقطة لأن السيرفر لا يقبل أكثر في الطلب الواحد
-            const chunkSize = 100;
+            // تم تقليل حجم الحزمة إلى 40 لتجنب مشكلة (URL Too Long)
+            const chunkSize = 40; 
             let chunks = [];
             for (let i = 0; i < points.length; i += chunkSize) {
                 chunks.push(points.slice(i, i + chunkSize));
             }
 
             let csv = "Longitude(X),Latitude(Y),Elevation(Z)\n";
-            
-            // إرسال الطلبات للسيرفر العالمي بشكل متوازي وسريع
-            const fetchPromises = chunks.map(async (chunk) => {
+            let results = [];
+
+            // تغيير طريقة الإرسال من (متوازي) إلى (متتابع) لتجنب حظر السيرفر (Rate Limiting)
+            for (let i = 0; i < chunks.length; i++) {
+                const chunk = chunks[i];
                 const lats = chunk.map(p => p.lat).join(',');
                 const lngs = chunk.map(p => p.lng).join(',');
-                // رابط الـ API المفتوح للارتفاعات الطبوغرافية
+                
                 const url = `https://api.open-meteo.com/v1/elevation?latitude=${lats}&longitude=${lngs}`;
                 
-                const response = await fetch(url);
-                if (!response.ok) throw new Error("API Fetch Error");
-                const data = await response.json();
-                return { chunk, elevations: data.elevation };
-            });
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    results.push({ chunk, elevations: data.elevation });
 
-            // انتظار جميع الاستجابات
-            const results = await Promise.all(fetchPromises);
+                    // إضافة تأخير زمني بسيط (300 ملي ثانية) بين كل طلب وآخر لإراحة السيرفر
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    
+                } catch (error) {
+                    console.error("فشل في تحميل جزء من البيانات:", error);
+                    throw error; // إيقاف العملية وإرجاع الخطأ للواجهة
+                }
+            }
             
             // دمج النتائج في ملف الـ CSV
             results.forEach(res => {
