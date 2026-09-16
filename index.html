@@ -321,6 +321,18 @@
             <h3 style="color: #c0392b;">التقييم السيزمي والكود الهندسي</h3>
             <p>تحديد النطاق الزلزالي، ذروة التسارع الأرضي (PGA)، وتأثير الفوالق النشطة حسب نوع المنشأة موقعياً.</p>
         </div>
+
+        <div class="module-card" style="border-bottom-color: #8b5cf6;" onclick="window.location.href='https://geologicalfieldsurvey.com/shandal-env-module.html'">
+            <i class="fas fa-satellite" style="color: #8b5cf6;"></i>
+            <h3 style="color: #8b5cf6;">الرصد الفضائي والنمذجة البيئية</h3>
+            <p>لوحة تحكم ذكية تعتمد على بيانات التحسس النائي لعرض المؤشرات البيئية المباشرة (الإجهاد الحراري WBGT، جودة الهواء AQI، وعناصر الطقس) لدعم العمليات الميدانية والمختبر الجيوتقني.</p>
+        </div>
+
+        <div class="module-card" style="border-bottom-color: #10b981;" onclick="window.location.href='https://geologicalfieldsurvey.com/geopark.html'">
+            <i class="fas fa-mountain-sun" style="color: #10b981;"></i>
+            <h3 style="color: #10b981;">السياحة الجيولوجية والآثارية</h3>
+            <p>نظام خرائط تفاعلي (Geo-Archaeological Tourism) لاستكشاف المعالم الجيولوجية (طيات، فوالق، براكين، كهوف) مع إمكانية الفلترة المتقدمة حسب الحقب الزمنية الجيولوجية.</p>
+        </div>
     </div>
 </div>
 
@@ -787,7 +799,7 @@
             let startIdx = page * TEXT_PER_PAGE; let endIdx = Math.min(startIdx + TEXT_PER_PAGE, validLayers.length); let chunk = validLayers.slice(startIdx, endIdx); let pageReportHTML = '';
             if(page === 0) { pageReportHTML = `<p>بناءً على المشاهدات الحقلية والقياسات الميدانية، يُظهر المقطع الحقلي للموقع تتابعاً طبقياً يبدأ من السطح (العمق 0.0m) وصولاً إلى أقصى عمق مرصود وهو (${totalDepth.toFixed(1)}m). ويمكن وصف التتابع الليثولوجي والسحني <b>جيولوجياً</b> كما يلي:</p>`; }
             if(chunk.length === 0 && page === 0) { pageReportHTML += "<p>لم يتم إدخال بيانات التتابع الطباقي.</p>"; fullScreenReportHTML += "<p>لم يتم إدخال بيانات التتابع الطباقي.</p>"; } else { chunk.forEach(L => { let ordStr = ordinals[L.index-1] || `رقم ${L.index}`; let rawPText = L.printText.split('\n')[0]; let line = `<p><b>- الطبقة ${ordStr}:</b> تمتد من عمق ${L.depthFrom.toFixed(1)}m إلى عمق ${L.depthTo.toFixed(1)}m (بسُمك يبلغ ${L.thick.toFixed(1)}m). تتكون هذه الطبقة بشكل أساسي من ${rawPText}`; if(L.hasSec) { if (L.mixType === 'mixed') { line += `، وهي عبارة عن مزيج متجانس يغلب عليه (${rawPText}) كأرضية، مع وجود تداخل وتناثر لحبيبات (${L.sText}) ضمن الطبقة.`; } else { line += `، حيث يظهر (${rawPText}) متعاقباً طبقياً (Interbedded) بشكل واضح مع رقائق وأشرطة من (${L.sText}).`; } } else { line += `.`; } line += `</p>`; pageReportHTML += line; fullScreenReportHTML += line; }); }
-            let pageHTML = `<div class="print-page-wrapper page-counter-element"><div class="print-only print-header"><span class="date-top-left printDateHeader"></span><h1>نظام شندل للمسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1><h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2></div><div class="content-padding"><div class="section"><div class="section-title" style="border-bottom-color: #8e44ad; color: #8e44ad;">سابعاً: التفسير الجيولوجي والوصف الليثولوجي للمقطع الحقلي ${textChunks > 1 ? `- (تكملة ${page+1})` : ''}</div><div class="report-content">${pageReportHTML}</div></div></div><div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesText">X</span></div></div>`; textContainer.innerHTML += pageHTML;
+            let pageHTML = `<div class="print-page-wrapper page-counter-element"><div class="print-only print-header"><span class="date-top-left printDateHeader"></span><h1>نظام شندل للمسح الميداني الجيولوجي (التقرير الشامل للمقالع)</h1><h2>إعداد وتدقيق الجيولوجي: علي شندل الجنابي</h2></div><div class="content-padding"><div class="section"><div class="section-title" style="border-bottom-color: #8e44ad; color: #8e44ad;">سابعاً: التفسير الجيولوجي وال الوصف الليثولوجي للمقطع الحقلي ${textChunks > 1 ? `- (تكملة ${page+1})` : ''}</div><div class="report-content">${pageReportHTML}</div></div></div><div class="print-only print-bottom">الصفحة <span class="currPageNum"></span> من <span class="totalPagesText">X</span></div></div>`; textContainer.innerHTML += pageHTML;
         }
 
         document.getElementById('uiReportContent').innerHTML = fullScreenReportHTML; document.getElementById('uiReportSection').style.display = 'block';
