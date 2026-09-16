@@ -93,8 +93,8 @@
 
         <!-- ================= SECTION 1: HI vs TOC ================= -->
         <h2 class="section-title">
-            Petroleum Potential (HI vs. TOC)
             <span class="help-icon"><i class="fas fa-exclamation-circle"></i><span class="tooltip-text" data-i18n="plot1Info">يعتمد هذا المخطط على تقييم نواتج التحلل الحراري لتحديد الجهد البترولي للصخور المصدرية. يتطلب حساب نسبة الكربون العضوي الكلي (TOC) ومؤشر الهيدروجين (HI).</span></span>
+            Petroleum Potential (HI vs. TOC)
         </h2>
         <div class="lab-container">
             <div class="input-panel">
@@ -136,8 +136,8 @@
 
         <!-- ================= SECTION 2: Van Krevelen ================= -->
         <h2 class="section-title">
-            Kerogen Types (Van Krevelen Diagram)
             <span class="help-icon"><i class="fas fa-exclamation-circle"></i><span class="tooltip-text" data-i18n="plot2Info">مخطط فان كريفيلين (Van Krevelen): طوّره العالم ديرك فان كريفيلين لدراسة الفحم، وعُدّل للبترول. يُستخدم لتصنيف أنواع الكيروجين ومعرفة مسار النضج الحراري بناءً على الأكسجين والهيدروجين. يتطلب (S3) للحساب.</span></span>
+            Kerogen Types (Van Krevelen Diagram)
         </h2>
         <div class="lab-container">
             <div class="input-panel">
@@ -288,19 +288,24 @@
             toImageButtonOptions: { format: 'png', height: 800, width: 1200, scale: 2 }
         };
 
-        // --- Accurate Van Krevelen Curves (Scientifically Mapped to standard academic references) ---
-        // Type I: High initial HI, sharp drop in OI.
-        const type1_curve = { x: [40, 30, 20, 15, 12, 10, 10, 15], y: [920, 850, 700, 500, 350, 200, 100, 50], mode: 'lines', line: {shape: 'spline', dash: 'dash', color: '#b35959', width: 2}, name: 'Type I', hoverinfo: 'none' };
-        // Type II: Curve starting moderate HI/OI, arcing then dropping.
-        const type2_curve = { x: [100, 80, 60, 40, 25, 18, 15, 20], y: [640, 630, 600, 500, 350, 200, 100, 50], mode: 'lines', line: {shape: 'spline', dash: 'dash', color: '#b35959', width: 2}, name: 'Type II', hoverinfo: 'none' };
-        // Type III: Low HI, wide horizontal spread on OI.
-        const type3_curve = { x: [160, 140, 120, 90, 60, 40, 25, 15], y: [40, 60, 80, 95, 95, 75, 50, 25], mode: 'lines', line: {shape: 'spline', dash: 'dash', color: '#b35959', width: 2}, name: 'Type III', hoverinfo: 'none' };
+        // --- Mathematically Accurate Van Krevelen Curves (Digitized from Academic Reference) ---
+        // اللون يحاكي لون المراجع العلمية (أحمر داكن)
+        const lineStyle = {shape: 'spline', dash: 'dash', color: '#993333', width: 2};
+        
+        // Type I: يبدأ بـ HI عالي، يسقط بشكل شبه عمودي نحو الـ OI المنخفض، ويلتف لليمين قليلاً عند اقترابه من الصفر
+        const type1_curve = { x: [35, 25, 15, 12, 10, 10, 12], y: [920, 800, 600, 400, 200, 100, 50], mode: 'lines', line: lineStyle, name: 'Type I', hoverinfo: 'none' };
+        
+        // Type II: يبدأ بانحناء قوسي، ثم ينحدر بشكل شبه عمودي ويتجه يميناً عند اقترابه من الصفر
+        const type2_curve = { x: [90, 70, 40, 25, 20, 16, 16, 18], y: [640, 630, 580, 450, 300, 150, 100, 50], mode: 'lines', line: lineStyle, name: 'Type II', hoverinfo: 'none' };
+        
+        // Type III: يبقى دائماً في نطاق الـ HI المنخفض ويمتد يميناً على محور الـ OI
+        const type3_curve = { x: [15, 30, 60, 100, 130, 160], y: [30, 60, 90, 100, 90, 40], mode: 'lines', line: lineStyle, name: 'Type III', hoverinfo: 'none' };
 
         let tracePlot1 = { x: [], y: [], text: [], mode: 'markers+text', type: 'scatter', textposition: 'top center', marker: { size: 12, color: '#ec4899', line: {color: 'black', width: 2} }, name: 'Samples' };
         let tracePlot2 = { x: [], y: [], text: [], mode: 'markers+text', type: 'scatter', textposition: 'top center', marker: { size: 12, color: '#8b5cf6', line: {color: 'black', width: 2} }, name: 'Samples' };
 
         function initPlots() {
-            // Plot 1 Layout (HI vs TOC) - Untouched mathematically
+            // Plot 1 Layout (HI vs TOC)
             let layout1 = {
                 xaxis: { type: 'log', range: [Math.log10(0.1), Math.log10(100)], title: { text: '<b>Total organic carbon content (wt%)</b>' }, tickvals: [0.1, 1, 10, 100], fixedrange: true },
                 yaxis: { range: [0, 1000], title: { text: '<b>Hydrogen Index (HI; mg HC/g TOC)</b>' }, fixedrange: true },
@@ -312,22 +317,23 @@
                     { type: 'line', x0: 0.1, x1: 100, y0: 340, y1: 340, line: {color: 'black', width: 1.5} }
                 ],
                 annotations: [
-                    { x: Math.log10(0.2), y: 950, text: '<b>Poor</b>', showarrow: false }, { x: Math.log10(0.7), y: 950, text: '<b>Fair</b>', showarrow: false },
-                    { x: Math.log10(1.4), y: 950, text: '<b>Good</b>', showarrow: false }, { x: Math.log10(10), y: 950, text: '<b>Very Good / Excellent</b>', showarrow: false },
-                    { x: Math.log10(30), y: 450, text: '<b>Oil-prone</b>', showarrow: false }, { x: Math.log10(30), y: 270, text: '<b>Mixed (oil & gas)</b>', showarrow: false },
-                    { x: Math.log10(30), y: 100, text: '<b>Gas-prone</b>', showarrow: false }
+                    { x: Math.log10(0.2), y: 950, text: '<b>Poor</b>', showarrow: false, font: {family: 'Arial', color: '#333'} }, { x: Math.log10(0.7), y: 950, text: '<b>Fair</b>', showarrow: false, font: {family: 'Arial', color: '#333'} },
+                    { x: Math.log10(1.4), y: 950, text: '<b>Good</b>', showarrow: false, font: {family: 'Arial', color: '#333'} }, { x: Math.log10(10), y: 950, text: '<b>Very Good / Excellent</b>', showarrow: false, font: {family: 'Arial', color: '#333'} },
+                    { x: Math.log10(30), y: 450, text: '<b>Oil-prone</b>', showarrow: false, font: {family: 'Arial', color: '#333'} }, { x: Math.log10(30), y: 270, text: '<b>Mixed (oil & gas)</b>', showarrow: false, font: {family: 'Arial', color: '#333'} },
+                    { x: Math.log10(30), y: 100, text: '<b>Gas-prone</b>', showarrow: false, font: {family: 'Arial', color: '#333'} }
                 ],
                 plot_bgcolor: '#f8fafc', paper_bgcolor: 'white', margin: { l: 60, r: 20, t: 20, b: 40 }
             };
 
-            // Plot 2 Layout (Van Krevelen) - Corrected mathematically
+            // Plot 2 Layout (Van Krevelen)
             let layout2 = {
                 xaxis: { range: [0, 250], title: { text: '<b>OI. Oxygen Index (mg CO2/g TOC)</b>' }, fixedrange: true },
                 yaxis: { range: [0, 1000], title: { text: '<b>HI. Hydrogen Index (mg HC/g TOC)</b>' }, fixedrange: true },
                 annotations: [
-                    { x: 35, y: 920, text: '<b>Type I</b>', showarrow: false, font: {color: '#808080'} },
-                    { x: 90, y: 650, text: '<b>Type II</b>', showarrow: false, font: {color: '#808080'} },
-                    { x: 170, y: 40, text: '<b>Type III</b>', showarrow: false, font: {color: '#808080'} }
+                    // وضع الأسماء في نهايات المنحنيات بشكل دقيق
+                    { x: 42, y: 920, text: '<b>Type I</b>', showarrow: false, font: {color: '#555', size: 14, family: 'Arial'} },
+                    { x: 100, y: 640, text: '<b>Type II</b>', showarrow: false, font: {color: '#555', size: 14, family: 'Arial'} },
+                    { x: 170, y: 40, text: '<b>Type III</b>', showarrow: false, font: {color: '#555', size: 14, family: 'Arial'} }
                 ],
                 plot_bgcolor: '#f8fafc', paper_bgcolor: 'white', margin: { l: 60, r: 20, t: 20, b: 40 }, showlegend: false
             };
@@ -341,8 +347,8 @@
             let toc = parseFloat(document.getElementById('toc').value);
             let s2 = parseFloat(document.getElementById('s2').value);
 
-            if (!name) { alert("يرجى إدخال اسم العينة."); return; }
-            if (isNaN(toc) || isNaN(s2) || toc <= 0) { alert("يرجى إدخال قيم رياضية صحيحة."); return; }
+            if (!name) { alert(currentLang === 'ar' ? "يرجى إدخال اسم العينة." : "Please enter the sample name."); return; }
+            if (isNaN(toc) || isNaN(s2) || toc <= 0) { alert(currentLang === 'ar' ? "يرجى إدخال قيم رياضية صحيحة." : "Please enter valid mathematical values."); return; }
 
             let hi = Math.round(((s2 / toc) * 100) * 10) / 10; 
             let tocQuality = toc < 0.5 ? "Poor" : (toc < 1.0 ? "Fair" : (toc < 2.0 ? "Good" : "Very Good"));
@@ -363,11 +369,11 @@
             let name = document.getElementById('sampleName2').value.trim();
             let s3 = parseFloat(document.getElementById('s3').value);
 
-            if (!name) { alert("يرجى إدخال اسم العينة."); return; }
-            if (isNaN(s3) || s3 < 0) { alert("يرجى إدخال قيمة صحيحة لـ S3."); return; }
+            if (!name) { alert(currentLang === 'ar' ? "يرجى إدخال اسم العينة." : "Please enter the sample name."); return; }
+            if (isNaN(s3) || s3 < 0) { alert(currentLang === 'ar' ? "يرجى إدخال قيمة صحيحة لـ S3." : "Please enter a valid value for S3."); return; }
 
             if (!systemData[name] || !systemData[name].toc) {
-                alert(`لم يتم العثور على عينة باسم (${name}). يرجى إدخال بياناتها في المخطط الأول أولاً.`);
+                alert(currentLang === 'ar' ? `لم يتم العثور على عينة باسم (${name}). يرجى إدخال بياناتها في المخطط الأول أولاً.` : `Sample (${name}) not found. Please enter its data in the first plot initially.`);
                 return;
             }
 
@@ -439,7 +445,8 @@
         }
 
         function resetLab() {
-            if (confirm("تأكيد: هل أنت متأكد من مسح جميع العينات من النظام؟")) {
+            let msg = currentLang === 'ar' ? "تأكيد: هل أنت متأكد من مسح جميع العينات من النظام؟" : "Confirm: Are you sure you want to clear all samples from the system?";
+            if (confirm(msg)) {
                 systemData = {};
                 updatePlot1Visuals();
                 updatePlot2Visuals();
