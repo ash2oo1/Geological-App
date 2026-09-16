@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام شندل - مختبر البيئات القديمة</title>
+    <title>نظام شندل - مختبر الجيوكيمياء البترولية</title>
     
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -40,8 +40,8 @@
         .form-control { width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); color: white; padding: 10px; border-radius: 6px; outline: none; font-size: 14px;}
         .form-control:focus { border-color: var(--accent-primary); }
         
-        /* Help Icon (!) Tooltip */
-        .help-icon { color: var(--accent-secondary); cursor: pointer; position: relative; display: inline-block; font-weight:900;}
+        /* Help Icon (Exclamation) Tooltip Logic */
+        .help-icon { color: var(--accent-secondary); cursor: pointer; position: relative; display: inline-block; }
         .help-icon .tooltip-text { visibility: hidden; width: 250px; background-color: #334155; color: #fff; text-align: center; border-radius: 6px; padding: 10px; position: absolute; z-index: 100; bottom: 130%; left: 50%; transform: translateX(-50%); opacity: 0; transition: opacity 0.3s; font-size: 12px; font-weight: normal; line-height: 1.5; box-shadow: 0 4px 10px rgba(0,0,0,0.5); pointer-events: none;}
         .help-icon .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border-width: 5px; border-style: solid; border-color: #334155 transparent transparent transparent; }
         .help-icon:hover .tooltip-text { visibility: visible; opacity: 1; }
@@ -53,7 +53,7 @@
         .btn-add:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
         
         .plot-panel { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
-        .plot-container { width: 100%; height: 550px; }
+        .plot-container { width: 100%; height: 500px; }
 
         .table-header { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; margin-bottom: 10px;}
         .table-header h3 { margin: 0; color: var(--accent-primary); display: flex; align-items: center; gap: 8px;}
@@ -67,6 +67,7 @@
         .data-table th, .data-table td { padding: 10px; text-align: center; border-bottom: 1px solid var(--border-color); font-size: 13px; }
         .data-table th { background: rgba(0,0,0,0.3); color: var(--text-light); }
         .data-table tr:hover { background: rgba(255,255,255,0.02); }
+        .empty-cell { color: #64748b; font-style: italic; }
     </style>
 </head>
 <body>
@@ -74,7 +75,7 @@
     <header>
         <div class="brand">
             <h1 id="appTitle" data-i18n="appTitle">نظام شندل للمسح الميداني الجيولوجي</h1>
-            <p id="appSubtitle"><i class="fas fa-microscope"></i> <span data-i18n="appSubtitle">مختبر السحنات البالينولوجية (Palynofacies Lab)</span></p>
+            <p id="appSubtitle"><i class="fas fa-flask"></i> <span data-i18n="appSubtitle">مختبر الجيوكيمياء البترولية (Petroleum Geochemistry Lab)</span></p>
         </div>
         <button class="lang-toggle" onclick="toggleLanguage()">
             <span id="langBtnText">English</span> <i class="fas fa-globe"></i>
@@ -86,65 +87,94 @@
         <div class="info-box">
             <strong><i class="fas fa-info-circle"></i> <span data-i18n="infoTitle">عن هذا المختبر:</span></strong><br>
             <span data-i18n="infoDesc">
-                يعتمد هذا المختبر على دراسة السحنات البالينولوجية (Palynofacies) لتحديد البيئات الترسيبية القديمة (Paleoenvironments). عبر إدخال أعداد كل من (AOM، الفيتوكلاست، والبالينومورف)، سيقوم النظام بحساب النسب المئوية وتسقيطها آلياً على <strong>مخطط تايسون الثلاثي (Tyson's 1995)</strong> لتحديد بيئة الترسيب وتصنيف جودة المصدر العضوي (نفط أو غاز).
+                أداة رقمية لتقييم <strong>"الصخور المصدرية" (Source Rocks)</strong>. يقوم النظام بقراءة بيانات (Rock-Eval) لحساب <strong>مؤشر الهيدروجين (HI) ومؤشر الأكسجين (OI)</strong>. المخطط الأول يحدد الجهد البترولي، والمخطط الثاني (Van Krevelen) يصنف أنواع الكيروجين ومسار النضج الحراري.
             </span>
         </div>
 
+        <!-- ================= SECTION 1: HI vs TOC ================= -->
         <h2 class="section-title">
-            <span class="help-icon">!<span class="tooltip-text" data-i18n="plotInfo">مخطط تايسون (1995): يستخدم لتحديد بيئة الترسيب ونوع الكيروجين. المناطق (I إلى V) تميل لإنتاج الغاز، بينما المناطق (VI إلى IX) تميل لإنتاج النفط بناءً على وفرة المادة العضوية غير المتبلورة.</span></span>
-            Tyson's Ternary Diagram (1995)
+            <span class="help-icon"><i class="fas fa-exclamation-circle"></i><span class="tooltip-text" data-i18n="plot1Info">يعتمد هذا المخطط على تقييم نواتج التحلل الحراري لتحديد الجهد البترولي للصخور المصدرية. يتطلب حساب نسبة الكربون العضوي الكلي (TOC) ومؤشر الهيدروجين (HI).</span></span>
+            Petroleum Potential (HI vs. TOC)
         </h2>
         <div class="lab-container">
             <div class="input-panel">
-                <h3 style="margin-top:0; color:var(--text-light);" data-i18n="panelTitle"><i class="fas fa-edit"></i> إدخال أعداد المواد العضوية</h3>
+                <h3 style="margin-top:0; color:var(--text-light);" data-i18n="panel1Title"><i class="fas fa-edit"></i> بيانات التحلل الأساسية</h3>
                 
                 <div class="form-group">
                     <label>
-                        <span data-i18n="sampleLabel">اسم العينة:</span>
-                        <span class="help-icon">!<span class="tooltip-text" data-i18n="sampleDesc">يرجى وضع اسم العينة لتوثيقها في الجدول وتسقيطها على المخطط.</span></span>
+                        <span data-i18n="sampleLabel">اسم العينة / رقم البئر:</span>
+                        <span class="help-icon"><i class="fas fa-exclamation-circle"></i><span class="tooltip-text" data-i18n="sampleDesc">يرجى وضع اسم العينة المأخوذة أو رقم البئر (مثال: Aj.8) لغرض توثيقها وربطها لاحقاً.</span></span>
                     </label>
-                    <input type="text" id="sampleName" class="form-control" data-i18n-placeholder="sampleHolder" placeholder="مثال: Ora Shale 1">
+                    <input type="text" id="sampleName1" class="form-control" data-i18n-placeholder="sampleHolder" placeholder="مثال: Aj.8">
                 </div>
                 
                 <div class="form-group">
                     <label>
-                        AOM (Count):
-                        <span class="help-icon">!<span class="tooltip-text" data-i18n="aomDesc">المادة العضوية غير المتبلورة (Amorphous Organic Matter). وفرتها تدل على بيئات مختزلة (Anoxic) وتنتج النفط.</span></span>
+                        TOC (wt%):
+                        <span class="help-icon"><i class="fas fa-exclamation-circle"></i><span class="tooltip-text" data-i18n="tocDesc">نسبة الكربون العضوي الكلي. تعتبر العينة غير صالحة إذا كانت أقل من 0.5%، وممتازة إذا تجاوزت 2.0%.</span></span>
                     </label>
-                    <input type="number" id="aomCount" class="form-control" placeholder="106">
+                    <input type="number" id="toc" class="form-control" placeholder="10.22">
                 </div>
                 
                 <div class="form-group">
                     <label>
-                        Phytoclasts (Count):
-                        <span class="help-icon">!<span class="tooltip-text" data-i18n="phytoDesc">بقايا وكسر نباتية (Phytoclasts). وفرتها تدل على قرب المسافة من الشاطئ أو بيئات مؤكسدة، وتنتج الغاز أساساً.</span></span>
+                        S2 (mg HC/g rock):
+                        <span class="help-icon"><i class="fas fa-exclamation-circle"></i><span class="tooltip-text" data-i18n="s2Desc">ناتج التحلل الحراري الثاني: يمثل كمية الهيدروكربونات الناتجة عن تكسير الكيروجين، وهو أساس حساب مؤشر الهيدروجين (HI).</span></span>
                     </label>
-                    <input type="number" id="phytoCount" class="form-control" placeholder="50">
-                </div>
-
-                <div class="form-group">
-                    <label>
-                        Palynomorphs (Count):
-                        <span class="help-icon">!<span class="tooltip-text" data-i18n="palyDesc">حبوب اللقاح والأبواغ (Palynomorphs). تتأثر بالتيارات المائية والرياح وتتواجد في البيئات الجرفية (Shelf).</span></span>
-                    </label>
-                    <input type="number" id="palyCount" class="form-control" placeholder="164">
+                    <input type="number" id="s2" class="form-control" placeholder="29.2">
                 </div>
                 
                 <div class="btn-group">
-                    <button class="btn btn-add" onclick="processSample()"><i class="fas fa-chart-line"></i> <span data-i18n="calcBtn">حساب النسب وتسقيط النقطة</span></button>
+                    <button class="btn btn-add" onclick="processPlot1()"><i class="fas fa-chart-line"></i> <span data-i18n="calcBtn">حساب وتسقيط النقطة</span></button>
                 </div>
             </div>
 
             <div class="plot-panel">
-                <div id="ternaryPlot" class="plot-container"></div>
+                <div id="plot1" class="plot-container"></div>
             </div>
         </div>
 
+        <!-- ================= SECTION 2: Van Krevelen ================= -->
+        <h2 class="section-title">
+            <span class="help-icon"><i class="fas fa-exclamation-circle"></i><span class="tooltip-text" data-i18n="plot2Info">مخطط فان كريفيلين (Van Krevelen): طوّره العالم ديرك فان كريفيلين لدراسة الفحم، وعُدّل للبترول. يُستخدم لتصنيف أنواع الكيروجين ومعرفة مسار النضج الحراري بناءً على الأكسجين والهيدروجين. يتطلب (S3) للحساب.</span></span>
+            Kerogen Types (Van Krevelen Diagram)
+        </h2>
+        <div class="lab-container">
+            <div class="input-panel">
+                <h3 style="margin-top:0; color:var(--text-light);" data-i18n="panel2Title"><i class="fas fa-edit"></i> بيانات الكيروجين المتقدمة</h3>
+                
+                <div class="form-group">
+                    <label>
+                        <span data-i18n="sampleLabelSaved">اسم العينة (المسجلة مسبقاً):</span>
+                        <span class="help-icon"><i class="fas fa-exclamation-circle"></i><span class="tooltip-text" data-i18n="sampleSavedDesc">أدخل نفس اسم العينة التي تم حسابها في المخطط الأول ليقوم النظام بربط البيانات.</span></span>
+                    </label>
+                    <input type="text" id="sampleName2" class="form-control" data-i18n-placeholder="sampleSavedHolder" placeholder="أدخل اسم العينة المحفوظة">
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        S3 (mg CO2/g rock):
+                        <span class="help-icon"><i class="fas fa-exclamation-circle"></i><span class="tooltip-text" data-i18n="s3Desc">ناتج ثاني أكسيد الكربون: يستخدم لحساب مؤشر الأكسجين (OI) لتحديد نوع الكيروجين وتصنيفه.</span></span>
+                    </label>
+                    <input type="number" id="s3" class="form-control" placeholder="1.5">
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-add" onclick="processPlot2()"><i class="fas fa-project-diagram"></i> <span data-i18n="calcBtn">حساب وتسقيط النقطة</span></button>
+                </div>
+            </div>
+
+            <div class="plot-panel">
+                <div id="plot2" class="plot-container"></div>
+            </div>
+        </div>
+
+        <!-- ================= MASTER TABLE ================= -->
         <div class="table-header">
-            <h3><i class="fas fa-table"></i> <span data-i18n="tableTitle">سجل السحنات والبيئات القديمة</span></h3>
+            <h3><i class="fas fa-table"></i> <span data-i18n="tableTitle">سجل بيانات العينات الشامل</span></h3>
             <div style="display: flex; gap: 10px;">
                 <button class="btn-reset" onclick="resetLab()"><i class="fas fa-trash-alt"></i> <span data-i18n="resetBtn">مسح جميع العينات</span></button>
-                <button class="btn-export" onclick="exportTableToCSV('Shandal_Palynofacies_Results.csv')"><i class="fas fa-file-excel"></i> <span data-i18n="exportBtn">تصدير Excel</span></button>
+                <button class="btn-export" onclick="exportTableToCSV('Shandal_Geochem_Results.csv')"><i class="fas fa-file-excel"></i> <span data-i18n="exportBtn">تصدير Excel</span></button>
             </div>
         </div>
 
@@ -153,13 +183,14 @@
                 <thead>
                     <tr>
                         <th data-i18n="thName">اسم العينة</th>
-                        <th>AOM (Count)</th>
-                        <th>Phytoclasts (Count)</th>
-                        <th>Palynomorphs (Count)</th>
-                        <th>Total</th>
-                        <th>AOM (%)</th>
-                        <th>Phytoclasts (%)</th>
-                        <th>Palynomorphs (%)</th>
+                        <th>TOC (%)</th>
+                        <th>S2 (mg/g)</th>
+                        <th>S3 (mg/g)</th>
+                        <th>HI</th>
+                        <th>OI</th>
+                        <th data-i18n="thQuantity">الجهد (Quantity)</th>
+                        <th data-i18n="thQuality">الإنتاج (Quality)</th>
+                        <th data-i18n="thKerogen">نوع الكيروجين (Kerogen)</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -171,45 +202,61 @@
     </div>
 
     <script>
-        // --- Translation Engine ---
+        // --- Translation Engine (Bilingual Support) ---
         const translations = {
             ar: {
                 appTitle: "نظام شندل للمسح الميداني الجيولوجي",
-                appSubtitle: "مختبر السحنات البالينولوجية (Palynofacies Lab)",
+                appSubtitle: "مختبر الجيوكيمياء البترولية (Petroleum Geochemistry Lab)",
                 infoTitle: "عن هذا المختبر:",
-                infoDesc: "يعتمد هذا المختبر على دراسة السحنات البالينولوجية (Palynofacies) لتحديد البيئات الترسيبية القديمة (Paleoenvironments). عبر إدخال أعداد كل من (AOM، الفيتوكلاست، والبالينومورف)، سيقوم النظام بحساب النسب المئوية وتسقيطها آلياً على <strong>مخطط تايسون الثلاثي (Tyson's 1995)</strong> لتحديد بيئة الترسيب وتصنيف جودة المصدر العضوي (نفط أو غاز).",
-                plotInfo: "مخطط تايسون (1995): يستخدم لتحديد بيئة الترسيب ونوع الكيروجين. المناطق (I إلى V) تميل لإنتاج الغاز، بينما المناطق (VI إلى IX) تميل لإنتاج النفط بناءً على وفرة المادة العضوية غير المتبلورة.",
-                panelTitle: "إدخال أعداد المواد العضوية",
-                sampleLabel: "اسم العينة:",
-                sampleDesc: "يرجى وضع اسم العينة لتوثيقها في الجدول وتسقيطها على المخطط.",
-                aomDesc: "المادة العضوية غير المتبلورة (Amorphous Organic Matter). وفرتها تدل على بيئات مختزلة (Anoxic) وتنتج النفط.",
-                phytoDesc: "بقايا وكسر نباتية (Phytoclasts). وفرتها تدل على قرب المسافة من الشاطئ أو بيئات مؤكسدة، وتنتج الغاز أساساً.",
-                palyDesc: "حبوب اللقاح والأبواغ (Palynomorphs). تتأثر بالتيارات المائية والرياح وتتواجد في البيئات الجرفية (Shelf).",
-                calcBtn: "حساب النسب وتسقيط النقطة",
-                tableTitle: "سجل السحنات والبيئات القديمة",
+                infoDesc: "أداة رقمية لتقييم <strong>\"الصخور المصدرية\" (Source Rocks)</strong>. يقوم النظام بقراءة بيانات (Rock-Eval) لحساب <strong>مؤشر الهيدروجين (HI) ومؤشر الأكسجين (OI)</strong>. المخطط الأول يحدد الجهد البترولي، والمخطط الثاني (Van Krevelen) يصنف أنواع الكيروجين ومسار النضج الحراري.",
+                plot1Info: "يعتمد هذا المخطط على تقييم نواتج التحلل الحراري لتحديد الجهد البترولي للصخور المصدرية. يتطلب حساب نسبة الكربون العضوي الكلي (TOC) ومؤشر الهيدروجين (HI).",
+                plot2Info: "مخطط فان كريفيلين (Van Krevelen): طوّره العالم ديرك فان كريفيلين لدراسة الفحم، وعُدّل للبترول. يُستخدم لتصنيف أنواع الكيروجين ومعرفة مسار النضج الحراري بناءً على الأكسجين والهيدروجين. يتطلب (S3) للحساب.",
+                panel1Title: "بيانات التحلل الأساسية",
+                sampleLabel: "اسم العينة / رقم البئر:",
+                sampleDesc: "يرجى وضع اسم العينة المأخوذة أو رقم البئر (مثال: Aj.8) لغرض توثيقها وربطها لاحقاً.",
+                tocDesc: "نسبة الكربون العضوي الكلي. تعتبر العينة غير صالحة إذا كانت أقل من 0.5%، وممتازة إذا تجاوزت 2.0%.",
+                s2Desc: "ناتج التحلل الحراري الثاني: يمثل كمية الهيدروكربونات الناتجة عن تكسير الكيروجين، وهو أساس حساب مؤشر الهيدروجين (HI).",
+                calcBtn: "حساب وتسقيط النقطة",
+                panel2Title: "بيانات الكيروجين المتقدمة",
+                sampleLabelSaved: "اسم العينة (المسجلة مسبقاً):",
+                sampleSavedDesc: "أدخل نفس اسم العينة التي تم حسابها في المخطط الأول ليقوم النظام بربط البيانات.",
+                s3Desc: "ناتج ثاني أكسيد الكربون: يستخدم لحساب مؤشر الأكسجين (OI) لتحديد نوع الكيروجين وتصنيفه.",
+                tableTitle: "سجل بيانات العينات الشامل",
                 resetBtn: "مسح جميع العينات",
                 exportBtn: "تصدير Excel",
                 thName: "اسم العينة",
-                sampleHolder: "مثال: Ora Shale 1"
+                thQuantity: "الجهد (Quantity)",
+                thQuality: "الإنتاج (Quality)",
+                thKerogen: "نوع الكيروجين (Kerogen)",
+                sampleHolder: "مثال: Aj.8",
+                sampleSavedHolder: "أدخل اسم العينة المحفوظة"
             },
             en: {
                 appTitle: "Shandal Geological Field Survey System",
-                appSubtitle: "Palynofacies & Paleoenvironment Lab",
+                appSubtitle: "Petroleum Geochemistry Lab",
                 infoTitle: "About this Lab:",
-                infoDesc: "This lab relies on Palynofacies to determine Paleoenvironments. By inputting the counts of (AOM, Phytoclasts, and Palynomorphs), the system calculates percentages and plots them on <strong>Tyson's (1995) Ternary Diagram</strong> to deduce depositional environment and hydrocarbon potential.",
-                plotInfo: "Tyson's Diagram (1995): Used to determine depositional environment. Fields (I to V) are gas-prone, while fields (VI to IX) are oil-prone based on AOM abundance.",
-                panelTitle: "Organic Matter Count Input",
-                sampleLabel: "Sample Name:",
-                sampleDesc: "Please enter the sample name to document it in the table and plot.",
-                aomDesc: "Amorphous Organic Matter. High abundance indicates anoxic environments and is generally oil-prone.",
-                phytoDesc: "Plant fragments/Phytoclasts. Indicate proximal or oxic conditions, generally gas-prone.",
-                palyDesc: "Spores and Pollen. Transported by wind/water, common in shelf environments.",
-                calcBtn: "Calculate Percentages & Plot",
-                tableTitle: "Palynofacies & Paleoenvironment Record",
+                infoDesc: "A digital tool to evaluate <strong>Source Rocks</strong>. The system reads (Rock-Eval) data to calculate <strong>Hydrogen Index (HI) and Oxygen Index (OI)</strong>. Plot 1 defines Petroleum Potential, and Plot 2 (Van Krevelen) classifies Kerogen Types and thermal maturity.",
+                plot1Info: "This plot evaluates thermal cracking products to determine source rock potential. It requires Total Organic Carbon (TOC) and Hydrogen Index (HI).",
+                plot2Info: "Van Krevelen Diagram: Developed by Dirk van Krevelen for coal, modified for petroleum. Used to classify kerogen types and thermal maturity based on Oxygen and Hydrogen. Requires (S3) to calculate.",
+                panel1Title: "Basic Pyrolysis Data",
+                sampleLabel: "Sample Name / Well No:",
+                sampleDesc: "Please enter the sample name or well number (e.g., Aj.8) for documentation and data linkage.",
+                tocDesc: "Total Organic Carbon. The sample is poor if < 0.5%, and excellent if > 2.0%.",
+                s2Desc: "Thermal Pyrolysis Yield (S2): Represents hydrocarbons generated by kerogen cracking. It is the basis for calculating HI.",
+                calcBtn: "Calculate & Plot Data",
+                panel2Title: "Advanced Kerogen Data",
+                sampleLabelSaved: "Sample Name (Previously Saved):",
+                sampleSavedDesc: "Enter the exact sample name calculated in Plot 1 to link the data.",
+                s3Desc: "Carbon Dioxide Yield (S3): Used to calculate Oxygen Index (OI) for kerogen classification.",
+                tableTitle: "Comprehensive Sample Data Record",
                 resetBtn: "Clear All Samples",
                 exportBtn: "Export to Excel",
                 thName: "Sample Name",
-                sampleHolder: "e.g., Ora Shale 1"
+                thQuantity: "Quantity Potential",
+                thQuality: "Quality (Production)",
+                thKerogen: "Kerogen Type",
+                sampleHolder: "e.g., Aj.8",
+                sampleSavedHolder: "Enter saved sample name"
             }
         };
 
@@ -229,118 +276,181 @@
             });
 
             document.getElementById('langBtnText').innerText = currentLang === 'ar' ? 'English' : 'العربية';
-            Plotly.relayout('ternaryPlot', {}); // Refresh plot for translation if needed
         }
 
-        // --- Plotly Config & Data ---
-        let ternaryData = {
-            type: 'scatterternary',
-            mode: 'markers+text',
-            a: [], // Phytoclasts (Top)
-            b: [], // AOM (Bottom Left)
-            c: [], // Palynomorphs (Bottom Right)
-            text: [],
-            textposition: 'top center',
-            marker: {
-                symbol: 'circle', color: '#8b5cf6', size: 14, line: { width: 2, color: 'black' }
-            },
-            name: 'Samples'
-        };
+        // --- Database ---
+        let systemData = {}; 
 
+        // --- Plotly Config ---
         const commonConfig = {
             displaylogo: false,
             modeBarButtonsToRemove: ['zoom2d', 'pan2d', 'select2d', 'lasso2d', 'autoScale2d', 'resetScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'toggleSpikelines'],
-            toImageButtonOptions: { format: 'png', height: 800, width: 1200, scale: 2, filename: 'Tyson_Ternary_Plot' }
+            toImageButtonOptions: { format: 'png', height: 800, width: 1200, scale: 2 }
         };
 
-        function initPlot() {
-            let layout = {
-                ternary: {
-                    sum: 100,
-                    aaxis: { title: '<b>Phytoclasts %</b>', titlefont: {size: 16}, min: 0, linewidth: 2, ticks: 'outside' },
-                    baxis: { title: '<b>AOM %</b>', titlefont: {size: 16}, min: 0, linewidth: 2, ticks: 'outside' },
-                    caxis: { title: '<b>Palynomorphs %</b>', titlefont: {size: 16}, min: 0, linewidth: 2, ticks: 'outside' }
-                },
-                paper_bgcolor: 'white',
-                plot_bgcolor: 'white',
-                margin: { l: 40, r: 40, t: 60, b: 40 },
-                title: { text: '<b>Tyson (1995) Palynofacies Ternary Diagram</b>', font: {family: 'Arial', size: 18} }
+        // --- Mathematically Accurate Van Krevelen Curves (Digitized from Academic Reference) ---
+        // اللون يحاكي لون المراجع العلمية (أحمر داكن)
+        const lineStyle = {shape: 'spline', dash: 'dash', color: '#993333', width: 2};
+        
+        // Type I: يبدأ بـ HI عالي، يسقط بشكل شبه عمودي نحو الـ OI المنخفض، ويلتف لليمين قليلاً عند اقترابه من الصفر
+        const type1_curve = { x: [35, 25, 15, 12, 10, 10, 12], y: [920, 800, 600, 400, 200, 100, 50], mode: 'lines', line: lineStyle, name: 'Type I', hoverinfo: 'none' };
+        
+        // Type II: يبدأ بانحناء قوسي، ثم ينحدر بشكل شبه عمودي ويتجه يميناً عند اقترابه من الصفر
+        const type2_curve = { x: [90, 70, 40, 25, 20, 16, 16, 18], y: [640, 630, 580, 450, 300, 150, 100, 50], mode: 'lines', line: lineStyle, name: 'Type II', hoverinfo: 'none' };
+        
+        // Type III: يبقى دائماً في نطاق الـ HI المنخفض ويمتد يميناً على محور الـ OI
+        const type3_curve = { x: [15, 30, 60, 100, 130, 160], y: [30, 60, 90, 100, 90, 40], mode: 'lines', line: lineStyle, name: 'Type III', hoverinfo: 'none' };
+
+        let tracePlot1 = { x: [], y: [], text: [], mode: 'markers+text', type: 'scatter', textposition: 'top center', marker: { size: 12, color: '#ec4899', line: {color: 'black', width: 2} }, name: 'Samples' };
+        let tracePlot2 = { x: [], y: [], text: [], mode: 'markers+text', type: 'scatter', textposition: 'top center', marker: { size: 12, color: '#8b5cf6', line: {color: 'black', width: 2} }, name: 'Samples' };
+
+        function initPlots() {
+            // Plot 1 Layout (HI vs TOC)
+            let layout1 = {
+                xaxis: { type: 'log', range: [Math.log10(0.1), Math.log10(100)], title: { text: '<b>Total organic carbon content (wt%)</b>' }, tickvals: [0.1, 1, 10, 100], fixedrange: true },
+                yaxis: { range: [0, 1000], title: { text: '<b>Hydrogen Index (HI; mg HC/g TOC)</b>' }, fixedrange: true },
+                shapes: [
+                    { type: 'line', x0: 0.5, x1: 0.5, y0: 0, y1: 1000, line: {color: 'black', width: 1.5} },
+                    { type: 'line', x0: 1.0, x1: 1.0, y0: 0, y1: 1000, line: {color: 'black', width: 1.5} },
+                    { type: 'line', x0: 2.0, x1: 2.0, y0: 0, y1: 1000, line: {color: 'black', width: 1.5} },
+                    { type: 'line', x0: 0.1, x1: 100, y0: 200, y1: 200, line: {color: 'black', width: 1.5} },
+                    { type: 'line', x0: 0.1, x1: 100, y0: 340, y1: 340, line: {color: 'black', width: 1.5} }
+                ],
+                annotations: [
+                    { x: Math.log10(0.2), y: 950, text: '<b>Poor</b>', showarrow: false, font: {family: 'Arial', color: '#333'} }, { x: Math.log10(0.7), y: 950, text: '<b>Fair</b>', showarrow: false, font: {family: 'Arial', color: '#333'} },
+                    { x: Math.log10(1.4), y: 950, text: '<b>Good</b>', showarrow: false, font: {family: 'Arial', color: '#333'} }, { x: Math.log10(10), y: 950, text: '<b>Very Good / Excellent</b>', showarrow: false, font: {family: 'Arial', color: '#333'} },
+                    { x: Math.log10(30), y: 450, text: '<b>Oil-prone</b>', showarrow: false, font: {family: 'Arial', color: '#333'} }, { x: Math.log10(30), y: 270, text: '<b>Mixed (oil & gas)</b>', showarrow: false, font: {family: 'Arial', color: '#333'} },
+                    { x: Math.log10(30), y: 100, text: '<b>Gas-prone</b>', showarrow: false, font: {family: 'Arial', color: '#333'} }
+                ],
+                plot_bgcolor: '#f8fafc', paper_bgcolor: 'white', margin: { l: 60, r: 20, t: 20, b: 40 }
             };
 
-            Plotly.newPlot('ternaryPlot', [ternaryData], layout, commonConfig);
+            // Plot 2 Layout (Van Krevelen)
+            let layout2 = {
+                xaxis: { range: [0, 250], title: { text: '<b>OI. Oxygen Index (mg CO2/g TOC)</b>' }, fixedrange: true },
+                yaxis: { range: [0, 1000], title: { text: '<b>HI. Hydrogen Index (mg HC/g TOC)</b>' }, fixedrange: true },
+                annotations: [
+                    // وضع الأسماء في نهايات المنحنيات بشكل دقيق
+                    { x: 42, y: 920, text: '<b>Type I</b>', showarrow: false, font: {color: '#555', size: 14, family: 'Arial'} },
+                    { x: 100, y: 640, text: '<b>Type II</b>', showarrow: false, font: {color: '#555', size: 14, family: 'Arial'} },
+                    { x: 170, y: 40, text: '<b>Type III</b>', showarrow: false, font: {color: '#555', size: 14, family: 'Arial'} }
+                ],
+                plot_bgcolor: '#f8fafc', paper_bgcolor: 'white', margin: { l: 60, r: 20, t: 20, b: 40 }, showlegend: false
+            };
+
+            Plotly.newPlot('plot1', [tracePlot1], layout1, Object.assign({}, commonConfig, {toImageButtonOptions: {filename: 'HI_vs_TOC_Plot'}}));
+            Plotly.newPlot('plot2', [type1_curve, type2_curve, type3_curve, tracePlot2], layout2, Object.assign({}, commonConfig, {toImageButtonOptions: {filename: 'Van_Krevelen_Plot'}}));
         }
 
-        // --- Logic & Processing ---
-        let systemData = [];
-
-        function processSample() {
-            let name = document.getElementById('sampleName').value.trim();
-            let aom = parseFloat(document.getElementById('aomCount').value);
-            let phyto = parseFloat(document.getElementById('phytoCount').value);
-            let paly = parseFloat(document.getElementById('palyCount').value);
+        function processPlot1() {
+            let name = document.getElementById('sampleName1').value.trim();
+            let toc = parseFloat(document.getElementById('toc').value);
+            let s2 = parseFloat(document.getElementById('s2').value);
 
             if (!name) { alert(currentLang === 'ar' ? "يرجى إدخال اسم العينة." : "Please enter the sample name."); return; }
-            if (isNaN(aom) || isNaN(phyto) || isNaN(paly) || aom < 0 || phyto < 0 || paly < 0) { 
-                alert(currentLang === 'ar' ? "يرجى إدخال أعداد صحيحة وموجبة." : "Please enter valid, positive counts."); return; 
-            }
+            if (isNaN(toc) || isNaN(s2) || toc <= 0) { alert(currentLang === 'ar' ? "يرجى إدخال قيم رياضية صحيحة." : "Please enter valid mathematical values."); return; }
 
-            let total = aom + phyto + paly;
-            if (total === 0) { alert(currentLang === 'ar' ? "المجموع صفر! أدخل قيم حقيقية." : "Total is zero! Enter valid values."); return; }
+            let hi = Math.round(((s2 / toc) * 100) * 10) / 10; 
+            let tocQuality = toc < 0.5 ? "Poor" : (toc < 1.0 ? "Fair" : (toc < 2.0 ? "Good" : "Very Good"));
+            let hiQuality = hi < 200 ? "Gas-prone" : (hi < 340 ? "Mixed" : "Oil-prone");
 
-            // Calculating percentages
-            let aomPer = Math.round((aom / total) * 1000) / 10;
-            let phytoPer = Math.round((phyto / total) * 1000) / 10;
-            let palyPer = Math.round((paly / total) * 1000) / 10;
+            if(!systemData[name]) { systemData[name] = { name: name }; }
+            systemData[name].toc = toc;
+            systemData[name].s2 = s2;
+            systemData[name].hi = hi;
+            systemData[name].tocQuality = tocQuality;
+            systemData[name].hiQuality = hiQuality;
 
-            // Save to DB
-            systemData.push({
-                name: name,
-                aom: aom, phyto: phyto, paly: paly, total: total,
-                aomPer: aomPer, phytoPer: phytoPer, palyPer: palyPer
-            });
-
-            updatePlot();
+            updatePlot1Visuals();
             renderTable();
         }
 
-        function updatePlot() {
-            ternaryData.a = systemData.map(d => d.phytoPer);
-            ternaryData.b = systemData.map(d => d.aomPer);
-            ternaryData.c = systemData.map(d => d.palyPer);
-            ternaryData.text = systemData.map(d => d.name);
-            Plotly.redraw('ternaryPlot');
+        function processPlot2() {
+            let name = document.getElementById('sampleName2').value.trim();
+            let s3 = parseFloat(document.getElementById('s3').value);
+
+            if (!name) { alert(currentLang === 'ar' ? "يرجى إدخال اسم العينة." : "Please enter the sample name."); return; }
+            if (isNaN(s3) || s3 < 0) { alert(currentLang === 'ar' ? "يرجى إدخال قيمة صحيحة لـ S3." : "Please enter a valid value for S3."); return; }
+
+            if (!systemData[name] || !systemData[name].toc) {
+                alert(currentLang === 'ar' ? `لم يتم العثور على عينة باسم (${name}). يرجى إدخال بياناتها في المخطط الأول أولاً.` : `Sample (${name}) not found. Please enter its data in the first plot initially.`);
+                return;
+            }
+
+            let toc = systemData[name].toc;
+            let hi = systemData[name].hi;
+            let oi = Math.round(((s3 / toc) * 100) * 10) / 10; 
+
+            let keroType = "Type IV";
+            if(hi > 600) keroType = "Type I";
+            else if(hi >= 300) keroType = "Type II";
+            else if(hi >= 200) keroType = "Type II/III";
+            else if(hi >= 50) keroType = "Type III";
+
+            systemData[name].s3 = s3;
+            systemData[name].oi = oi;
+            systemData[name].keroType = keroType;
+
+            updatePlot2Visuals();
+            renderTable();
+        }
+
+        function updatePlot1Visuals() {
+            tracePlot1.x = []; tracePlot1.y = []; tracePlot1.text = [];
+            for (const key in systemData) {
+                if (systemData[key].toc && systemData[key].hi !== undefined) {
+                    tracePlot1.x.push(systemData[key].toc);
+                    tracePlot1.y.push(systemData[key].hi);
+                    tracePlot1.text.push(systemData[key].name);
+                }
+            }
+            Plotly.redraw('plot1');
+        }
+
+        function updatePlot2Visuals() {
+            tracePlot2.x = []; tracePlot2.y = []; tracePlot2.text = [];
+            for (const key in systemData) {
+                if (systemData[key].oi !== undefined && systemData[key].hi !== undefined) {
+                    tracePlot2.x.push(systemData[key].oi);
+                    tracePlot2.y.push(systemData[key].hi);
+                    tracePlot2.text.push(systemData[key].name);
+                }
+            }
+            Plotly.redraw('plot2');
         }
 
         function renderTable() {
             let tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             
-            systemData.forEach(d => {
+            for (const key in systemData) {
+                let d = systemData[key];
+                let s3_display = d.s3 !== undefined ? d.s3 : '<span class="empty-cell">-</span>';
+                let oi_display = d.oi !== undefined ? `<span style="font-weight:bold;">${d.oi}</span>` : '<span class="empty-cell">-</span>';
+                let type_display = d.keroType ? `<span style="color:#d97706; font-weight:bold;">${d.keroType}</span>` : '<span class="empty-cell">-</span>';
+
                 let row = `<tr>
                     <td style="color:var(--accent-primary); font-weight:bold;">${d.name}</td>
-                    <td>${d.aom}</td>
-                    <td>${d.phyto}</td>
-                    <td>${d.paly}</td>
-                    <td style="font-weight:bold; color:var(--success);">${d.total}</td>
-                    <td style="font-weight:bold;">${d.aomPer}%</td>
-                    <td style="font-weight:bold;">${d.phytoPer}%</td>
-                    <td style="font-weight:bold;">${d.palyPer}%</td>
+                    <td>${d.toc || '-'}</td>
+                    <td>${d.s2 || '-'}</td>
+                    <td>${s3_display}</td>
+                    <td style="font-weight:bold;">${d.hi !== undefined ? d.hi : '-'}</td>
+                    <td>${oi_display}</td>
+                    <td>${d.tocQuality || '-'}</td>
+                    <td>${d.hiQuality || '-'}</td>
+                    <td>${type_display}</td>
                 </tr>`;
                 tbody.innerHTML += row;
-            });
+            }
         }
 
         function resetLab() {
-            let msg = currentLang === 'ar' ? "تأكيد: هل أنت متأكد من مسح جميع العينات من النظام؟" : "Confirm: Are you sure you want to clear all samples?";
+            let msg = currentLang === 'ar' ? "تأكيد: هل أنت متأكد من مسح جميع العينات من النظام؟" : "Confirm: Are you sure you want to clear all samples from the system?";
             if (confirm(msg)) {
-                systemData = [];
-                updatePlot();
+                systemData = {};
+                updatePlot1Visuals();
+                updatePlot2Visuals();
                 renderTable();
-                
-                document.getElementById('sampleName').value = '';
-                document.getElementById('aomCount').value = '';
-                document.getElementById('phytoCount').value = '';
-                document.getElementById('palyCount').value = '';
             }
         }
 
@@ -363,7 +473,7 @@
             document.body.removeChild(downloadLink);
         }
 
-        initPlot();
+        initPlots();
     </script>
 </body>
 </html>
