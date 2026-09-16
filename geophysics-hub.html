@@ -50,7 +50,7 @@
         .btn-download { background: var(--success); display: none; animation: fadeIn 0.5s; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);}
         
         /* Loading Status Area */
-        .status-box { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 15px; font-size: 14px; color: #cbd5e1; min-height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 10px; border: 1px dashed var(--border-color); line-height: 1.6;}
+        .status-box { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 15px; font-size: 14px; color: #cbd5e1; min-height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 10px; border: 1px dashed var(--border-color); }
         .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent-blue); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: none; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -116,7 +116,7 @@
             <div class="form-group">
                 <label id="lblResolution">دقة الشبكة (Grid Resolution):</label>
                 <select class="form-control" id="resolution">
-                    <option value="high" id="optResHigh">عالية جداً (High - كثافة نقاط علمية)</option>
+                    <option value="high" id="optResHigh">عالية جداً (High - كثافة نقاط عالية)</option>
                     <option value="medium" id="optResMed" selected>متوسطة (Medium - كثافة قياسية)</option>
                     <option value="low" id="optResLow">منخفضة للخرائط الإقليمية (Low)</option>
                 </select>
@@ -189,7 +189,6 @@
                 statusIdle: "System is idle. Select area on map first.",
                 statusSuccess: "Coordinates Fetched Successfully! Grid is ready.",
                 statusErrorBox: "Please show the selection box first.",
-                statusErrorArea: "Geological Alert: The selected area is too small (< 2 sq km) for spatial DEM surveys. This will cause pixelation errors. Please zoom out to cover a larger regional area.",
                 lblBtnDownload: "Export Data File (CSV Format)",
                 lblViewfinder: "Area of Interest (Drag map to adjust)",
                 footerText: "All Rights Reserved to Geologist Ali Shandal Al-Janabi © 2026 - Geophysical Exploration Dept."
@@ -206,14 +205,13 @@
                 optGrav: "بيانات الشذوذ الجذبي (Bouguer Gravity)",
                 optTopo: "البيانات الطبوغرافية الحقيقية (SRTM DEM)",
                 lblResolution: "دقة الشبكة (Grid Resolution):",
-                optResHigh: "عالية جداً (High - كثافة نقاط علمية)",
+                optResHigh: "عالية جداً (High - كثافة نقاط عالية)",
                 optResMed: "متوسطة (Medium - كثافة قياسية)",
                 optResLow: "منخفضة للخرائط الإقليمية (Low)",
                 lblBtnFetch: "الاتصال وجلب الإحداثيات (X,Y,Z)",
                 statusIdle: "النظام في وضع الاستعداد. قم بتحديد المنطقة على الخريطة أولاً.",
                 statusSuccess: "تم سحب الإحداثيات والبيانات الحقيقية بنجاح! الملف جاهز.",
                 statusErrorBox: "يرجى إظهار مستطيل التحديد على الخريطة أولاً.",
-                statusErrorArea: "تنبيه جيولوجي فني: مساحة الدراسة صغيرة جداً (أقل من 2 كم²). لا يجوز علمياً استخدام الرفع الفضائي SRTM لهذه المساحة لكي لا يظهر تشوه (Pixelation) في الكنتور. يرجى تصغير الخريطة وتحديد نطاق أوسع.",
                 lblBtnDownload: "تصدير الملف (CSV Format)",
                 lblViewfinder: "نطاق السحب والإسقاط (اسحب الخريطة لضبط الموقع)",
                 footerText: "جميع الحقوق محفوظة لدى الجيولوجي علي شندل الجنابي © 2026 - قسم الاستكشاف الجيوفيزيائي"
@@ -304,7 +302,9 @@
             }
         }
 
+        // ==========================================
         // حساب المسافة الحقيقية لضبط الأخطاء المورفولوجية
+        // ==========================================
         function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
             var R = 6371; // نصف قطر الأرض بالكيلومتر
             var dLat = (lat2 - lat1) * Math.PI / 180;  
@@ -317,7 +317,7 @@
         }
 
         // ==========================================
-        // 4. محرك استخراج البيانات "المضاد للفشل" (Bulletproof Real API)
+        // 4. محرك استخراج البيانات المحدث (Real API Fetching) مع الحماية
         // ==========================================
         let finalCSVData = ""; 
 
@@ -330,7 +330,7 @@
             const dataType = document.getElementById('dataType').value;
 
             if (box.style.display === 'none' || box.style.display === '') {
-                statusText.innerText = t.statusErrorBox;
+                statusText.innerText = currentLang === 'ar' ? "يرجى إظهار مستطيل التحديد على الخريطة أولاً." : "Please show the selection box first.";
                 statusText.style.color = "#ef4444";
                 return;
             }
@@ -357,7 +357,7 @@
 
                 // إذا كانت المساحة أصغر من 2 كيلومتر مربع نوقف العملية
                 if (areaSqKm < 2.0) {
-                    statusText.innerText = t.statusErrorArea;
+                    statusText.innerText = currentLang === 'ar' ? "تنبيه جيولوجي فني: مساحة الدراسة صغيرة جداً (أقل من 2 كم²). يرجى تصغير الخريطة وتحديد نطاق أوسع لتجنب تشوه البيانات (Pixelation)." : "Geological Alert: Selected area is too small (< 2 sq km). Please zoom out to avoid data pixelation.";
                     statusText.style.color = "#ef4444";
                     return;
                 }
@@ -369,27 +369,30 @@
 
             if (dataType === 'topo') {
                 try {
-                    // استدعاء الدالة القوية الجديدة
+                    // استدعاء دالة الـ API الحقيقية الآمنة
                     finalCSVData = await fetchRealElevationData(bounds, statusText);
                     
                     loader.style.display = 'none';
                     statusText.style.color = "var(--success)";
-                    statusText.innerHTML = `<strong>${t.statusSuccess}</strong><br><span style="font-size:12px; color:#94a3b8;">Bounds: [${bounds.south.toFixed(4)} N, ${bounds.west.toFixed(4)} E] to [${bounds.north.toFixed(4)} N, ${bounds.east.toFixed(4)} E]</span>`;
+                    const successMsg = currentLang === 'ar' ? "تم سحب الإحداثيات والبيانات الحقيقية بنجاح! الملف جاهز." : "Coordinates Fetched Successfully! Grid is ready.";
+                    statusText.innerHTML = `<strong>${successMsg}</strong><br><span style='font-size:12px; color:#94a3b8;'>Bounds: [${bounds.south.toFixed(4)} N, ${bounds.west.toFixed(4)} E] to [${bounds.north.toFixed(4)} N, ${bounds.east.toFixed(4)} E]</span>`;
                     
                     btnDownload.style.display = 'flex';
                 } catch (error) {
                     loader.style.display = 'none';
                     statusText.style.color = "#ef4444";
-                    // رسالة الفشل النهائي تظهر فقط إذا استنفذ النظام جميع المحاولات
-                    statusText.innerHTML = (currentLang === 'ar') ? "<strong>❌ فشل نهائي في الاتصال</strong><br><span style="font-size:12px;">قامت السيرفرات العالمية برفض الطلب رغم كل محاولات النظام. يرجى الانتظار بضع دقائق والمحاولة لاحقاً.</span>" : "<strong>❌ Final Connection Error</strong><br><span style="font-size:12px;">Global servers blocked the request after all retries. Please wait a few minutes and try again.</span>";
+                    // رسالة الفشل استخدمت بداخلها علامة الاقتباس المفردة لمنع أي Syntax Error
+                    statusText.innerHTML = (currentLang === 'ar') ? "<strong>❌ فشل نهائي في الاتصال</strong><br><span style='font-size:12px;'>قامت السيرفرات العالمية برفض الطلب رغم كل محاولات النظام. يرجى الانتظار بضع دقائق والمحاولة لاحقاً.</span>" : "<strong>❌ Final Connection Error</strong><br><span style='font-size:12px;'>Global servers blocked the request after all retries. Please wait a few minutes and try again.</span>";
                     console.error("Critical API Error:", error);
                 }
             } else {
+                // بقاء الجاذبية والمغناطيسية على وضع المحاكاة لحين ربط الـ API الخاص بهما
                 statusText.innerText = (currentLang === 'ar') ? "جاري تجهيز البيانات..." : "Processing Data...";
                 setTimeout(() => {
                     loader.style.display = 'none';
                     statusText.style.color = "var(--warning)";
-                    statusText.innerHTML = `<strong>تم تجهيز الملف</strong> (ملاحظة: البيانات الجذبية والمغناطيسية حالياً في طور ربط الـ API - تم توليد قيم اختبارية)<br><span style="font-size:12px; color:#94a3b8;">Bounds: [${bounds.south.toFixed(4)} N, ${bounds.west.toFixed(4)} E] to [${bounds.north.toFixed(4)} N, ${bounds.east.toFixed(4)} E]</span>`;
+                    const warnMsg = currentLang === 'ar' ? "تم تجهيز الملف (ملاحظة: البيانات الجذبية والمغناطيسية حالياً في طور ربط الـ API - تم توليد قيم اختبارية)" : "Data ready (Note: Gravity/Magnetic API pending - mock data generated)";
+                    statusText.innerHTML = `<strong>${warnMsg}</strong><br><span style='font-size:12px; color:#94a3b8;'>Bounds: [${bounds.south.toFixed(4)} N, ${bounds.west.toFixed(4)} E] to [${bounds.north.toFixed(4)} N, ${bounds.east.toFixed(4)} E]</span>`;
                     finalCSVData = generateMockGeophysicalData(bounds, dataType);
                     btnDownload.style.display = 'flex';
                 }, 2000);
@@ -438,9 +441,9 @@
                 while (!success && retryCount < maxRetries) {
                     try {
                         if(currentLang === 'ar') {
-                            statusTextElement.innerHTML = `<span style="color:#0ea5e9;">جاري استخراج البيانات (الدقة العالية)...<br>الحزمة ${i + 1} من ${chunks.length}</span><br><span style="font-size:12px; color:#10b981;"><i class="fas fa-shield-alt"></i> بروتوكول الحماية مفعل: يتم سحب البيانات بهدوء لتجنب حظر السيرفر العالمي. (يرجى الانتظار)</span>`;
+                            statusTextElement.innerHTML = `<span style='color:#0ea5e9;'>جاري استخراج البيانات...<br>الحزمة ${i + 1} من ${chunks.length}</span><br><span style='font-size:12px; color:#10b981;'><i class='fas fa-shield-alt'></i> بروتوكول الحماية مفعل: يتم سحب البيانات بهدوء. (يرجى الانتظار)</span>`;
                         } else {
-                            statusTextElement.innerHTML = `<span style="color:#0ea5e9;">Extracting High-Res Data...<br>Chunk ${i + 1} of ${chunks.length}</span><br><span style="font-size:12px; color:#10b981;"><i class="fas fa-shield-alt"></i> Protection active: Extracting slowly to prevent global server ban. (Please wait)</span>`;
+                            statusTextElement.innerHTML = `<span style='color:#0ea5e9;'>Extracting Data...<br>Chunk ${i + 1} of ${chunks.length}</span><br><span style='font-size:12px; color:#10b981;'><i class='fas fa-shield-alt'></i> Protection active: Extracting slowly. (Please wait)</span>`;
                         }
 
                         const response = await fetch(url);
@@ -468,9 +471,9 @@
                         
                         // إعلام اللجنة بعملية إعادة المحاولة والمكافحة
                         if(currentLang === 'ar') {
-                            statusTextElement.innerHTML = `<span style="color:#ef4444;"><i class="fas fa-exclamation-triangle"></i> السيرفر العالمي مزدحم!</span><br><span style="font-size:13px; color:#f59e0b;">جاري تفعيل بروتوكول الإنعاش للحزمة ${i + 1}... (المحاولة ${retryCount} من ${maxRetries})</span>`;
+                            statusTextElement.innerHTML = `<span style='color:#ef4444;'><i class='fas fa-exclamation-triangle'></i> السيرفر العالمي مزدحم!</span><br><span style='font-size:13px; color:#f59e0b;'>جاري تفعيل بروتوكول الإنعاش للحزمة ${i + 1}... (المحاولة ${retryCount} من ${maxRetries})</span>`;
                         } else {
-                            statusTextElement.innerHTML = `<span style="color:#ef4444;"><i class="fas fa-exclamation-triangle"></i> Global Server Busy!</span><br><span style="font-size:13px; color:#f59e0b;">Activating retry protocol for Chunk ${i + 1}... (Attempt ${retryCount} of ${maxRetries})</span>`;
+                            statusTextElement.innerHTML = `<span style='color:#ef4444;'><i class='fas fa-exclamation-triangle'></i> Global Server Busy!</span><br><span style='font-size:13px; color:#f59e0b;'>Activating retry protocol for Chunk ${i + 1}... (Attempt ${retryCount} of ${maxRetries})</span>`;
                         }
                         
                         // التوقف لفترة "عقاب" أطول (5 ثوانٍ) لإعطاء السيرفر وقتاً كافياً للنسيان قبل المحاولة مجدداً
