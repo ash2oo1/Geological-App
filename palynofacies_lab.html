@@ -13,7 +13,7 @@
             --bg-dark: #0f111a; --card-bg: #1a1d2d;
             --accent-primary: #8b5cf6; --accent-secondary: #ec4899;
             --text-light: #f8fafc; --border-color: rgba(255,255,255,0.1);
-            --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
+            --success: #10b981; --danger: #ef4444;
         }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-dark); color: var(--text-light); margin: 0; padding: 0; transition: all 0.3s ease; }
         
@@ -41,7 +41,7 @@
         .form-control:focus { border-color: var(--accent-primary); }
         
         /* Help Icon (!) Tooltip */
-        .help-icon { color: var(--accent-secondary); cursor: pointer; position: relative; display: inline-block; font-weight:900;}
+        .help-icon { background: var(--accent-secondary); color: white; width: 18px; height: 18px; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 12px; cursor: pointer; position: relative; font-weight: bold; }
         .help-icon .tooltip-text { visibility: hidden; width: 250px; background-color: #334155; color: #fff; text-align: center; border-radius: 6px; padding: 10px; position: absolute; z-index: 100; bottom: 130%; left: 50%; transform: translateX(-50%); opacity: 0; transition: opacity 0.3s; font-size: 12px; font-weight: normal; line-height: 1.5; box-shadow: 0 4px 10px rgba(0,0,0,0.5); pointer-events: none;}
         .help-icon .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border-width: 5px; border-style: solid; border-color: #334155 transparent transparent transparent; }
         .help-icon:hover .tooltip-text { visibility: visible; opacity: 1; }
@@ -53,7 +53,7 @@
         .btn-add:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
         
         .plot-panel { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
-        .plot-container { width: 100%; height: 600px; } /* زيادة الطول قليلاً لرؤية التفاصيل */
+        .plot-container { width: 100%; height: 600px; }
 
         .table-header { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; margin-bottom: 10px;}
         .table-header h3 { margin: 0; color: var(--accent-primary); display: flex; align-items: center; gap: 8px;}
@@ -62,14 +62,20 @@
         .btn-reset { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; gap:8px; align-items: center; transition: 0.3s;}
         .btn-reset:hover { background: var(--danger); color: white; }
 
-        .table-wrapper { overflow-x: auto; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 40px;}
-        .data-table { width: 100%; border-collapse: collapse; min-width: 1100px;}
-        .data-table th, .data-table td { padding: 12px 8px; text-align: center; border-bottom: 1px solid var(--border-color); font-size: 13px; }
+        .table-wrapper { overflow-x: auto; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 30px;}
+        .data-table { width: 100%; border-collapse: collapse; min-width: 900px;}
+        .data-table th, .data-table td { padding: 10px; text-align: center; border-bottom: 1px solid var(--border-color); font-size: 13px; }
         .data-table th { background: rgba(0,0,0,0.3); color: var(--text-light); }
         .data-table tr:hover { background: rgba(255,255,255,0.02); }
         .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
         .badge-oil { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981;}
         .badge-gas { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid #f59e0b;}
+
+        .reference-table-wrapper { background: rgba(0,0,0,0.2); border-radius: 8px; padding: 15px; border: 1px solid var(--border-color); margin-bottom: 40px;}
+        .reference-table { width: 100%; border-collapse: collapse; text-align: left; direction: ltr; background: transparent;}
+        .reference-table th, .reference-table td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
+        .reference-table th { color: var(--accent-secondary); border-bottom: 2px solid var(--accent-secondary); }
+        .reference-table tr:hover { background: rgba(255,255,255,0.05); }
     </style>
 </head>
 <body>
@@ -94,9 +100,10 @@
         </div>
 
         <h2 class="section-title">
-            <span class="help-icon">!<span class="tooltip-text" data-i18n="plotInfo">مخطط تايسون (1995): المناطق (I إلى V) تميل لإنتاج الغاز، بينما المناطق (VI إلى IX) تميل لإنتاج النفط بناءً على وفرة المادة العضوية غير المتبلورة (AOM).</span></span>
+            <span class="help-icon">!<span class="tooltip-text" data-i18n="plotInfo">مخطط تايسون (1995): يستخدم لتحديد بيئة الترسيب ونوع الكيروجين. المناطق (I إلى V) تميل لإنتاج الغاز، بينما المناطق (VI إلى IX) تميل لإنتاج النفط بناءً على وفرة المادة العضوية غير المتبلورة (AOM).</span></span>
             Tyson's Ternary Diagram (1995)
         </h2>
+        
         <div class="lab-container">
             <div class="input-panel">
                 <h3 style="margin-top:0; color:var(--text-light);" data-i18n="panelTitle"><i class="fas fa-edit"></i> إدخال أعداد المواد العضوية</h3>
@@ -112,7 +119,7 @@
                 <div class="form-group">
                     <label>
                         AOM (Count):
-                        <span class="help-icon">!<span class="tooltip-text" data-i18n="aomDesc">المادة العضوية غير المتبلورة (Amorphous Organic Matter). وفرتها تدل على بيئات مختزلة وتنتج النفط.</span></span>
+                        <span class="help-icon">!<span class="tooltip-text" data-i18n="aomDesc">المادة العضوية غير المتبلورة (Amorphous Organic Matter). وفرتها تدل على بيئات مختزلة (Anoxic) وتنتج النفط.</span></span>
                     </label>
                     <input type="number" id="aomCount" class="form-control" placeholder="106">
                 </div>
@@ -120,7 +127,7 @@
                 <div class="form-group">
                     <label>
                         Phytoclasts (Count):
-                        <span class="help-icon">!<span class="tooltip-text" data-i18n="phytoDesc">بقايا وكسر نباتية (Phytoclasts). وفرتها تدل على بيئات مؤكسدة قريبة، وتنتج الغاز أساساً.</span></span>
+                        <span class="help-icon">!<span class="tooltip-text" data-i18n="phytoDesc">بقايا وكسر نباتية (Phytoclasts). وفرتها تدل على قرب المسافة من الشاطئ أو بيئات مؤكسدة، وتنتج الغاز أساساً.</span></span>
                     </label>
                     <input type="number" id="phytoCount" class="form-control" placeholder="50">
                 </div>
@@ -128,7 +135,7 @@
                 <div class="form-group">
                     <label>
                         Palynomorphs (Count):
-                        <span class="help-icon">!<span class="tooltip-text" data-i18n="palyDesc">حبوب اللقاح والأبواغ (Palynomorphs). تتأثر بالتيارات المائية وتتواجد في البيئات الجرفية.</span></span>
+                        <span class="help-icon">!<span class="tooltip-text" data-i18n="palyDesc">حبوب اللقاح والأبواغ (Palynomorphs). تتأثر بالتيارات المائية والرياح وتتواجد في البيئات الجرفية (Shelf).</span></span>
                     </label>
                     <input type="number" id="palyCount" class="form-control" placeholder="164">
                 </div>
@@ -143,6 +150,7 @@
             </div>
         </div>
 
+        <!-- Main Results Table -->
         <div class="table-header">
             <h3><i class="fas fa-table"></i> <span data-i18n="tableTitle">التحليل الجيوكيميائي المتقدم للبيئات القديمة</span></h3>
             <div style="display: flex; gap: 10px;">
@@ -160,8 +168,7 @@
                         <th>Phytoclasts (%)</th>
                         <th>Palynomorphs (%)</th>
                         <th data-i18n="thField">المنطقة (Field)</th>
-                        <th data-i18n="thEnv">البيئة الترسيبية (Paleoenvironment)</th>
-                        <th data-i18n="thPotential">جودة الإنتاج (HC Potential)</th>
+                        <th data-i18n="thPotential">الإنتاج (Potential)</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -170,10 +177,35 @@
             </table>
         </div>
 
+        <!-- Reference Guide Table -->
+        <div class="table-header">
+            <h3><i class="fas fa-book-open"></i> <span data-i18n="guideTitle">دليل السحنات والبيئات الترسيبية (للاطلاع المرجعي)</span></h3>
+        </div>
+        <div class="reference-table-wrapper">
+            <table class="reference-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">Palynofacies Field</th>
+                        <th>Environment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>I</strong></td><td>highly proximal shelf or basin</td></tr>
+                    <tr><td><strong>II</strong></td><td>marginal dysoxic-oxic basin</td></tr>
+                    <tr><td><strong>III</strong></td><td>heterolithic oxic shelf (proximal shelf)</td></tr>
+                    <tr><td><strong>IV (a,b)</strong></td><td>Shelf to basin transition</td></tr>
+                    <tr><td><strong>V</strong></td><td>Mud-dominated oxic shelf (distal shelf)</td></tr>
+                    <tr><td><strong>VI</strong></td><td>Proximal suboxic-anoxic shelf</td></tr>
+                    <tr><td><strong>VII</strong></td><td>Distal dysoxic-anoxic "shelf"</td></tr>
+                    <tr><td><strong>VIII</strong></td><td>Distal dysoxic-anoxic shelf</td></tr>
+                    <tr><td><strong>IX</strong></td><td>Distal suboxic-anoxic basin</td></tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
     <script>
-        // --- Translation Engine ---
         const translations = {
             ar: {
                 appTitle: "نظام شندل للمسح الميداني الجيولوجي",
@@ -191,10 +223,10 @@
                 tableTitle: "التحليل الجيوكيميائي المتقدم للبيئات القديمة",
                 resetBtn: "مسح جميع العينات",
                 exportBtn: "تصدير Excel",
+                guideTitle: "دليل السحنات والبيئات الترسيبية (للاطلاع المرجعي)",
                 thName: "اسم العينة",
                 thField: "المنطقة (Field)",
-                thEnv: "البيئة الترسيبية (Paleoenvironment)",
-                thPotential: "جودة الإنتاج (HC Potential)",
+                thPotential: "الإنتاج (Potential)",
                 sampleHolder: "مثال: Ora Shale 1"
             },
             en: {
@@ -213,9 +245,9 @@
                 tableTitle: "Advanced Paleoenvironment Analysis Record",
                 resetBtn: "Clear All Samples",
                 exportBtn: "Export to Excel",
+                guideTitle: "Palynofacies & Paleoenvironments Guide (Reference)",
                 thName: "Sample Name",
                 thField: "Field",
-                thEnv: "Paleoenvironment",
                 thPotential: "HC Potential",
                 sampleHolder: "e.g., Ora Shale 1"
             }
@@ -237,19 +269,40 @@
             });
 
             document.getElementById('langBtnText').innerText = currentLang === 'ar' ? 'English' : 'العربية';
-            renderTable(); // لإعادة ترجمة محتويات الجدول
+            renderTable();
         }
 
-        // --- Plotly Config & Map Data ---
-        // أسماء مناطق تايسون 1995 (تضاف كخلفية للمخطط)
-        let tysonFieldsMap = {
+        // --- Exact Mathematical Polygons from the Provided Image ---
+        const lineStyle = { color: '#333', width: 1.5 };
+        const dashedStyle = { color: '#333', width: 1.5, dash: 'dash' };
+
+        // بناء الخطوط الهندسية المطابقة 100% للصورة المرجعية
+        let backgroundLines = [
+            // H1 (Phyto=20)
+            {type: 'scatterternary', mode: 'lines', a: [20, 20], b: [80, 0], c: [0, 80], line: lineStyle, hoverinfo: 'none', showlegend: false},
+            // H2 (Phyto=40)
+            {type: 'scatterternary', mode: 'lines', a: [40, 40], b: [60, 20], c: [0, 40], line: lineStyle, hoverinfo: 'none', showlegend: false},
+            // R1 (AOM = 4*Paly)
+            {type: 'scatterternary', mode: 'lines', a: [0, 40], b: [80, 48], c: [20, 12], line: lineStyle, hoverinfo: 'none', showlegend: false},
+            // R2 Solid (AOM = Paly)
+            {type: 'scatterternary', mode: 'lines', a: [0, 40], b: [50, 30], c: [50, 30], line: lineStyle, hoverinfo: 'none', showlegend: false},
+            // A1 (AOM=20)
+            {type: 'scatterternary', mode: 'lines', a: [0, 40], b: [20, 20], c: [80, 40], line: lineStyle, hoverinfo: 'none', showlegend: false},
+            // L_II_III (Line between II and III)
+            {type: 'scatterternary', mode: 'lines', a: [40, 50], b: [20, 0], c: [40, 50], line: lineStyle, hoverinfo: 'none', showlegend: false},
+            // Dashed Line (Separates I and II)
+            {type: 'scatterternary', mode: 'lines', a: [40, 100], b: [20, 0], c: [40, 0], line: dashedStyle, hoverinfo: 'none', showlegend: false}
+        ];
+
+        // تسميات الحقول الواضحة والبسيطة
+        let fieldLabels = {
             type: 'scatterternary',
             mode: 'text',
-            a: [80, 55, 45, 30, 10, 30, 20, 10, 5], // Phytoclasts (Top)
-            b: [10,  35, 10, 45, 20, 60, 50, 65, 90], // AOM (Left)
-            c: [10, 10, 45, 25, 70, 10, 30, 25, 5], // Palynomorphs (Right)
-            text: ['Field I', 'Field II', 'Field III', 'Field IV', 'Field V', 'Field VI', 'Field VII', 'Field VIII', 'Field IX'],
-            textfont: { size: 16, color: 'rgba(0,0,0,0.15)', weight: 'bold' },
+            a: [70, 60, 30, 30, 30, 10, 30, 10, 10, 10], // Phytoclasts (Top)
+            b: [10, 30, 10, 25, 40, 10, 60, 35, 65, 85], // AOM (Bottom-Left)
+            c: [20, 10, 60, 45, 30, 80, 10, 55, 25,  5], // Palynomorphs (Bottom-Right)
+            text: ['I', 'II', 'III', 'IVa', 'IVb', 'V', 'VI', 'VII', 'VIII', 'IX'],
+            textfont: { size: 16, color: '#000', family: 'Arial' },
             hoverinfo: 'none',
             showlegend: false
         };
@@ -287,8 +340,10 @@
                     y: 0.98 
                 }
             };
-            // إضافة خريطة تايسون الشفافة مع بيانات العينات
-            Plotly.newPlot('ternaryPlot', [tysonFieldsMap, ternaryData], layout, commonConfig);
+            
+            // دمج الخطوط الدقيقة، التسميات، والعينات في مخطط واحد
+            let plotElements = backgroundLines.concat([fieldLabels, ternaryData]);
+            Plotly.newPlot('ternaryPlot', plotElements, layout, commonConfig);
         }
 
         // --- Logic & Processing ---
@@ -308,32 +363,34 @@
             let total = aom + phyto + paly;
             if (total === 0) { alert(currentLang === 'ar' ? "المجموع صفر! أدخل قيم حقيقية." : "Total is zero! Enter valid values."); return; }
 
-            // حساب النسب
-            let aomPer = Math.round((aom / total) * 1000) / 10;
-            let phytoPer = Math.round((phyto / total) * 1000) / 10;
-            let palyPer = Math.round((paly / total) * 1000) / 10;
+            let aPer = Math.round((aom / total) * 1000) / 10;
+            let pPer = Math.round((phyto / total) * 1000) / 10;
+            let yPer = Math.round((paly / total) * 1000) / 10;
 
-            // --- خوارزمية تايسون 1995 (Tyson's Classification Algorithm) ---
+            // --- خوارزمية تايسون الدقيقة المطابقة للرسم ---
             let keroField = "";
-            if (aomPer >= 80) {
-                keroField = "IX";
-            } else if (aomPer >= 60) {
-                if (phytoPer >= 20) keroField = "VI"; else keroField = "VIII";
-            } else if (aomPer >= 40) {
-                if (phytoPer >= 40) keroField = "II";
-                else if (palyPer >= 30) keroField = "VII";
-                else keroField = "IV";
+            if (pPer < 20) {
+                if (aPer >= 4 * yPer) keroField = "IX";
+                else if (aPer >= yPer) keroField = "VIII";
+                else if (aPer >= 20) keroField = "VII";
+                else keroField = "V";
+            } else if (pPer < 40) {
+                if (aPer >= 4 * yPer) keroField = "VI";
+                else if (aPer >= yPer) keroField = "IVb";
+                else if (aPer >= 20) keroField = "IVa";
+                else keroField = "III";
             } else {
-                if (phytoPer >= 50) keroField = "I";
-                else if (palyPer >= 50) keroField = "V";
-                else {
-                    if (aomPer >= 20) keroField = "IV"; else keroField = "III";
+                if (aPer < 2 * (50 - pPer)) {
+                    keroField = "III";
+                } else {
+                    if (aPer >= yPer / 2) keroField = "II";
+                    else keroField = "I";
                 }
             }
 
             systemData.push({
                 name: name,
-                aomPer: aomPer, phytoPer: phytoPer, palyPer: palyPer,
+                aomPer: aPer, phytoPer: pPer, palyPer: yPer,
                 field: keroField
             });
 
@@ -354,26 +411,13 @@
             tbody.innerHTML = '';
             
             systemData.forEach(d => {
-                // استدعاء الترجمات الخاصة بالبيئة وجودة الإنتاج
-                let envText = "", hcBadge = "";
-                let isGas = ["I", "II", "III", "IV", "V"].includes(d.field);
+                let hcBadge = "";
+                let isGas = ["I", "II", "III", "IVa", "IVb", "V"].includes(d.field);
                 
                 if(isGas) {
                     hcBadge = currentLang === 'ar' ? '<span class="badge badge-gas">غاز (Gas-prone)</span>' : '<span class="badge badge-gas">Gas-prone</span>';
                 } else {
                     hcBadge = currentLang === 'ar' ? '<span class="badge badge-oil">نفط (Oil-prone)</span>' : '<span class="badge badge-oil">Oil-prone</span>';
-                }
-
-                switch(d.field) {
-                    case "I": envText = currentLang === 'ar' ? "جرف أو حوض قريب جداً" : "Highly proximal shelf or basin"; break;
-                    case "II": envText = currentLang === 'ar' ? "حوض هامشي (ضعيف الأكسدة - مؤكسد)" : "Marginal dysoxic-oxic basin"; break;
-                    case "III": envText = currentLang === 'ar' ? "جرف مؤكسد غير متجانس (قريب)" : "Heterolithic oxic shelf (proximal)"; break;
-                    case "IV": envText = currentLang === 'ar' ? "منطقة انتقالية (جرف إلى حوض)" : "Shelf to basin transition"; break;
-                    case "V": envText = currentLang === 'ar' ? "جرف مؤكسد طيني (بعيد)" : "Mud-dominated oxic shelf (distal)"; break;
-                    case "VI": envText = currentLang === 'ar' ? "جرف قريب (ضعيف الأكسدة - مختزل)" : "Proximal suboxic-anoxic shelf"; break;
-                    case "VII": envText = currentLang === 'ar' ? "جرف بعيد (ضعيف الأكسدة - مختزل)" : "Distal dysoxic-anoxic 'shelf'"; break;
-                    case "VIII": envText = currentLang === 'ar' ? "جرف بعيد (ضعيف الأكسدة - مختزل)" : "Distal dysoxic-anoxic shelf"; break;
-                    case "IX": envText = currentLang === 'ar' ? "حوض بعيد (ضعيف الأكسدة - مختزل)" : "Distal suboxic-anoxic basin"; break;
                 }
 
                 let row = `<tr>
@@ -382,7 +426,6 @@
                     <td style="font-weight:bold;">${d.phytoPer}%</td>
                     <td style="font-weight:bold;">${d.palyPer}%</td>
                     <td style="color:var(--accent-secondary); font-weight:bold;">Field ${d.field}</td>
-                    <td>${envText}</td>
                     <td>${hcBadge}</td>
                 </tr>`;
                 tbody.innerHTML += row;
