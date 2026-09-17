@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Geo Park - Home Feed</title>
+    
+    <!-- Google Fonts: Outfit for a modern tech feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #121212;
+            --bg-gradient: linear-gradient(180deg, #101813 0%, #121212 30%);
+            --card-bg: #1e1e1e;
+            --primary-green: #22c55e;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --alert-bg: #452711;
+            --alert-text: #fdba74;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent;}
+
+        body {
+            background: var(--bg-color);
+            display: flex; justify-content: center;
+        }
+
+        /* Mobile Container Simulation */
+        .app-container {
+            width: 100%; max-width: 414px; min-height: 100vh;
+            background: var(--bg-gradient);
+            position: relative; overflow-x: hidden;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            padding-bottom: 80px; /* Space for scrolling */
+        }
+
+        /* --- Header Section --- */
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 25px 20px 15px;
+        }
+        .logo-area h1 { color: var(--primary-green); font-size: 26px; font-weight: 800; letter-spacing: -0.5px;}
+        .logo-area p { color: var(--text-muted); font-size: 13px; font-weight: 400; }
+        .avatar {
+            width: 45px; height: 45px; border-radius: 50%;
+            background: url('https://images.unsplash.com/photo-1533316124747-0b1a03046bc9?auto=format&fit=crop&w=150&q=80') center/cover;
+        }
+
+        /* --- Location & Weather --- */
+        .weather-section { padding: 10px 20px 25px; }
+        .weather-section .subtitle { color: #38bdf8; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+        .weather-section .location-title { 
+            color: var(--text-main); font-size: 24px; font-weight: 700; margin: 4px 0 10px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .weather-section .location-title i { font-size: 14px; color: var(--text-muted); }
+        .weather-info { display: flex; align-items: center; gap: 15px; color: var(--text-muted); font-size: 14px; font-weight: 500;}
+        .weather-info i.fa-sun { color: #fbbf24; }
+        
+        /* --- Alert Box --- */
+        .alert-box {
+            margin: 0 20px 25px; background: var(--alert-bg); border-radius: 16px;
+            padding: 15px; display: flex; align-items: center; gap: 15px;
+            border: 1px solid rgba(253, 186, 116, 0.2);
+            cursor: pointer; transition: transform 0.2s;
+        }
+        .alert-box:active { transform: scale(0.98); }
+        .alert-icon {
+            width: 40px; height: 40px; border-radius: 10px; background: rgba(253, 186, 116, 0.15);
+            display: flex; justify-content: center; align-items: center; color: var(--alert-text); font-size: 18px; flex-shrink: 0;
+        }
+        .alert-text h4 { color: var(--alert-text); font-size: 15px; margin-bottom: 3px; }
+        .alert-text p { color: rgba(255,255,255,0.8); font-size: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
+        .alert-arrow { color: var(--text-main); font-size: 12px; margin-left: auto; }
+
+        /* --- Section Titles --- */
+        .section-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; margin-bottom: 15px;
+        }
+        .section-header h2 { color: var(--text-main); font-size: 18px; font-weight: 700; }
+        .section-header a { color: var(--primary-green); font-size: 13px; font-weight: 600; text-decoration: none; }
+        .section-header i { color: var(--text-muted); font-size: 18px; }
+
+        /* --- Trending Trails (Horizontal Scroll) --- */
+        .trending-container {
+            display: flex; overflow-x: auto; gap: 15px; padding: 0 20px 10px;
+            scroll-snap-type: x mandatory; scrollbar-width: none; /* Hide scrollbar Firefox */
+        }
+        .trending-container::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome/Safari */
+        
+        .trail-card {
+            background: var(--card-bg); border-radius: 16px; padding: 12px;
+            display: flex; align-items: center; gap: 12px; min-width: 260px;
+            scroll-snap-align: start; flex-shrink: 0;
+        }
+        .trail-img {
+            width: 60px; height: 60px; border-radius: 10px; flex-shrink: 0;
+            background: url('https://images.unsplash.com/photo-1518182170546-076616fdacaf?auto=format&fit=crop&w=200&q=80') center/cover;
+        }
+        .trail-info h3 { color: var(--text-main); font-size: 15px; margin-bottom: 4px; }
+        .trail-info p { color: var(--text-muted); font-size: 12px; margin-bottom: 4px; }
+        .trail-status { color: var(--text-muted); font-size: 11px; display: flex; align-items: center; gap: 5px; }
+        .status-dot { width: 8px; height: 8px; background: var(--primary-green); border-radius: 50%; }
+
+        /* --- Geological Wonders (Vertical List) --- */
+        .wonders-container { padding: 0 20px; display: flex; flex-direction: column; gap: 20px; }
+        
+        .wonder-card {
+            background: var(--card-bg); border-radius: 20px; overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+        .wonder-img-box {
+            width: 100%; height: 180px; position: relative;
+            background-size: cover; background-position: center;
+        }
+        .rating-badge {
+            position: absolute; top: 15px; right: 15px;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); padding: 5px 10px;
+            border-radius: 12px; display: flex; align-items: center; gap: 5px;
+            color: var(--text-main); font-size: 12px; font-weight: 700;
+        }
+        .rating-badge i { color: #f97316; font-size: 11px; }
+        
+        .wonder-details { padding: 15px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .wonder-text h3 { color: var(--text-main); font-size: 17px; margin-bottom: 5px; }
+        .wonder-text p { color: var(--text-muted); font-size: 13px; display: flex; align-items: center; gap: 5px; }
+        .wonder-tag { background: rgba(34, 197, 94, 0.1); color: var(--primary-green); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 600; }
+
+        /* --- Floating Open Map Button --- */
+        .fab-map {
+            position: fixed; bottom: 30px; right: calc(50% - 207px + 20px); /* Keeps it inside mobile container */
+            background: var(--primary-green); color: white; border: none;
+            padding: 14px 22px; border-radius: 30px; font-size: 15px; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4); cursor: pointer; z-index: 100;
+            transition: transform 0.2s;
+        }
+        @media (max-width: 414px) {
+            .fab-map { right: 20px; }
+        }
+        .fab-map:active { transform: scale(0.95); }
+
+        /* --- Shandal Copyright --- */
+        .copyright { text-align: center; color: #52525b; font-size: 12px; padding: 30px 0; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-area">
+                <!-- استبدل النص بـ <img> لو أردت وضع اللوغو الخاص بك -->
+                <h1>Geo Park</h1>
+                <p>Explore the Earth's Heart</p>
+            </div>
+            <div class="avatar"></div>
+        </header>
+
+        <!-- Location & Weather -->
+        <div class="weather-section">
+            <div class="subtitle">Current Location</div>
+            <div class="location-title">
+                Blackwood Peak <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="weather-info">
+                <span><i class="fas fa-sun"></i> 24°C Clear</span>
+                <span><i class="fas fa-wind"></i> 12km/h NW</span>
+            </div>
+        </div>
+
+        <!-- Alert Box -->
+        <div class="alert-box">
+            <div class="alert-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="alert-text">
+                <h4>Terrain Alert</h4>
+                <p>Unstable rock formations detected near the North Ridge. Stick to mark...</p>
+            </div>
+            <i class="fas fa-chevron-right alert-arrow"></i>
+        </div>
+
+        <!-- Trending Trails -->
+        <div class="section-header">
+            <h2>Trending Trails</h2>
+            <a href="#">See All</a>
+        </div>
+        
+        <div class="trending-container">
+            <!-- Trail 1 -->
+            <div class="trail-card">
+                <div class="trail-img"></div>
+                <div class="trail-info">
+                    <h3>Basalt Column Trail</h3>
+                    <p>4.2km • 320m elev</p>
+                    <div class="trail-status"><div class="status-dot"></div> medium</div>
+                </div>
+            </div>
+            <!-- Trail 2 -->
+            <div class="trail-card">
+                <div class="trail-img" style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=200&q=80');"></div>
+                <div class="trail-info">
+                    <h3>Obsidian Pathway</h3>
+                    <p>2.8km • 150m elev</p>
+                    <div class="trail-status"><div class="status-dot"></div> easy</div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <!-- Geological Wonders -->
+        <div class="section-header">
+            <h2>Geological Wonders</h2>
+            <i class="fas fa-sliders-h"></i>
+        </div>
+
+        <div class="wonders-container">
+            <!-- Wonder 1 -->
+            <div class="wonder-card">
+                <div class="wonder-img-box" style="background-image: url('https://images.unsplash.com/photo-1621831713837-338f031fc0f0?auto=format&fit=crop&w=600&q=80');">
+                    <div class="rating-badge"><i class="fas fa-star"></i> 4.9</div>
+                </div>
+                <div class="wonder-details">
+                    <div class="wonder-text">
+                        <h3>The Great Caldera</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Iceland, Ring Road</p>
+                    </div>
+                    <div class="wonder-tag">Volcanic</div>
+                </div>
+            </div>
+
+            <!-- Wonder 2 -->
+            <div class="wonder-card">
+                <div class="wonder-img-box" style="background-image: url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80');">
+                    <div class="rating-badge"><i class="fas fa-star"></i> 4.7</div>
+                </div>
+                <div class="wonder-details">
+                    <div class="wonder-text">
+                        <h3>Azure Grotto</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Capri, Italy</p>
+                    </div>
+                    <div class="wonder-tag">Karst</div>
+                </div>
+            </div>
+            
+            <!-- Wonder 3 -->
+            <div class="wonder-card">
+                <div class="wonder-img-box" style="background-image: url('https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=600&q=80');">
+                    <div class="rating-badge"><i class="fas fa-star"></i> 4.8</div>
+                </div>
+                <div class="wonder-details">
+                    <div class="wonder-text">
+                        <h3>Red Rock Canyon</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Nevada, USA</p>
+                    </div>
+                    <div class="wonder-tag">Sedimentary</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shandal System Trademark -->
+        <div class="copyright">
+            Powered by Shandal System © 2026
+        </div>
+
+        <!-- Floating Map Button -->
+        <button class="fab-map">
+            <i class="fas fa-map"></i> Open Map
+        </button>
+
+    </div>
+
+</body>
+</html>
