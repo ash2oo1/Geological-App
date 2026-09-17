@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Geo Park - User Profile</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #151515;
+            --card-bg: #27272a; 
+            --primary-green: #22c55e; 
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --danger-red: #f87171;
+            --nav-bg: #121212;
+            --nav-border: rgba(255,255,255,0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent;}
+
+        body { background: #000; display: flex; justify-content: center; }
+
+        .app-container {
+            width: 100%; max-width: 414px; min-height: 100vh;
+            background: var(--bg-color);
+            position: relative; overflow-x: hidden;
+            padding-bottom: 90px;
+        }
+
+        /* --- Cover & Avatar Section --- */
+        .profile-cover {
+            width: 100%; height: 160px;
+            background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80') center/cover;
+            position: relative;
+        }
+        
+        .profile-header {
+            display: flex; flex-direction: column; align-items: center;
+            margin-top: -45px; /* رفع الأفاتار ليتداخل مع الغلاف */
+            position: relative; z-index: 10;
+        }
+        
+        .avatar-container {
+            width: 90px; height: 90px; border-radius: 50%;
+            background: url('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80') center/cover;
+            border: 4px solid var(--bg-color); box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            margin-bottom: 15px;
+        }
+
+        .profile-name { color: white; font-size: 24px; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.5px;}
+        .profile-title { color: var(--primary-green); font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+
+        /* --- Stats Row --- */
+        .stats-row {
+            display: flex; justify-content: center; gap: 12px;
+            padding: 25px 20px 10px;
+        }
+        .stat-badge {
+            background: #202022; border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px; padding: 10px 15px;
+            display: flex; align-items: center; gap: 8px; flex: 1; justify-content: center;
+        }
+        .stat-badge i { font-size: 14px; }
+        .stat-badge .fa-compass { color: var(--primary-green); }
+        .stat-badge .fa-camera { color: #3b82f6; }
+        .stat-badge .fa-medal { color: #f59e0b; }
+        .stat-info { display: flex; flex-direction: column; align-items: flex-start; }
+        .stat-info h4 { color: white; font-size: 15px; font-weight: 700; line-height: 1.1; }
+        .stat-info span { color: var(--text-muted); font-size: 10px; }
+
+        /* --- Section Shared Styles --- */
+        .content-section { padding: 20px 0 10px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; margin-bottom: 15px; }
+        .section-title { color: white; font-size: 18px; font-weight: 700; }
+        .section-link { color: var(--primary-green); font-size: 13px; font-weight: 600; text-decoration: none; }
+
+        /* --- Earned Badges (Horizontal Scroll) --- */
+        .badges-scroll {
+            display: flex; overflow-x: auto; gap: 20px; padding: 0 20px 10px;
+            scrollbar-width: none;
+        }
+        .badges-scroll::-webkit-scrollbar { display: none; }
+        
+        .badge-item { display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; }
+        .badge-circle {
+            width: 65px; height: 65px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .badge-item h4 { color: white; font-size: 12px; font-weight: 600; text-align: center; }
+        
+        /* ألوان الشارات المخصصة */
+        .badge-1 { background: #e8f5e9; color: #2e7d32; }
+        .badge-2 { background: #e1f5fe; color: #0284c7; }
+        .badge-3 { background: #fff7ed; color: #ea580c; }
+
+        /* --- Visited Parks (Horizontal Cards) --- */
+        .parks-scroll {
+            display: flex; overflow-x: auto; gap: 15px; padding: 0 20px 10px;
+            scroll-snap-type: x mandatory; scrollbar-width: none;
+        }
+        .parks-scroll::-webkit-scrollbar { display: none; }
+        
+        .park-card {
+            background: var(--card-bg); border-radius: 16px; overflow: hidden;
+            min-width: 220px; scroll-snap-align: start; flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+        .park-img {
+            width: 100%; height: 120px; background-size: cover; background-position: center; position: relative;
+        }
+        .park-era {
+            position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+            color: white; padding: 4px 8px; border-radius: 8px; font-size: 10px; font-weight: 700;
+        }
+        .park-info { padding: 12px; }
+        .park-info h3 { color: white; font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+        .park-info p { color: var(--text-muted); font-size: 12px; display: flex; align-items: center; gap: 4px; }
+
+        /* --- Saved Locations (Vertical List) --- */
+        .saved-locations { padding: 0 20px; display: flex; flex-direction: column; gap: 12px; }
+        
+        .saved-card {
+            background: #202022; border-radius: 16px; padding: 12px;
+            display: flex; align-items: center; gap: 15px;
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+        .saved-img { width: 50px; height: 50px; border-radius: 10px; background-size: cover; background-position: center; flex-shrink: 0; }
+        .saved-info { flex: 1; }
+        .saved-info h4 { color: white; font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+        .saved-info p { color: var(--text-muted); font-size: 11px; display: flex; align-items: center; gap: 4px; }
+        .saved-info p i { color: var(--primary-green); }
+        .bookmark-icon { color: var(--primary-green); font-size: 18px; padding: 10px; }
+
+        /* --- Account Settings --- */
+        .settings-card {
+            background: #202022; border-radius: 20px; padding: 10px 20px; margin: 0 20px 20px;
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+        .setting-item {
+            display: flex; justify-content: space-between; align-items: center; padding: 16px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .setting-item:last-child { border-bottom: none; }
+        .setting-left { display: flex; align-items: center; gap: 12px; }
+        .setting-left i { color: var(--text-muted); font-size: 16px; width: 20px; text-align: center; }
+        .setting-left span { color: white; font-size: 15px; font-weight: 500; }
+        
+        .sign-out .setting-left i, .sign-out .setting-left span { color: var(--danger-red); }
+        .arrow-icon { color: var(--text-muted); font-size: 14px; }
+
+        /* Toggles */
+        .toggle-switch { position: relative; width: 44px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #3f3f46; border-radius: 24px; transition: .3s; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: .3s; }
+        input:checked + .slider { background-color: var(--primary-green); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* --- Footer Branding --- */
+        .footer-brand { text-align: center; margin-top: 10px; margin-bottom: 25px; display: flex; flex-direction: column; align-items: center; gap: 4px;}
+        .footer-brand i { color: var(--text-muted); font-size: 14px; }
+        .footer-brand span { color: #52525b; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+
+        /* --- Bottom Navigation --- */
+        .bottom-nav-container {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 414px; height: 65px;
+            background: var(--nav-bg); border-top: 1px solid var(--nav-border);
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 100; padding-bottom: env(safe-area-inset-bottom);
+        }
+        .nav-item { display: flex; justify-content: center; align-items: center; color: var(--text-muted); font-size: 24px; cursor: pointer; width: 50px; height: 50px; transition: 0.2s; text-decoration: none;}
+        .nav-item:active { transform: scale(0.9); }
+        .nav-item.active { color: var(--primary-green); }
+        .nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: url('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80') center/cover; border: 2px solid transparent; }
+        .nav-item.active .nav-avatar { border-color: var(--primary-green); }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- الغلاف والأفاتار -->
+        <div class="profile-cover"></div>
+        <div class="profile-header">
+            <div class="avatar-container"></div>
+            <h2 class="profile-name">Ali Shandal</h2>
+            <p class="profile-title"><i class="fas fa-check-circle"></i> Professional Geologist • Level 14</p>
+        </div>
+
+        <!-- الإحصائيات -->
+        <div class="stats-row">
+            <div class="stat-badge">
+                <i class="fas fa-compass"></i>
+                <div class="stat-info">
+                    <h4>24</h4><span>Parks</span>
+                </div>
+            </div>
+            <div class="stat-badge">
+                <i class="fas fa-camera"></i>
+                <div class="stat-info">
+                    <h4>142</h4><span>Sites</span>
+                </div>
+            </div>
+            <div class="stat-badge">
+                <i class="fas fa-medal"></i>
+                <div class="stat-info">
+                    <h4>8</h4><span>Badges</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- الشارات المكتسبة -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">Earned Badges</h2>
+                <a href="#" class="section-link">View All</a>
+            </div>
+            <div class="badges-scroll">
+                <div class="badge-item">
+                    <div class="badge-circle badge-1"><i class="fas fa-mountain"></i></div>
+                    <h4>Peak Bagger</h4>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-circle badge-2"><i class="fas fa-tint"></i></div>
+                    <h4>River Guide</h4>
+                </div>
+                <div class="badge-item">
+                    <div class="badge-circle badge-3"><i class="fas fa-fire"></i></div>
+                    <h4>Fire Watcher</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- الحدائق المزارة -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">Visited Parks</h2>
+                <a href="map.html" class="section-link">Map View</a>
+            </div>
+            <div class="parks-scroll">
+                <div class="park-card">
+                    <div class="park-img" style="background-image: url('https://images.unsplash.com/photo-1542361345-89ce1f1166c3?auto=format&fit=crop&w=400&q=80');">
+                        <div class="park-era">Jurassic</div>
+                    </div>
+                    <div class="park-info">
+                        <h3>Blackwood Canyon</h3>
+                        <p><i class="fas fa-mountain"></i> 1,420 m</p>
+                    </div>
+                </div>
+                <div class="park-card">
+                    <div class="park-img" style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400&q=80');">
+                        <div class="park-era">Pleistocene</div>
+                    </div>
+                    <div class="park-info">
+                        <h3>Glacier Peaks</h3>
+                        <p><i class="fas fa-mountain"></i> 3,105 m</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- المواقع المحفوظة -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">Saved Locations</h2>
+            </div>
+            <div class="saved-locations">
+                <div class="saved-card">
+                    <div class="saved-img" style="background-image: url('https://images.unsplash.com/photo-1518182170546-076616fdacaf?auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="saved-info">
+                        <h4>Hidden Falls Trailhead</h4>
+                        <p><i class="fas fa-map-marker-alt"></i> 12.4 km away</p>
+                    </div>
+                    <i class="fas fa-bookmark bookmark-icon"></i>
+                </div>
+                <div class="saved-card">
+                    <div class="saved-img" style="background-image: url('https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="saved-info">
+                        <h4>Eagle's Nest Overlook</h4>
+                        <p><i class="fas fa-map-marker-alt"></i> 45.2 km away</p>
+                    </div>
+                    <i class="fas fa-bookmark bookmark-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- إعدادات الحساب -->
+        <div class="content-section">
+            <div class="section-header">
+                <h2 class="section-title">Account Settings</h2>
+            </div>
+            <div class="settings-card">
+                <div class="setting-item">
+                    <div class="setting-left">
+                        <i class="fas fa-bell"></i>
+                        <span>Push Notifications</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <!-- يمكنك برمجة هذا الزر للانتقال لصفحة الإعدادات -->
+                <div class="setting-item" onclick="window.location.href='settings.html'" style="cursor: pointer;">
+                    <div class="setting-left">
+                        <i class="fas fa-cog"></i>
+                        <span>Advanced Settings</span>
+                    </div>
+                    <i class="fas fa-chevron-right arrow-icon"></i>
+                </div>
+                <div class="setting-item sign-out" style="cursor: pointer;" onclick="window.location.href='onboarding.html'">
+                    <div class="setting-left">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Sign Out</span>
+                    </div>
+                    <i class="fas fa-chevron-right arrow-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- البصمة الختامية -->
+        <div class="footer-brand">
+            <i class="fas fa-mountain"></i>
+            <span>GEO PARK v1.0.0</span>
+            <span style="font-style: italic; opacity: 0.7;">Powered by Shandal System</span>
+        </div>
+
+        <!-- شريط التنقل السفلي -->
+        <div class="bottom-nav-container">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-house"></i>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-compass"></i>
+            </a>
+            <a href="map.html" class="nav-item">
+                <i class="fas fa-map"></i>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-bell"></i>
+            </a>
+            <!-- الأفاتار هو النشط هنا -->
+            <a href="profile.html" class="nav-item active">
+                <div class="nav-avatar"></div>
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>
