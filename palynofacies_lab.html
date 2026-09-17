@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام شندل - مختبر البيئات القديمة</title>
     
-    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -23,7 +22,7 @@
         .lang-toggle { background: rgba(139, 92, 246, 0.15); border: 2px solid var(--accent-primary); color: var(--text-light); padding: 8px 18px; border-radius: 25px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
         .lang-toggle:hover { background: var(--accent-primary); color: var(--text-light); }
 
-        .main-wrapper { padding: 20px; }
+        .main-wrapper { padding: 20px; max-width: 1400px; margin: 0 auto; }
 
         .info-box { background: rgba(139, 92, 246, 0.1); border-right: 4px solid var(--accent-primary); padding: 15px 20px; border-radius: 8px; margin-bottom: 30px; font-size: 14px; line-height: 1.6; color: #cbd5e1; }
         [dir="ltr"] .info-box { border-right: none; border-left: 4px solid var(--accent-primary); }
@@ -31,47 +30,68 @@
 
         .section-title { color: var(--text-light); margin-bottom: 15px; font-size: 20px; padding-bottom: 10px; display: flex; justify-content: center; align-items: center; gap: 10px; text-align: center; border-bottom: 1px solid var(--border-color);}
         
-        .lab-container { display: grid; grid-template-columns: 350px 1fr; gap: 20px; margin-bottom: 40px; }
+        .lab-container { display: grid; grid-template-columns: 350px 1fr; gap: 30px; margin-bottom: 40px; }
         @media (max-width: 900px) { .lab-container { grid-template-columns: 1fr; } }
         
-        .input-panel { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); height: fit-content; }
+        .input-panel { background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); height: fit-content; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .form-group { margin-bottom: 18px; position: relative; }
         .form-group label { display: flex; align-items: center; margin-bottom: 8px; font-size: 13px; font-weight: bold; color: #94a3b8; gap: 6px;}
-        .form-control { width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); color: white; padding: 10px; border-radius: 6px; outline: none; font-size: 14px;}
-        .form-control:focus { border-color: var(--accent-primary); }
+        .form-control { width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); color: white; padding: 12px; border-radius: 6px; outline: none; font-size: 14px; transition: 0.3s;}
+        .form-control:focus { border-color: var(--accent-primary); box-shadow: 0 0 8px rgba(139, 92, 246, 0.3); }
         
-        /* The Elegant Help Icon (!) */
+        /* Tooltips */
         .help-icon { background: var(--accent-secondary); color: white; width: 16px; height: 16px; display: inline-flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 11px; cursor: pointer; position: relative; font-weight: bold; flex-shrink: 0;}
         .help-icon .tooltip-text { visibility: hidden; width: 260px; background-color: #334155; color: #fff; text-align: center; border-radius: 6px; padding: 10px; position: absolute; z-index: 100; bottom: 130%; left: 50%; transform: translateX(-50%); opacity: 0; transition: opacity 0.3s; font-size: 12px; font-weight: normal; line-height: 1.5; box-shadow: 0 4px 10px rgba(0,0,0,0.5); pointer-events: none;}
         .help-icon .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border-width: 5px; border-style: solid; border-color: #334155 transparent transparent transparent; }
         .help-icon:hover .tooltip-text { visibility: visible; opacity: 1; }
-        @media (max-width: 600px) { .help-icon .tooltip-text { width: 220px; } }
-
-        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-        .btn { padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; border: none; font-size: 14px; width: 100%;}
-        .btn-add { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; }
-        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
         
-        .plot-panel { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
-        .plot-container { width: 100%; height: 650px; }
+        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 25px; }
+        .btn { padding: 14px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; border: none; font-size: 15px; width: 100%;}
+        .btn-add { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
+        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5); }
+        
+        /* The Magic Image Overlay Container */
+        .image-plot-panel { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center;}
+        .image-wrapper { position: relative; max-width: 100%; width: 700px; /* يمكن تكبيره أو تصغيره بحسب الرغبة */ }
+        .image-wrapper img { width: 100%; display: block; border-radius: 8px; pointer-events: none; }
+        
+        .plot-marker {
+            position: absolute;
+            width: 16px; height: 16px;
+            background: var(--accent-secondary);
+            border: 2px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 12px rgba(236, 72, 153, 0.8);
+            z-index: 10;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 10px; font-weight: bold; color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .plot-marker:hover { transform: translate(-50%, -50%) scale(1.4); z-index: 20; }
+        .plot-marker .marker-tooltip {
+            visibility: hidden; background: #000; color: #fff; text-align: center; border-radius: 4px; padding: 6px 10px; position: absolute; z-index: 20; bottom: 150%; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 12px;
+        }
+        .plot-marker:hover .marker-tooltip { visibility: visible; }
 
-        .table-header { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; margin-bottom: 10px;}
+        /* Tables */
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; margin-bottom: 15px;}
         .table-header h3 { margin: 0; color: var(--accent-primary); display: flex; align-items: center; gap: 8px;}
         .btn-export { background: var(--success); color: white; padding: 8px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; display: flex; gap: 8px; align-items: center; font-size: 13px; transition: 0.3s;}
         .btn-export:hover { background: #059669; }
         .btn-reset { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; gap:8px; align-items: center; transition: 0.3s;}
         .btn-reset:hover { background: var(--danger); color: white; }
 
-        .table-wrapper { overflow-x: auto; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 40px;}
+        .table-wrapper { overflow-x: auto; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);}
         .data-table { width: 100%; border-collapse: collapse; min-width: 900px;}
-        .data-table th, .data-table td { padding: 10px; text-align: center; border-bottom: 1px solid var(--border-color); font-size: 13px; }
+        .data-table th, .data-table td { padding: 12px 10px; text-align: center; border-bottom: 1px solid var(--border-color); font-size: 13px; }
         .data-table th { background: rgba(0,0,0,0.3); color: var(--text-light); }
         .data-table tr:hover { background: rgba(255,255,255,0.02); }
         .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
         .badge-oil { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981;}
         .badge-gas { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid #f59e0b;}
 
-        /* Reference Table Styling */
         .reference-table-wrapper { background: rgba(0,0,0,0.2); border-radius: 8px; padding: 15px; border: 1px solid var(--border-color); margin-bottom: 40px; overflow-x: auto;}
         .reference-table { width: 100%; border-collapse: collapse; text-align: left; direction: ltr; background: transparent; min-width: 600px;}
         .reference-table th, .reference-table td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; }
@@ -94,9 +114,9 @@
     <div class="main-wrapper">
         
         <div class="info-box">
-            <strong><i class="fas fa-info-circle"></i> <span data-i18n="infoTitle">عن هذا المختبر:</span></strong><br>
+            <strong><i class="fas fa-info-circle"></i> <span data-i18n="infoTitle">عن هذا المختبر (الإصدار الاحترافي):</span></strong><br>
             <span data-i18n="infoDesc">
-                يعتمد هذا المختبر على دراسة السحنات البالينولوجية (Palynofacies) لتحديد البيئات الترسيبية القديمة (Paleoenvironments). عبر إدخال أعداد كل من (AOM، الفيتوكلاست، والبالينومورف)، سيقوم النظام بحساب النسب وتسقيطها على <strong>مخطط تايسون الثلاثي (Tyson 1995)</strong> وتحديد واحدة من المناطق التسع (Fields I-IX) آلياً لمعرفة جودة المصدر العضوي (نفط أو غاز).
+                يعتمد هذا المختبر على الموازنة الرياضية (Barycentric Mapping) لتسقيط الإحداثيات مباشرة على المرجع الأكاديمي الأصلي (Tyson 1995). عبر إدخال أعداد كل من (AOM، الفيتوكلاست، والبالينومورف)، يقوم النظام بحساب النسب وتسقيطها بصرياً وتصنيف العينة آلياً لمعرفة البيئة الترسيبية وجودة المصدر العضوي (نفط أو غاز).
             </span>
         </div>
 
@@ -106,6 +126,7 @@
         </h2>
         
         <div class="lab-container">
+            <!-- إدخال البيانات -->
             <div class="input-panel">
                 <h3 style="margin-top:0; color:var(--accent-primary);" data-i18n="panelTitle"><i class="fas fa-edit"></i> إدخال أعداد المواد العضوية</h3>
                 
@@ -120,7 +141,7 @@
                 <div class="form-group">
                     <label>
                         AOM (Count):
-                        <span class="help-icon">!<span class="tooltip-text" data-i18n="aomDesc">المادة العضوية غير المتبلورة (Amorphous Organic Matter). وفرتها تدل على بيئات مختزلة وتنتج النفط.</span></span>
+                        <span class="help-icon">!<span class="tooltip-text" data-i18n="aomDesc">المادة العضوية غير المتبلورة. تمثل الرأس الأيسر السفلي في المخطط.</span></span>
                     </label>
                     <input type="number" id="aomCount" class="form-control" placeholder="106">
                 </div>
@@ -128,7 +149,7 @@
                 <div class="form-group">
                     <label>
                         Phytoclasts (Count):
-                        <span class="help-icon">!<span class="tooltip-text" data-i18n="phytoDesc">بقايا وكسر نباتية (Phytoclasts). وفرتها تدل على بيئات مؤكسدة قريبة، وتنتج الغاز أساساً.</span></span>
+                        <span class="help-icon">!<span class="tooltip-text" data-i18n="phytoDesc">بقايا وكسر نباتية. تمثل الرأس العلوي في المخطط.</span></span>
                     </label>
                     <input type="number" id="phytoCount" class="form-control" placeholder="50">
                 </div>
@@ -136,22 +157,27 @@
                 <div class="form-group">
                     <label>
                         Palynomorphs (Count):
-                        <span class="help-icon">!<span class="tooltip-text" data-i18n="palyDesc">حبوب اللقاح والأبواغ (Palynomorphs). تتأثر بالتيارات المائية وتتواجد في البيئات الجرفية.</span></span>
+                        <span class="help-icon">!<span class="tooltip-text" data-i18n="palyDesc">حبوب اللقاح والأبواغ. تمثل الرأس الأيمن السفلي في المخطط.</span></span>
                     </label>
                     <input type="number" id="palyCount" class="form-control" placeholder="164">
                 </div>
                 
                 <div class="btn-group">
-                    <button class="btn btn-add" onclick="processSample()"><i class="fas fa-chart-line"></i> <span data-i18n="calcBtn">التحليل وتسقيط النقطة برمجياً</span></button>
+                    <button class="btn btn-add" onclick="processSample()"><i class="fas fa-crosshairs"></i> <span data-i18n="calcBtn">تسقيط النقطة على الصورة</span></button>
                 </div>
             </div>
 
-            <div class="plot-panel">
-                <div id="ternaryPlot" class="plot-container"></div>
+            <!-- عرض الصورة والتسقيط المباشر -->
+            <div class="image-plot-panel">
+                <div class="image-wrapper" id="imageContainer">
+                    <!-- الصورة الأصلية كخلفية رياضية -->
+                    <img src="A.png" alt="Tyson 1995 Diagram">
+                    <!-- النقاط ستظهر هنا ديناميكياً -->
+                </div>
             </div>
         </div>
 
-        <!-- Main Results Table -->
+        <!-- جدول النتائج -->
         <div class="table-header">
             <h3><i class="fas fa-table"></i> <span data-i18n="tableTitle">التحليل الجيوكيميائي للبيئات القديمة</span></h3>
             <div style="display: flex; gap: 10px;">
@@ -173,12 +199,12 @@
                     </tr>
                 </thead>
                 <tbody id="tableBody">
-                    <!-- Data rendering dynamically -->
+                    <!-- البيانات -->
                 </tbody>
             </table>
         </div>
 
-        <!-- Reference Guide Table -->
+        <!-- الدليل المرجعي الثابت -->
         <div class="table-header">
             <h3><i class="fas fa-book-open"></i> <span data-i18n="guideTitle">دليل السحنات والبيئات الترسيبية (للاطلاع المرجعي)</span></h3>
         </div>
@@ -207,20 +233,21 @@
     </div>
 
     <script>
+        // نظام الترجمة
         const translations = {
             ar: {
                 appTitle: "نظام شندل للمسح الميداني الجيولوجي",
                 appSubtitle: "مختبر السحنات البالينولوجية (Palynofacies Lab)",
-                infoTitle: "عن هذا المختبر:",
-                infoDesc: "يعتمد هذا المختبر على دراسة السحنات البالينولوجية (Palynofacies) لتحديد البيئات الترسيبية القديمة (Paleoenvironments). عبر إدخال أعداد كل من (AOM، الفيتوكلاست، والبالينومورف)، سيقوم النظام بحساب النسب وتسقيطها على <strong>مخطط تايسون الثلاثي (Tyson 1995)</strong> وتحديد واحدة من المناطق التسع (Fields I-IX) آلياً لمعرفة جودة المصدر العضوي (نفط أو غاز).",
+                infoTitle: "عن هذا المختبر (الإصدار الاحترافي):",
+                infoDesc: "يعتمد هذا المختبر على الموازنة الرياضية (Barycentric Mapping) لتسقيط الإحداثيات مباشرة على المرجع الأكاديمي الأصلي (Tyson 1995). عبر إدخال أعداد كل من (AOM، الفيتوكلاست، والبالينومورف)، يقوم النظام بحساب النسب وتسقيطها بصرياً وتصنيف العينة آلياً لمعرفة البيئة الترسيبية وجودة المصدر العضوي (نفط أو غاز).",
                 plotInfo: "مخطط تايسون (1995): المناطق (I إلى V) تميل لإنتاج الغاز، بينما المناطق (VI إلى IX) تميل لإنتاج النفط بناءً على وفرة المادة العضوية غير المتبلورة (AOM).",
                 panelTitle: "إدخال أعداد المواد العضوية",
                 sampleLabel: "اسم العينة:",
                 sampleDesc: "يرجى وضع اسم العينة لتوثيقها في الجدول وتسقيطها على المخطط.",
-                aomDesc: "المادة العضوية غير المتبلورة (Amorphous Organic Matter). وفرتها تدل على بيئات مختزلة وتنتج النفط.",
-                phytoDesc: "بقايا وكسر نباتية (Phytoclasts). وفرتها تدل على بيئات مؤكسدة قريبة، وتنتج الغاز أساساً.",
-                palyDesc: "حبوب اللقاح والأبواغ (Palynomorphs). تتأثر بالتيارات المائية وتتواجد في البيئات الجرفية.",
-                calcBtn: "التحليل وتسقيط النقطة برمجياً",
+                aomDesc: "المادة العضوية غير المتبلورة. تمثل الرأس الأيسر السفلي في المخطط.",
+                phytoDesc: "بقايا وكسر نباتية. تمثل الرأس العلوي في المخطط.",
+                palyDesc: "حبوب اللقاح والأبواغ. تمثل الرأس الأيمن السفلي في المخطط.",
+                calcBtn: "تسقيط النقطة على الصورة",
                 tableTitle: "التحليل الجيوكيميائي للبيئات القديمة",
                 resetBtn: "مسح جميع العينات",
                 exportBtn: "تصدير Excel",
@@ -233,16 +260,16 @@
             en: {
                 appTitle: "Shandal Geological Field Survey System",
                 appSubtitle: "Palynofacies & Paleoenvironment Lab",
-                infoTitle: "About this Lab:",
-                infoDesc: "This lab relies on Palynofacies to determine Paleoenvironments. By inputting the counts of (AOM, Phytoclasts, and Palynomorphs), the system calculates percentages, plots them on <strong>Tyson's (1995) Diagram</strong>, and automatically identifies the Field (I-IX) to deduce depositional environment and hydrocarbon potential (Oil vs Gas).",
+                infoTitle: "About this Lab (Pro Edition):",
+                infoDesc: "This lab uses Barycentric Mapping to plot coordinates directly onto the original academic reference (Tyson 1995). By inputting counts for (AOM, Phytoclasts, Palynomorphs), it visually plots the point and auto-classifies the Field (I-IX) to deduce depositional environment and hydrocarbon potential.",
                 plotInfo: "Tyson's Diagram (1995): Fields (I to V) are gas-prone, while fields (VI to IX) are oil-prone based on AOM abundance.",
                 panelTitle: "Organic Matter Count Input",
                 sampleLabel: "Sample Name:",
                 sampleDesc: "Please enter the sample name to document it in the table and plot.",
-                aomDesc: "Amorphous Organic Matter. High abundance indicates anoxic environments and is oil-prone.",
-                phytoDesc: "Plant fragments/Phytoclasts. Indicate proximal or oxic conditions, generally gas-prone.",
-                palyDesc: "Spores and Pollen. Transported by wind/water, common in shelf environments.",
-                calcBtn: "Analyze Data & Plot Point",
+                aomDesc: "Amorphous Organic Matter. Represents the bottom-left vertex.",
+                phytoDesc: "Plant fragments/Phytoclasts. Represents the top vertex.",
+                palyDesc: "Spores and Pollen. Represents the bottom-right vertex.",
+                calcBtn: "Plot Point on Image",
                 tableTitle: "Advanced Paleoenvironment Analysis Record",
                 resetBtn: "Clear All Samples",
                 exportBtn: "Export to Excel",
@@ -268,135 +295,112 @@
                 let key = el.getAttribute('data-i18n-placeholder');
                 if(translations[currentLang][key]) el.placeholder = translations[currentLang][key];
             });
-
             document.getElementById('langBtnText').innerText = currentLang === 'ar' ? 'English' : 'العربية';
             renderTable();
         }
 
-        // --- Exact Mathematical Representation of Tyson 1995 ---
-        // Coordinates extracted rigorously from the original reference image
-        let linesData = [
-            {type: 'scatterternary', mode: 'lines', a: [20, 0], b: [80, 80], c: [0, 20], line: {color: '#333', width: 1.5}, hoverinfo: 'none'}, // AOM=80
-            {type: 'scatterternary', mode: 'lines', a: [40, 0], b: [60, 60], c: [0, 40], line: {color: '#333', width: 1.5}, hoverinfo: 'none'}, // AOM=60
-            {type: 'scatterternary', mode: 'lines', a: [40, 0], b: [20, 20], c: [40, 80], line: {color: '#333', width: 1.5}, hoverinfo: 'none'}, // AOM=20
-            {type: 'scatterternary', mode: 'lines', a: [20, 20], b: [80, 0], c: [0, 80], line: {color: '#333', width: 1.5}, hoverinfo: 'none'}, // Phyto=20
-            {type: 'scatterternary', mode: 'lines', a: [40, 40], b: [60, 20], c: [0, 40], line: {color: '#333', width: 1.5}, hoverinfo: 'none'}, // Phyto=40
-            {type: 'scatterternary', mode: 'lines', a: [80, 80], b: [10, 0], c: [10, 20], line: {color: '#333', width: 1.5}, hoverinfo: 'none'}, // Phyto=80
-            {type: 'scatterternary', mode: 'lines', a: [100, 80], b: [0, 10], c: [0, 10], line: {color: '#333', width: 1.5, dash: 'dash'}, hoverinfo: 'none'}, // Dashed AOM=Paly
-            {type: 'scatterternary', mode: 'lines', a: [80, 40], b: [10, 20], c: [10, 40], line: {color: '#333', width: 1.5}, hoverinfo: 'none'}, // Solid II/III
-            {type: 'scatterternary', mode: 'lines', a: [40, 20], b: [30, 40], c: [30, 40], line: {color: '#333', width: 1.5}, hoverinfo: 'none'}  // Solid IVb/IVa
-        ];
+        // ==========================================
+        // معادلة التسقيط الرياضي (Barycentric Coordinates)
+        // تم استخراج هذه النسب بدقة من الصورة (A.png)
+        // ==========================================
+        const VERTEX_PHYTO = { x: 50.0, y: 9.0 };  // الرأس العلوي (Phytoclasts)
+        const VERTEX_AOM   = { x: 9.3, y: 91.0 };  // الرأس الأيسر (AOM)
+        const VERTEX_PALY  = { x: 90.7, y: 91.0 }; // الرأس الأيمن (Palynomorphs)
 
-        // تسميات الحقول الواضحة في المراكز الهندسية الدقيقة
-        let fieldLabels = {
-            type: 'scatterternary',
-            mode: 'text',
-            a: [88, 60, 45, 30, 30, 10, 30, 10, 10,  5], // Phytoclasts
-            b: [ 4, 25, 10, 24, 46, 10, 65, 40, 70, 90], // AOM
-            c: [ 8, 15, 45, 46, 24, 80,  5, 50, 20,  5], // Palynomorphs
-            text: ['I', 'II', 'III', 'IVa', 'IVb', 'V', 'VI', 'VII', 'VIII', 'IX'],
-            textfont: { size: 15, color: '#000', family: 'Arial', weight: 'bold' },
-            hoverinfo: 'none',
-            showlegend: false
-        };
-
-        let ternaryData = {
-            type: 'scatterternary',
-            mode: 'markers+text',
-            a: [], b: [], c: [], text: [],
-            textposition: 'top center',
-            marker: { symbol: 'circle', color: '#8b5cf6', size: 14, line: { width: 2, color: 'black' } },
-            name: 'Samples',
-            showlegend: false
-        };
-
-        const commonConfig = {
-            displaylogo: false,
-            modeBarButtonsToRemove: ['zoom2d', 'pan2d', 'select2d', 'lasso2d', 'autoScale2d', 'resetScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'toggleSpikelines'],
-            toImageButtonOptions: { format: 'png', height: 800, width: 1200, scale: 2, filename: 'Tyson_Ternary_Plot' }
-        };
-
-        function initPlot() {
-            let layout = {
-                ternary: {
-                    sum: 100,
-                    aaxis: { title: '<b>Phytoclasts %</b>', titlefont: {size: 16}, min: 0, linewidth: 2, ticks: 'outside', tickfont: {size:12}, gridcolor: '#e2e8f0'},
-                    baxis: { title: '<b>AOM %</b>', titlefont: {size: 16}, min: 0, linewidth: 2, ticks: 'outside', tickfont: {size:12}, gridcolor: '#e2e8f0'},
-                    caxis: { title: '<b>Palynomorphs %</b>', titlefont: {size: 16}, min: 0, linewidth: 2, ticks: 'outside', tickfont: {size:12}, gridcolor: '#e2e8f0'}
-                },
-                paper_bgcolor: 'white',
-                plot_bgcolor: 'white',
-                margin: { l: 40, r: 40, t: 60, b: 40 }
-            };
-            
-            let plotElements = linesData.concat([fieldLabels, ternaryData]);
-            Plotly.newPlot('ternaryPlot', plotElements, layout, commonConfig);
-        }
-
-        // --- Logic & Processing ---
         let systemData = [];
 
         function processSample() {
             let name = document.getElementById('sampleName').value.trim();
-            let aom = parseFloat(document.getElementById('aomCount').value);
-            let phyto = parseFloat(document.getElementById('phytoCount').value);
-            let paly = parseFloat(document.getElementById('palyCount').value);
+            let aomCount = parseFloat(document.getElementById('aomCount').value);
+            let phytoCount = parseFloat(document.getElementById('phytoCount').value);
+            let palyCount = parseFloat(document.getElementById('palyCount').value);
 
             if (!name) { alert(currentLang === 'ar' ? "يرجى إدخال اسم العينة." : "Please enter the sample name."); return; }
-            if (isNaN(aom) || isNaN(phyto) || isNaN(paly) || aom < 0 || phyto < 0 || paly < 0) { 
+            if (isNaN(aomCount) || isNaN(phytoCount) || isNaN(palyCount) || aomCount < 0 || phytoCount < 0 || palyCount < 0) { 
                 alert(currentLang === 'ar' ? "يرجى إدخال أعداد صحيحة وموجبة." : "Please enter valid, positive counts."); return; 
             }
 
-            let total = aom + phyto + paly;
+            let total = aomCount + phytoCount + palyCount;
             if (total === 0) { alert(currentLang === 'ar' ? "المجموع صفر! أدخل قيم حقيقية." : "Total is zero! Enter valid values."); return; }
 
-            let aPer = Math.round((phyto / total) * 1000) / 10;
-            let bPer = Math.round((aom / total) * 1000) / 10;
-            let cPer = Math.round((paly / total) * 1000) / 10;
+            // حساب النسب المئوية
+            let A = Math.round((aomCount / total) * 1000) / 10;
+            let P = Math.round((phytoCount / total) * 1000) / 10;
+            let Y = Math.round((palyCount / total) * 1000) / 10;
 
-            // --- خوارزمية تايسون الدقيقة 100% رياضياً (Tyson 1995 Exact Logic) ---
+            // خوارزمية التصنيف الأكاديمية الصارمة للجدول
             let keroField = "";
-            if (aPer >= 80) {
-                if (bPer >= cPer) keroField = "II";
-                else keroField = "I";
-            } else if (aPer >= 40) { 
-                if (bPer >= 30 - 0.25 * aPer) keroField = "II";
+            if (P < 20) {
+                if (A >= 80) keroField = "IX";
+                else if (A >= 60) keroField = "VIII";
+                else if (A >= 40) keroField = "VII";
+                else keroField = "V";
+            } else if (P < 40) {
+                if (A >= 60) keroField = "VI";
+                else if (A >= 40) keroField = "IVb";
+                else if (Y <= 30) keroField = "IVa";
                 else keroField = "III";
-            } else if (aPer >= 20) { 
-                if (bPer >= 60) keroField = "VI";
-                else if (bPer >= cPer) keroField = "IVb"; 
-                else if (bPer >= 20) keroField = "IVa";
+            } else if (P < 60) {
+                if (A >= 40) keroField = "II";
+                else if (Y <= 20) keroField = "IVa";
                 else keroField = "III";
             } else { 
-                if (bPer >= 80) keroField = "IX";
-                else if (bPer >= 60) keroField = "VIII";
-                else if (bPer >= 20) keroField = "VII";
-                else keroField = "V";
+                if (A >= 20) keroField = "II";
+                else keroField = "I";
             }
 
-            systemData.push({
+            // حفظ البيانات
+            let sampleObj = {
                 name: name,
-                aomPer: bPer, phytoPer: aPer, palyPer: cPer,
+                aomPer: A, phytoPer: P, palyPer: Y,
                 field: keroField
-            });
+            };
+            systemData.push(sampleObj);
 
-            updatePlot();
+            plotOnImage();
             renderTable();
         }
 
-        function updatePlot() {
-            ternaryData.a = systemData.map(d => d.phytoPer);
-            ternaryData.b = systemData.map(d => d.aomPer);
-            ternaryData.c = systemData.map(d => d.palyPer);
-            ternaryData.text = systemData.map(d => d.name);
-            Plotly.redraw('ternaryPlot');
+        // دالة التسقيط المباشر على الصورة (The Magic Function)
+        function plotOnImage() {
+            let container = document.getElementById('imageContainer');
+            
+            // تنظيف النقاط القديمة
+            let oldDots = container.querySelectorAll('.plot-marker');
+            oldDots.forEach(dot => dot.remove());
+
+            systemData.forEach((d, index) => {
+                // تحويل النسب إلى قيم عشرية
+                let a = d.aomPer / 100;
+                let p = d.phytoPer / 100;
+                let y = d.palyPer / 100;
+
+                // تطبيق معادلة الجاذبية الثلاثية (Barycentric) لحساب البكسلات المئوية
+                let plotX = (p * VERTEX_PHYTO.x) + (a * VERTEX_AOM.x) + (y * VERTEX_PALY.x);
+                let plotY = (p * VERTEX_PHYTO.y) + (a * VERTEX_AOM.y) + (y * VERTEX_PALY.y);
+
+                // إنشاء النقطة (Dot)
+                let dot = document.createElement('div');
+                dot.className = 'plot-marker';
+                dot.style.left = plotX + '%';
+                dot.style.top = plotY + '%';
+                dot.innerText = (index + 1); // وضع رقم العينة بداخل النقطة
+
+                // إنشاء أداة التوضيح عند الوقوف على النقطة
+                let tooltip = document.createElement('span');
+                tooltip.className = 'marker-tooltip';
+                tooltip.innerText = `${d.name} (Field ${d.field})`;
+                dot.appendChild(tooltip);
+
+                container.appendChild(dot);
+            });
         }
 
         function renderTable() {
             let tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             
-            systemData.forEach(d => {
+            systemData.forEach((d, index) => {
                 let hcBadge = "";
                 let isGas = ["I", "II", "III", "IVa", "IVb", "V"].includes(d.field);
                 
@@ -407,7 +411,7 @@
                 }
 
                 let row = `<tr>
-                    <td style="color:var(--accent-primary); font-weight:bold;">${d.name}</td>
+                    <td style="color:var(--accent-primary); font-weight:bold;">${index + 1}. ${d.name}</td>
                     <td style="font-weight:bold;">${d.aomPer}%</td>
                     <td style="font-weight:bold;">${d.phytoPer}%</td>
                     <td style="font-weight:bold;">${d.palyPer}%</td>
@@ -419,22 +423,17 @@
         }
 
         function resetLab() {
-            let msg = currentLang === 'ar' ? "تأكيد: هل أنت متأكد من مسح جميع العينات من النظام؟" : "Confirm: Are you sure you want to clear all samples?";
+            let msg = currentLang === 'ar' ? "تأكيد: هل أنت متأكد من مسح جميع العينات؟" : "Confirm: Are you sure you want to clear all samples?";
             if (confirm(msg)) {
                 systemData = [];
-                updatePlot();
+                plotOnImage();
                 renderTable();
-                
-                document.getElementById('sampleName').value = '';
-                document.getElementById('aomCount').value = '';
-                document.getElementById('phytoCount').value = '';
-                document.getElementById('palyCount').value = '';
             }
         }
 
         function exportTableToCSV(filename) {
             let csv = [];
-            let rows = document.querySelectorAll("table tr");
+            let rows = document.querySelectorAll("#resultsTable tr");
             for (let i = 0; i < rows.length; i++) {
                 let row = [], cols = rows[i].querySelectorAll("td, th");
                 for (let j = 0; j < cols.length; j++) row.push(cols[j].innerText);
@@ -450,8 +449,6 @@
             downloadLink.click();
             document.body.removeChild(downloadLink);
         }
-
-        initPlot();
     </script>
 </body>
 </html>
