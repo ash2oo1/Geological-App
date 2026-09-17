@@ -169,8 +169,8 @@
         <!-- 1. شريط البحث والفلاتر (العلوي) -->
         <div class="top-overlay">
             <div class="search-bar">
-                <!-- زر الرجوع (عند الضغط عليه يمكن برمجته ليعود للصفحة السابقة) -->
-                <div class="back-btn" onclick="window.location.href='index.html'">
+                <!-- تم الربط بـ geopark2.html (الرئيسية) -->
+                <div class="back-btn" onclick="window.location.href='geopark2.html'">
                     <i class="fas fa-arrow-left"></i>
                 </div>
                 <div class="search-input-box">
@@ -232,25 +232,23 @@
             </div>
         </div>
 
-        <!-- 3. شريط التنقل السفلي (Map is Active) -->
+        <!-- 3. شريط التنقل السفلي المترابط بالكامل -->
         <div class="bottom-nav-container">
-            <!-- لاحظ وضعنا رابط index.html للرجوع للرئيسية -->
-            <a href="index.html" class="nav-item">
+            <a href="geopark2.html" class="nav-item">
                 <i class="fas fa-house"></i>
             </a>
-            <div class="nav-item">
+            <a href="#" class="nav-item">
                 <i class="fas fa-compass"></i>
-            </div>
-            <!-- أيقونة الخريطة أصبحت هي النشطة الآن -->
-            <div class="nav-item active">
+            </a>
+            <a href="geopark3.html" class="nav-item active">
                 <i class="fas fa-map"></i>
-            </div>
-            <div class="nav-item">
+            </a>
+            <a href="geopark5.html" class="nav-item">
                 <i class="fas fa-bell"></i>
-            </div>
-            <div class="nav-item">
+            </a>
+            <a href="geopark6.html" class="nav-item">
                 <div class="nav-avatar"></div>
-            </div>
+            </a>
         </div>
 
     </div>
@@ -284,260 +282,5 @@
         L.marker([45.8500, 6.9000], {icon: compassIcon}).addTo(map);
         L.marker([45.8100, 6.8200], {icon: mountainIcon}).addTo(map);
     </script>
-</body>
-</html>        }
-
-        /* --- حاوية الخريطة الحية --- */
-        #map {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%; z-index: 0;
-        }
-
-        /* --- الأجزاء العائمة العلوية (البحث والفلاتر) --- */
-        .top-overlay {
-            position: absolute; top: 20px; left: 0; width: 100%;
-            padding: 0 15px; z-index: 10; display: flex; flex-direction: column; gap: 10px;
-        }
-
-        .search-bar {
-            display: flex; align-items: center; gap: 10px;
-        }
-        .back-btn {
-            width: 45px; height: 45px; background: rgba(30,30,30,0.9); backdrop-filter: blur(10px);
-            border-radius: 12px; display: flex; justify-content: center; align-items: center;
-            color: white; font-size: 18px; border: 1px solid rgba(255,255,255,0.1);
-            cursor: pointer; transition: 0.2s;
-        }
-        .back-btn:active { transform: scale(0.92); }
-        
-        .search-input-box {
-            flex: 1; height: 45px; background: rgba(30,30,30,0.9); backdrop-filter: blur(10px);
-            border-radius: 12px; display: flex; align-items: center; padding: 0 15px;
-            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        .search-input-box i { color: var(--text-muted); font-size: 16px; }
-        .search-input-box input {
-            flex: 1; background: transparent; border: none; outline: none;
-            color: white; font-size: 15px; padding: 0 10px;
-        }
-        .search-input-box .fa-microphone { color: var(--text-main); }
-
-        .filters-scroll {
-            display: flex; overflow-x: auto; gap: 10px; scrollbar-width: none; padding-bottom: 5px;
-        }
-        .filters-scroll::-webkit-scrollbar { display: none; }
-        .filter-chip {
-            background: rgba(40,40,40,0.9); color: white; border: 1px solid rgba(255,255,255,0.1);
-            padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
-            white-space: nowrap; cursor: pointer; transition: 0.2s; backdrop-filter: blur(10px);
-        }
-        .filter-chip.active { background: var(--primary-green); border-color: var(--primary-green); }
-        .filter-chip:active { transform: scale(0.95); }
-
-        /* --- اللوحة السفلية (Bottom Sheet) --- */
-        .bottom-sheet {
-            position: absolute; bottom: 65px; /* يرتفع فوق شريط التنقل */
-            left: 0; width: 100%; height: 320px;
-            background: #202022; border-radius: 24px 24px 0 0;
-            z-index: 10; padding: 15px 20px;
-            box-shadow: 0 -5px 25px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        
-        .drag-handle { width: 40px; height: 4px; background: #52525b; border-radius: 2px; margin: 0 auto 15px; }
-
-        .sheet-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-        .site-info h2 { color: white; font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-        .site-info p { color: var(--text-muted); font-size: 12px; display: flex; align-items: center; gap: 6px; }
-        .site-info p i { color: var(--primary-green); }
-        
-        .risk-badge {
-            background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);
-            padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;
-            display: flex; flex-direction: column; align-items: center; gap: 2px;
-        }
-
-        .section-title { color: var(--text-muted); font-size: 13px; font-weight: 600; margin-bottom: 12px; }
-
-        /* --- كروت المسارات داخل اللوحة (Trail Segments) --- */
-        .trail-segments { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; scrollbar-width: none; }
-        
-        .segment-card {
-            background: #2a2a2c; border-radius: 12px; padding: 12px 15px;
-            display: flex; justify-content: space-between; align-items: center;
-            border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.2s;
-            position: relative; overflow: hidden;
-        }
-        .segment-card:active { transform: scale(0.97); background: #323235; }
-        
-        /* الخط الملون الجانبي */
-        .segment-card::before {
-            content: ''; position: absolute; left: 0; top: 15%; height: 70%; width: 4px; border-radius: 0 4px 4px 0;
-        }
-        .segment-card.moderate::before { background: var(--trail-moderate); }
-        .segment-card.difficult::before { background: var(--trail-difficult); }
-
-        .segment-details { margin-left: 8px; }
-        .diff-label { font-size: 10px; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 2px; }
-        .moderate .diff-label { color: var(--trail-moderate); }
-        .difficult .diff-label { color: var(--trail-difficult); }
-        .segment-details h4 { color: white; font-size: 15px; font-weight: 600; }
-
-        .segment-stats { text-align: right; }
-        .segment-stats h4 { color: white; font-size: 15px; font-weight: 700; }
-        .segment-stats span { color: var(--text-muted); font-size: 11px; }
-
-        /* --- شريط التنقل السفلي الموحد --- */
-        .bottom-nav-container {
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 100%; max-width: 414px; height: 65px;
-            background: var(--nav-bg); border-top: 1px solid var(--nav-border);
-            display: flex; justify-content: space-around; align-items: center;
-            z-index: 100; padding-bottom: env(safe-area-inset-bottom);
-        }
-        .nav-item { display: flex; justify-content: center; align-items: center; color: var(--text-muted); font-size: 24px; cursor: pointer; width: 50px; height: 50px; transition: 0.2s; text-decoration: none;}
-        .nav-item:active { transform: scale(0.9); }
-        .nav-item.active { color: var(--primary-green); }
-        .nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: url('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80') center/cover; border: 2px solid transparent; }
-        
-        /* تصميم أيقونات الخريطة (CSS Map Markers) */
-        .custom-map-marker {
-            background: #d97706; color: white; border: 2px solid #27272a;
-            border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-size: 14px;
-        }
-        .custom-map-marker.compass { background: #5a391c; }
-    </style>
-</head>
-<body>
-
-    <div class="app-container">
-        
-        <!-- الحاوية التي ستعمل عليها مكتبة Leaflet -->
-        <div id="map"></div>
-
-        <!-- 1. شريط البحث والفلاتر (العلوي) -->
-        <div class="top-overlay">
-            <div class="search-bar">
-                <!-- زر الرجوع (عند الضغط عليه يمكن برمجته ليعود للصفحة السابقة) -->
-                <div class="back-btn" onclick="window.location.href='index.html'">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <div class="search-input-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search geological sites...">
-                    <i class="fas fa-microphone"></i>
-                </div>
-            </div>
-            
-            <div class="filters-scroll">
-                <div class="filter-chip active"><i class="fas fa-check" style="margin-right:4px;"></i> All Sites</div>
-                <div class="filter-chip">Hiking Trails</div>
-                <div class="filter-chip">Rock Formations</div>
-                <div class="filter-chip">Caves</div>
-            </div>
-        </div>
-
-        <!-- 2. اللوحة السفلية (Bottom Sheet) -->
-        <div class="bottom-sheet">
-            <div class="drag-handle"></div>
-            
-            <div class="sheet-header">
-                <div class="site-info">
-                    <h2>Vanoise National Park</h2>
-                    <p><i class="fas fa-map-marker-alt"></i> Graphite Quartzite Zone • 2,400m</p>
-                </div>
-                <div class="risk-badge">
-                    <i class="fas fa-layer-group"></i>
-                    High Risk
-                </div>
-            </div>
-
-            <div class="section-title">Active Trail Segments</div>
-            
-            <div class="trail-segments">
-                <!-- مسار متوسط -->
-                <div class="segment-card moderate">
-                    <div class="segment-details">
-                        <div class="diff-label">MODERATE</div>
-                        <h4>Lac Blanc Ascent</h4>
-                    </div>
-                    <div class="segment-stats">
-                        <h4>4.2 km</h4>
-                        <span>+450m</span>
-                    </div>
-                </div>
-
-                <!-- مسار صعب -->
-                <div class="segment-card difficult">
-                    <div class="segment-details">
-                        <div class="diff-label">DIFFICULT</div>
-                        <h4>Grand Combin Traverse</h4>
-                    </div>
-                    <div class="segment-stats">
-                        <h4>8.1 km</h4>
-                        <span>+820m</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. شريط التنقل السفلي (Map is Active) -->
-        <div class="bottom-nav-container">
-            <!-- لاحظ وضعنا رابط index.html للرجوع للرئيسية -->
-            <a href="index.html" class="nav-item">
-                <i class="fas fa-house"></i>
-            </a>
-            <div class="nav-item">
-                <i class="fas fa-compass"></i>
-            </div>
-            <!-- أيقونة الخريطة أصبحت هي النشطة الآن -->
-            <div class="nav-item active">
-                <i class="fas fa-map"></i>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-bell"></i>
-            </div>
-            <div class="nav-item">
-                <div class="nav-avatar"></div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- سكريبت تشغيل الخريطة الحية وتوليد العلامات الجغرافية -->
-    <script>
-        // تحديد الإحداثيات (منطقة جبلية كمثال)
-        var map = L.map('map', {zoomControl: false}).setView([45.8326, 6.8652], 12); 
-
-        // استخدام خرائط الطبوغرافية الجيولوجية (ESRI Topo Map) - مجانية وبدون علامة مائية!
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-            maxZoom: 17,
-        }).addTo(map);
-
-        // إنشاء أيقونة جبلية مخصصة (كما في صورتك)
-        var mountainIcon = L.divIcon({
-            className: 'custom-map-marker',
-            html: '<i class="fas fa-mountain"></i>',
-            iconSize: [36, 36]
-        });
-
-        // إنشاء أيقونة البوصلة
-        var compassIcon = L.divIcon({
-            className: 'custom-map-marker compass',
-            html: '<i class="fas fa-compass"></i>',
-            iconSize: [30, 30]
-        });
-
-        // وضع العلامات على الخريطة الحية
-        L.marker([45.8326, 6.8652], {icon: mountainIcon}).addTo(map);
-        L.marker([45.8500, 6.9000], {icon: compassIcon}).addTo(map);
-        L.marker([45.8100, 6.8200], {icon: mountainIcon}).addTo(map);
-    </script>
-    <!-- ربط محرك التطبيق -->
-    <script src="app.js"></script>
-</body>
-</html>
 </body>
 </html>
