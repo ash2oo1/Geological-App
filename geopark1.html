@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Geo Park - Home Feed</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #27272a; 
+            --primary-green: #22c55e; 
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --alert-bg: #5a391c;
+            --alert-text: #fdba74;
+            --nav-bg: #121212; /* لون مطابق للخلفية لدمج الشريط */
+            --nav-border: rgba(255,255,255,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent;}
+
+        body { background: #000; display: flex; justify-content: center; }
+
+        .app-container {
+            width: 100%; max-width: 414px; min-height: 100vh;
+            background: var(--bg-color);
+            position: relative; overflow-x: hidden;
+            padding-bottom: 75px; /* مساحة كافية للشريط السفلي المسطح */
+        }
+
+        /* --- Hero Section --- */
+        .hero-section {
+            background: linear-gradient(to bottom, rgba(18,18,18,0.3) 0%, rgba(18,18,18,0.9) 60%, #121212 100%), 
+                        url('https://images.unsplash.com/photo-1572085313466-6710de8d7ba3?auto=format&fit=crop&w=800&q=80');
+            background-size: cover; background-position: center top;
+            padding-bottom: 20px;
+        }
+
+        /* Header */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 15px; }
+        .logo-area h1 { color: #16a34a; font-size: 26px; font-weight: 800; letter-spacing: -0.5px;}
+        .logo-area p { color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 400; }
+        
+        /* Location */
+        .weather-section { padding: 10px 20px 0; }
+        .weather-section .subtitle { color: #7dd3fc; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+        .weather-section .location-title { color: var(--text-main); font-size: 26px; font-weight: 700; margin: 4px 0 10px; display: flex; align-items: center; gap: 8px; }
+        .weather-section .location-title i { font-size: 14px; color: rgba(255,255,255,0.6); }
+        .weather-info { display: flex; align-items: center; gap: 15px; color: rgba(255,255,255,0.9); font-size: 14px; font-weight: 500;}
+        .weather-info i.fa-sun { color: #fbbf24; }
+        
+        /* Alert Box */
+        .alert-box { margin: 15px 20px 25px; background: var(--alert-bg); border-radius: 12px; padding: 15px; display: flex; align-items: center; gap: 15px; }
+        .alert-icon { width: 35px; height: 35px; border-radius: 8px; background: rgba(253, 186, 116, 0.15); display: flex; justify-content: center; align-items: center; color: var(--alert-text); font-size: 16px; flex-shrink: 0; }
+        .alert-text h4 { color: var(--alert-text); font-size: 14px; margin-bottom: 2px; }
+        .alert-text p { color: rgba(255,255,255,0.9); font-size: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
+        .alert-arrow { color: rgba(255,255,255,0.7); font-size: 12px; margin-left: auto; }
+
+        /* Section Titles */
+        .section-header { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; margin-bottom: 15px; }
+        .section-header h2 { color: var(--text-main); font-size: 19px; font-weight: 700; }
+        .section-header a { color: var(--primary-green); font-size: 13px; font-weight: 600; text-decoration: none; }
+        .section-header i { color: var(--text-muted); font-size: 18px; }
+
+        /* Trending Trails */
+        .trending-container { display: flex; overflow-x: auto; gap: 12px; padding: 0 20px 10px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+        .trending-container::-webkit-scrollbar { display: none; }
+        .trail-card { background: var(--card-bg); border-radius: 14px; padding: 10px; display: flex; flex-direction: row; align-items: center; gap: 12px; min-width: 250px; scroll-snap-align: start; flex-shrink: 0; }
+        .trail-img { width: 55px; height: 55px; border-radius: 10px; flex-shrink: 0; background-size: cover; background-position: center; }
+        .trail-info { display: flex; flex-direction: column; justify-content: center; text-align: left; }
+        .trail-info h3 { color: var(--text-main); font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+        .trail-info p { color: var(--text-muted); font-size: 12px; margin-bottom: 3px; }
+        .trail-status { color: var(--text-muted); font-size: 11px; display: flex; align-items: center; gap: 5px; }
+        .status-dot { width: 6px; height: 6px; background: var(--primary-green); border-radius: 50%; }
+
+        /* Geological Wonders */
+        .wonders-container { padding: 0 20px; display: flex; flex-direction: column; gap: 20px; }
+        .wonder-card { background: var(--card-bg); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+        .wonder-img-box { width: 100%; height: 180px; position: relative; background-size: cover; background-position: center; }
+        .rating-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); padding: 5px 8px; border-radius: 8px; display: flex; align-items: center; gap: 4px; color: var(--text-main); font-size: 12px; font-weight: 600; }
+        .rating-badge i { color: #f97316; font-size: 11px; }
+        .wonder-details { padding: 15px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .wonder-text h3 { color: var(--text-main); font-size: 17px; margin-bottom: 4px; font-weight: 600;}
+        .wonder-text p { color: var(--text-muted); font-size: 13px; display: flex; align-items: center; gap: 5px; }
+        .wonder-tag { background: rgba(34, 197, 94, 0.15); color: var(--primary-green); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+
+        .copyright { text-align: center; color: #52525b; font-size: 11px; padding: 20px 0 20px; font-weight: 500; }
+
+        /* --- Modern Flat Bottom Navigation (Facebook Inspired) --- */
+        .bottom-nav-container {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 414px; height: 65px;
+            background: var(--nav-bg); 
+            border-top: 1px solid var(--nav-border); /* خط خفيف يفصل الشريط عن التطبيق */
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 100;
+            padding-bottom: env(safe-area-inset-bottom); /* لدعم شاشات الآيفون الحديثة */
+        }
+
+        .nav-item {
+            display: flex; justify-content: center; align-items: center;
+            color: var(--text-muted); font-size: 24px; cursor: pointer;
+            width: 50px; height: 50px; transition: color 0.2s ease;
+        }
+
+        .nav-item.active { color: var(--primary-green); }
+
+        /* الأفاتار المصغر داخل شريط التنقل */
+        .nav-avatar {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: url('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80') center/cover;
+            border: 2px solid transparent; transition: border-color 0.2s ease;
+        }
+
+        /* عندما تكون صفحة البروفايل نشطة، يظهر إطار أخضر حول الصورة */
+        .nav-item.active .nav-avatar { border-color: var(--primary-green); }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <div class="hero-section">
+            <header class="header">
+                <div class="logo-area">
+                    <h1>Geo Park</h1>
+                    <p>Explore the Earth's Heart</p>
+                </div>
+            </header>
+
+            <div class="weather-section">
+                <div class="subtitle">Current Location</div>
+                <div class="location-title">
+                    Blackwood Peak <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="weather-info">
+                    <span><i class="fas fa-sun"></i> 24°C Clear</span>
+                    <span><i class="fas fa-wind"></i> 12km/h NW</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert-box">
+            <div class="alert-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="alert-text">
+                <h4>Terrain Alert</h4>
+                <p>Unstable rock formations detected near the North Ridge. Stick to mark...</p>
+            </div>
+            <i class="fas fa-chevron-right alert-arrow"></i>
+        </div>
+
+        <div class="section-header">
+            <h2>Trending Trails</h2>
+            <a href="#">See All</a>
+        </div>
+        
+        <div class="trending-container">
+            <div class="trail-card">
+                <div class="trail-img" style="background-image: url('https://images.unsplash.com/photo-1518182170546-076616fdacaf?auto=format&fit=crop&w=200&q=80');"></div>
+                <div class="trail-info">
+                    <h3>Basalt Column Trail</h3>
+                    <p>4.2km • 320m elev</p>
+                    <div class="trail-status"><div class="status-dot"></div> medium</div>
+                </div>
+            </div>
+            <div class="trail-card">
+                <div class="trail-img" style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=200&q=80');"></div>
+                <div class="trail-info">
+                    <h3>Obsidian Pathway</h3>
+                    <p>2.8km • 150m elev</p>
+                    <div class="trail-status"><div class="status-dot"></div> easy</div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="section-header">
+            <h2>Geological Wonders</h2>
+            <i class="fas fa-sliders-h"></i>
+        </div>
+
+        <div class="wonders-container">
+            <div class="wonder-card">
+                <div class="wonder-img-box" style="background-image: url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=600&q=80');">
+                    <div class="rating-badge"><i class="fas fa-star"></i> 4.9</div>
+                </div>
+                <div class="wonder-details">
+                    <div class="wonder-text">
+                        <h3>The Great Caldera</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Iceland, Ring Road</p>
+                    </div>
+                    <div class="wonder-tag">Volcanic</div>
+                </div>
+            </div>
+
+            <div class="wonder-card">
+                <div class="wonder-img-box" style="background-image: url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80');">
+                    <div class="rating-badge"><i class="fas fa-star"></i> 4.7</div>
+                </div>
+                <div class="wonder-details">
+                    <div class="wonder-text">
+                        <h3>Azure Grotto</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Capri, Italy</p>
+                    </div>
+                    <div class="wonder-tag">Karst</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="copyright">
+            Powered by Shandal System © 2026
+        </div>
+
+        <!-- Facebook Style Flat Bottom Navigation (LTR Layout) -->
+        <div class="bottom-nav-container">
+            <!-- 1. Home (Active) -->
+            <div class="nav-item active">
+                <i class="fas fa-house"></i>
+            </div>
+            <!-- 2. Explore / Compass -->
+            <div class="nav-item">
+                <i class="fas fa-compass"></i>
+            </div>
+            <!-- 3. Map -->
+            <div class="nav-item">
+                <i class="fas fa-map"></i>
+            </div>
+            <!-- 4. Notifications -->
+            <div class="nav-item">
+                <i class="fas fa-bell"></i>
+            </div>
+            <!-- 5. Profile Picture (Like Facebook) -->
+            <div class="nav-item">
+                <div class="nav-avatar"></div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
