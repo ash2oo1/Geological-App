@@ -7,7 +7,6 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -17,7 +16,6 @@
             --card-bg: #1e1e1e;
             --text-main: #ffffff;
             --text-muted: #a1a1aa;
-            
             --safe-color: #10b981;
             --warning-color: #f59e0b;
             --danger-color: #ef4444;
@@ -46,6 +44,10 @@
         .logo-text h1 { color: white; font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
         .logo-text p { color: #38bdf8; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         
+        /* زر الإعدادات أصبح قابلاً للضغط */
+        .settings-btn { color: var(--text-muted); font-size: 22px; cursor: pointer; transition: 0.2s; padding: 5px; }
+        .settings-btn:active { transform: rotate(45deg) scale(0.9); color: white; }
+
         /* --- Map Container --- */
         .map-section {
             width: 100%; height: 260px; position: relative; border-bottom: 2px solid rgba(255,255,255,0.05);
@@ -57,9 +59,9 @@
             background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); color: white;
             padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
             z-index: 10; border: 1px solid rgba(255,255,255,0.1); pointer-events: none;
+            transition: opacity 0.5s ease; /* حركة الاختفاء */
         }
 
-        /* زر تحديد الموقع (GPS) */
         .locate-btn {
             position: absolute; bottom: 20px; right: 20px; z-index: 1000;
             width: 45px; height: 45px; border-radius: 50%;
@@ -104,39 +106,64 @@
         }
 
         .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .data-box {
-            background: var(--card-bg); border-radius: 16px; padding: 15px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
+        .data-box { background: var(--card-bg); border-radius: 16px; padding: 15px; border: 1px solid rgba(255,255,255,0.05); }
         .data-box i { color: #38bdf8; font-size: 20px; margin-bottom: 10px; }
         .data-box .label { color: var(--text-muted); font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;}
         .data-box .val { color: white; font-size: 20px; font-weight: 700; }
         .caine-box i { color: #8b5cf6; }
 
         .btn-check {
-            width: 100%; background: #2563eb; color: white;
-            border: none; padding: 16px; border-radius: 16px;
+            width: 100%; background: #2563eb; color: white; border: none; padding: 16px; border-radius: 16px;
             font-size: 16px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 10px;
             cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
         }
         .btn-check:active { transform: scale(0.97); }
         .btn-check:disabled { background: #3f3f46; color: #a1a1aa; box-shadow: none; cursor: not-allowed; }
 
-        .evac-instructions {
-            display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 16px; padding: 15px; margin-top: 5px;
-        }
+        .evac-instructions { display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px; padding: 15px; margin-top: 5px; }
         .evac-instructions.active { display: block; }
         .evac-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
         .evac-item:last-child { margin-bottom: 0; }
         .evac-item i { width: 30px; height: 30px; background: rgba(239, 68, 68, 0.2); color: #ef4444; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 14px;}
         .evac-item p { color: white; font-size: 13px; font-weight: 600; }
 
+        /* --- Settings Modal (النافذة المنبثقة للإعدادات) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 3000; opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .modal-content {
+            background: var(--card-bg); width: 90%; max-width: 350px;
+            border-radius: 20px; padding: 25px; border: 1px solid rgba(255,255,255,0.1);
+            transform: translateY(20px); transition: 0.3s;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h3 { color: white; font-size: 18px; font-weight: 700; }
+        .close-modal { color: var(--text-muted); font-size: 20px; cursor: pointer; }
+        
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; color: var(--text-muted); font-size: 13px; margin-bottom: 8px; font-weight: 600;}
+        .input-group input {
+            width: 100%; background: #121212; border: 1px solid rgba(255,255,255,0.1);
+            color: white; padding: 12px 15px; border-radius: 12px; font-size: 16px; font-weight: 600; outline: none;
+        }
+        .input-group input:focus { border-color: #2563eb; }
+        
+        .btn-save {
+            width: 100%; background: var(--safe-color); color: white; border: none;
+            padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer;
+        }
+        .btn-save:active { transform: scale(0.97); }
+
         #loader {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(18,18,18,0.8); backdrop-filter: blur(5px);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 2000; color: white; display: none;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(18,18,18,0.8); backdrop-filter: blur(5px);
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; color: white; display: none;
         }
         #loader.active { display: flex; }
         .spinner { font-size: 30px; color: #2563eb; margin-bottom: 10px; }
@@ -154,6 +181,21 @@
             <p id="loaderText">Fetching weather data...</p>
         </div>
 
+        <!-- Settings Modal (النافذة المخفية) -->
+        <div id="settingsModal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Risk Parameters</h3>
+                    <i class="fas fa-times close-modal" onclick="closeSettings()"></i>
+                </div>
+                <div class="input-group">
+                    <label>Danger Threshold (mm/24h):</label>
+                    <input type="number" id="thresholdInput" value="20.0" step="0.5">
+                </div>
+                <button class="btn-save" onclick="saveSettings()">Save & Recalculate</button>
+            </div>
+        </div>
+
         <!-- Header -->
         <header class="header">
             <div class="logo-area">
@@ -163,14 +205,15 @@
                     <p>Early Warning System</p>
                 </div>
             </div>
-            <i class="fas fa-cog" style="color:var(--text-muted); font-size: 20px;"></i>
+            <!-- زر الإعدادات المربوط -->
+            <i class="fas fa-cog settings-btn" onclick="openSettings()"></i>
         </header>
 
         <!-- Interactive Map (Leaflet) -->
         <div class="map-section">
-            <div class="map-overlay-text">Drag map to select village</div>
+            <!-- جملة السحب ستختفي بمجرد تحريك الخريطة -->
+            <div id="dragHint" class="map-overlay-text">Drag map to select village</div>
             
-            <!-- زر الموقع الجغرافي الجديد -->
             <button class="locate-btn" onclick="locateUser()" title="My Location">
                 <i id="gpsIcon" class="fas fa-location-arrow"></i>
             </button>
@@ -211,7 +254,7 @@
                 <div class="data-box caine-box">
                     <i class="fas fa-chart-line"></i>
                     <div class="label">Caine Threshold</div>
-                    <div id="valCaine" class="val">14.8 mm</div>
+                    <div id="valCaine" class="val">20.0 mm</div>
                 </div>
             </div>
 
@@ -225,9 +268,12 @@
 
     <!-- المحرك البرمجي (JavaScript) -->
     <script>
-        // إعداد الخريطة الأولية (سوران، كمثال لمناطق جبلية)
-        let currentLat = 36.6527; 
-        let currentLon = 44.5422;
+        // متغيرات النظام
+        let currentLat = 33.3152; // إحداثيات بغداد الافتراضية
+        let currentLon = 44.3661;
+        let globalDangerThreshold = 20.0; // العتبة الافتراضية
+        let globalWarningThreshold = 10.0;
+        let lastFetchedRain = 0.0; // لحفظ آخر قراءة للمطر
         
         var map = L.map('map', {zoomControl: false}).setView([currentLat, currentLon], 11);
         
@@ -242,6 +288,11 @@
         });
         var marker = L.marker([currentLat, currentLon], {icon: targetIcon}).addTo(map);
 
+        // إخفاء جملة الإرشاد عند أول تحريك للخريطة
+        map.once('dragstart', function() {
+            document.getElementById('dragHint').style.opacity = '0';
+        });
+
         map.on('move', function () {
             var center = map.getCenter();
             marker.setLatLng(center);
@@ -249,25 +300,47 @@
             currentLon = center.lng;
         });
 
-        // دالة تحديد موقع المستخدم (الجديدة)
+        // دوال نافذة الإعدادات (Modal Functions)
+        function openSettings() {
+            document.getElementById('thresholdInput').value = globalDangerThreshold;
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        function saveSettings() {
+            const newVal = parseFloat(document.getElementById('thresholdInput').value);
+            if(newVal > 0) {
+                globalDangerThreshold = newVal;
+                globalWarningThreshold = newVal / 2; // التحذير يكون نصف الخطر
+                
+                // تحديث الرقم في الواجهة
+                document.getElementById('valCaine').innerText = `${globalDangerThreshold.toFixed(1)} mm`;
+                closeSettings();
+                
+                // إعادة تقييم الخطر فوراً بالرقم الجديد
+                updateStatusUI(lastFetchedRain, globalWarningThreshold, globalDangerThreshold);
+            }
+        }
+
+        // دالة تحديد الموقع
         function locateUser() {
             const gpsIcon = document.getElementById('gpsIcon');
             
             if (navigator.geolocation) {
-                gpsIcon.className = 'fas fa-spinner fa-spin'; // تغيير الأيقونة أثناء البحث
+                gpsIcon.className = 'fas fa-spinner fa-spin';
+                // إخفاء جملة التوجيه لأن الموقع تم تحديده آلياً
+                document.getElementById('dragHint').style.opacity = '0';
                 
                 navigator.geolocation.getCurrentPosition(
                     function(position) {
                         currentLat = position.coords.latitude;
                         currentLon = position.coords.longitude;
-                        
-                        // نقل الخريطة والدبوس للموقع الجديد
                         map.flyTo([currentLat, currentLon], 13);
                         marker.setLatLng([currentLat, currentLon]);
-                        
-                        gpsIcon.className = 'fas fa-location-arrow'; // إعادة الأيقونة
-                        
-                        // تحليل تلقائي للموقع الجديد
+                        gpsIcon.className = 'fas fa-location-arrow';
                         analyzeRisk();
                     },
                     function(error) {
@@ -281,7 +354,7 @@
             }
         }
 
-        // دالة سحب البيانات الحقيقية من Open-Meteo
+        // سحب البيانات
         async function analyzeRisk() {
             const loader = document.getElementById('loader');
             const loaderText = document.getElementById('loaderText');
@@ -292,23 +365,17 @@
             btn.disabled = true;
 
             try {
-                // سحب بيانات المطر لليوم الحالي من الـ API الحقيقي
                 const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${currentLat}&longitude=${currentLon}&daily=precipitation_sum&timezone=auto&forecast_days=1`);
                 const data = await response.json();
                 
-                let rain24h = 0.0;
                 if(data && data.daily && data.daily.precipitation_sum) {
-                    rain24h = data.daily.precipitation_sum[0] || 0.0;
+                    lastFetchedRain = data.daily.precipitation_sum[0] || 0.0;
                 }
 
-                // عتبة الخطر الثابتة (للتجربة الأولية)
-                const thresholdDanger = 20.0;
-                const thresholdWarning = 10.0;
+                document.getElementById('valRain').innerText = `${lastFetchedRain.toFixed(1)} mm`;
+                document.getElementById('valCaine').innerText = `${globalDangerThreshold.toFixed(1)} mm`;
 
-                document.getElementById('valRain').innerText = `${rain24h.toFixed(1)} mm`;
-                document.getElementById('valCaine').innerText = `${thresholdDanger} mm`;
-
-                updateStatusUI(rain24h, thresholdWarning, thresholdDanger);
+                updateStatusUI(lastFetchedRain, globalWarningThreshold, globalDangerThreshold);
 
             } catch (error) {
                 console.error("Error fetching data:", error);
