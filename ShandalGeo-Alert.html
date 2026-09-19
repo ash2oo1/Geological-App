@@ -1,105 +1,89 @@
-html_content = """
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Shandal Geo-Alert Analytics Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shandal System - Hydrological Portal</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Leaflet & Chart.js -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
-            --bg-dark: #0f172a; /* لون كحلي داكن احترافي للـ Dashboards */
-            --card-bg: #1e293b;
+            --bg-dark: #090e17; 
+            --card-bg: #141b2d;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --accent-blue: #3b82f6;
+            --accent-blue: #2563eb;
             --accent-cyan: #06b6d4;
             --danger-red: #ef4444;
-            --border-color: #334155;
+            --border-color: #1e293b;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        body { background: var(--bg-dark); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
-        body { background: var(--bg-dark); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
-
-        /* --- Header Navigation --- */
+        /* --- Header: Academic Branding --- */
         .top-navbar {
-            background: #0b1120; border-bottom: 1px solid var(--border-color);
+            background: #040812; border-bottom: 1px solid var(--border-color);
             padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
         }
-        .brand { display: flex; align-items: center; gap: 12px; }
-        .brand-icon { background: var(--accent-blue); width: 40px; height: 40px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 20px; color: white;}
-        .brand-text h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 2px; }
-        .brand-text p { color: var(--accent-cyan); font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
-        
-        .nav-links { display: flex; gap: 20px; }
-        .nav-link { color: var(--text-muted); text-decoration: none; font-size: 15px; font-weight: 600; padding: 8px 12px; border-radius: 8px; transition: 0.2s;}
-        .nav-link:hover, .nav-link.active { color: white; background: rgba(255,255,255,0.05); }
+        .brand { display: flex; align-items: center; gap: 15px; }
+        .brand-icon { background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 24px; color: white; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);}
+        .brand-text h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 2px; color: white;}
+        .brand-text p { color: var(--accent-cyan); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
 
         /* --- Main Layout --- */
-        .main-container {
-            flex: 1; padding: 30px; display: grid;
-            grid-template-columns: 350px 1fr; gap: 30px;
-            max-width: 1600px; margin: 0 auto; width: 100%;
-        }
+        .main-container { padding: 20px 30px; display: flex; flex-direction: column; gap: 20px; max-width: 1800px; margin: 0 auto; width: 100%; }
 
-        /* --- Left Panel (Controls & Map) --- */
-        .side-panel { display: flex; flex-direction: column; gap: 20px; }
+        /* --- Top Section: Panoramic Map & Location Info --- */
+        .map-wrapper { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; height: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);}
         
-        .control-card { background: var(--card-bg); border-radius: 16px; padding: 25px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;}
-        .card-header h2 { font-size: 18px; font-weight: 700; color: white; }
+        .location-header { background: #0f172a; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+        .loc-info { display: flex; align-items: center; gap: 10px; }
+        .loc-info i { color: var(--accent-cyan); font-size: 18px; }
+        .loc-info h3 { font-size: 16px; font-weight: 600; color: white; }
+        #regionName { color: var(--text-muted); font-size: 14px; margin-left: 5px; font-style: italic;}
         
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; color: var(--text-muted); font-size: 13px; font-weight: 600; margin-bottom: 8px; }
-        .input-field { width: 100%; background: #0f172a; border: 1px solid var(--border-color); color: white; padding: 12px; border-radius: 10px; font-size: 15px; outline: none; }
-        .input-field:focus { border-color: var(--accent-blue); }
+        .gps-btn { background: var(--accent-blue); color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px;}
+        .gps-btn:hover { background: #1d4ed8; }
 
-        .date-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        #portalMap { width: 100%; flex: 1; z-index: 1;}
 
-        .btn-analyze { width: 100%; background: var(--accent-blue); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 10px;}
-        .btn-analyze:hover { background: #2563eb; }
+        /* --- Bottom Section: Grid Layout --- */
+        .analysis-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
 
-        .map-container { flex: 1; min-height: 300px; background: var(--card-bg); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-color); position: relative;}
-        #portalMap { width: 100%; height: 100%; }
+        /* Controls Panel */
+        .control-panel { background: var(--card-bg); border-radius: 16px; padding: 20px; border: 1px solid var(--border-color); }
+        .panel-title { font-size: 16px; font-weight: 700; color: white; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
+        
+        .input-group { margin-bottom: 12px; }
+        .input-group label { display: block; color: var(--text-muted); font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+        .input-field, select { width: 100%; background: #0b1120; border: 1px solid var(--border-color); color: white; padding: 10px; border-radius: 8px; font-size: 14px; outline: none; }
+        .input-field:focus, select:focus { border-color: var(--accent-blue); }
 
-        /* --- Right Panel (Analytics & Charts) --- */
-        .analytics-panel { display: flex; flex-direction: column; gap: 20px; }
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        /* Case Study Quick Select */
-        .case-studies { display: flex; gap: 15px; margin-bottom: 5px; }
-        .case-btn { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: var(--accent-blue); padding: 10px 15px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px;}
-        .case-btn:hover { background: rgba(59, 130, 246, 0.2); }
-        .case-btn i { font-size: 16px; }
+        .btn-analyze { width: 100%; background: var(--accent-cyan); color: #040812; border: none; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: 800; cursor: pointer; transition: 0.2s; margin-top: 10px;}
+        .btn-analyze:hover { background: #0891b2; }
 
-        /* Stats Row */
-        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        .stat-box { background: var(--card-bg); border-radius: 16px; padding: 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column; }
-        .stat-icon { color: var(--text-muted); font-size: 20px; margin-bottom: 10px; }
-        .stat-val { font-size: 28px; font-weight: 800; color: white; margin-bottom: 5px;}
-        .stat-label { color: var(--text-muted); font-size: 13px; font-weight: 600; text-transform: uppercase;}
+        /* Chart Panel */
+        .chart-panel { background: var(--card-bg); border-radius: 16px; padding: 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column;}
+        .chart-container { flex: 1; position: relative; width: 100%; min-height: 350px; }
+        
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: #0b1120; border-radius: 10px; padding: 15px; border: 1px solid var(--border-color); }
+        .stat-box h4 { color: var(--text-muted); font-size: 11px; text-transform: uppercase; margin-bottom: 5px; }
+        .stat-box .val { font-size: 22px; font-weight: 800; color: white; }
 
-        /* Chart Area */
-        .chart-card { background: var(--card-bg); border-radius: 16px; padding: 25px; border: 1px solid var(--border-color); flex: 1; display: flex; flex-direction: column; min-height: 400px;}
-        .chart-container { flex: 1; position: relative; width: 100%; height: 100%; }
-
-        /* Loading State */
-        .loader-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(4px);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 10; border-radius: 16px; display: none;
-        }
+        .loader-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(4px); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 10; border-radius: 16px; }
         .loader-overlay.active { display: flex; }
-        .spinner { font-size: 40px; color: var(--accent-blue); margin-bottom: 15px; }
-
+        .spinner { font-size: 40px; color: var(--accent-cyan); margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -107,42 +91,64 @@ html_content = """
     <!-- Header -->
     <header class="top-navbar">
         <div class="brand">
-            <div class="brand-icon"><i class="fas fa-chart-line"></i></div>
+            <div class="brand-icon"><i class="fas fa-layer-group"></i></div>
             <div class="brand-text">
-                <h1>Shandal Geo-Alert</h1>
-                <p>Historical Analysis Portal</p>
+                <h1>Shandal System for Geological Field Survey</h1>
+                <p>Hydrological Analysis & Landslide Early Warning Portal</p>
             </div>
         </div>
-        <nav class="nav-links">
-            <a href="#" class="nav-link active"><i class="fas fa-history"></i> Historical Data</a>
-            <a href="#" class="nav-link"><i class="fas fa-book-open"></i> Case Studies</a>
-            <a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
-        </nav>
+        <div style="color:var(--text-muted); font-size: 14px;"><i class="fas fa-user-circle"></i> Geologist Ali Shandal</div>
     </header>
 
-    <!-- Main Content -->
     <div class="main-container">
         
-        <!-- Left Panel: Controls & Map -->
-        <div class="side-panel">
-            <div class="control-card">
-                <div class="card-header">
-                    <h2>Analysis Parameters</h2>
-                    <i class="fas fa-sliders-h" style="color: var(--text-muted);"></i>
+        <!-- Top: Panoramic Map -->
+        <div class="map-wrapper">
+            <div class="location-header">
+                <div class="loc-info">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Study Area:</h3>
+                    <span id="regionName">Select a location on the map...</span>
                 </div>
+                <button class="gps-btn" onclick="locateGPS()"><i class="fas fa-location-arrow"></i> High-Precision GPS</button>
+            </div>
+            <div id="portalMap"></div>
+        </div>
+
+        <!-- Bottom: Analysis Grid -->
+        <div class="analysis-grid">
+            
+            <!-- Parameters Panel -->
+            <div class="control-panel">
+                <div class="panel-title"><i class="fas fa-sliders-h"></i> Hydrological Parameters</div>
                 
-                <div class="date-row">
+                <div class="input-group">
+                    <label>Global/Local High-Risk Presets</label>
+                    <select id="presetSelect" onchange="loadPreset()">
+                        <option value="none">-- Custom Location --</option>
+                        <optgroup label="Iraq (Local)">
+                            <option value="hawraman">Hawraman Mountains, Halabja</option>
+                            <option value="rawanduz">Rawanduz Canyon, Erbil</option>
+                        </optgroup>
+                        <optgroup label="Global (Academic Cases)">
+                            <option value="andes">Andes Mountains, Peru</option>
+                            <option value="himalayas">Himalayan Slopes, Nepal</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="row-2">
                     <div class="input-group">
                         <label>Latitude</label>
-                        <input type="text" id="latInput" class="input-field" value="36.6527">
+                        <input type="text" id="latInput" class="input-field" value="35.2536">
                     </div>
                     <div class="input-group">
                         <label>Longitude</label>
-                        <input type="text" id="lonInput" class="input-field" value="44.5422">
+                        <input type="text" id="lonInput" class="input-field" value="46.1622">
                     </div>
                 </div>
 
-                <div class="date-row">
+                <div class="row-2">
                     <div class="input-group">
                         <label>Start Date</label>
                         <input type="date" id="startDate" class="input-field" value="2023-11-01">
@@ -153,135 +159,142 @@ html_content = """
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <label>Caine Threshold (Danger Level mm/24h)</label>
-                    <input type="number" id="thresholdInput" class="input-field" value="20.0" step="0.5">
+                <div class="row-2">
+                    <div class="input-group">
+                        <label>Accumulation Timeframe</label>
+                        <select id="timeframeSelect" class="input-field">
+                            <option value="1">24 Hours</option>
+                            <option value="2">48 Hours</option>
+                            <option value="3">72 Hours</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Caine Threshold (mm)</label>
+                        <input type="number" id="thresholdInput" class="input-field" value="20.0" step="0.5">
+                    </div>
                 </div>
 
-                <button class="btn-analyze" onclick="fetchHistoricalData()">
-                    <i class="fas fa-sync-alt"></i> Generate Analysis
+                <button class="btn-analyze" onclick="fetchAnalysisData()">
+                    <i class="fas fa-satellite-dish"></i> Execute Data Fetch & Analyze
                 </button>
             </div>
 
-            <!-- Interactive Map -->
-            <div class="map-container">
-                <div id="portalMap"></div>
-            </div>
-        </div>
+            <!-- Chart Panel -->
+            <div class="chart-panel">
+                <div class="stats-row">
+                    <div class="stat-box"><h4>Analyzed Days</h4><div id="statDays" class="val">0</div></div>
+                    <div class="stat-box"><h4>Total Rainfall</h4><div id="statTotalRain" class="val">0 mm</div></div>
+                    <div class="stat-box"><h4>Peak Accumulation</h4><div id="statMaxRain" class="val">0 mm</div></div>
+                    <div class="stat-box" style="border: 1px solid rgba(239, 68, 68, 0.4);">
+                        <h4 style="color:var(--danger-red);">Threshold Breaches</h4>
+                        <div id="statBreaches" class="val" style="color:var(--danger-red);">0</div>
+                    </div>
+                </div>
 
-        <!-- Right Panel: Analytics -->
-        <div class="analytics-panel">
-            
-            <!-- Quick Case Studies -->
-            <div class="case-studies">
-                <button class="case-btn" onclick="loadCaseStudy('rawanduz')">
-                    <i class="fas fa-mountain"></i> Rawanduz Event (Nov 2023)
-                </button>
-                <button class="case-btn" onclick="loadCaseStudy('sulaymaniyah')">
-                    <i class="fas fa-cloud-showers-heavy"></i> Sulaymaniyah Storm (Jan 2024)
-                </button>
-            </div>
-
-            <!-- Stats -->
-            <div class="stats-row">
-                <div class="stat-box">
-                    <i class="fas fa-calendar-alt stat-icon"></i>
-                    <div id="statDays" class="stat-val">30</div>
-                    <div class="stat-label">Analyzed Days</div>
-                </div>
-                <div class="stat-box">
-                    <i class="fas fa-tint stat-icon"></i>
-                    <div id="statTotalRain" class="stat-val">0 mm</div>
-                    <div class="stat-label">Total Rainfall</div>
-                </div>
-                <div class="stat-box">
-                    <i class="fas fa-arrow-up stat-icon"></i>
-                    <div id="statMaxRain" class="stat-val">0 mm</div>
-                    <div class="stat-label">Peak 24h Rain</div>
-                </div>
-                <div class="stat-box" style="border-color: rgba(239, 68, 68, 0.3);">
-                    <i class="fas fa-exclamation-triangle stat-icon" style="color: var(--danger-red);"></i>
-                    <div id="statBreaches" class="stat-val" style="color: var(--danger-red);">0</div>
-                    <div class="stat-label" style="color: var(--danger-red);">Threshold Breaches</div>
-                </div>
-            </div>
-
-            <!-- Chart -->
-            <div class="chart-card">
-                <div class="card-header">
-                    <h2>Rainfall vs. Caine Threshold Analysis</h2>
-                    <i class="fas fa-download" style="color: var(--text-muted); cursor: pointer;" title="Export Data"></i>
-                </div>
-                
                 <div class="chart-container">
                     <div id="chartLoader" class="loader-overlay">
                         <i class="fas fa-circle-notch fa-spin spinner"></i>
-                        <p style="color: white; font-weight: 600;">Processing historical climate data...</p>
+                        <p style="color: white; font-weight: 600;">Processing Satelllite Data & Applying Caine's Equation...</p>
                     </div>
                     <canvas id="analysisChart"></canvas>
                 </div>
             </div>
-        </div>
 
+        </div>
     </div>
 
     <script>
-        // --- 1. Map Initialization ---
-        let mapLat = 36.6527;
-        let mapLon = 44.5422;
-        var map = L.map('portalMap', {zoomControl: true}).setView([mapLat, mapLon], 10);
-        
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-            maxZoom: 17,
-        }).addTo(map);
+        // --- 1. Map & Layers Setup ---
+        let mapLat = 35.2536; // Hawraman Default
+        let mapLon = 46.1622;
+
+        // طبقات الخرائط المختلفة (Sat, Topo, Street)
+        var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom: 18});
+        var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {maxZoom: 17});
+        var street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19});
+
+        var map = L.map('portalMap', {
+            center: [mapLat, mapLon],
+            zoom: 11,
+            layers: [topo] // الطبوغرافية هي الافتراضية
+        });
+
+        // لوحة التحكم بالطبقات
+        var baseMaps = {
+            "Topographic Map": topo,
+            "Satellite Imagery": satellite,
+            "Street Map": street
+        };
+        L.control.layers(baseMaps).addTo(map);
 
         var marker = L.marker([mapLat, mapLon]).addTo(map);
 
-        // تحديث الإحداثيات عند النقر على الخريطة
+        // --- 2. Reverse Geocoding (معرفة اسم المنطقة) ---
+        async function getRegionName(lat, lon) {
+            document.getElementById('regionName').innerText = "Resolving location name...";
+            try {
+                // استخدام Nominatim API المجاني لتحويل الإحداثيات لاسم
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+                const data = await response.json();
+                if(data && data.display_name) {
+                    // أخذ أهم أجزاء من الاسم
+                    let parts = data.display_name.split(',');
+                    document.getElementById('regionName').innerText = parts.slice(0, 3).join(', ');
+                } else {
+                    document.getElementById('regionName').innerText = "Unknown Geological Area";
+                }
+            } catch (error) {
+                document.getElementById('regionName').innerText = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
+            }
+        }
+
+        // تفاعل النقر على الخريطة
         map.on('click', function(e) {
+            const lat = e.latlng.lat;
+            const lon = e.latlng.lng;
             marker.setLatLng(e.latlng);
-            document.getElementById('latInput').value = e.latlng.lat.toFixed(4);
-            document.getElementById('lonInput').value = e.latlng.lng.toFixed(4);
+            document.getElementById('latInput').value = lat.toFixed(4);
+            document.getElementById('lonInput').value = lon.toFixed(4);
+            document.getElementById('presetSelect').value = "none";
+            getRegionName(lat, lon);
         });
 
-        // --- 2. Chart Initialization ---
+        // زر الـ GPS الدقيق
+        function locateGPS() {
+            if (navigator.geolocation) {
+                document.getElementById('regionName').innerText = "Acquiring High-Precision GPS signal...";
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        map.flyTo([lat, lon], 13);
+                        marker.setLatLng([lat, lon]);
+                        document.getElementById('latInput').value = lat.toFixed(4);
+                        document.getElementById('lonInput').value = lon.toFixed(4);
+                        document.getElementById('presetSelect').value = "none";
+                        getRegionName(lat, lon);
+                    },
+                    function(error) { alert("GPS Access Denied or Unavailable."); },
+                    { enableHighAccuracy: true, timeout: 10000 }
+                );
+            }
+        }
+
+        // --- 3. Chart Setup ---
         let riskChart;
         const ctx = document.getElementById('analysisChart').getContext('2d');
         
         function initChart() {
             if (riskChart) riskChart.destroy();
-            
             riskChart = new Chart(ctx, {
                 type: 'line',
-                data: {
-                    labels: [], // Dates
-                    datasets: [
-                        {
-                            label: 'Daily Rainfall (mm)',
-                            data: [],
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Danger Threshold',
-                            data: [],
-                            borderColor: '#ef4444',
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            pointRadius: 0,
-                            fill: false
-                        }
-                    ]
-                },
+                data: { labels: [], datasets: [
+                    { label: 'Accumulated Rainfall (mm)', data: [], borderColor: '#06b6d4', backgroundColor: 'rgba(6, 182, 212, 0.15)', borderWidth: 2, fill: true, tension: 0.3 },
+                    { label: 'Caine Danger Threshold', data: [], borderColor: '#ef4444', borderWidth: 2, borderDash: [5, 5], pointRadius: 0, fill: false }
+                ]},
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { labels: { color: '#f8fafc' } }
-                    },
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#f8fafc' } } },
                     scales: {
                         x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
                         y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true }
@@ -291,8 +304,22 @@ html_content = """
         }
         initChart();
 
-        // --- 3. Data Fetching (Historical API) ---
-        async function fetchHistoricalData() {
+        // دالة حساب التراكم حسب اختيار المستخدم (24، 48، 72 ساعة)
+        function calculateRollingSum(dataArray, daysWindow) {
+            let result = [];
+            for (let i = 0; i < dataArray.length; i++) {
+                let sum = 0;
+                // يجمع اليوم الحالي والأيام السابقة حسب النافذة المحددة
+                for (let j = 0; j < daysWindow; j++) {
+                    if (i - j >= 0) sum += dataArray[i - j];
+                }
+                result.push(sum);
+            }
+            return result;
+        }
+
+        // --- 4. Main Data Fetch (Open-Meteo API) ---
+        async function fetchAnalysisData() {
             const loader = document.getElementById('chartLoader');
             loader.classList.add('active');
 
@@ -301,80 +328,83 @@ html_content = """
             const start = document.getElementById('startDate').value;
             const end = document.getElementById('endDate').value;
             const threshold = parseFloat(document.getElementById('thresholdInput').value);
+            const timeframeDays = parseInt(document.getElementById('timeframeSelect').value); // 1, 2, or 3 days
 
-            // تحديث الخريطة
             map.flyTo([lat, lon], 11);
             marker.setLatLng([lat, lon]);
+            getRegionName(lat, lon); // تحديث الاسم
 
             try {
-                // Open-Meteo Historical Archive API
                 const url = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${start}&end_date=${end}&daily=precipitation_sum&timezone=auto`;
                 const response = await fetch(url);
                 const data = await response.json();
 
                 if(data && data.daily) {
                     const dates = data.daily.time;
-                    const rainData = data.daily.precipitation_sum.map(val => val === null ? 0 : val);
+                    const dailyRain = data.daily.precipitation_sum.map(val => val === null ? 0 : val);
                     
-                    // تحديث الإحصائيات (Stats)
-                    updateStats(rainData, threshold);
+                    // تطبيق دالة التراكم بناء على اختيار الساعات (24=1, 48=2, 72=3)
+                    const accumulatedRain = calculateRollingSum(dailyRain, timeframeDays);
 
-                    // تحديث الرسم البياني
+                    updateStats(accumulatedRain, dailyRain, threshold);
+
                     const thresholdLine = new Array(dates.length).fill(threshold);
                     
+                    // تغيير اسم الـ Dataset بناء على الإطار الزمني
+                    riskChart.data.datasets[0].label = `${timeframeDays * 24}h Accumulated Rainfall (mm)`;
+                    
                     riskChart.data.labels = dates;
-                    riskChart.data.datasets[0].data = rainData;
+                    riskChart.data.datasets[0].data = accumulatedRain;
                     riskChart.data.datasets[1].data = thresholdLine;
                     riskChart.update();
                 }
 
             } catch (error) {
-                console.error("Error fetching historical data:", error);
-                alert("Failed to fetch historical data. Please check dates or connection.");
+                console.error("Error:", error);
+                alert("Data fetch failed. Ensure dates are valid (historical).");
             } finally {
                 loader.classList.remove('active');
             }
         }
 
-        function updateStats(rainArray, threshold) {
-            const days = rainArray.length;
-            const totalRain = rainArray.reduce((a, b) => a + b, 0).toFixed(1);
-            const maxRain = Math.max(...rainArray).toFixed(1);
-            const breaches = rainArray.filter(rain => rain >= threshold).length;
+        function updateStats(accumulatedArray, rawDailyArray, threshold) {
+            const days = accumulatedArray.length;
+            const totalRain = rawDailyArray.reduce((a, b) => a + b, 0).toFixed(1);
+            const maxAccumulation = Math.max(...accumulatedArray).toFixed(1);
+            const breaches = accumulatedArray.filter(rain => rain >= threshold).length;
 
             document.getElementById('statDays').innerText = days;
-            document.getElementById('statTotalRain').innerText = `${totalRain} mm`;
-            document.getElementById('statMaxRain').innerText = `${maxRain} mm`;
+            document.getElementById('statTotalRain').innerText = `${totalRain}`;
+            document.getElementById('statMaxRain').innerText = `${maxAccumulation}`;
             document.getElementById('statBreaches').innerText = breaches;
         }
 
-        // --- 4. Case Studies Presets ---
-        function loadCaseStudy(scenario) {
-            if(scenario === 'rawanduz') {
-                document.getElementById('latInput').value = '36.6527';
-                document.getElementById('lonInput').value = '44.5422';
-                document.getElementById('startDate').value = '2023-11-01';
-                document.getElementById('endDate').value = '2023-11-30';
-                document.getElementById('thresholdInput').value = '18.0';
-            } else if (scenario === 'sulaymaniyah') {
-                document.getElementById('latInput').value = '35.5568';
-                document.getElementById('lonInput').value = '45.4322';
-                document.getElementById('startDate').value = '2024-01-01';
-                document.getElementById('endDate').value = '2024-01-31';
-                document.getElementById('thresholdInput').value = '22.0';
-            }
-            fetchHistoricalData();
+        // --- 5. Presets Logic ---
+        function loadPreset() {
+            const val = document.getElementById('presetSelect').value;
+            if(val === 'none') return;
+
+            let conf = {};
+            if(val === 'hawraman') conf = {lat: 35.2536, lon: 46.1622, s: '2023-11-01', e: '2023-11-30', t: 30, window: '2'};
+            if(val === 'rawanduz') conf = {lat: 36.6527, lon: 44.5422, s: '2024-01-01', e: '2024-01-31', t: 25, window: '1'};
+            if(val === 'andes') conf = {lat: -13.1631, lon: -72.5450, s: '2024-02-01', e: '2024-02-28', t: 40, window: '3'};
+            if(val === 'himalayas') conf = {lat: 28.5983, lon: 83.9311, s: '2023-07-01', e: '2023-07-31', t: 50, window: '2'};
+
+            document.getElementById('latInput').value = conf.lat;
+            document.getElementById('lonInput').value = conf.lon;
+            document.getElementById('startDate').value = conf.s;
+            document.getElementById('endDate').value = conf.e;
+            document.getElementById('thresholdInput').value = conf.t;
+            document.getElementById('timeframeSelect').value = conf.window;
+            
+            fetchAnalysisData();
         }
 
-        // تحميل بيانات مبدئية عند فتح الصفحة
+        // التشغيل المبدئي
         window.onload = () => {
-            fetchHistoricalData();
+            getRegionName(mapLat, mapLon);
+            fetchAnalysisData();
         };
-
     </script>
 </body>
 </html>
-"""
-with open('/tmp/shandal_portal.html', 'w', encoding='utf-8') as f:
-    f.write(html_content)
-print("tag: shandal_portal_created_successfully")
