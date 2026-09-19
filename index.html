@@ -1,4 +1,3 @@
-html_content = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -63,7 +62,6 @@ html_content = """
         .card-quarry { border-bottom-color: #27ae60; } .card-quarry:hover i { color: #27ae60; }
         .card-structural { border-bottom-color: #e67e22; } .card-structural:hover i { color: #e67e22; }
         .card-hydro { border-bottom-color: #8e44ad; } .card-hydro:hover i { color: #8e44ad; }
-        /* ستايل البطاقة الزلزالية */
         .card-seismic { border-bottom-color: #c0392b; } .card-seismic:hover i { color: #c0392b; }
         
         .coming-soon-badge { position: absolute; top: 15px; left: -30px; background: #e74c3c; color: white; padding: 5px 30px; font-size: 0.8rem; font-weight: bold; transform: rotate(-45deg); box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
@@ -872,7 +870,3 @@ html_content = """
 
 </body>
 </html>
-"""
-with open('/tmp/shandal_dashboard_updated.html', 'w', encoding='utf-8') as f:
-    f.write(html_content)
-print("tag: shandal_dashboard_updated_successfully")
