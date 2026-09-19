@@ -851,6 +851,39 @@
     function generateSatelliteMap() {
         let pts = []; if(rawGpsPoints.point1) pts.push([rawGpsPoints.point1.lat, rawGpsPoints.point1.lng]); if(rawGpsPoints.point2) pts.push([rawGpsPoints.point2.lat, rawGpsPoints.point2.lng]); if(rawGpsPoints.point3) pts.push([rawGpsPoints.point3.lat, rawGpsPoints.point3.lng]); if(rawGpsPoints.point4) pts.push([rawGpsPoints.point4.lat, rawGpsPoints.point4.lng]); if(pts.length < 3) { alert("⚠️ يرجى التقاط إحداثيات لثلاث نقاط على الأقل."); return; }
         document.getElementById('pageMap').style.display = 'block'; updatePageNumbers(); if(myLeafletMap !== null) { myLeafletMap.remove(); } myLeafletMap = L.map('satelliteMap', { zoomControl: true, maxBoundsViscosity: 1.0, background: 'white' }); L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles © Esri', maxZoom: 22, maxNativeZoom: 19 }).addTo(myLeafletMap); let polygon = L.polygon(pts, {color: '#e74c3c', weight: 3, fillColor: '#e74c3c', fillOpacity: 0.35}).addTo(myLeafletMap); const labels = ['A', 'B', 'C', 'D']; pts.forEach((p, index) => { L.circleMarker(p, {radius: 4, color: '#fff', fillColor: '#e74c3c', fillOpacity: 1}).addTo(myLeafletMap).bindTooltip(labels[index], {permanent: true, direction: 'right', className: 'map-label'}).openTooltip(); }); const bounds = polygon.getBounds(); myLeafletMap.fitBounds(bounds, {padding: [70, 70]}); myLeafletMap.setMaxBounds(bounds.pad(1)); setTimeout(() => { myLeafletMap.invalidateSize(); updateCustomMapScale(); }, 600); myLeafletMap.on('moveend zoomend', updateCustomMapScale); document.getElementById('satBtn').innerText = "✅ تم التوليد بنجاح"; document.getElementById('satBtn').style.background = "#27ae60";
+        
+        // ==========================================
+        // 4. ربط خريطة Leaflet مع المساعد الذكي
+        // ==========================================
+        
+        // التأكد من أن الخريطة تعمل وموجودة
+        if (myLeafletMap) {
+          
+          // الاستماع لحدث النقر على أي مكان في الخريطة
+          myLeafletMap.on('click', function(e) {
+            // استخراج خط الطول وخط العرض وتقريب الأرقام لـ 5 مراتب عشرية
+            const lat = e.latlng.lat.toFixed(5);
+            const lng = e.latlng.lng.toFixed(5);
+            
+            // تجهيز النص الذي سيتم إرساله للذكاء الاصطناعي
+            let geoContext = `لقد قمت بالنقر على الخريطة في الموقع ذي الإحداثيات: (خط العرض: ${lat}، خط الطول: ${lng}). هل يمكنك إعطائي تقييماً جيولوجياً أو جغرافياً أولياً لهذه المنطقة؟`;
+
+            // 1. فتح نافذة الدردشة تلقائياً إذا كانت مغلقة
+            const chatWindow = document.getElementById('shandal-chat-window');
+            if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
+              chatWindow.style.display = 'flex';
+            }
+
+            // 2. وضع النص في حقل الإدخال
+            const chatInput = document.getElementById('chat-input');
+            chatInput.value = geoContext;
+
+            // 3. (اختياري) تشغيل زر الإرسال تلقائياً
+            // إذا أردت أن يرسل السؤال فوراً دون تدخل المستخدم، أزل الشرطتين (//) من السطر التالي:
+            // sendMessage();
+          });
+          
+        }
     }
 
     function drawSideBySideChart(fieldWidth, totalArea, invPct, remPct, colInv, colRem) {
