@@ -868,5 +868,209 @@
     }
 </script>
 
+  <!-- ========================================== -->
+<!-- 1. تصميم الواجهة (CSS) -->
+<!-- ========================================== -->
+<style>
+  #shandal-chat-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    font-family: 'Tajawal', sans-serif; /* يمكنك تغييره حسب خط منصتك */
+    direction: rtl;
+  }
+  
+  #chat-toggle-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+  
+  #chat-toggle-btn:hover {
+    transform: scale(1.1);
+  }
+
+  #shandal-chat-window {
+    display: none;
+    width: 350px;
+    height: 500px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    position: absolute;
+    bottom: 75px;
+    right: 0;
+    display: flex; /* سيتم تغييره عبر الجافاسكربت */
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #ddd;
+  }
+
+  .chat-header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 15px;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 2px solid #e67e22; /* لون برتقالي دلالة على الجيولوجيا */
+  }
+
+  .chat-body {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .message {
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 80%;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .user-msg {
+    background-color: #e67e22;
+    color: white;
+    align-self: flex-start;
+    border-bottom-right-radius: 2px;
+  }
+
+  .bot-msg {
+    background-color: #e0e0e0;
+    color: #333;
+    align-self: flex-end;
+    border-bottom-left-radius: 2px;
+  }
+
+  .chat-footer {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background: white;
+  }
+
+  #chat-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+  }
+
+  #send-btn {
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin-right: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+
+<!-- ========================================== -->
+<!-- 2. الهيكل (HTML) -->
+<!-- ========================================== -->
+<div id="shandal-chat-widget">
+  <div id="shandal-chat-window" style="display: none;">
+    <div class="chat-header">مساعد شندل الجيولوجي 🌍</div>
+    <div class="chat-body" id="chat-body">
+      <div class="message bot-msg">مرحباً! أنا المساعد الذكي لنظام شندل. اسألني عن الجيولوجيا، الاستشعار عن بعد، أو أي طبقة في الخريطة!</div>
+    </div>
+    <div class="chat-footer">
+      <input type="text" id="chat-input" placeholder="اكتب سؤالك الجيولوجي هنا...">
+      <button id="send-btn">إرسال</button>
+    </div>
+  </div>
+  <button id="chat-toggle-btn">💬</button>
+</div>
+
+<!-- ========================================== -->
+<!-- 3. البرمجة والربط (JavaScript) -->
+<!-- ========================================== -->
+<script>
+  // ضع هنا رابط السيرفر الذي نسخته من Cloudflare!
+  const WORKER_URL = "https://shandal-ai-backend.shandal-geosystem.workers.dev";
+
+  const toggleBtn = document.getElementById('chat-toggle-btn');
+  const chatWindow = document.getElementById('shandal-chat-window');
+  const chatBody = document.getElementById('chat-body');
+  const chatInput = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('send-btn');
+
+  // فتح وإغلاق النافذة
+  toggleBtn.addEventListener('click', () => {
+    chatWindow.style.display = chatWindow.style.display === 'none' ? 'flex' : 'none';
+  });
+
+  // إضافة رسالة للواجهة
+  function appendMessage(text, sender) {
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('message', sender === 'user' ? 'user-msg' : 'bot-msg');
+    msgDiv.textContent = text;
+    chatBody.appendChild(msgDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  // إرسال السؤال للسيرفر (Cloudflare)
+  async function sendMessage() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    // عرض رسالة المستخدم
+    appendMessage(text, 'user');
+    chatInput.value = '';
+
+    // عرض مؤشر الكتابة...
+    const loadingId = Date.now();
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = loadingId;
+    loadingDiv.classList.add('message', 'bot-msg');
+    loadingDiv.textContent = "يحلل البيانات الجيولوجية...";
+    chatBody.appendChild(loadingDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+
+    try {
+      const response = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userMessage: text })
+      });
+
+      const data = await response.json();
+      
+      // إزالة مؤشر الكتابة وعرض الرد النهائي
+      document.getElementById(loadingId).remove();
+      
+      if (data.reply) {
+        appendMessage(data.reply, 'bot');
+      } else {
+        appendMessage("عذراً، حدث خطأ غير متوقع.", 'bot');
+      }
+    } catch (error) {
+      document.getElementById(loadingId).remove();
+      appendMessage("لا يوجد اتصال بالخادم. تأكد من الإنترنت.", 'bot');
+    }
+  }
+
+  // ربط زر الإرسال ومفتاح Enter
+  sendBtn.addEventListener('click', sendMessage);
+  chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+  });
+</script>  
 </body>
 </html>
