@@ -1,3 +1,4 @@
+html_content = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -62,7 +63,7 @@
         .card-quarry { border-bottom-color: #27ae60; } .card-quarry:hover i { color: #27ae60; }
         .card-structural { border-bottom-color: #e67e22; } .card-structural:hover i { color: #e67e22; }
         .card-hydro { border-bottom-color: #8e44ad; } .card-hydro:hover i { color: #8e44ad; }
-        /* ستايل البطاقة الجديدة الزلزالية */
+        /* ستايل البطاقة الزلزالية */
         .card-seismic { border-bottom-color: #c0392b; } .card-seismic:hover i { color: #c0392b; }
         
         .coming-soon-badge { position: absolute; top: 15px; left: -30px; background: #e74c3c; color: white; padding: 5px 30px; font-size: 0.8rem; font-weight: bold; transform: rotate(-45deg); box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
@@ -129,7 +130,7 @@
         .btn-print { background: #e74c3c; color: white; border: none; padding: 15px; width: 100%; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
 
         /* ========================================================
-           هندسة الطباعة المحسنة (إصلاح الأرقام والصفحات البيضاء)
+           هندسة الطباعة المحسنة
            ======================================================== */
         .print-only { display: none !important; }
         @media print {
@@ -142,21 +143,20 @@
             .print-only { display: block !important; }
             .no-print { display: none !important; }
             
-            /* إجبار الحاوية على أخذ طول A4 لضمان بقاء الأرقام في القاع المطلق */
             .print-page-wrapper { 
                 width: 100%; 
                 box-sizing: border-box; 
                 padding: 1.0cm; 
-                min-height: 28.5cm; /* مقاس يحفظ الأرقام بالأسفل ويمنع تجاوز الصفحة */
+                min-height: 28.5cm; 
                 page-break-after: always; 
                 position: relative; 
                 display: block !important; 
             }
-            #pageMap { page-break-after: auto !important; min-height: auto; } /* لمنع أي صفحة بيضاء بعد الخريطة */
+            #pageMap { page-break-after: auto !important; min-height: auto; } 
             
             .print-bottom { 
                 position: absolute; 
-                bottom: 0.5cm; /* تثبيت في أسفل الحاوية */
+                bottom: 0.5cm; 
                 left: 0; 
                 width: 100%; 
                 text-align: center; 
@@ -182,39 +182,6 @@
             .canvas-container { width: 100% !important; display: block !important; margin-bottom: 10px !important;} canvas { border: 1.5px solid #34495e !important; box-shadow: none; object-fit: contain; background: #fff !important; }
             .leaflet-control-scale { display: none !important; } .map-wrapper { height: 800px !important; border: 2px solid #34495e !important; position: relative !important; page-break-inside: avoid; background-color: white !important;} #satelliteMap { height: 100% !important; } .leaflet-control-zoom { display: none !important; } .leaflet-control-container { background: white !important; } .content-padding { padding: 0 !important; }
         }
-        /* ============ تنسيقات المسح التركيبي الإضافية ============ */
-        .compass-live-box { display: none; background: #eaf2f8; border: 2px solid #3498db; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center; }
-        .compass-live-box p { margin: 5px 0; font-size: 1.1rem; font-weight: bold; }
-        .compass-value-text { color: #e67e22; font-weight: bold; display: block; margin-top: 5px; font-size: 0.9rem; }
-        .kinematic-canvas-container { width: 100%; display: flex; flex-direction: column; align-items: center; background: #fcfcfc; padding: 20px; border-radius: 8px; border: 1px solid #bdc3c7; box-shadow: inset 0 0 10px rgba(0,0,0,0.02); box-sizing: border-box; margin-bottom: 20px;}
-        .kinematic-canvas-container h4 { color: #2c3e50; border-bottom: 2px solid #e67e22; padding-bottom: 10px; margin-top: 0; margin-bottom: 10px; width: 100%; text-align: center; font-size: 1.3rem;}
-        .geotech-split-legend { background: #fff; border: 1px solid #bdc3c7; padding: 15px; margin-top: 10px; border-radius: 8px; text-align: right; direction: rtl; font-size: 14px; width: 100%; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
-        .legend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-        .geotech-legend-item { display: flex; align-items: center; gap: 10px; color: #2c3e50; }
-        .geotech-legend-color { width: 22px; height: 22px; border-radius: 4px; border: 1px solid #333; flex-shrink: 0; }
-        .geotech-legend-text { font-weight: bold; line-height: 1.4; }
-        .geotech-legend-symbol { font-size: 1.2rem; width: 22px; text-align: center; }
-        .geological-explanation-box { border: 2px solid #e67e22; padding: 15px; margin-top: 15px; width: 100%; background-color: #fdf2e9; border-radius: 8px; font-size: 1.05rem; line-height: 1.8; color: #2c3e50; text-align: justify; box-sizing: border-box; }
-        .heatmap-wrapper { display: flex; gap: 30px; align-items: stretch; width: 100%; justify-content: center; padding: 20px 0; }
-        .heatmap-scale-legend { border: 2px solid #bdc3c7; padding: 15px; border-radius: 8px; background: #fff; font-size: 14px; font-weight: bold; width: 60px; flex-shrink: 0; text-align: center; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 2px 2px 8px rgba(0,0,0,0.1);}
-        .heatmap-scale-box { width: 30px; flex-grow: 1; background: linear-gradient(to top, #e74c3c, #f39c12, #f1c40f, #2ecc71); border-radius: 4px; border: 1px solid #333; margin: 10px auto; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; backdrop-filter: blur(5px); }
-        .modal-box { background: #fff; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); direction: rtl; text-align: right; position: relative; animation: modalFadeIn 0.3s ease; border-top: 5px solid #e67e22;}
-        @keyframes modalFadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        .modal-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 12px 12px 0 0; }
-        .modal-header h3 { margin: 0; color: #1c2833; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
-        .close-modal { background: none; border: none; font-size: 1.5rem; color: #e74c3c; cursor: pointer; transition: 0.2s; padding: 0; line-height: 1; }
-        .close-modal:hover { transform: scale(1.2); }
-        .modal-body { padding: 25px; line-height: 1.8; color: #34495e; font-size: 1.05rem; }
-        .modal-body h4 { color: #d35400; margin-top: 20px; margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
-        .modal-body h4:first-child { margin-top: 0; }
-        .modal-body ul { padding-right: 20px; margin-bottom: 15px; }
-        .modal-body li { margin-bottom: 8px; }
-        .table-guide { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; font-size: 0.95rem; }
-        .table-guide th, .table-guide td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        .table-guide th { background: #fdf2e9; color: #d35400; }
-        .info-icon { color: #d35400; cursor: pointer; margin-right: 8px; font-size: 1.2rem; transition: 0.2s; vertical-align: middle; }
-        .info-icon:hover { color: #e67e22; transform: scale(1.2); }
     </style>
 </head>
 <body>
@@ -333,6 +300,39 @@
             <h3 style="color: #10b981;">السياحة الجيولوجية والآثارية</h3>
             <p>نظام خرائط تفاعلي (Geo-Archaeological Tourism) لاستكشاف المعالم الجيولوجية (طيات، فوالق، براكين، كهوف) مع إمكانية الفلترة المتقدمة حسب الحقب الزمنية الجيولوجية.</p>
         </div>
+        
+        <!-- البطاقات الجديدة -->
+        
+        <div class="module-card" style="border-bottom-color: #06b6d4;" onclick="window.location.href='ShandalGeo-Alert.html'">
+            <i class="fas fa-cloud-showers-heavy" style="color: #06b6d4;"></i>
+            <h3 style="color: #06b6d4;">الإنذار الهيدرولوجي المبكر</h3>
+            <p>مسح هيدرولوجي متقدم، تحليل تراكم الأمطار عبر الأقمار الصناعية، وإنذار مبكر لانزلاقات التربة استناداً للنماذج الفيزيائية.</p>
+        </div>
+
+        <div class="module-card" style="border-bottom-color: #f59e0b;" onclick="window.location.href='strata.html'">
+            <i class="fas fa-layer-group" style="color: #f59e0b;"></i>
+            <h3 style="color: #f59e0b;">مصمم العمود الطباقي</h3>
+            <p>أداة تفاعلية متخصصة لبناء وتصميم الأعمدة الطباقية، مع تخصيص السحنات الصخرية، والسمك، والحدود الترسيبية بدقة حقلية.</p>
+        </div>
+
+        <div class="module-card" style="border-bottom-color: #14b8a6;" onclick="window.location.href='kerogen_lab.html'">
+            <i class="fas fa-microscope" style="color: #14b8a6;"></i>
+            <h3 style="color: #14b8a6;">مختبر تحليل الكيروجين</h3>
+            <p>تقييم النضج الحراري للمادة العضوية، تحديد أنواع الكيروجين، ومسارات توليد الهيدروكربونات لتقييم الصخور المصدرية.</p>
+        </div>
+
+        <div class="module-card" style="border-bottom-color: #65a30d;" onclick="window.location.href='palynofacies_lab.html'">
+            <i class="fas fa-leaf" style="color: #65a30d;"></i>
+            <h3 style="color: #65a30d;">مختبر السحنات البالينولوجية</h3>
+            <p>دراسة وتصنيف المكونات العضوية الدقيقة، وتحديد ظروف الترسيب وبيئاته القديمة استناداً للتحليل البالينولوجي.</p>
+        </div>
+
+        <div class="module-card" style="border-bottom-color: #ef4444;" onclick="window.location.href='geothermal_lab.html'">
+            <i class="fas fa-temperature-high" style="color: #ef4444;"></i>
+            <h3 style="color: #ef4444;">مختبر الطاقة الحرارية الأرضية</h3>
+            <p>تحليل التدرج الحراري الأرضي، قياس التدفق الحراري، وتقييم إمكانيات الطاقة الجيوحرارية للطبقات العميقة.</p>
+        </div>
+
     </div>
 </div>
 
@@ -872,3 +872,7 @@
 
 </body>
 </html>
+"""
+with open('/tmp/shandal_dashboard_updated.html', 'w', encoding='utf-8') as f:
+    f.write(html_content)
+print("tag: shandal_dashboard_updated_successfully")
