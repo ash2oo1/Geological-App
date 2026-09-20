@@ -1,40 +1,328 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shandal 2D Mapping Lab</title>
     
-    <title>نظام شندل للمسح الميداني الجيولوجي</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="apple-touch-icon" href="favicon.ico">
-    <meta name="theme-color" content="#1c2833">
-    <meta name="apple-mobile-web-app-title" content="نظام المسح">
-    <meta name="application-name" content="نظام شندل للمسح الميداني الجيولوجي">
-    <meta name="description" content="نظام شندل للمسح الميداني الجيولوجي: أول نظام رقمي متكامل للمسوحات الميدانية الجيولوجية (مقالع، تركيبي، جيوتقني، هيدروجيولوجي، ومختبر صوتي).">
-    <meta name="author" content="الجيولوجي علي شندل الجنابي">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Leaflet & Turf.js & html2canvas -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
     <style>
-        /* ========================================================
-           1. شاشات الترحيب وتسجيل الدخول (النسخة الأصلية 100%)
-           ======================================================== */
-        #introScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; z-index: 9999; display: flex; justify-content: center; align-items: center; text-align: right; padding: 15px; box-sizing: border-box; }
-        .intro-box { background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5); max-width: 950px; width: 100%; max-height: 90vh; overflow-y: auto; backdrop-filter: blur(10px); margin: auto; box-sizing: border-box; }
-        .intro-box::-webkit-scrollbar { width: 8px; } .intro-box::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; } .intro-box::-webkit-scrollbar-thumb { background: #2980b9; border-radius: 10px; }
-        @media (max-width: 600px) { #introScreen { align-items: flex-start; } .intro-box { padding: 20px; margin: 10px auto; max-height: 95vh;} }
-        .intro-box h1 { color: #f1c40f; font-size: 2rem; margin-bottom: 5px; text-align: center; line-height: 1.4; }
-        .intro-box h2 { color: #a9cce3; font-size: 1.2rem; margin-top: 0; font-weight: normal; margin-bottom: 25px; text-align: center; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 15px;}
-        .official-text { background: rgba(0, 0, 0, 0.2); padding: 25px; border-radius: 8px; border-right: 4px solid #f1c40f; margin-bottom: 25px; font-size: 1.1rem; line-height: 1.9; color: #ecf0f1; text-align: justify; }
-        .official-text h3 { color: #f1c40f; margin-top: 0; border-bottom: 1px solid rgba(241, 196, 15, 0.3); padding-bottom: 8px; margin-bottom: 15px; font-size: 1.3rem;}
-        .official-text p { margin-bottom: 15px; } .official-text p:last-child { margin-bottom: 0; } .official-text ul { padding-right: 25px; margin: 10px 0; } .official-text li { margin-bottom: 10px; font-size: 1.05rem; }
-        .instruction-section { background: rgba(41, 128, 185, 0.15); border: 1px solid rgba(41, 128, 185, 0.4); border-radius: 8px; padding: 25px; margin-bottom: 25px; }
-        .instruction-section p { font-size: 1.1rem; line-height: 1.9; margin-bottom: 15px; }
-        .instruction-section h3 { color: #3498db; margin-top: 0; font-size: 1.3rem; border-bottom: 1px dashed #3498db; padding-bottom: 10px; margin-bottom: 15px; }
-        .instruction-list { list-style: none; padding: 0; margin: 0; } .instruction-list li { margin-bottom: 15px; font-size: 1.05rem; line-height: 1.8; background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 6px; border-right: 3px solid #e74c3c;} .instruction-list li:nth-child(even) { border-right-color: #2ecc71; } .instruction-list li i { margin-left: 10px; font-size: 1.2rem; width: 25px; text-align: center;} .instruction-list li b { color: #f1c40f; font-size: 1.1rem; }
-        .social-container { text-align: center; margin-bottom: 25px; padding: 20px; background: rgba(0,0,0,0.1); border-radius: 8px; } .social-container p { margin: 0 0 15px 0; color: #bdc3c7; font-size: 1.05rem; } .social-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        :root {
+            --bg-dark: #090e17; 
+            --card-bg: #141b2d;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --danger-red: #ef4444;
+            --border-color: #1e293b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        body { background: var(--bg-dark); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+
+        /* --- Header --- */
+        .top-navbar {
+            background: #040812; border-bottom: 1px solid var(--border-color);
+            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .brand { display: flex; align-items: center; gap: 15px; }
+        .brand-icon { background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan)); width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 24px; color: white; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);}
+        .brand-text h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 2px; color: white;}
+        .brand-text p { color: var(--accent-cyan); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+
+        .main-container { padding: 20px 30px; display: flex; flex-direction: column; gap: 20px; max-width: 1800px; margin: 0 auto; width: 100%; }
+
+        /* --- Exportable Area --- */
+        .exportable-area { background: var(--card-bg); border-radius: 0; border: 1px solid var(--border-color); display: flex; flex-direction: column; position: relative;}
+        
+        .panel-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); background: #0f172a;}
+        .panel-header h2 { font-size: 16px; font-weight: 700; color: white; display: flex; align-items: center; gap: 8px;}
+        .btn-export { background: transparent; border: 1px solid var(--text-muted); color: var(--text-main); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
+        .btn-export:hover { background: rgba(255,255,255,0.1); }
+
+        #mapContainer { width: 100%; height: 500px; z-index: 1;}
+
+        /* العلامة المائية للطباعة */
+        #watermark { display: none; text-align: center; font-size: 12px; font-weight: 700; color: #64748b; padding: 15px; border-top: 1px dashed #334155; background: var(--card-bg); letter-spacing: 1px;}
+
+        /* --- Controls Grid --- */
+        .controls-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
+
+        /* Left: Input Panel */
+        .input-panel { background: var(--card-bg); border-radius: 0; padding: 20px; border: 1px solid var(--border-color); }
+        .input-title { font-size: 16px; font-weight: 700; color: white; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
+        
+        .input-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .input-field { width: 100%; background: #0b1120; border: 1px solid var(--border-color); color: white; padding: 10px; border-radius: 8px; font-size: 13px; outline: none; text-align: center;}
+        .input-field:focus { border-color: var(--accent-purple); }
+        .input-labels { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 5px; color: var(--text-muted); font-size: 11px; font-weight: 600; text-align: center;}
+
+        #pointsContainer { max-height: 200px; overflow-y: auto; padding-right: 5px; margin-bottom: 15px;}
+        
+        .btn-add { width: 100%; background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px dashed var(--border-color); padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; margin-bottom: 20px;}
+        .btn-add:hover { background: rgba(255,255,255,0.1); }
+
+        .settings-group { margin-bottom: 15px; }
+        .settings-group label { display: block; color: var(--text-muted); font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+
+        .btn-generate { width: 100%; background: var(--accent-purple); color: white; border: none; padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 800; cursor: pointer; transition: 0.2s;}
+        .btn-generate:hover { background: #7c3aed; }
+
+        /* Right: Report Panel */
+        .report-panel { background: var(--card-bg); border-radius: 0; padding: 20px; border: 1px solid var(--border-color); }
+        .geo-report { background: #0b1120; border-radius: 8px; padding: 15px; border-left: 4px solid var(--accent-cyan); height: 100%;}
+        .report-title { font-size: 15px; font-weight: 700; margin-bottom: 10px; color: var(--accent-cyan);}
+        .report-text { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="top-navbar">
+        <div class="brand">
+            <div class="brand-icon"><i class="fas fa-map-marked-alt"></i></div>
+            <div class="brand-text">
+                <h1>2D Spatial Mapping Lab</h1>
+                <p>Topographic & Contour Rendering Engine</p>
+            </div>
+        </div>
+        <div style="color:var(--text-muted); font-size: 14px;"><i class="fas fa-microscope"></i> Geological Field Survey System</div>
+    </header>
+
+    <div class="main-container">
+        
+        <!-- Exportable Map Area -->
+        <div id="exportableSection" class="exportable-area">
+            <div class="panel-header">
+                <h2><i class="fas fa-layer-group"></i> 2D Spatial & Elevation Model</h2>
+                <button class="btn-export" id="btnExport" onclick="exportToImage()">
+                    <i class="fas fa-camera"></i>
+                </button>
+            </div>
+            
+            <!-- Map Container -->
+            <div id="mapContainer"></div>
+
+            <!-- Watermark for Export -->
+            <div id="watermark">
+                SHANDAL GEOLOGICAL FIELD SURVEY SYSTEM © <span id="currentYear"></span>
+            </div>
+        </div>
+
+        <!-- Controls & Report -->
+        <div class="controls-grid">
+            
+            <!-- Input Panel -->
+            <div class="input-panel">
+                <div class="input-title">Coordinate Data (X, Y, Z)</div>
+                
+                <div class="input-labels">
+                    <div>Lat (Y)</div><div>Lon (X)</div><div>Elev (Z) m</div>
+                </div>
+
+                <div id="pointsContainer">
+                    <!-- Default Points for Demo -->
+                    <div class="input-row">
+                        <input type="number" class="input-field pt-lat" value="36.6500" step="0.0001">
+                        <input type="number" class="input-field pt-lon" value="44.5400" step="0.0001">
+                        <input type="number" class="input-field pt-z" value="1200">
+                    </div>
+                    <div class="input-row">
+                        <input type="number" class="input-field pt-lat" value="36.6550" step="0.0001">
+                        <input type="number" class="input-field pt-lon" value="44.5450" step="0.0001">
+                        <input type="number" class="input-field pt-z" value="1350">
+                    </div>
+                    <div class="input-row">
+                        <input type="number" class="input-field pt-lat" value="36.6450" step="0.0001">
+                        <input type="number" class="input-field pt-lon" value="44.5450" step="0.0001">
+                        <input type="number" class="input-field pt-z" value="1100">
+                    </div>
+                    <div class="input-row">
+                        <input type="number" class="input-field pt-lat" value="36.6500" step="0.0001">
+                        <input type="number" class="input-field pt-lon" value="44.5500" step="0.0001">
+                        <input type="number" class="input-field pt-z" value="1450">
+                    </div>
+                </div>
+
+                <button class="btn-add" onclick="addPointRow()"><i class="fas fa-plus"></i> Add Point</button>
+
+                <div class="settings-group">
+                    <label>Grid Resolution (Cell Size in km)</label>
+                    <input type="number" id="resolutionInput" class="input-field" value="0.1" step="0.05">
+                </div>
+
+                <button class="btn-generate" onclick="generate2DMap()">
+                    <i class="fas fa-draw-polygon"></i> Render Spatial Map
+                </button>
+            </div>
+
+            <!-- Report Panel -->
+            <div class="report-panel">
+                <div class="geo-report">
+                    <div class="report-title">Spatial Analysis Report</div>
+                    <div id="analysisText" class="report-text">
+                        Enter at least 4 coordinate points with elevation values to generate a spatial heat map using Inverse Distance Weighting (IDW) interpolation.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('currentYear').innerText = new Date().getFullYear();
+
+        // --- Map Initialization ---
+        var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom: 18});
+        var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {maxZoom: 17});
+        var map = L.map('mapContainer', { center: [36.6500, 44.5400], zoom: 13, layers: [satellite] });
+        L.control.layers({"Satellite Imagery": satellite, "Topographic Map": topo}).addTo(map);
+
+        let geojsonLayer = null;
+        let pointMarkers = [];
+
+        // Add Input Row
+        function addPointRow() {
+            const container = document.getElementById('pointsContainer');
+            const row = document.createElement('div');
+            row.className = 'input-row';
+            row.innerHTML = `
+                <input type="number" class="input-field pt-lat" placeholder="Latitude" step="0.0001">
+                <input type="number" class="input-field pt-lon" placeholder="Longitude" step="0.0001">
+                <input type="number" class="input-field pt-z" placeholder="Elevation">
+            `;
+            container.appendChild(row);
+        }
+
+        // Color Scale Function based on Elevation
+        function getColor(val, min, max) {
+            let ratio = (val - min) / (max - min);
+            if(isNaN(ratio) || ratio < 0) ratio = 0;
+            if(ratio > 1) ratio = 1;
+            // Blue (low) to Red (high)
+            const hue = (1 - ratio) * 240; 
+            return `hsl(${hue}, 100%, 50%)`;
+        }
+
+        // Generate Map
+        function generate2DMap() {
+            const lats = document.querySelectorAll('.pt-lat');
+            const lons = document.querySelectorAll('.pt-lon');
+            const zs = document.querySelectorAll('.pt-z');
+
+            let points = [];
+            let maxZ = -Infinity;
+            let minZ = Infinity;
+
+            // Clear old data
+            if (geojsonLayer) map.removeLayer(geojsonLayer);
+            pointMarkers.forEach(m => map.removeLayer(m));
+            pointMarkers = [];
+
+            // Gather Data
+            for(let i=0; i<lats.length; i++) {
+                let lat = parseFloat(lats[i].value);
+                let lon = parseFloat(lons[i].value);
+                let z = parseFloat(zs[i].value);
+
+                if(!isNaN(lat) && !isNaN(lon) && !isNaN(z)) {
+                    points.push(turf.point([lon, lat], { z: z }));
+                    if(z > maxZ) maxZ = z;
+                    if(z < minZ) minZ = z;
+                    
+                    // Add visual markers
+                    let m = L.circleMarker([lat, lon], {radius: 4, color: 'white', fillColor: 'black', fillOpacity: 1})
+                             .bindTooltip(`${z}m`, {permanent: true, direction: 'right'}).addTo(map);
+                    pointMarkers.push(m);
+                }
+            }
+
+            if(points.length < 3) {
+                alert("Please enter at least 3 valid coordinate points.");
+                return;
+            }
+
+            const pointsFeatureCollection = turf.featureCollection(points);
+            
+            // Generate Grid & Interpolate
+            const resolution = parseFloat(document.getElementById('resolutionInput').value) || 0.1;
+            const options = { gridType: 'hex', property: 'z', units: 'kilometers' };
+            
+            try {
+                // IDW Interpolation using Turf.js
+                const grid = turf.interpolate(pointsFeatureCollection, resolution, options);
+
+                geojsonLayer = L.geoJSON(grid, {
+                    style: function (feature) {
+                        return {
+                            fillColor: getColor(feature.properties.z, minZ, maxZ),
+                            weight: 1,
+                            opacity: 0.2,
+                            color: 'white',
+                            fillOpacity: 0.6
+                        };
+                    }
+                }).addTo(map);
+
+                // Fit Map to bounds
+                map.fitBounds(geojsonLayer.getBounds(), {padding: [50, 50]});
+
+                // Update Report
+                document.getElementById('analysisText').innerHTML = `
+                    <b>Spatial Model Rendered Successfully.</b><br><br>
+                    - Data Points Analyzed: <b>${points.length}</b><br>
+                    - Minimum Elevation: <b>${minZ} m</b><br>
+                    - Maximum Elevation: <b>${maxZ} m</b><br>
+                    - Interpolation Method: <b>Inverse Distance Weighting (IDW)</b><br>
+                    <br>
+                    The 2D map indicates the spatial distribution of elevation across the study area. Warmer colors (Red) indicate higher elevations, while cooler colors (Blue) indicate lower elevations or depressions.
+                `;
+
+            } catch (error) {
+                console.error(error);
+                alert("Error generating spatial model. Ensure points are geographically spread out.");
+            }
+        }
+
+        // --- Export to Image Function ---
+        function exportToImage() {
+            const exportArea = document.getElementById('exportableSection');
+            const watermark = document.getElementById('watermark');
+            const btnExport = document.getElementById('btnExport');
+            
+            watermark.style.display = 'block';
+            btnExport.style.display = 'none';
+
+            html2canvas(exportArea, {
+                backgroundColor: '#141b2d', 
+                useCORS: true, // للسماح برسم خريطة Leaflet
+                scale: 2 
+            }).then(canvas => {
+                watermark.style.display = 'none';
+                btnExport.style.display = 'flex';
+                
+                const link = document.createElement('a');
+                link.download = `Shandal_2D_Map_${new Date().getTime()}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        // Run default map on load
+        window.onload = () => { generate2DMap(); };
+    </script>
+</body>
+</html>        .social-container { text-align: center; margin-bottom: 25px; padding: 20px; background: rgba(0,0,0,0.1); border-radius: 8px; } .social-container p { margin: 0 0 15px 0; color: #bdc3c7; font-size: 1.05rem; } .social-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
         .social-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 25px; border-radius: 6px; text-decoration: none; color: white; font-weight: bold; font-size: 1.05rem; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); } .social-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.3); color: white;}
         .btn-whatsapp { background: #25D366; } .btn-whatsapp:hover { background: #1ebe57; } .btn-facebook { background: #1877F2; } .btn-facebook:hover { background: #145dbf; } .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); } .btn-instagram:hover { opacity: 0.9; } .btn-youtube { background: #FF0000; } .btn-youtube:hover { background: #cc0000; }
         .warning-box { background: rgba(231, 76, 60, 0.15); border-right: 4px solid #e74c3c; padding: 25px; border-radius: 8px; margin-bottom: 25px; text-align: right; } .warning-box h3 { color: #ffcccc; font-size: 1.2rem; margin-top: 0; margin-bottom: 15px; line-height: 1.6; } .warning-box p { color: #ecf0f1; font-size: 1.1rem; margin-bottom: 12px; line-height: 1.8; }
