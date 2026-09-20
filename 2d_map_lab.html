@@ -1,260 +1,10 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shandal Contour Mapping Lab</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Leaflet & Turf.js & PapaParse for CSV -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-
-    <style>
-        :root {
-            --bg-dark: #090e17; 
-            --card-bg: #141b2d;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-purple: #6366f1;
-            --accent-cyan: #06b6d4;
-            --border-color: #1e293b;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
-        body { background: var(--bg-dark); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
-
-        /* --- Header --- */
-        .top-navbar {
-            background: #040812; border-bottom: 1px solid var(--border-color);
-            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
-        }
-        .brand { display: flex; align-items: center; gap: 15px; }
-        .brand-icon { background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan)); width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 24px; color: white; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);}
-        .brand-text h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 2px; color: white;}
-        .brand-text p { color: var(--accent-cyan); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
-
-        .main-container { padding: 20px 30px; display: flex; flex-direction: column; gap: 20px; max-width: 1800px; margin: 0 auto; width: 100%; }
-
-        /* --- Layout Grid --- */
-        .app-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
-
-        /* --- Left: Controls Panel --- */
-        .control-panel { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); height: fit-content;}
-        .panel-title { font-size: 16px; font-weight: 700; color: white; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: flex; align-items: center; gap: 8px;}
-        
-        .upload-area { border: 2px dashed var(--accent-purple); border-radius: 8px; padding: 30px 20px; text-align: center; cursor: pointer; background: rgba(99, 102, 241, 0.05); transition: 0.3s; margin-bottom: 20px;}
-        .upload-area:hover { background: rgba(99, 102, 241, 0.1); }
-        .upload-area i { font-size: 30px; color: var(--accent-purple); margin-bottom: 10px; }
-        .upload-area p { color: var(--text-main); font-weight: 600; font-size: 14px; margin-bottom: 5px;}
-        .upload-area span { color: var(--text-muted); font-size: 12px; }
-        input[type="file"] { display: none; }
-
-        .file-status { display: none; background: #064e3b; border: 1px solid #10b981; color: #34d399; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 20px; text-align: center;}
-
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; color: var(--text-muted); font-size: 12px; font-weight: 600; margin-bottom: 6px; }
-        .input-field { width: 100%; background: #0b1120; border: 1px solid var(--border-color); color: white; padding: 12px; border-radius: 8px; font-size: 14px; outline: none;}
-        .input-field:focus { border-color: var(--accent-purple); }
-
-        .btn-generate { width: 100%; background: var(--accent-purple); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 15px; font-weight: 800; cursor: pointer; transition: 0.2s; margin-top: 10px;}
-        .btn-generate:hover { background: #4f46e5; }
-        .btn-generate:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
-
-        /* --- Right: Map Area --- */
-        .map-section { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; position: relative; overflow: hidden; height: 750px;}
-        .map-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); background: #0f172a;}
-        .map-header h2 { font-size: 16px; font-weight: 700; color: white; display: flex; align-items: center; gap: 8px;}
-        .btn-export { background: transparent; border: 1px solid var(--text-muted); color: var(--text-main); padding: 8px 15px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s;}
-        .btn-export:hover { background: rgba(255,255,255,0.1); }
-
-        #mapContainer { width: 100%; flex: 1; z-index: 1;}
-
-        /* Color Legend */
-        .legend-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.9); padding: 15px 25px; border-radius: 12px; border: 1px solid var(--border-color); z-index: 1000; backdrop-filter: blur(5px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: none; flex-direction: column; align-items: center; min-width: 400px;}
-        .legend-title { color: white; font-size: 13px; font-weight: 700; margin-bottom: 10px; letter-spacing: 1px;}
-        .gradient-bar { width: 100%; height: 15px; background: linear-gradient(to right, #0000ff, #00ffff, #00ff00, #ffff00, #ff0000); border-radius: 4px; border: 1px solid #333;}
-        .legend-labels { display: flex; justify-content: space-between; width: 100%; margin-top: 5px; color: var(--text-muted); font-size: 12px; font-weight: 600;}
-
-        /* Watermark for Export */
-        #watermark { display: none; text-align: center; font-size: 12px; font-weight: 700; color: #64748b; padding: 15px; border-top: 1px dashed #334155; background: var(--card-bg); letter-spacing: 1px;}
-
-        .loader { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); z-index: 2000; flex-direction: column; justify-content: center; align-items: center; }
-        .loader.active { display: flex; }
-        .spinner { font-size: 40px; color: var(--accent-purple); margin-bottom: 15px; }
-        .loader p { color: white; font-weight: 600; }
-    </style>
-</head>
-<body>
-
-    <!-- Header -->
-    <header class="top-navbar">
-        <div class="brand">
-            <div class="brand-icon"><i class="fas fa-layer-group"></i></div>
-            <div class="brand-text">
-                <h1>2D Contour Mapping Lab</h1>
-                <p>Topographic & Isoband Rendering Engine</p>
-            </div>
-        </div>
-        <div style="color:var(--text-muted); font-size: 14px;"><i class="fas fa-microscope"></i> Geological Field Survey System</div>
-    </header>
-
-    <div class="main-container">
-        <div class="app-grid">
-            
-            <!-- Controls Panel -->
-            <div class="control-panel">
-                <div class="panel-title"><i class="fas fa-sliders-h"></i> Contour Settings</div>
-                
-                <!-- File Upload -->
-                <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
-                    <i class="fas fa-file-csv"></i>
-                    <p>Upload Coordinate Data File</p>
-                    <span>Click to select a CSV file (X, Y, Z format)</span>
-                    <input type="file" id="fileInput" accept=".csv" onchange="handleFileSelect(event)">
-                </div>
-                
-                <div id="fileStatus" class="file-status">
-                    <i class="fas fa-check-circle"></i> File Loaded: <span id="pointCount">0</span> points detected.
-                </div>
-
-                <div class="input-group">
-                    <label>Contour Interval (Z-Step)</label>
-                    <input type="number" id="contourInterval" class="input-field" value="10" step="1" title="The elevation difference between successive contour lines.">
-                </div>
-
-                <div class="input-group">
-                    <label>Map Smoothness / Resolution</label>
-                    <select id="mapResolution" class="input-field">
-                        <option value="0.2">Standard (Fast)</option>
-                        <option value="0.1" selected>High (Recommended)</option>
-                        <option value="0.05">Ultra (May take longer)</option>
-                    </select>
-                </div>
-
-                <button class="btn-generate" id="btnGenerate" onclick="processDataAndRender()" disabled>
-                    <i class="fas fa-draw-polygon"></i> Render Contour Map
-                </button>
-            </div>
-
-            <!-- Map Area -->
-            <div id="exportableSection" class="map-section">
-                
-                <div id="loader" class="loader">
-                    <i class="fas fa-circle-notch fa-spin spinner"></i>
-                    <p>Generating Contour Bands using Spatial Interpolation...</p>
-                </div>
-
-                <div class="map-header">
-                    <h2><i class="fas fa-map-marked-alt"></i> Topographic Isoband Map</h2>
-                    <button class="btn-export" id="btnExport" onclick="exportToImage()">
-                        <i class="fas fa-camera"></i> Export Map
-                    </button>
-                </div>
-                
-                <div id="mapContainer"></div>
-
-                <!-- Color Legend (Toggled dynamically) -->
-                <div class="legend-container" id="colorLegend">
-                    <div class="legend-title">Elevation Contour Scale (Z-Values)</div>
-                    <div class="gradient-bar"></div>
-                    <div class="legend-labels">
-                        <span id="lblMin">0m</span>
-                        <span id="lblMid">0m</span>
-                        <span id="lblMax">0m</span>
-                    </div>
-                </div>
-
-                <div id="watermark">
-                    SHANDAL GEOLOGICAL FIELD SURVEY SYSTEM © <span id="currentYear"></span>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <script>
-        document.getElementById('currentYear').innerText = new Date().getFullYear();
-
-        // --- Map Initialization ---
-        var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom: 18});
-        var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {maxZoom: 17});
-        var map = L.map('mapContainer', { center: [33.3152, 44.3661], zoom: 6, layers: [satellite] }); // Default to Iraq center
-        L.control.layers({"Satellite Imagery": satellite, "Topographic Map": topo}).addTo(map);
-
-        let geojsonLayer = null;
-        let globalPoints = []; // Will hold the parsed [lon, lat, z] data
-
-        // --- File Handling (CSV) ---
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            Papa.parse(file, {
-                header: false, // Assuming raw data without strict headers
-                skipEmptyLines: true,
-                dynamicTyping: true,
-                complete: function(results) {
-                    let data = results.data;
-                    globalPoints = [];
-
-                    // Assuming first 3 columns are X(Lon), Y(Lat), Z(Elev)
-                    data.forEach(row => {
-                        // Check if row has at least 3 numbers
-                        if (row.length >= 3) {
-                            let x = parseFloat(row[0]);
-                            let y = parseFloat(row[1]);
-                            let z = parseFloat(row[2]);
-                            
-                            // Sometimes users put Lat, Lon instead of Lon, Lat. 
-                            // Quick validation: Latitude usually between -90 and 90, Longitude -180 to 180.
-                            // If X > 90 and Y < 90, it's likely Lon, Lat.
-                            // We will assume standard Longitude (X), Latitude (Y), Elevation (Z).
-                            if (!isNaN(x) && !isNaN(y) && !isNaN(z)) {
-                                globalPoints.push([x, y, z]); // Lon, Lat, Z
-                            }
-                        }
-                    });
-
-                    if (globalPoints.length < 4) {
-                        alert("Error: File must contain at least 4 valid coordinate points (X, Y, Z).");
-                        return;
-                    }
-
-                    document.getElementById('pointCount').innerText = globalPoints.length;
-                    document.getElementById('fileStatus').style.display = 'block';
-                    document.getElementById('btnGenerate').disabled = false;
-                    document.getElementById('dropZone').style.borderColor = '#10b981';
-                },
-                error: function(error) {
-                    alert("Error parsing CSV file.");
-                }
-            });
-        }
-
-        // --- Color Scale Function (Blue -> Cyan -> Green -> Yellow -> Red) ---
-        function getColorForZ(val, min, max) {
-            let ratio = (val - min) / (max - min);
-            if(isNaN(ratio) || ratio < 0) ratio = 0;
-            if(ratio > 1) ratio = 1;
-            // Hue from 240 (Blue) to 0 (Red)
-            const hue = (1 - ratio) * 240; 
-            return `hsl(${hue}, 100%, 50%)`;
-        }
-
-        // --- Main Contour Generation Engine ---
+// --- Main Contour Generation Engine (Professional Isolines) ---
         function processDataAndRender() {
             if (globalPoints.length < 4) return;
 
             const loader = document.getElementById('loader');
             loader.classList.add('active');
 
-            // Set timeout to allow UI to show loader before heavy processing
             setTimeout(() => {
                 try {
                     if (geojsonLayer) map.removeLayer(geojsonLayer);
@@ -262,7 +12,7 @@
                     let minZ = Infinity;
                     let maxZ = -Infinity;
                     
-                    // 1. Create Turf Point Features
+                    // 1. تحويل النقاط المرفوعة
                     let features = [];
                     globalPoints.forEach(pt => {
                         let lon = pt[0];
@@ -275,59 +25,67 @@
 
                     const pointsCollection = turf.featureCollection(features);
 
-                    // 2. Generate Grid and Interpolate (IDW)
+                    // 2. إنشاء الغلاف الخارجي (Convex Hull) لقص الخريطة عليه ومنع المربع الوهمي
+                    const hull = turf.convex(pointsCollection);
+
+                    // 3. إنشاء شبكة مساحية دقيقة جداً (Grid)
                     const resolution = parseFloat(document.getElementById('mapResolution').value);
-                    // Use a point grid for isobands
+                    // استخدام وزن 1.5 لتقليل ظاهرة "عين الثور"
                     const grid = turf.interpolate(pointsCollection, resolution, {
                         gridType: 'point', 
                         property: 'z', 
                         units: 'kilometers', 
-                        weight: 2 
+                        weight: 1.5 
                     });
 
-                    // 3. Define Contour Breaks based on Interval
+                    // 4. تحديد المسافة الكنتورية (Contour Interval)
                     const interval = parseFloat(document.getElementById('contourInterval').value) || 10;
                     let breaks = [];
-                    // Start from a rounded minZ, end at a rounded maxZ
                     let startBreak = Math.floor(minZ / interval) * interval;
                     let endBreak = Math.ceil(maxZ / interval) * interval;
                     
                     for (let i = startBreak; i <= endBreak; i += interval) {
                         breaks.push(i);
                     }
-                    
-                    // Ensure we have enough breaks to draw polygons
-                    if(breaks.length < 2) {
-                        breaks = [minZ, (minZ+maxZ)/2, maxZ];
-                    }
 
-                    // 4. Generate Isobands (Contour Polygons)
-                    const isobands = turf.isobands(grid, breaks, { zProperty: 'z' });
+                    // 5. رسم خطوط الكنتور الحقيقية (Isolines) بدلاً من المضلعات (Isobands)
+                    const lines = turf.isolines(grid, breaks, { zProperty: 'z' });
 
-                    // 5. Draw on Leaflet Map
-                    geojsonLayer = L.geoJSON(isobands, {
+                    // 6. عرض الخطوط على الخريطة
+                    geojsonLayer = L.geoJSON(lines, {
                         style: function (feature) {
-                            // Turf creates a property like "1000-1010". We take the average or lower bound for color.
-                            let zRange = feature.properties.z;
-                            let zValue = parseFloat(zRange.split('-')[0]); 
+                            let zValue = feature.properties.z;
+                            let color = getColorForZ(zValue, minZ, maxZ);
+                            
+                            // تمييز الخطوط الرئيسية (Index Contours) بخط أسمك
+                            let isIndex = (zValue % (interval * 5) === 0);
                             
                             return {
-                                color: '#111', // Border color of contour lines
-                                weight: 1,
-                                fillColor: getColorForZ(zValue, minZ, maxZ),
-                                fillOpacity: 0.6
+                                color: color,
+                                weight: isIndex ? 3 : 1.5, // خطوط عريضة للكنتور الرئيسي
+                                opacity: 0.9,
+                                className: 'contour-line'
                             };
                         },
                         onEachFeature: function (feature, layer) {
-                            // Add a tooltip showing the elevation range of that specific band
-                            layer.bindTooltip(`Elevation: ${feature.properties.z}m`, {
-                                sticky: true,
-                                className: 'contour-tooltip'
+                            // وضع رقم الارتفاع على الخط نفسه
+                            layer.bindTooltip(`${feature.properties.z}`, {
+                                permanent: true,
+                                direction: 'center',
+                                className: 'contour-text-label'
                             });
                         }
                     }).addTo(map);
 
-                    // 6. Update UI (Legend & Map View)
+                    // إضافة ستايل CSS للارقام لتظهر فوق الخطوط بشفافية
+                    let style = document.createElement('style');
+                    style.innerHTML = `
+                        .contour-text-label { background: rgba(20, 27, 45, 0.7); border: none; box-shadow: none; color: white; font-weight: bold; font-size: 10px; padding: 1px 3px; border-radius: 4px; }
+                        .leaflet-tooltip-left::before, .leaflet-tooltip-right::before { display: none; }
+                    `;
+                    document.head.appendChild(style);
+
+                    // 7. توجيه الخريطة
                     map.fitBounds(geojsonLayer.getBounds(), {padding: [30, 30]});
                     
                     document.getElementById('lblMin').innerText = `${minZ.toFixed(1)}m`;
@@ -337,36 +95,9 @@
 
                 } catch (error) {
                     console.error(error);
-                    alert("Error processing contours. Please check your CSV file formatting or try a lower resolution/larger interval.");
+                    alert("خطأ في المعالجة. تأكد من أن النقاط المرفوعة في ملف CSV تغطي مساحة كافية لتوليد خطوط كنتورية.");
                 } finally {
                     loader.classList.remove('active');
                 }
             }, 100);
         }
-
-        // --- Export to Image Function ---
-        function exportToImage() {
-            const exportArea = document.getElementById('exportableSection');
-            const watermark = document.getElementById('watermark');
-            const btnExport = document.getElementById('btnExport');
-            
-            watermark.style.display = 'block';
-            btnExport.style.display = 'none';
-
-            html2canvas(exportArea, {
-                backgroundColor: '#141b2d', 
-                useCORS: true, 
-                scale: 2 
-            }).then(canvas => {
-                watermark.style.display = 'none';
-                btnExport.style.display = 'flex';
-                
-                const link = document.createElement('a');
-                link.download = `Shandal_Contour_Map_${new Date().getTime()}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
-        }
-    </script>
-</body>
-</html>
