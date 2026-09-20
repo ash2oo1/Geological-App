@@ -1,103 +1,684 @@
-// --- Main Contour Generation Engine (Professional Isolines) ---
-        function processDataAndRender() {
-            if (globalPoints.length < 4) return;
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مختبر الخرائط الكنتورية ثنائية الأبعاد | Shandal System</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- مكتبة لرفع وقراءة ملفات الإكسل CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
-            const loader = document.getElementById('loader');
-            loader.classList.add('active');
+    <style>
+        :root {
+            --bg-dark: #090e17; 
+            --card-bg: #141b2d;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-purple: #8e44ad;
+            --accent-cyan: #3498db;
+            --border-color: #1e293b;
+            --success: #27ae60;
+        }
 
-            setTimeout(() => {
-                try {
-                    if (geojsonLayer) map.removeLayer(geojsonLayer);
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+        body { background: var(--bg-dark); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
-                    let minZ = Infinity;
-                    let maxZ = -Infinity;
-                    
-                    // 1. تحويل النقاط المرفوعة
-                    let features = [];
-                    globalPoints.forEach(pt => {
-                        let lon = pt[0];
-                        let lat = pt[1];
-                        let z = pt[2];
-                        features.push(turf.point([lon, lat], { z: z }));
-                        if (z > maxZ) maxZ = z;
-                        if (z < minZ) minZ = z;
+        /* --- Header --- */
+        .top-navbar {
+            background: #040812; border-bottom: 1px solid var(--border-color);
+            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .brand { display: flex; align-items: center; gap: 15px; }
+        .brand-icon { background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan)); width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 24px; color: white; box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4);}
+        .brand-text h1 { font-size: 20px; font-weight: bold; margin-bottom: 2px; color: white;}
+        .brand-text p { color: var(--accent-cyan); font-size: 12px; font-weight: bold; letter-spacing: 1px; }
+
+        .main-container { padding: 20px 30px; display: flex; flex-direction: column; gap: 20px; max-width: 1800px; margin: 0 auto; width: 100%; }
+
+        /* --- Layout Grid --- */
+        .app-grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
+
+        /* --- Left: Controls Panel --- */
+        .control-panel { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); height: fit-content;}
+        .panel-title { font-size: 16px; font-weight: bold; color: white; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: flex; align-items: center; gap: 8px;}
+        
+        /* File Upload */
+        .upload-area { border: 2px dashed var(--accent-purple); border-radius: 8px; padding: 30px 20px; text-align: center; cursor: pointer; background: rgba(142, 68, 173, 0.05); transition: 0.3s; margin-bottom: 20px;}
+        .upload-area:hover { background: rgba(142, 68, 173, 0.1); }
+        .upload-area i { font-size: 30px; color: var(--accent-purple); margin-bottom: 10px; }
+        .upload-area p { color: var(--text-main); font-weight: bold; font-size: 15px; margin-bottom: 5px;}
+        .upload-area span { color: var(--text-muted); font-size: 12px; }
+        input[type="file"] { display: none; }
+
+        .file-status { display: none; background: rgba(39, 174, 96, 0.2); border: 1px solid var(--success); color: #2ecc71; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; margin-bottom: 20px; text-align: center;}
+
+        /* Settings */
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; color: var(--text-muted); font-size: 13px; font-weight: bold; margin-bottom: 8px; }
+        .input-field { width: 100%; background: #0b1120; border: 1px solid var(--border-color); color: white; padding: 10px; border-radius: 8px; font-size: 14px; outline: none; font-weight: bold;}
+        .input-field:focus { border-color: var(--accent-purple); }
+
+        .toggles-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 20px; background: #0b1120; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);}
+        .toggle-item { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: bold; color: var(--text-muted); cursor: pointer; transition: 0.2s;}
+        .toggle-item:hover { color: white; }
+        .toggle-item input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--accent-purple);}
+        
+        .slider-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        .slider-group label { color: var(--text-muted); font-size: 13px; font-weight: bold;}
+        .slider-group input[type="range"] { width: 100%; cursor: pointer; accent-color: var(--accent-purple);}
+
+        .btn-generate { width: 100%; background: var(--accent-purple); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px;}
+        .btn-generate:hover { background: #732d91; transform: translateY(-2px);}
+        .btn-generate:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; transform: none;}
+
+        .btn-print { width: 100%; background: transparent; color: white; border: 1px solid var(--accent-cyan); padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px;}
+        .btn-print:hover { background: rgba(52, 152, 219, 0.1); }
+
+        /* --- Right: Canvas & Report Area --- */
+        .map-section { display: flex; flex-direction: column; gap: 20px; }
+        
+        .canvas-wrapper { background: white; border-radius: 12px; padding: 20px; border: 4px solid var(--card-bg); display: flex; justify-content: center; align-items: center; overflow: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5);}
+        canvas { background: #fff; max-width: 100%; height: auto; object-fit: contain;}
+        
+        .interpretation-box { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); border-right: 4px solid var(--success); font-size: 15px; line-height: 1.8; color: var(--text-main); font-weight: bold; text-align: justify; display: none;}
+
+        /* --- Print Styles --- */
+        @media print {
+            body { background: white; color: black; }
+            .top-navbar, .control-panel, .btn-print { display: none !important; }
+            .app-grid { display: block; }
+            .canvas-wrapper { border: none; box-shadow: none; padding: 0; }
+            .interpretation-box { border: 1px solid #ccc; color: black; background: #fafafa; border-right: 4px solid #27ae60; margin-top: 20px;}
+            canvas { width: 100% !important; max-height: 900px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="top-navbar">
+        <div class="brand">
+            <div class="brand-icon"><i class="fas fa-map"></i></div>
+            <div class="brand-text">
+                <h1>مختبر الخرائط الكنتورية ثنائية الأبعاد (2D)</h1>
+                <p>Topographic & Contour Rendering Engine</p>
+            </div>
+        </div>
+        <div style="color:var(--text-muted); font-size: 14px;"><i class="fas fa-microscope"></i> نظام شندل للمسح الميداني الجيولوجي</div>
+    </header>
+
+    <div class="main-container">
+        <div class="app-grid">
+            
+            <!-- Controls Panel -->
+            <div class="control-panel">
+                <div class="panel-title"><i class="fas fa-cogs"></i> إعدادات الخارطة والبيانات</div>
+                
+                <!-- File Upload -->
+                <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-file-csv"></i>
+                    <p>رفع ملف الإحداثيات (CSV / Excel)</p>
+                    <span>يجب أن يحتوي الملف على (X, Y, Z) فقط</span>
+                    <input type="file" id="fileInput" accept=".csv" onchange="handleFileSelect(event)">
+                </div>
+                
+                <div id="fileStatus" class="file-status">
+                    <i class="fas fa-check-circle"></i> تم بنجاح قراءة: <span id="pointCount">0</span> نقطة.
+                </div>
+
+                <div class="input-group">
+                    <label>الفاصل الكنتوري المطلوب (Contour Interval):</label>
+                    <input type="number" id="contourInterval" class="input-field" value="2" step="0.5">
+                </div>
+
+                <div class="slider-group">
+                    <label>معامل تنعيم المنحنيات (Smoothness):</label>
+                    <input type="range" id="smoothFactor" min="0.001" max="0.1" step="0.001" value="0.02">
+                </div>
+
+                <div class="toggles-grid">
+                    <label class="toggle-item"><input type="checkbox" id="chk_fill" checked> التعبئة اللونية (Color Fill)</label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_lines" checked> خطوط الكنتور (Isolines)</label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_labels" checked> أرقام الارتفاعات على الخطوط</label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_points" checked> النقاط الميدانية (Points)</label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_grid" checked> شبكة الإحداثيات (Grid)</label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_scale" checked> مقياس الرسم الجغرافي (Scale)</label>
+                    <label class="toggle-item"><input type="checkbox" id="chk_north" checked> اتجاه الشمال (North Arrow)</label>
+                </div>
+
+                <button class="btn-generate" id="btnGenerate" onclick="processAndDrawMap()" disabled>
+                    <i class="fas fa-magic"></i> رسم الخارطة الكنتورية
+                </button>
+                
+                <button class="btn-print" onclick="window.print()">
+                    <i class="fas fa-print"></i> طباعة / حفظ كـ PDF
+                </button>
+            </div>
+
+            <!-- Canvas & Report Area -->
+            <div class="map-section">
+                <!-- لوحة الرسم البيضاء -->
+                <div class="canvas-wrapper">
+                    <!-- نفس الأبعاد الرياضية التي صممتها أنت سابقاً لضمان عمل الخوارزمية -->
+                    <canvas id="screenContourMap" width="950" height="700"></canvas>
+                </div>
+
+                <!-- التحليل الجيومورفولوجي -->
+                <div id="geomorphAnalysisBox" class="interpretation-box"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let topoPts = [];
+
+        // ==========================================
+        // 1. قراءة ملف CSV وتحويله لـ JSON
+        // ==========================================
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            Papa.parse(file, {
+                header: false,
+                skipEmptyLines: true,
+                dynamicTyping: true,
+                complete: function(results) {
+                    let data = results.data;
+                    topoPts = [];
+
+                    // قراءة الأعمدة الثلاثة الأولى (X, Y, Z)
+                    data.forEach(row => {
+                        if (row.length >= 3) {
+                            let x = parseFloat(row[0]);
+                            let y = parseFloat(row[1]);
+                            let z = parseFloat(row[2]);
+                            
+                            if (!isNaN(x) && !isNaN(y) && !isNaN(z)) {
+                                topoPts.push({ x: x, y: y, z: z });
+                            }
+                        }
                     });
 
-                    const pointsCollection = turf.featureCollection(features);
-
-                    // 2. إنشاء الغلاف الخارجي (Convex Hull) لقص الخريطة عليه ومنع المربع الوهمي
-                    const hull = turf.convex(pointsCollection);
-
-                    // 3. إنشاء شبكة مساحية دقيقة جداً (Grid)
-                    const resolution = parseFloat(document.getElementById('mapResolution').value);
-                    // استخدام وزن 1.5 لتقليل ظاهرة "عين الثور"
-                    const grid = turf.interpolate(pointsCollection, resolution, {
-                        gridType: 'point', 
-                        property: 'z', 
-                        units: 'kilometers', 
-                        weight: 1.5 
-                    });
-
-                    // 4. تحديد المسافة الكنتورية (Contour Interval)
-                    const interval = parseFloat(document.getElementById('contourInterval').value) || 10;
-                    let breaks = [];
-                    let startBreak = Math.floor(minZ / interval) * interval;
-                    let endBreak = Math.ceil(maxZ / interval) * interval;
-                    
-                    for (let i = startBreak; i <= endBreak; i += interval) {
-                        breaks.push(i);
+                    if (topoPts.length < 3) {
+                        alert("عذراً، يجب أن يحتوي الملف على 3 نقاط صحيحة كحد أدنى لرسم الخارطة الكنتورية.");
+                        return;
                     }
 
-                    // 5. رسم خطوط الكنتور الحقيقية (Isolines) بدلاً من المضلعات (Isobands)
-                    const lines = turf.isolines(grid, breaks, { zProperty: 'z' });
-
-                    // 6. عرض الخطوط على الخريطة
-                    geojsonLayer = L.geoJSON(lines, {
-                        style: function (feature) {
-                            let zValue = feature.properties.z;
-                            let color = getColorForZ(zValue, minZ, maxZ);
-                            
-                            // تمييز الخطوط الرئيسية (Index Contours) بخط أسمك
-                            let isIndex = (zValue % (interval * 5) === 0);
-                            
-                            return {
-                                color: color,
-                                weight: isIndex ? 3 : 1.5, // خطوط عريضة للكنتور الرئيسي
-                                opacity: 0.9,
-                                className: 'contour-line'
-                            };
-                        },
-                        onEachFeature: function (feature, layer) {
-                            // وضع رقم الارتفاع على الخط نفسه
-                            layer.bindTooltip(`${feature.properties.z}`, {
-                                permanent: true,
-                                direction: 'center',
-                                className: 'contour-text-label'
-                            });
-                        }
-                    }).addTo(map);
-
-                    // إضافة ستايل CSS للارقام لتظهر فوق الخطوط بشفافية
-                    let style = document.createElement('style');
-                    style.innerHTML = `
-                        .contour-text-label { background: rgba(20, 27, 45, 0.7); border: none; box-shadow: none; color: white; font-weight: bold; font-size: 10px; padding: 1px 3px; border-radius: 4px; }
-                        .leaflet-tooltip-left::before, .leaflet-tooltip-right::before { display: none; }
-                    `;
-                    document.head.appendChild(style);
-
-                    // 7. توجيه الخريطة
-                    map.fitBounds(geojsonLayer.getBounds(), {padding: [30, 30]});
-                    
-                    document.getElementById('lblMin').innerText = `${minZ.toFixed(1)}m`;
-                    document.getElementById('lblMid').innerText = `${((minZ + maxZ) / 2).toFixed(1)}m`;
-                    document.getElementById('lblMax').innerText = `${maxZ.toFixed(1)}m`;
-                    document.getElementById('colorLegend').style.display = 'flex';
-
-                } catch (error) {
-                    console.error(error);
-                    alert("خطأ في المعالجة. تأكد من أن النقاط المرفوعة في ملف CSV تغطي مساحة كافية لتوليد خطوط كنتورية.");
-                } finally {
-                    loader.classList.remove('active');
+                    document.getElementById('pointCount').innerText = topoPts.length;
+                    document.getElementById('fileStatus').style.display = 'block';
+                    document.getElementById('btnGenerate').disabled = false;
+                    document.getElementById('dropZone').style.borderColor = '#2ecc71';
+                },
+                error: function(error) {
+                    alert("حدث خطأ أثناء قراءة الملف، يرجى التأكد من صيغة الـ CSV.");
                 }
-            }, 100);
+            });
         }
+
+        // ==========================================
+        // 2. دوال التلوين والتحليل (من كودك الأساسي)
+        // ==========================================
+        function getColorPalette(val, minZ, maxZ) {
+            let ratio = (val - minZ) / (maxZ - minZ || 1);
+            ratio = Math.max(0, Math.min(1, ratio));
+            const colors = [
+                {r: 69, g: 117, b: 180},   
+                {r: 116, g: 173, b: 209},  
+                {r: 171, g: 217, b: 233},  
+                {r: 224, g: 243, b: 248},  
+                {r: 166, g: 217, b: 106},  
+                {r: 26, g: 152, b: 80},    
+                {r: 254, g: 224, b: 139},  
+                {r: 253, g: 174, b: 97},   
+                {r: 244, g: 109, b: 67},   
+                {r: 215, g: 48, b: 39}      
+            ];
+            let idx = ratio * (colors.length - 1);
+            let lower = Math.floor(idx);
+            let upper = Math.ceil(idx);
+            let weight = idx - lower;
+            let r = Math.round(colors[lower].r * (1 - weight) + colors[upper].r * weight);
+            let g = Math.round(colors[lower].g * (1 - weight) + colors[upper].g * weight);
+            let b = Math.round(colors[lower].b * (1 - weight) + colors[upper].b * weight);
+            return `rgb(${r},${g},${b})`;
+        }
+
+        function generateGeomorphAnalysis(pts, minX, maxX, minY, maxY) {
+            let maxP = pts.reduce((prev, curr) => (curr.z > prev.z) ? curr : prev);
+            let minP = pts.reduce((prev, curr) => (curr.z < prev.z) ? curr : prev);
+            
+            let midX = (maxX + minX) / 2;
+            let midY = (maxY + minY) / 2;
+
+            function getDirection(p) {
+                let ns = p.y >= midY ? "الشمال" : "الجنوب";
+                let ew = p.x >= midX ? "الشرقي" : "الغربي";
+                if (Math.abs(p.x - midX) < (maxX - minX) * 0.1) ew = "";
+                if (Math.abs(p.y - midY) < (maxY - minY) * 0.1) ns = (ew === "") ? "الوسط" : "";
+                return (ns + " " + ew).trim();
+            }
+
+            let maxDir = getDirection(maxP);
+            let minDir = getDirection(minP);
+            
+            let dist = Math.hypot(maxP.x - minP.x, maxP.y - minP.y);
+            let slope = (maxP.z - minP.z) / (dist || 1);
+            let slopeDesc = slope > 0.05 ? "انحداراً شديداً وتقارباً في الخطوط الكنتورية" : "انحداراً تدريجياً (لطيفاً) وتباعداً في الخطوط الكنتورية";
+
+            let text = `تُظهر الخارطة الكنتورية المستنبطة تبايناً طوبوغرافياً واضحاً بناءً على ${pts.length} نقطة رفع ميدانية. يُسجل أعلى ارتفاع في المنطقة (${maxP.z} متر) باتجاه ${maxDir}، بينما ينحدر السطح تدريجياً ليصل إلى أدنى مستوى له (${minP.z} متر) باتجاه ${minDir}. ويشير الفارق في المنسوب إلى ${slopeDesc}، مما يحدد جيولوجياً وجيومورفولوجياً اتجاه الجريان السطحي المتوقع نحو المناطق المنخفضة.`;
+            
+            let analysisBox = document.getElementById('geomorphAnalysisBox');
+            analysisBox.innerText = text;
+            analysisBox.style.display = 'block';
+        }
+
+        // ==========================================
+        // 3. المحرك الخرائطي (كودك الأصلي للـ Canvas)
+        // ==========================================
+        function processAndDrawMap() {
+            if(topoPts.length < 3) return;
+
+            const interval = parseFloat(document.getElementById('contourInterval').value) || 2;
+            
+            const canvas = document.getElementById('screenContourMap');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const showFill = document.getElementById('chk_fill').checked;
+            const showLines = document.getElementById('chk_lines').checked;
+            const showLabels = document.getElementById('chk_labels').checked;
+            const showPoints = document.getElementById('chk_points').checked;
+            const showGrid = document.getElementById('chk_grid').checked;
+            const showScale = document.getElementById('chk_scale').checked;
+            const showNorth = document.getElementById('chk_north').checked;
+            const smoothFactor = parseFloat(document.getElementById('smoothFactor').value) || 0.02;
+
+            let rawMinX = Infinity, rawMaxX = -Infinity, rawMinY = Infinity, rawMaxY = -Infinity;
+            let minZ = Infinity, maxZ = -Infinity;
+            
+            topoPts.forEach(p => {
+                if(p.x < rawMinX) rawMinX = p.x; if(p.x > rawMaxX) rawMaxX = p.x;
+                if(p.y < rawMinY) rawMinY = p.y; if(p.y > rawMaxY) rawMaxY = p.y;
+                if(p.z < minZ) minZ = p.z; if(p.z > maxZ) maxZ = p.z;
+            });
+
+            let dx = (rawMaxX - rawMinX) || 10;
+            let dy = (rawMaxY - rawMinY) || 10;
+            let paddingLeft = 85; 
+            let paddingRight = 130; 
+            let paddingTop = 85;    
+            let paddingBottom = 85; 
+
+            let minX = rawMinX - dx * 0.08;
+            let maxX = rawMaxX + dx * 0.08;
+            let minY = rawMinY - dy * 0.08;
+            let maxY = rawMaxY + dy * 0.08;
+
+            generateGeomorphAnalysis(topoPts, rawMinX, rawMaxX, rawMinY, rawMaxY);
+
+            let startZ = Math.floor(minZ / interval) * interval;
+            let endZ = Math.ceil(maxZ / interval) * interval;
+            if (startZ === endZ) endZ += interval;
+
+            const mapW = canvas.width - paddingLeft - paddingRight;
+            const mapH = canvas.height - paddingTop - paddingBottom;
+
+            function getScreenX(realX) { return paddingLeft + ((realX - minX) / (maxX - minX)) * mapW; }
+            function getScreenY(realY) { return paddingTop + mapH - ((realY - minY) / (maxY - minY)) * mapH; }
+
+            // الاستيفاء (IDW Grid)
+            const res = 2; 
+            let gridCols = Math.ceil(mapW / res) + 1;
+            let gridRows = Math.ceil(mapH / res) + 1;
+            let grid = new Array(gridCols).fill(0).map(() => new Array(gridRows).fill(0));
+
+            for (let i = 0; i < gridCols; i++) {
+                for (let j = 0; j < gridRows; j++) {
+                    let sx = paddingLeft + i * res;
+                    let sy = paddingTop + mapH - j * res; 
+                    let rx = minX + ((sx - paddingLeft) / mapW) * (maxX - minX);
+                    let ry = minY + ((paddingTop + mapH - sy) / mapH) * (maxY - minY);
+                    
+                    let num = 0, den = 0;
+                    for (let p of topoPts) {
+                        let nx = (p.x - rx) / (maxX - minX || 1);
+                        let ny = (p.y - ry) / (maxY - minY || 1);
+                        let d2 = nx * nx + ny * ny;
+                        let w = 1 / (d2 + smoothFactor); 
+                        num += w * p.z; den += w;
+                    }
+                    grid[i][j] = num / den;
+                }
+            }
+
+            // التعبئة اللونية
+            if (showFill) {
+                for (let i = 0; i < gridCols - 1; i++) {
+                    for (let j = 0; j < gridRows - 1; j++) {
+                        let zVal = grid[i][j];
+                        let bandZ = Math.floor(zVal / interval) * interval;
+                        let sx = paddingLeft + i * res;
+                        let sy = paddingTop + mapH - j * res;
+                        
+                        ctx.fillStyle = getColorPalette(bandZ, startZ, endZ);
+                        ctx.fillRect(Math.round(sx), Math.round(sy - res), res + 1, res + 1); 
+                    }
+                }
+            } else {
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(paddingLeft, paddingTop, mapW, mapH);
+            }
+
+            // خوارزمية الخطوط وتوزيع الأرقام (Marching Squares)
+            if (showLines) {
+                let contourLevels = [];
+                for(let z = startZ; z <= endZ; z += interval) contourLevels.push(z);
+
+                let labelCandidates = [];
+
+                contourLevels.forEach(iso => {
+                    ctx.beginPath();
+                    ctx.lineJoin = 'round'; 
+                    
+                    let isIndex = Math.abs(iso % (interval * 5)) < 0.001;
+                    ctx.strokeStyle = '#000'; 
+                    ctx.lineWidth = isIndex ? 1.8 : 0.8;
+
+                    let segments = [];
+
+                    for (let i = 0; i < gridCols - 1; i++) {
+                        for (let j = 0; j < gridRows - 1; j++) {
+                            let v0 = grid[i][j]; let v1 = grid[i+1][j];     
+                            let v2 = grid[i+1][j+1]; let v3 = grid[i][j+1];     
+                            
+                            let idx = 0;
+                            if(v0 > iso) idx |= 1; if(v1 > iso) idx |= 2;
+                            if(v2 > iso) idx |= 4; if(v3 > iso) idx |= 8;
+                            
+                            if(idx === 0 || idx === 15) continue;
+                            
+                            let sx = paddingLeft + i * res; let sy = paddingTop + mapH - j * res; 
+                            let getX = (valA, valB, xA, xB) => xA + (iso - valA) * (xB - xA) / (valB - valA || 1);
+                            let getY = (valA, valB, yA, yB) => yA + (iso - valA) * (yB - yA) / (valB - valA || 1);
+                            
+                            let a, b, c, d; 
+                            if((idx & 1) !== (idx & 2) >> 1) a = {x: getX(v0, v1, sx, sx+res), y: sy};
+                            if((idx & 2) >> 1 !== (idx & 4) >> 2) b = {x: sx+res, y: getY(v1, v2, sy, sy-res)};
+                            if((idx & 8) >> 3 !== (idx & 4) >> 2) c = {x: getX(v3, v2, sx, sx+res), y: sy-res};
+                            if((idx & 1) !== (idx & 8) >> 3) d = {x: sx, y: getY(v0, v3, sy, sy-res)};
+                            
+                            let p1, p2;
+                            if(idx===1 || idx===14) { p1 = a; p2 = d; }
+                            else if(idx===2 || idx===13) { p1 = a; p2 = b; }
+                            else if(idx===4 || idx===11) { p1 = b; p2 = c; }
+                            else if(idx===8 || idx===7) { p1 = d; p2 = c; }
+                            else if(idx===3 || idx===12) { p1 = d; p2 = b; }
+                            else if(idx===6 || idx===9) { p1 = a; p2 = c; }
+                            else if(idx===5) { ctx.moveTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.moveTo(b.x, b.y); ctx.lineTo(c.x, c.y); p1=a; p2=d; segments.push({p1:b, p2:c}); } 
+                            else if(idx===10) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.moveTo(c.x, c.y); ctx.lineTo(d.x, d.y); p1=a; p2=b; segments.push({p1:c, p2:d}); } 
+
+                            if (p1 && p2 && idx !== 5 && idx !== 10) {
+                                ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+                                segments.push({p1: p1, p2: p2});
+                            }
+                        }
+                    }
+                    ctx.stroke();
+
+                    if (showLabels && segments.length > 0) {
+                        let lines = [];
+                        while(segments.length > 0) {
+                            let currentLine = [segments.pop()];
+                            let added = true;
+                            let attempts = 0;
+                            while(added && attempts < 5000) {
+                                added = false;
+                                attempts++;
+                                for(let i=0; i<segments.length; i++) {
+                                    let seg = segments[i];
+                                    let startSeg = currentLine[0];
+                                    let endSeg = currentLine[currentLine.length-1];
+                                    let tol = 2.0;
+                                    if (Math.hypot(seg.p1.x - endSeg.p2.x, seg.p1.y - endSeg.p2.y) <= tol) {
+                                        currentLine.push(seg); segments.splice(i, 1); added = true; break;
+                                    } else if (Math.hypot(seg.p2.x - startSeg.p1.x, seg.p2.y - startSeg.p1.y) <= tol) {
+                                        currentLine.unshift(seg); segments.splice(i, 1); added = true; break;
+                                    } else if (Math.hypot(seg.p2.x - endSeg.p2.x, seg.p2.y - endSeg.p2.y) <= tol) {
+                                        currentLine.push({p1: seg.p2, p2: seg.p1}); segments.splice(i, 1); added = true; break;
+                                    } else if (Math.hypot(seg.p1.x - startSeg.p1.x, seg.p1.y - startSeg.p1.y) <= tol) {
+                                        currentLine.unshift({p1: seg.p2, p2: seg.p1}); segments.splice(i, 1); added = true; break;
+                                    }
+                                }
+                            }
+                            lines.push(currentLine);
+                        }
+
+                        for(let line of lines) {
+                            let totalLen = 0;
+                            for(let s of line) totalLen += Math.hypot(s.p2.x - s.p1.x, s.p2.y - s.p1.y);
+
+                            if(totalLen > 50) { 
+                                let fraction = 0.25 + ((iso * 13.7) % 0.5); 
+                                let targetIdx = Math.floor(line.length * fraction);
+                                let buffer = 30;
+                                let validPoint = null;
+
+                                let pt = {x: (line[targetIdx].p1.x + line[targetIdx].p2.x)/2, y: (line[targetIdx].p1.y + line[targetIdx].p2.y)/2};
+                                if (pt.x > paddingLeft + buffer && pt.x < paddingLeft + mapW - buffer && pt.y > paddingTop + buffer && pt.y < paddingTop + mapH - buffer) {
+                                    validPoint = pt;
+                                } else {
+                                    for(let k=0; k<line.length; k+=2) {
+                                        let cpt = {x: (line[k].p1.x + line[k].p2.x)/2, y: (line[k].p1.y + line[k].p2.y)/2};
+                                        if (cpt.x > paddingLeft + buffer && cpt.x < paddingLeft + mapW - buffer && cpt.y > paddingTop + buffer && cpt.y < paddingTop + mapH - buffer) {
+                                            validPoint = cpt; break;
+                                        }
+                                    }
+                                }
+                                if(validPoint) {
+                                    labelCandidates.push({x: validPoint.x, y: validPoint.y, val: iso});
+                                }
+                            }
+                        }
+                    }
+                });
+
+                if (showLabels) {
+                    let placedLabels = [];
+                    for(let cand of labelCandidates) {
+                        let tooClose = false;
+                        for(let p of placedLabels) {
+                            if (Math.hypot(cand.x - p.x, cand.y - p.y) < 25) { tooClose = true; break; }
+                        }
+                        if(!tooClose) placedLabels.push(cand);
+                    }
+
+                    ctx.direction = "ltr";
+                    ctx.font = 'bold 10px Arial'; 
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    
+                    placedLabels.forEach(lp => {
+                        let txt = lp.val.toFixed(1);
+                        let textW = ctx.measureText(txt).width;
+                        
+                        let bgCol = showFill ? getColorPalette(lp.val, startZ, endZ) : '#fff';
+                        ctx.fillStyle = bgCol;
+                        ctx.fillRect(lp.x - textW/2 - 1, lp.y - 6, textW + 2, 12);
+                        
+                        ctx.fillStyle = '#000';
+                        ctx.fillText(txt, lp.x, lp.y);
+                    });
+                    ctx.direction = "rtl"; 
+                }
+            }
+
+            // الإطار الخارجي والإحداثيات
+            ctx.strokeStyle = '#1c2833';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(paddingLeft, paddingTop, mapW, mapH);
+
+            if (showGrid) {
+                ctx.fillStyle = '#1c2833';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                
+                for (let i = 0; i <= 5; i++) {
+                    let rx = minX + (i / 5) * (maxX - minX);
+                    let sx = getScreenX(rx);
+                    ctx.beginPath(); ctx.moveTo(sx, paddingTop + mapH); ctx.lineTo(sx, paddingTop + mapH + 6); ctx.stroke();
+                    ctx.fillText(rx.toFixed(1), sx, paddingTop + mapH + 10);
+                }
+
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                for (let i = 0; i <= 5; i++) {
+                    let ry = minY + (i / 5) * (maxY - minY);
+                    let sy = getScreenY(ry);
+                    
+                    ctx.textAlign = 'right';
+                    ctx.beginPath(); ctx.moveTo(paddingLeft, sy); ctx.lineTo(paddingLeft - 6, sy); ctx.stroke();
+                    ctx.fillText(ry.toFixed(1), paddingLeft - 8, sy);
+                    
+                    ctx.textAlign = 'left';
+                    ctx.beginPath(); ctx.moveTo(paddingLeft + mapW, sy); ctx.lineTo(paddingLeft + mapW + 6, sy); ctx.stroke();
+                    ctx.fillText(ry.toFixed(1), paddingLeft + mapW + 8, sy);
+                }
+                
+                ctx.save();
+                ctx.fillStyle = '#1c2833';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                
+                ctx.translate(paddingLeft - 65, paddingTop + mapH / 2);
+                ctx.rotate(-Math.PI / 2);
+                ctx.fillText('Northing (Y)', 0, 0);
+                ctx.restore();
+                
+                ctx.save();
+                ctx.translate(paddingLeft + mapW + 65, paddingTop + mapH / 2);
+                ctx.rotate(-Math.PI / 2);
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#1c2833';
+                ctx.fillText('Northing (Y)', 0, 0);
+                ctx.restore();
+                
+                ctx.fillStyle = '#1c2833';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                ctx.fillText('Easting (X)', paddingLeft + mapW / 2, paddingTop + mapH + 35);
+            }
+
+            // مقياس الرسم الخطي
+            if (showScale) {
+                const realDistX = maxX - minX;
+                let scaleValue = Math.pow(10, Math.floor(Math.log10(realDistX / 2))); 
+                if (scaleValue < 1) scaleValue = 10; 
+                let scalePxWidth = (scaleValue / realDistX) * mapW;
+
+                const scX = paddingLeft; 
+                const scY = paddingTop + mapH + 65; 
+                
+                ctx.beginPath();
+                ctx.lineWidth = 2.5;
+                ctx.strokeStyle = '#000';
+                ctx.moveTo(scX, scY - 6); ctx.lineTo(scX, scY + 6); 
+                ctx.moveTo(scX, scY); ctx.lineTo(scX + scalePxWidth, scY); 
+                ctx.moveTo(scX + scalePxWidth, scY - 6); ctx.lineTo(scX + scalePxWidth, scY + 6); 
+                ctx.stroke();
+                
+                ctx.direction = "ltr";
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('0', scX, scY - 15);
+                ctx.fillText(scaleValue + ' m', scX + scalePxWidth, scY - 15);
+                ctx.direction = "rtl";
+            }
+
+            // صندوق الألوان وسهم الشمال
+            if (showFill) {
+                const legX = paddingLeft + mapW + 80; 
+                const legH = mapH * 0.70; 
+                const legY = paddingTop + (mapH - legH); 
+                const legW = 20;
+                
+                if (showNorth) {
+                    const nX = legX + (legW / 2); 
+                    const nY = paddingTop + 15; 
+                    ctx.beginPath();
+                    ctx.moveTo(nX, nY - 18); ctx.lineTo(nX + 8, nY + 10); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10);
+                    ctx.closePath();
+                    ctx.fillStyle = '#000'; ctx.fill();
+                    ctx.fillStyle = '#fff';
+                    ctx.beginPath(); ctx.moveTo(nX, nY - 18); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10); ctx.fill();
+                    ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5; ctx.stroke();
+                    ctx.fillStyle = '#000'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center';
+                    ctx.fillText('N', nX, nY + 24);
+                }
+
+                let gradient = ctx.createLinearGradient(0, legY + legH, 0, legY); 
+                gradient.addColorStop(0, "rgb(69, 117, 180)");
+                gradient.addColorStop(0.2, "rgb(171, 217, 233)");
+                gradient.addColorStop(0.5, "rgb(166, 217, 106)");
+                gradient.addColorStop(0.8, "rgb(253, 174, 97)");
+                gradient.addColorStop(1, "rgb(215, 48, 39)");
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(legX, legY, legW, legH);
+                ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5;
+                ctx.strokeRect(legX, legY, legW, legH);
+                
+                ctx.direction = "ltr";
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                
+                const offsetText = 6;
+                ctx.fillText(endZ.toFixed(1), legX + legW + offsetText, legY);
+                ctx.fillText(startZ.toFixed(1), legX + legW + offsetText, legY + legH);
+                const midZ = (startZ + endZ) / 2;
+                ctx.fillText(midZ.toFixed(1), legX + legW + offsetText, legY + legH / 2);
+                ctx.direction = "rtl";
+            } else if (showNorth) {
+                const nX = paddingLeft + mapW + 80; 
+                const nY = paddingTop + 15; 
+                ctx.beginPath();
+                ctx.moveTo(nX, nY - 18); ctx.lineTo(nX + 8, nY + 10); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10);
+                ctx.closePath();
+                ctx.fillStyle = '#000'; ctx.fill();
+                ctx.fillStyle = '#fff';
+                ctx.beginPath(); ctx.moveTo(nX, nY - 18); ctx.lineTo(nX, nY + 4); ctx.lineTo(nX - 8, nY + 10); ctx.fill();
+                ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5; ctx.stroke();
+                ctx.fillStyle = '#000'; ctx.font = 'bold 15px Arial'; ctx.textAlign = 'center';
+                ctx.fillText('N', nX, nY + 24);
+            }
+
+            // إسقاط النقاط الميدانية الأصلية
+            if (showPoints) {
+                ctx.direction = "ltr";
+                topoPts.forEach(p => {
+                    let sx = getScreenX(p.x); let sy = getScreenY(p.y);
+                    ctx.fillStyle = '#ecf0f1';
+                    ctx.beginPath(); ctx.arc(sx, sy, 4, 0, Math.PI * 2); ctx.fill();
+                    ctx.strokeStyle = '#34495e'; ctx.lineWidth = 1.5; ctx.stroke();
+                    
+                    ctx.fillStyle = '#000';
+                    ctx.font = 'bold 11px Arial';
+                    ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+                    ctx.fillText(p.z.toFixed(1), sx + 6, sy - 2);
+                });
+                ctx.direction = "rtl";
+            }
+        }
+    </script>
+</body>
+</html>
