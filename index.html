@@ -1,3 +1,4 @@
+html_content = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -330,6 +331,12 @@
             <i class="fas fa-temperature-high" style="color: #ef4444;"></i>
             <h3 style="color: #ef4444;">مختبر الطاقة الحرارية الأرضية</h3>
             <p>تحليل التدرج الحراري الأرضي، قياس التدفق الحراري، وتقييم إمكانيات الطاقة الجيوحرارية للطبقات العميقة.</p>
+        </div>
+
+        <div class="module-card" style="border-bottom-color: #6366f1;" onclick="window.location.href='2d_map_lab.html'">
+            <i class="fas fa-map-marked-alt" style="color: #6366f1;"></i>
+            <h3 style="color: #6366f1;">الخرائط ثنائية الأبعاد (2D Maps)</h3>
+            <p>رسم خرائط كنتورية ونماذج مساحية ثنائية الأبعاد بناءً على إحداثيات (X, Y, Z) باستخدام خوارزميات الاستيفاء المكاني.</p>
         </div>
 
     </div>
@@ -1107,3 +1114,22 @@
 </script>  
 </body>
 </html>
+"""
+import re
+# Insert the new card into the modules-grid
+new_card = """
+        <div class="module-card" style="border-bottom-color: #6366f1;" onclick="window.location.href='2d_map_lab.html'">
+            <i class="fas fa-map-marked-alt" style="color: #6366f1;"></i>
+            <h3 style="color: #6366f1;">الخرائط ثنائية الأبعاد (2D Maps)</h3>
+            <p>رسم خرائط كنتورية ونماذج مساحية ثنائية الأبعاد بناءً على إحداثيات (X, Y, Z) باستخدام خوارزميات الاستيفاء المكاني.</p>
+        </div>
+"""
+# Find the end of the modules-grid
+match = re.search(r'(<div class="modules-grid">.*?)(</div>\s*</div>\s*<div id="moduleQuarries")', html_content, re.DOTALL)
+if match:
+    updated_html = html_content[:match.end(1)] + new_card + html_content[match.start(2):]
+    with open('/tmp/shandal_main_dashboard.html', 'w', encoding='utf-8') as f:
+        f.write(updated_html)
+    print("tag: shandal_dashboard_final_update")
+else:
+    print("Error: Could not find modules-grid insertion point.")
