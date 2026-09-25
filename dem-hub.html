@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام شندل - المختبر الطبوغرافي الفضائي</title>
+    <title>نظام شندل للمسح الميداني الجيولوجي - سحب بيانات نموذج الارتفاع الرقمي (DEM)</title>
     
     <!-- مكتبة الخرائط Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -31,7 +31,12 @@
 
         /* Main Layout */
         .main-container { display: grid; grid-template-columns: 350px 1fr; gap: 20px; padding: 20px; height: calc(100vh - 120px); box-sizing: border-box;}
-        @media (max-width: 992px) { .main-container { grid-template-columns: 1fr; height: auto; } }
+        
+        /* معالجة مشكلة الهواتف والآيباد هنا */
+        @media (max-width: 992px) { 
+            .main-container { grid-template-columns: 1fr; height: auto; } 
+            .map-wrapper { min-height: 500px; height: 60vh; } /* إعطاء ارتفاع ثابت ومضمون للخريطة في الهواتف */
+        }
 
         /* Control Panel */
         .control-panel { background: var(--card-bg); border-radius: 12px; padding: 25px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 20px; overflow-y: auto; }
@@ -87,7 +92,7 @@
     <header>
         <div class="brand">
             <h1 id="appTitle">نظام شندل للمسح الميداني الجيولوجي</h1>
-            <p id="appSubtitle"><i class="fas fa-satellite"></i> الرفع الطبوغرافي ونماذج الارتفاعات الرقمية</p>
+            <p id="appSubtitle"><i class="fas fa-satellite"></i> سحب بيانات نموذج الارتفاع الرقمي (DEM)</p>
         </div>
         <button class="lang-toggle" onclick="toggleLanguage()">
             <span id="langText">English</span> <i class="fas fa-arrow-right"></i>
@@ -169,8 +174,8 @@
         let currentLang = "ar";
         const translations = {
             en: {
-                appTitle: "Shandal System for Geological Field Survey",
-                appSubtitle: "<i class='fas fa-satellite'></i> Topographic Surveying & DEM",
+                appTitle: "Shandal Geological Field Survey System",
+                appSubtitle: "<i class='fas fa-satellite'></i> Digital Elevation Model (DEM) Extraction",
                 langText: "العربية",
                 panelTitle: "<i class='fas fa-cogs'></i> Data Extraction Settings",
                 lblBtnBox: "Show Selection Bounding Box",
@@ -192,7 +197,7 @@
             },
             ar: {
                 appTitle: "نظام شندل للمسح الميداني الجيولوجي",
-                appSubtitle: "<i class='fas fa-satellite'></i> الرفع الطبوغرافي ونماذج الارتفاعات الرقمية",
+                appSubtitle: "<i class='fas fa-satellite'></i> سحب بيانات نموذج الارتفاع الرقمي (DEM)",
                 langText: "English",
                 panelTitle: "<i class='fas fa-cogs'></i> إعدادات استخراج البيانات",
                 lblBtnBox: "إظهار مستطيل التحديد (زون الدراسة)",
@@ -265,6 +270,15 @@
             }).addTo(map);
 
             L.control.scale({ position: 'bottomright', metric: true, imperial: false }).addTo(map);
+
+            // إصلاح مشكلة ظهور الخريطة على الجوال والآيباد
+            setTimeout(() => {
+                if (map) map.invalidateSize();
+            }, 500);
+            
+            window.addEventListener('resize', function() {
+                if(map) map.invalidateSize();
+            });
         });
 
         function goToMyLocation() {
